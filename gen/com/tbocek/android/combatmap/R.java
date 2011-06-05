@@ -16,6 +16,7 @@ public final class R {
     public static final class id {
         public static final int black_pencil=0x7f060004;
         public static final int bottomControlAreaFrame=0x7f060001;
+        public static final int clear_all=0x7f060008;
         public static final int combat_on=0x7f060006;
         public static final int edit_annotations=0x7f060007;
         public static final int edit_background=0x7f060005;

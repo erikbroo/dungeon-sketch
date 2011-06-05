@@ -28,4 +28,8 @@ public class TokenCollection {
 	public void addToken(Token t) {
 		tokens.add(t);
 	}
+
+	public void clear() {
+		tokens.clear();
+	}
 }

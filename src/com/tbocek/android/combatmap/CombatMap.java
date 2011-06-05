@@ -98,6 +98,9 @@ public class CombatMap extends Activity {
         	mBottomControlFrame.removeAllViews();
         	mBottomControlFrame.addView(mTokenSelector);
         	return true;
+        case R.id.clear_all:
+        	mCombatView.clearAll();
+        	return true;
         }
         
         return false;

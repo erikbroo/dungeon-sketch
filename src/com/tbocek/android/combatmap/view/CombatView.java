@@ -180,4 +180,12 @@ public class CombatView extends View implements OnTouchListener {
 		invalidate();
 	}
 
+	public void clearAll() {
+		this.mBackgroundLines.clear();
+		this.mAnnotationLines.clear();
+		this.tokens.clear();
+		invalidate();
+		
+	}
+
 }

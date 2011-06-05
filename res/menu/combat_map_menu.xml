@@ -12,4 +12,7 @@
 		android:id="@+id/edit_annotations"
 		android:title="Annotations" 
 		android:showAsAction="ifRoom|withText"/>
+	<item
+		android:id="@+id/clear_all"
+		android:title="Clear All"/>
 </menu>
