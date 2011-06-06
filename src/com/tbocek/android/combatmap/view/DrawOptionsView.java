@@ -81,6 +81,11 @@ public class DrawOptionsView extends HorizontalScrollView {
 		addColorButton("Black", Color.BLACK);
 		addColorButton("Red", Color.RED);
 		addColorButton("Blue", Color.BLUE);
+		addColorButton("Green", Color.GREEN);
+		addColorButton("Yellow", Color.YELLOW);
+		addColorButton("Dark Red", Color.rgb(128, 0, 0));
+		addColorButton("Dark Blue", Color.rgb(0, 0, 128));
+		addColorButton("Dark Green", Color.rgb(0, 128, 0));
 	}
 	
 	private void addColorButton(String name, int color) {
