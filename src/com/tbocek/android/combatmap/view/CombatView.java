@@ -36,7 +36,7 @@ public class CombatView extends View implements OnTouchListener {
 	
 	private GridColorScheme colorScheme = GridColorScheme.GRAPH_PAPER;
 	
-	boolean shouldDrawTokens = false;
+	boolean shouldDrawAnnotations = false;
 	
 	public CombatView(Context context) {
 		super(context);
@@ -57,7 +57,7 @@ public class CombatView extends View implements OnTouchListener {
 	
 	public void setTokenManipulationMode() {
 		setGestureListener(new TokenManipulationListener(this));
-		shouldDrawTokens = true;
+		shouldDrawAnnotations = true;
 	}
 	
 	public void setDrawMode() {
@@ -70,18 +70,18 @@ public class CombatView extends View implements OnTouchListener {
 
 	public void useBackgroundLayer() {
 		mActiveLines = mBackgroundLines;
-		shouldDrawTokens = false;
+		shouldDrawAnnotations = false;
 	}
 	
 	public void useAnnotationLayer() {
 		mActiveLines = mAnnotationLines;
-		shouldDrawTokens = true;
+		shouldDrawAnnotations = true;
 	}
 	
 	public void setEraseAnnotationMode() {
 		setGestureListener(new EraserGestureListener(this));
 		useAnnotationLayer();
-		shouldDrawTokens = true;
+		shouldDrawAnnotations = true;
 	}
 	
 	private void setGestureListener(SimpleAllGestureListener listener) {
@@ -113,10 +113,11 @@ public class CombatView extends View implements OnTouchListener {
 			mBackgroundLines.get(i).draw(canvas, transformer);
 		}
 		
-		if (this.shouldDrawTokens) {
-			for (int i = 0; i < tokens.list().size(); ++i){
-				tokens.list().get(i).draw(canvas, transformer);
-			}
+		for (int i = 0; i < tokens.list().size(); ++i){
+			tokens.list().get(i).draw(canvas, transformer);
+		}
+		
+		if (this.shouldDrawAnnotations) {
 			for (int i = 0; i < mAnnotationLines.size(); ++i){
 				mAnnotationLines.get(i).draw(canvas, transformer);
 			}
