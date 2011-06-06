@@ -1,5 +1,8 @@
 package com.tbocek.android.combatmap.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.tbocek.android.combatmap.R;
 
 import android.content.Context;
@@ -13,6 +16,25 @@ import android.widget.LinearLayout;
 public class DrawOptionsView extends HorizontalScrollView {
 
 	LinearLayout layout;
+	
+	List<Button> colorButtons = new ArrayList<Button>();
+	List<Integer> colors = new ArrayList<Integer>();
+	
+	private View.OnClickListener onColorButtonClickListener = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			for (int i = 0; i < colorButtons.size(); ++i) {
+				if (colorButtons.get(i) == v) {
+					if (onChangeDrawToolListener != null) {
+						onChangeDrawToolListener.onChooseColoredPen(colors.get(i));
+					}					
+				}
+			}
+			
+		}
+		
+	};
 	
 	public interface OnChangeDrawToolListener {
 		void onChooseEraser();
@@ -32,11 +54,7 @@ public class DrawOptionsView extends HorizontalScrollView {
 		
 		Button eraserButton = new Button(context);
 		eraserButton.setText("Erase");
-		Button pencilButton = new Button(context);
-		pencilButton.setText("Draw Black");
-		Button redPencilButton = new Button(context);
-		redPencilButton.setText("Draw Red");
-
+		
 		panButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View arg0) {
@@ -57,30 +75,21 @@ public class DrawOptionsView extends HorizontalScrollView {
 			}
 		});
 		
-		pencilButton.setOnClickListener(new View.OnClickListener() {	
-			@Override
-			public void onClick(View arg0) {
-				if (onChangeDrawToolListener != null) {
-					onChangeDrawToolListener.onChooseColoredPen(Color.BLACK);
-				}
-				
-			}
-		});
-		
-		redPencilButton.setOnClickListener(new View.OnClickListener() {	
-			@Override
-			public void onClick(View arg0) {
-				if (onChangeDrawToolListener != null) {
-					onChangeDrawToolListener.onChooseColoredPen(Color.RED);
-				}
-				
-			}
-		});
-		
 		layout.addView(panButton);
 		layout.addView(eraserButton);
-		layout.addView(pencilButton);
-		layout.addView(redPencilButton);
+		
+		addColorButton("Black", Color.BLACK);
+		addColorButton("Red", Color.RED);
+		addColorButton("Blue", Color.BLUE);
+	}
+	
+	private void addColorButton(String name, int color) {
+		colors.add(color);
+		Button b = new Button(this.getContext());
+		b.setText(name + " Pencil");
+		b.setOnClickListener(onColorButtonClickListener);
+		colorButtons.add(b);
+		layout.addView(b);
 	}
 
 	public void setOnChangeDrawToolListener(OnChangeDrawToolListener onChangeDrawToolListener) {
