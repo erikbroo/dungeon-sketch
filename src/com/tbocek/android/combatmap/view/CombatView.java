@@ -94,6 +94,12 @@ public class CombatView extends View implements OnTouchListener {
 	public boolean onTouch(View v, MotionEvent ev) {
 		this.gestureDetector.onTouchEvent(ev);
 		this.scaleDetector.onTouchEvent(ev);
+		
+		//If a finger was removed, optimize the lines by removing unused points.
+		//TODO(tim.bocek): Only do this if we are erasing.
+		if (ev.getAction() == MotionEvent.ACTION_POINTER_UP) {
+			this.optimizeActiveLines();
+		}
 		return true;
 	}
 	
@@ -185,7 +191,16 @@ public class CombatView extends View implements OnTouchListener {
 		this.mAnnotationLines.clear();
 		this.tokens.clear();
 		invalidate();
-		
+	}
+	
+	public void optimizeActiveLines() {
+		List<Line> newLines = new ArrayList<Line>();
+		for (int i = 0; i < mActiveLines.size(); ++i) {
+			List<Line> optimizedLines = mActiveLines.get(i).removeErasedPoints();
+			newLines.addAll(optimizedLines);
+		}
+		mActiveLines.clear();
+		mActiveLines.addAll(newLines);
 	}
 
 }

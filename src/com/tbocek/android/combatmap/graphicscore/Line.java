@@ -65,4 +65,24 @@ public class Line {
 			}
 		}
 	}
+	
+	public List<Line> removeErasedPoints() {
+		List<Line> optimizedLines = new ArrayList<Line>();
+		Line l = new Line(color);
+		optimizedLines.add(l);
+		for (int i = 0; i < points.size(); ++i) {
+			if (this.shouldDraw.get(i).booleanValue()) {
+				l.addPoint(points.get(i));
+			}
+			else if (l.points.size() > 0){
+				//Do not add a line with only one point in it, those are useless
+				if (l.points.size() == 1) {
+					optimizedLines.remove(l);
+				}
+				l = new Line(color);
+				optimizedLines.add(l);
+			}
+		}
+		return optimizedLines;
+	}
 }
