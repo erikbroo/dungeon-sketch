@@ -38,7 +38,7 @@ public class TokenButton extends Button {
 		
 		this.setWidth(80);
 		this.setHeight(70);
-		this.prototype.location =  new PointF(40, 35);
+		this.prototype.setLocation(new PointF(40, 35));
 	}
 	
 	public void onDraw(Canvas c) {

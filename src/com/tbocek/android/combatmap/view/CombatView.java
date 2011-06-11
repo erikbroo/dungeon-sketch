@@ -176,9 +176,9 @@ public class CombatView extends View {
 				BaseToken toAdd = (BaseToken) event.getLocalState();
 				PointF location = getGridSpaceTransformer().screenSpaceToWorldSpace(new PointF(event.getX(), event.getY()));
 				if (shouldSnapToGrid) {
-					location = mData.grid.getNearestSnapPoint(location, toAdd.size);
+					location = mData.grid.getNearestSnapPoint(location, toAdd.getSize());
 				}
-				toAdd.location = location;
+				toAdd.setLocation(location);
 				mData.tokens.addToken(toAdd);
 				invalidate();
 				return true;

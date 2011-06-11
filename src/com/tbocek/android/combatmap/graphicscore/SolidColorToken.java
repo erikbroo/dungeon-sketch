@@ -27,7 +27,7 @@ public class SolidColorToken extends BaseToken {
 		p.setStyle(Style.STROKE);
 		PointF center = transformer.worldSpaceToScreenSpace(ghostPoint);
 		
-		float radius = transformer.worldSpaceToScreenSpace(this.size * 0.9f / 2);
+		float radius = transformer.worldSpaceToScreenSpace(this.getSize() * 0.9f / 2);
 		
 		c.drawCircle(center.x, center.y, radius, p);		
 	}

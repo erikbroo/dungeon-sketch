@@ -49,7 +49,7 @@ public class LetterToken extends BaseToken {
 		p.setColor(Color.LTGRAY);
 		
 		PointF center = transformer.worldSpaceToScreenSpace(ghostPoint);
-		float radius = transformer.worldSpaceToScreenSpace(this.size * 0.9f / 2);
+		float radius = transformer.worldSpaceToScreenSpace(this.getSize() * 0.9f / 2);
 		draw(c, center.x, center.y, radius, p);
 	}
 

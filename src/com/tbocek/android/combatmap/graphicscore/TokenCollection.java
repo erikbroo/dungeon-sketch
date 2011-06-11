@@ -12,7 +12,7 @@ public class TokenCollection {
 
 	public BaseToken getTokenUnderPoint(PointF p, CoordinateTransformer transformer) {
 		for (int i=0;i<tokens.size();++i) {
-			if (Util.distance(p, transformer.worldSpaceToScreenSpace(tokens.get(i).location)) < transformer.worldSpaceToScreenSpace(tokens.get(i).size / 2 )) {
+			if (Util.distance(p, transformer.worldSpaceToScreenSpace(tokens.get(i).getLocation())) < transformer.worldSpaceToScreenSpace(tokens.get(i).getSize() / 2 )) {
 				return tokens.get(i);
 			}
 		}
@@ -37,7 +37,7 @@ public class TokenCollection {
 		// Continually increment the attempted distance until an open grid space is found.  This is guaranteed to succeed.
 		// Note that there are some inefficiencies here (the center point is tried four times, each corner of a square is tried
 		// twice, etc).  I don't care.  This runs fast enough for reasonable token collections on screen.
-		point = grid.getNearestSnapPoint(point, t.size);
+		point = grid.getNearestSnapPoint(point, t.getSize());
 		while (true) {
 			// Go clockwise around the size of a square centered on the originally attempted point and
 			// with sized of length attemptedDistance*2
@@ -66,8 +66,8 @@ public class TokenCollection {
 	}
 	
 	private boolean tryToPlaceHere(BaseToken t, PointF point) {
-		if (isLocationUnoccupied(point, t.size / 2)) {
-			t.location = point;
+		if (isLocationUnoccupied(point, t.getSize() / 2)) {
+			t.setLocation(point);
 			return true;
 		}
 		return false;
@@ -75,7 +75,7 @@ public class TokenCollection {
 	
 	private boolean isLocationUnoccupied(PointF point, double radius) {
 		for (BaseToken t : tokens) {
-			if (Util.distance(point, t.location) < radius + t.size / 2) {
+			if (Util.distance(point, t.getLocation()) < radius + t.getSize() / 2) {
 				return false;
 			}
 		}

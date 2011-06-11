@@ -32,17 +32,17 @@ public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
 	    		PointF nearestSnapPointWorldSpace = view.mData.grid.getNearestSnapPoint(
 	    				transformer.screenSpaceToWorldSpace(
 	    						currentPointScreenSpace),
-	    				currentToken.size);
+	    				currentToken.getSize());
 	    		// Snap to that point if it is less than a threshold
 	    		float distanceToSnapPoint = Util.distance(
 	    				transformer.worldSpaceToScreenSpace(nearestSnapPointWorldSpace),
 	    				currentPointScreenSpace);
 	    		
-	    		currentToken.location = distanceToSnapPoint < GRID_SNAP_THRESHOLD
+	    		currentToken.setLocation(distanceToSnapPoint < GRID_SNAP_THRESHOLD
 	    			? nearestSnapPointWorldSpace
-	    			: transformer.screenSpaceToWorldSpace(currentPointScreenSpace);
+	    			: transformer.screenSpaceToWorldSpace(currentPointScreenSpace));
     		} else {
-    			currentToken.location = transformer.screenSpaceToWorldSpace(currentPointScreenSpace);
+    			currentToken.setLocation(transformer.screenSpaceToWorldSpace(currentPointScreenSpace));
     		}
     	}
     	else {
@@ -55,7 +55,7 @@ public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
     	currentToken = view.getTokens().getTokenUnderPoint(new PointF(e.getX(), e.getY()), view.getGridSpaceTransformer());
     	
     	if (currentToken != null)
-    		originalLocation = currentToken.location;
+    		originalLocation = currentToken.getLocation();
     	
     	down = true;
     	return true;
@@ -63,7 +63,7 @@ public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
     
     public boolean onDoubleTap(MotionEvent e) {
     	if (currentToken != null)
-    		currentToken.bloodied = !currentToken.bloodied;
+    		currentToken.setBloodied(!currentToken.isBloodied());
     	view.invalidate();
     	return true;
     }
