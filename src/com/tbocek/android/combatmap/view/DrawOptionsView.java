@@ -22,9 +22,7 @@ public class DrawOptionsView extends HorizontalScrollView {
 		
 		@Override
 		public void onClick(View v) {
-			if (onChangeDrawToolListener != null) {
-				onChangeDrawToolListener.onChooseColoredPen(color);
-			}
+			onChangeDrawToolListener.onChooseColoredPen(color);
 		}
 	}
 	
@@ -36,9 +34,7 @@ public class DrawOptionsView extends HorizontalScrollView {
 		
 		@Override
 		public void onClick(View v) {
-			if (onChangeDrawToolListener != null) {
-				onChangeDrawToolListener.onChooseColoredPen(width);
-			}
+			onChangeDrawToolListener.onChooseColoredPen(width);		
 		}
 	}
 	
@@ -49,7 +45,22 @@ public class DrawOptionsView extends HorizontalScrollView {
 		void onChoosePanTool();
 		void onChooseStrokeWidth(int width);
 	}
-	private OnChangeDrawToolListener onChangeDrawToolListener = null;
+	
+	public class NullChangeDrawToolListener implements OnChangeDrawToolListener {
+		@Override
+		public void onChooseEraser() {}
+
+		@Override
+		public void onChooseColoredPen(int color) {}
+
+		@Override
+		public void onChoosePanTool() {}
+
+		@Override
+		public void onChooseStrokeWidth(int width) {}
+	}
+	
+	private OnChangeDrawToolListener onChangeDrawToolListener = new NullChangeDrawToolListener();
 	
 	public DrawOptionsView(Context context) {
 		super(context);
@@ -66,18 +77,14 @@ public class DrawOptionsView extends HorizontalScrollView {
 		panButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View arg0) {
-				if (onChangeDrawToolListener != null) {
-					onChangeDrawToolListener.onChoosePanTool();
-				}
+				onChangeDrawToolListener.onChoosePanTool();
 			}
 		});
 		
 		eraserButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (onChangeDrawToolListener != null) {
-					onChangeDrawToolListener.onChooseEraser();
-				}
+				onChangeDrawToolListener.onChooseEraser();
 			}
 		});
 		
