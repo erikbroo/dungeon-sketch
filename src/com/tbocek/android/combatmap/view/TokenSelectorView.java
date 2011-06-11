@@ -20,16 +20,26 @@ public class TokenSelectorView extends HorizontalScrollView {
 		tokenLayout = new LinearLayout(context);
 		addView(tokenLayout);
 		
-		addTokenPrototype( new SolidColorToken(Color.BLUE));
-		addTokenPrototype( new SolidColorToken(Color.GREEN));
-		addTokenPrototype( new SolidColorToken(Color.BLACK));
-		addTokenPrototype( new SolidColorToken(Color.RED));
-		addTokenPrototype( new SolidColorToken(Color.CYAN));
-		addTokenPrototype( new SolidColorToken(Color.GRAY));
-		addTokenPrototype( new SolidColorToken(Color.DKGRAY));
-		addTokenPrototype( new SolidColorToken(Color.YELLOW));
-		addTokenPrototype( new SolidColorToken(Color.WHITE));
-		addTokenPrototype( new SolidColorToken(Color.MAGENTA));
+		for (int h = 0; h < 360; h += 30) {
+			float [] hsv = {h, 1, 1};
+			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
+		}
+		
+		for (int h = 0; h < 360; h += 30) {
+			float [] hsv = {h, .5f, 1};
+			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
+		}
+		
+		for (int h = 0; h < 360; h += 30) {
+			float [] hsv = {h, 1, .5f};
+			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
+		}
+		
+		addTokenPrototype( new SolidColorToken(Color.WHITE) );
+		addTokenPrototype(  new SolidColorToken(Color.LTGRAY) );
+		addTokenPrototype( new SolidColorToken(Color.GRAY) );
+		addTokenPrototype( new SolidColorToken(Color.DKGRAY) );
+		addTokenPrototype( new SolidColorToken(Color.BLACK) );
 		
 		addTokenPrototype(new LetterToken("A"));
 		addTokenPrototype(new LetterToken("B"));

@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.graphicscore.Grid;
 import com.tbocek.android.combatmap.graphicscore.GridColorScheme;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
@@ -32,7 +33,7 @@ public class CombatMap extends Activity {
 	private TokenSelectorView mTokenSelector;
 	private FrameLayout mBottomControlFrame;
 	private DrawOptionsView mDrawOptionsView;
-	private MapData mData = new MapData();
+	private static MapData mData = new MapData();
 	
 	private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener = new TokenSelectorView.OnTokenSelectedListener() {
 		@Override
@@ -93,16 +94,35 @@ public class CombatMap extends Activity {
     	super.onResume();
     	//Reload preferences
     	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-    	String theme = sharedPreferences.getString("theme", "graphpaper");
-    	mCombatView.mData.grid.colorScheme = GridColorScheme.fromNamedScheme(theme);
+    	String colorScheme = sharedPreferences.getString("theme", "graphpaper");
+    	String gridType = sharedPreferences.getString("gridtype", "rect");
+    	mData.grid = Grid.createGrid(gridType, colorScheme, mData.grid.gridSpaceToWorldSpaceTransformer());
     	mCombatView.invalidate();
     }
+    
+    MenuItem backgroundLayerItem;
+    MenuItem annotationLayerItem;
+    MenuItem combatItem;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.combat_map_menu, menu);
+    	backgroundLayerItem = menu.findItem(R.id.edit_background);
+    	annotationLayerItem = menu.findItem(R.id.edit_annotations);
+    	combatItem = menu.findItem(R.id.combat_on);
+    	disableCurrentMode(combatItem); //Starts out in combat mode.
     	return true;
+    }
+    
+    /**
+     * If the selected menu item is a drawing mode, disable it.
+     * @param modeItem
+     */
+    private void disableCurrentMode(MenuItem modeItem) {
+    	backgroundLayerItem.setEnabled(modeItem != backgroundLayerItem);
+    	annotationLayerItem.setEnabled(modeItem != annotationLayerItem);
+    	combatItem.setEnabled(modeItem != combatItem);
     }
     
     @Override
@@ -114,17 +134,20 @@ public class CombatMap extends Activity {
         	mCombatView.useBackgroundLayer();
         	mBottomControlFrame.removeAllViews();
         	mBottomControlFrame.addView(this.mDrawOptionsView);
+        	disableCurrentMode(item);
         	return true;
         case R.id.edit_annotations:
         	mCombatView.setDrawMode();
         	mCombatView.useAnnotationLayer();
         	mBottomControlFrame.removeAllViews();
         	mBottomControlFrame.addView(this.mDrawOptionsView);
+        	disableCurrentMode(item);
         	return true;
         case R.id.combat_on:
         	mCombatView.setTokenManipulationMode();
         	mBottomControlFrame.removeAllViews();
         	mBottomControlFrame.addView(mTokenSelector);
+        	disableCurrentMode(item);
         	return true;
         case R.id.clear_all:
         	mCombatView.clearAll();
@@ -139,6 +162,7 @@ public class CombatMap extends Activity {
         case R.id.resize_grid:
         	mCombatView.setResizeGridMode();
         	mBottomControlFrame.removeAllViews();
+        	disableCurrentMode(item);
         }
 
         return false;

@@ -12,4 +12,12 @@
 <item>grass</item>
 <item>night</item>
 </string-array>
+<string-array name="gridNames">
+<item>Rectangular Grid</item>
+<item>Hex Grid</item>
+</string-array>
+<string-array name="gridValues">
+<item>rect</item>
+<item>hex</item>
+</string-array>
 </resources>

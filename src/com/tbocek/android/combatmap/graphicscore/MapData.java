@@ -12,5 +12,5 @@ public class MapData {
 	public LineCollection mBackgroundLines = new LineCollection();
 	public LineCollection mAnnotationLines = new LineCollection();
 	public TokenCollection tokens = new TokenCollection();
-	public Grid grid = new Grid();
+	public Grid grid = new RectangularGrid();
 }
