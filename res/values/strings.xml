@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, CombatMap!</string>
     <string name="app_name">CombatMap</string>
+    <string name="preferences">com.tbocek.combatmap_preferences</string>
 </resources>

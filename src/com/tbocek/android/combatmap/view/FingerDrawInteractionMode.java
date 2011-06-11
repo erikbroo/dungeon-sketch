@@ -5,9 +5,9 @@ import com.tbocek.android.combatmap.graphicscore.Line;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
-public class FingerDrawGestureListener extends CombatViewGestureListener {
+public class FingerDrawInteractionMode extends CombatViewInteractionMode {
 
-	public FingerDrawGestureListener(CombatView view) {
+	public FingerDrawInteractionMode(CombatView view) {
 		super(view);
 	}
 

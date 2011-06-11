@@ -3,16 +3,54 @@ package com.tbocek.android.combatmap.graphicscore;
 import android.graphics.PointF;
 
 public class CoordinateTransformer {
-	public float zoomLevel = 1.0f;
-	public float originX = 0.0f;
-	public float originY = 0.0f;
+	// Conversion of lengths in world space to lengths in screen space
+	private float zoomLevel = 1.0f;
+	private float originX = 0.0f;
+	private float originY = 0.0f;
 
-	public PointF worldSpaceToScreenSpace(PointF wscoord) {
-		return new PointF(zoomLevel * wscoord.x + originX, zoomLevel * wscoord.y + originY);
+	
+	public CoordinateTransformer(float originX, float originY, float zoomLevel) {
+		this.originX = originX;
+		this.originY = originY;
+		this.zoomLevel = zoomLevel;
 	}
 	
-	public PointF screenSpaceToWorldSpace(PointF wscoord) {
-		return new PointF((wscoord.x - originX) / zoomLevel, (wscoord.y - originY) / zoomLevel);
+	/**
+	 * Changes the scale of the transformation
+	 * @param scaleFactor Amount to change the zoom level by
+	 * @param invariant Screen space point that should map to the same world space
+	 * 		point before and after the transformation.
+	 */
+	public void zoom(float scaleFactor, PointF invariant) {
+		float lastZoomLevel = zoomLevel;
+		float lastOriginX = originX;
+		float lastOriginY = originY;
+		
+		zoomLevel *= scaleFactor;
+		
+		// Change the origin so that we zoom around the focus point.
+		// Derived by assuming that the focus point should map to the same point in world space before and after the zoom.
+		originX = invariant.x - (invariant.x - lastOriginX) * zoomLevel / lastZoomLevel;
+		originY = invariant.y - (invariant.y - lastOriginY) * zoomLevel / lastZoomLevel;
+		
+	}
+	
+	public PointF worldSpaceToScreenSpace(PointF wscoord) {
+		return worldSpaceToScreenSpace(wscoord.x, wscoord.y);
+	}
+	
+	public PointF screenSpaceToWorldSpace(PointF sscoord) {
+		return screenSpaceToWorldSpace(sscoord.x, sscoord.y);
+	}
+	
+	
+	
+	public PointF worldSpaceToScreenSpace(float x, float y) {
+		return new PointF(zoomLevel * x + originX, zoomLevel * y + originY);
+	}
+	
+	public PointF screenSpaceToWorldSpace(float x, float y) {
+		return new PointF((x - originX) / zoomLevel, (y - originY) / zoomLevel);
 	}
 	
 	public float worldSpaceToScreenSpace(float d) {
@@ -21,5 +59,21 @@ public class CoordinateTransformer {
 	
 	public float screenSpaceToWorldSpace(float d) {
 		return d / zoomLevel;
+	}
+	
+	public CoordinateTransformer compose(CoordinateTransformer second) {
+		return new CoordinateTransformer(
+				second.worldSpaceToScreenSpace(originX) + second.originX,
+				second.worldSpaceToScreenSpace(originY) + second.originY,
+				zoomLevel * second.zoomLevel);
+	}
+
+	public PointF getOrigin() {
+		return new PointF(originX, originY);
+	}
+	
+	public void moveOrigin(float dx, float dy) {
+		originX += dx;
+		originY += dy;
 	}
 }

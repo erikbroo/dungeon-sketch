@@ -3,11 +3,8 @@ package com.tbocek.android.combatmap.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tbocek.android.combatmap.R;
-
 import android.content.Context;
 import android.graphics.Color;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;

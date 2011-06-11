@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  	<item
+		android:id="@+id/token_context_delete_token"
+		android:title="Delete Token"/>
+  	<item
+		android:id="@+id/token_context_resize_token"
+		android:title="Resize Token"/>
+	<item
+		android:id="@+id/token_context_size_tenth"
+		android:title="1/10"/>
+	<item
+		android:id="@+id/token_context_size_quarter"
+		android:title="1/4"/>
+	<item
+		android:id="@+id/token_context_size_half"
+		android:title="1/2"/>
+	<item
+		android:id="@+id/token_context_size_one"
+		android:title="1"/>
+	<item
+		android:id="@+id/token_context_size_two"
+		android:title="2"/>
+	<item
+		android:id="@+id/token_context_size_four"
+		android:title="4"/>
+</menu>

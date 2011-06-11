@@ -15,4 +15,15 @@
 	<item
 		android:id="@+id/clear_all"
 		android:title="Clear All"/>
+	<item
+		android:id="@+id/snap_to_grid"
+		android:title="Snap to Grid"
+		android:checkable="true"
+		android:checked="true"/>
+	<item
+		android:id="@+id/resize_grid"
+		android:title="Resize Grid"/>
+	<item
+		android:id="@+id/settings"
+		android:title="Settings"/>
 </menu>

@@ -1,11 +1,14 @@
 package com.tbocek.android.combatmap.view;
 
-import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
 import com.tbocek.android.combatmap.graphicscore.Token;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Button;
 
 /**
@@ -16,11 +19,21 @@ import android.widget.Button;
  */
 public class TokenButton extends Button {
 	Token prototype;
-	private static CoordinateTransformer DUMMY_TRANSFORMER = new CoordinateTransformer();
+	private GestureDetector gestureDetector;
+	
+	private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
+		public void onLongPress(MotionEvent e) {
+			//TODO(tbocek): StartDrag
+			startDrag(null, new View.DragShadowBuilder(TokenButton.this), prototype.clone(), 0);
+		}
+	};
 	
 	public TokenButton(Context context, Token prototype) {
 		super(context);
 		this.prototype = prototype;
+		
+		//Set up listener to see if a drag has started.
+		gestureDetector = new GestureDetector(this.getContext(), gestureListener);
 		
 		this.setWidth(80);
 		this.setHeight(70);
@@ -28,11 +41,17 @@ public class TokenButton extends Button {
 	}
 	
 	public void onDraw(Canvas c) {
-		prototype.draw(c, DUMMY_TRANSFORMER);
+		prototype.drawPreview(c, (float)this.getWidth()/2, (float)this.getHeight()/2, Math.min(this.getWidth(), this.getHeight()) * .8f / 2);
 	}
 	
 	public Token getClone() {
 		return prototype.clone();
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		this.gestureDetector.onTouchEvent(ev);
+		return super.onTouchEvent(ev);
 	}
 
 
