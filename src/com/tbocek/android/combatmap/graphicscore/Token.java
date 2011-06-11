@@ -19,12 +19,19 @@ public class Token {
 	
 	public void draw(Canvas c, CoordinateTransformer transformer) {
 		Paint p = new Paint();
-		p.setColor(bloodied ? Color.RED : color);
+		p.setColor(color);
 		PointF center = transformer.worldSpaceToScreenSpace(location);
 		
 		float radius = transformer.worldSpaceToScreenSpace(this.size * 0.9f / 2);
-		
 		c.drawCircle(center.x, center.y, radius, p);
+		// Draw bloodied indicator as a thick red border.
+		if (bloodied) {
+			// If token is already colored red, use a dark red border so it's visible
+			p.setColor(color != Color.RED ? Color.RED : Color.rgb(127, 0, 0)); 
+			p.setStyle(Style.STROKE);
+			p.setStrokeWidth(8);
+		}
+		c.drawCircle(center.x, center.y, radius-4, p);
 	}
 	
 	/**
@@ -36,7 +43,7 @@ public class Token {
 	public void drawGhost(Canvas c, CoordinateTransformer transformer, PointF ghostPoint) {
 		Paint p = new Paint();
 		p.setStrokeWidth(2);
-		p.setColor(bloodied ? Color.RED : color);
+		p.setColor(color);
 		p.setStyle(Style.STROKE);
 		PointF center = transformer.worldSpaceToScreenSpace(ghostPoint);
 		
