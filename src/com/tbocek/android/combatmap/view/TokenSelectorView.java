@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap.view;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.graphicscore.LetterToken;
 import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 
 import android.content.Context;
@@ -30,36 +31,32 @@ public class TokenSelectorView extends HorizontalScrollView {
 		addTokenPrototype( new SolidColorToken(Color.WHITE));
 		addTokenPrototype( new SolidColorToken(Color.MAGENTA));
 		
-		addTokenPrototype( new SolidColorToken(Color.BLUE));
-		addTokenPrototype( new SolidColorToken(Color.GREEN));
-		addTokenPrototype( new SolidColorToken(Color.BLACK));
-		addTokenPrototype( new SolidColorToken(Color.RED));
-		addTokenPrototype( new SolidColorToken(Color.CYAN));
-		addTokenPrototype( new SolidColorToken(Color.GRAY));
-		addTokenPrototype( new SolidColorToken(Color.DKGRAY));
-		addTokenPrototype( new SolidColorToken(Color.YELLOW));
-		addTokenPrototype( new SolidColorToken(Color.WHITE));
-		addTokenPrototype( new SolidColorToken(Color.MAGENTA));
-		addTokenPrototype( new SolidColorToken(Color.BLUE));
-		addTokenPrototype( new SolidColorToken(Color.GREEN));
-		addTokenPrototype( new SolidColorToken(Color.BLACK));
-		addTokenPrototype( new SolidColorToken(Color.RED));
-		addTokenPrototype( new SolidColorToken(Color.CYAN));
-		addTokenPrototype( new SolidColorToken(Color.GRAY));
-		addTokenPrototype( new SolidColorToken(Color.DKGRAY));
-		addTokenPrototype( new SolidColorToken(Color.YELLOW));
-		addTokenPrototype( new SolidColorToken(Color.WHITE));
-		addTokenPrototype( new SolidColorToken(Color.MAGENTA));
-		addTokenPrototype( new SolidColorToken(Color.BLUE));
-		addTokenPrototype( new SolidColorToken(Color.GREEN));
-		addTokenPrototype( new SolidColorToken(Color.BLACK));
-		addTokenPrototype( new SolidColorToken(Color.RED));
-		addTokenPrototype( new SolidColorToken(Color.CYAN));
-		addTokenPrototype( new SolidColorToken(Color.GRAY));
-		addTokenPrototype( new SolidColorToken(Color.DKGRAY));
-		addTokenPrototype( new SolidColorToken(Color.YELLOW));
-		addTokenPrototype( new SolidColorToken(Color.WHITE));
-		addTokenPrototype( new SolidColorToken(Color.MAGENTA));
+		addTokenPrototype(new LetterToken("A"));
+		addTokenPrototype(new LetterToken("B"));
+		addTokenPrototype(new LetterToken("C"));
+		addTokenPrototype(new LetterToken("D"));
+		addTokenPrototype(new LetterToken("E"));
+		addTokenPrototype(new LetterToken("F"));
+		addTokenPrototype(new LetterToken("G"));
+		addTokenPrototype(new LetterToken("H"));
+		addTokenPrototype(new LetterToken("I"));
+		addTokenPrototype(new LetterToken("J"));
+		addTokenPrototype(new LetterToken("K"));
+		addTokenPrototype(new LetterToken("L"));
+		addTokenPrototype(new LetterToken("M"));
+		addTokenPrototype(new LetterToken("N"));
+		addTokenPrototype(new LetterToken("O"));
+		addTokenPrototype(new LetterToken("P"));
+		addTokenPrototype(new LetterToken("Q"));
+		addTokenPrototype(new LetterToken("R"));
+		addTokenPrototype(new LetterToken("S"));
+		addTokenPrototype(new LetterToken("T"));
+		addTokenPrototype(new LetterToken("U"));
+		addTokenPrototype(new LetterToken("V"));
+		addTokenPrototype(new LetterToken("W"));
+		addTokenPrototype(new LetterToken("X"));
+		addTokenPrototype(new LetterToken("Y"));
+		addTokenPrototype(new LetterToken("Z"));
 	}
 	
 	public void addTokenPrototype(BaseToken prototype) {
