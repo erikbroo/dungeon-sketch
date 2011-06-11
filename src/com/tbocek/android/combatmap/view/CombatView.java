@@ -32,6 +32,7 @@ public class CombatView extends View {
 
 	
 	public int newLineColor = Color.BLACK;
+	public int newLineStrokeWidth = 2;
 	
 	public MapData mData;
 
@@ -134,7 +135,7 @@ public class CombatView extends View {
 	}
 	
 	public Line createLine() {
-		return mActiveLines.createLine(this.newLineColor);
+		return mActiveLines.createLine(this.newLineColor, this.newLineStrokeWidth);
 	}
 
 	public void placeToken(BaseToken t) {

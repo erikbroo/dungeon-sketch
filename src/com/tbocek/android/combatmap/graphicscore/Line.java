@@ -15,9 +15,11 @@ import android.graphics.PointF;
  *
  */
 public class Line {
-	public Line(int color) {
+	public Line(int color, int strokeWidth) {
 		this.color = color;
+		this.width = strokeWidth;
 	}
+	
 	private static float MIN_POINT_DISTANCE = 0;
 	private int color = Color.BLACK;
 	private int width = 2;
@@ -68,7 +70,7 @@ public class Line {
 	
 	public List<Line> removeErasedPoints() {
 		List<Line> optimizedLines = new ArrayList<Line>();
-		Line l = new Line(color);
+		Line l = new Line(color, width);
 		optimizedLines.add(l);
 		for (int i = 0; i < points.size(); ++i) {
 			if (this.shouldDraw.get(i).booleanValue()) {
@@ -79,7 +81,7 @@ public class Line {
 				if (l.points.size() == 1) {
 					optimizedLines.remove(l);
 				}
-				l = new Line(color);
+				l = new Line(color, width);
 				optimizedLines.add(l);
 			}
 		}

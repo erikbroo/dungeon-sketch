@@ -16,8 +16,8 @@ public class LineCollection {
 		}
 	}
 
-	public Line createLine(int newLineColor) {
-		Line l = new Line(newLineColor);
+	public Line createLine(int newLineColor, int newLineStrokeWidth) {
+		Line l = new Line(newLineColor, newLineStrokeWidth);
 		lines.add(l);
 		return l;
 	}

@@ -61,6 +61,12 @@ public class CombatMap extends Activity {
 			// TODO Auto-generated method stub
 			mCombatView.setZoomPanMode();
 		}
+
+		@Override
+		public void onChooseStrokeWidth(int width) {
+			mCombatView.newLineStrokeWidth = width;
+			
+		}
 	};
 	
 	

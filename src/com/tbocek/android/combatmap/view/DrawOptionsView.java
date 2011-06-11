@@ -14,29 +14,40 @@ public class DrawOptionsView extends HorizontalScrollView {
 
 	LinearLayout layout;
 	
-	List<Button> colorButtons = new ArrayList<Button>();
-	List<Integer> colors = new ArrayList<Integer>();
-	
-	private View.OnClickListener onColorButtonClickListener = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			for (int i = 0; i < colorButtons.size(); ++i) {
-				if (colorButtons.get(i) == v) {
-					if (onChangeDrawToolListener != null) {
-						onChangeDrawToolListener.onChooseColoredPen(colors.get(i));
-					}					
-				}
-			}
-			
+	private class ColorListener implements View.OnClickListener {
+		private int color;
+		public ColorListener(int color) {
+			this.color = color;
 		}
 		
-	};
+		@Override
+		public void onClick(View v) {
+			if (onChangeDrawToolListener != null) {
+				onChangeDrawToolListener.onChooseColoredPen(color);
+			}
+		}
+	}
+	
+	private class StrokeWidthListener implements View.OnClickListener {
+		private int width;
+		public StrokeWidthListener(int width) {
+			this.width = width;
+		}
+		
+		@Override
+		public void onClick(View v) {
+			if (onChangeDrawToolListener != null) {
+				onChangeDrawToolListener.onChooseColoredPen(width);
+			}
+		}
+	}
+	
 	
 	public interface OnChangeDrawToolListener {
 		void onChooseEraser();
 		void onChooseColoredPen(int color);
 		void onChoosePanTool();
+		void onChooseStrokeWidth(int width);
 	}
 	private OnChangeDrawToolListener onChangeDrawToolListener = null;
 	
@@ -58,7 +69,6 @@ public class DrawOptionsView extends HorizontalScrollView {
 				if (onChangeDrawToolListener != null) {
 					onChangeDrawToolListener.onChoosePanTool();
 				}
-				
 			}
 		});
 		
@@ -68,7 +78,6 @@ public class DrawOptionsView extends HorizontalScrollView {
 				if (onChangeDrawToolListener != null) {
 					onChangeDrawToolListener.onChooseEraser();
 				}
-				
 			}
 		});
 		
@@ -83,14 +92,22 @@ public class DrawOptionsView extends HorizontalScrollView {
 		addColorButton("Dark Red", Color.rgb(128, 0, 0));
 		addColorButton("Dark Blue", Color.rgb(0, 0, 128));
 		addColorButton("Dark Green", Color.rgb(0, 128, 0));
+		addStrokeWidthButton(2);
+		addStrokeWidthButton(4);
+		addStrokeWidthButton(8);
 	}
 	
 	private void addColorButton(String name, int color) {
-		colors.add(color);
 		Button b = new Button(this.getContext());
 		b.setText(name + " Pencil");
-		b.setOnClickListener(onColorButtonClickListener);
-		colorButtons.add(b);
+		b.setOnClickListener(new ColorListener(color));
+		layout.addView(b);
+	}
+	
+	private void addStrokeWidthButton(int width) {
+		Button b = new Button(this.getContext());
+		b.setText("Width " + Integer.toString(width));
+		b.setOnClickListener(new StrokeWidthListener(width));
 		layout.addView(b);
 	}
 
