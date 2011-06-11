@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap.view;
 
-import com.tbocek.android.combatmap.graphicscore.Token;
+import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -18,7 +19,7 @@ import android.widget.Button;
  *
  */
 public class TokenButton extends Button {
-	Token prototype;
+	BaseToken prototype;
 	private GestureDetector gestureDetector;
 	
 	private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
@@ -28,7 +29,7 @@ public class TokenButton extends Button {
 		}
 	};
 	
-	public TokenButton(Context context, Token prototype) {
+	public TokenButton(Context context, BaseToken prototype) {
 		super(context);
 		this.prototype = prototype;
 		
@@ -41,10 +42,10 @@ public class TokenButton extends Button {
 	}
 	
 	public void onDraw(Canvas c) {
-		prototype.drawPreview(c, (float)this.getWidth()/2, (float)this.getHeight()/2, Math.min(this.getWidth(), this.getHeight()) * .8f / 2);
+		prototype.draw(c, (float)this.getWidth()/2, (float)this.getHeight()/2, Math.min(this.getWidth(), this.getHeight()) * .8f / 2);
 	}
 	
-	public Token getClone() {
+	public BaseToken getClone() {
 		return prototype.clone();
 	}
 	

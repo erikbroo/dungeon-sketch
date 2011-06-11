@@ -14,11 +14,12 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
 import com.tbocek.android.combatmap.graphicscore.Line;
 import com.tbocek.android.combatmap.graphicscore.LineCollection;
 import com.tbocek.android.combatmap.graphicscore.MapData;
-import com.tbocek.android.combatmap.graphicscore.Token;
+import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
 
 public class CombatView extends View {
@@ -40,7 +41,7 @@ public class CombatView extends View {
 	boolean shouldDrawAnnotations = false;
 	
 	public interface CombatViewEventListener {
-		public void onOpenTokenMenu(Token t);
+		public void onOpenTokenMenu(BaseToken t);
 	};
 	
 	CombatViewEventListener mCombatViewEventListener;
@@ -136,7 +137,7 @@ public class CombatView extends View {
 		return mActiveLines.createLine(this.newLineColor);
 	}
 
-	public void placeToken(Token t) {
+	public void placeToken(BaseToken t) {
 		PointF attemptedLocationScreenSpace = new PointF(this.getWidth() / 2, this.getHeight() / 2);
 		PointF attemptedLocationGridSpace = this.mData.grid.gridSpaceToScreenSpaceTransformer(this.mData.transformer).screenSpaceToWorldSpace(attemptedLocationScreenSpace);
 		mData.tokens.placeTokenNearby(t, attemptedLocationGridSpace, mData.grid);
@@ -172,7 +173,7 @@ public class CombatView extends View {
 		public boolean onDrag(View view, DragEvent event) {
 			Log.d("DRAG", Integer.toString(event.getAction()));
 			if (event.getAction() == DragEvent.ACTION_DROP) {
-				Token toAdd = (Token) event.getLocalState();
+				BaseToken toAdd = (BaseToken) event.getLocalState();
 				PointF location = getGridSpaceTransformer().screenSpaceToWorldSpace(new PointF(event.getX(), event.getY()));
 				if (shouldSnapToGrid) {
 					location = mData.grid.getNearestSnapPoint(location, toAdd.size);

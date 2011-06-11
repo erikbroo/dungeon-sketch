@@ -8,8 +8,8 @@ import android.view.MotionEvent;
 import android.view.SubMenu;
 
 import com.tbocek.android.combatmap.R;
+import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
-import com.tbocek.android.combatmap.graphicscore.Token;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
 public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
@@ -19,7 +19,7 @@ public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
 		// TODO Auto-generated constructor stub
 	}
 
-	Token currentToken = null;
+	BaseToken currentToken = null;
 	private PointF originalLocation;
 	boolean down = false;
     @Override

@@ -8,9 +8,9 @@ import android.graphics.PointF;
 
 
 public class TokenCollection {
-	private List<Token> tokens = new ArrayList<Token>();
+	private List<BaseToken> tokens = new ArrayList<BaseToken>();
 
-	public Token getTokenUnderPoint(PointF p, CoordinateTransformer transformer) {
+	public BaseToken getTokenUnderPoint(PointF p, CoordinateTransformer transformer) {
 		for (int i=0;i<tokens.size();++i) {
 			if (Util.distance(p, transformer.worldSpaceToScreenSpace(tokens.get(i).location)) < transformer.worldSpaceToScreenSpace(tokens.get(i).size / 2 )) {
 				return tokens.get(i);
@@ -19,7 +19,7 @@ public class TokenCollection {
 		return null;
 	}
 
-	public void addToken(Token t) {
+	public void addToken(BaseToken t) {
 		tokens.add(t);
 	}
 
@@ -27,12 +27,12 @@ public class TokenCollection {
 		tokens.clear();
 	}
 
-	public void remove(Token t) {
+	public void remove(BaseToken t) {
 		tokens.remove(t);
 	}
 	
 	//NOTE: Everything in grid space.
-	public void placeTokenNearby(Token t, PointF point, Grid grid) {
+	public void placeTokenNearby(BaseToken t, PointF point, Grid grid) {
 		int attemptedDistance = 0;
 		// Continually increment the attempted distance until an open grid space is found.  This is guaranteed to succeed.
 		// Note that there are some inefficiencies here (the center point is tried four times, each corner of a square is tried
@@ -65,7 +65,7 @@ public class TokenCollection {
 		}
 	}
 	
-	private boolean tryToPlaceHere(Token t, PointF point) {
+	private boolean tryToPlaceHere(BaseToken t, PointF point) {
 		if (isLocationUnoccupied(point, t.size / 2)) {
 			t.location = point;
 			return true;
@@ -74,7 +74,7 @@ public class TokenCollection {
 	}
 	
 	private boolean isLocationUnoccupied(PointF point, double radius) {
-		for (Token t : tokens) {
+		for (BaseToken t : tokens) {
 			if (Util.distance(point, t.location) < radius + t.size / 2) {
 				return false;
 			}
@@ -84,7 +84,7 @@ public class TokenCollection {
 
 	public void drawAllTokens(Canvas canvas, CoordinateTransformer transformer) {
 		for (int i = 0; i < tokens.size(); ++i){
-			tokens.get(i).draw(canvas, transformer);
+			tokens.get(i).drawInPosition(canvas, transformer);
 		}
 		
 	}

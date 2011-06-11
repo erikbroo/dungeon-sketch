@@ -16,9 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.GridColorScheme;
 import com.tbocek.android.combatmap.graphicscore.MapData;
-import com.tbocek.android.combatmap.graphicscore.Token;
+import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
@@ -35,7 +36,7 @@ public class CombatMap extends Activity {
 	
 	private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener = new TokenSelectorView.OnTokenSelectedListener() {
 		@Override
-		public void onTokenSelected(Token t) {
+		public void onTokenSelected(BaseToken t) {
 			mCombatView.placeToken(t);
 		}
 	};
