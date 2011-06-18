@@ -1,8 +1,5 @@
 package com.tbocek.android.combatmap.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -34,7 +31,7 @@ public class DrawOptionsView extends HorizontalScrollView {
 		
 		@Override
 		public void onClick(View v) {
-			onChangeDrawToolListener.onChooseColoredPen(width);		
+			onChangeDrawToolListener.onChooseStrokeWidth(width);		
 		}
 	}
 	

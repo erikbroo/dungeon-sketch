@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
@@ -19,7 +18,7 @@ import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
 import com.tbocek.android.combatmap.graphicscore.Line;
 import com.tbocek.android.combatmap.graphicscore.LineCollection;
 import com.tbocek.android.combatmap.graphicscore.MapData;
-import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
+import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
 
 public class CombatView extends View {
@@ -34,7 +33,7 @@ public class CombatView extends View {
 	public int newLineColor = Color.BLACK;
 	public int newLineStrokeWidth = 2;
 	
-	public MapData mData;
+	private MapData mData;
 
 	private LineCollection mActiveLines;
 	
@@ -47,10 +46,8 @@ public class CombatView extends View {
 	
 	CombatViewEventListener mCombatViewEventListener;
 	
-	public CombatView(Context context, MapData data) {
+	public CombatView(Context context) {
 		super(context);
-		mData = data;
-		mActiveLines = data.mBackgroundLines;
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 		
@@ -81,12 +78,12 @@ public class CombatView extends View {
 	}
 	
 	public void useBackgroundLayer() {
-		mActiveLines = mData.mBackgroundLines;
+		mActiveLines = getData().mBackgroundLines;
 		shouldDrawAnnotations = false;
 	}
 	
 	public void useAnnotationLayer() {
-		mActiveLines = mData.mAnnotationLines;
+		mActiveLines = getData().mAnnotationLines;
 		shouldDrawAnnotations = true;
 	}
 	
@@ -119,19 +116,19 @@ public class CombatView extends View {
 	@Override
 	public void onDraw(Canvas canvas) {
 		// White background
-		mData.grid.draw(canvas, mData.transformer);
-		mData.mBackgroundLines.drawAllLines(canvas, mData.transformer);
-		mData.tokens.drawAllTokens(canvas, getGridSpaceTransformer());
+		getData().grid.draw(canvas, getData().transformer);
+		getData().mBackgroundLines.drawAllLines(canvas, getData().transformer);
+		getData().tokens.drawAllTokens(canvas, getGridSpaceTransformer());
 		
 		if (this.shouldDrawAnnotations) {
-			mData.mAnnotationLines.drawAllLines(canvas, mData.transformer);
+			getData().mAnnotationLines.drawAllLines(canvas, getData().transformer);
 		}
 		
 		this.mGestureListener.draw(canvas);
 	}
 
 	public CoordinateTransformer getTransformer() {
-		return this.mData.transformer;
+		return this.getData().transformer;
 	}
 	
 	public Line createLine() {
@@ -140,16 +137,16 @@ public class CombatView extends View {
 
 	public void placeToken(BaseToken t) {
 		PointF attemptedLocationScreenSpace = new PointF(this.getWidth() / 2, this.getHeight() / 2);
-		PointF attemptedLocationGridSpace = this.mData.grid.gridSpaceToScreenSpaceTransformer(this.mData.transformer).screenSpaceToWorldSpace(attemptedLocationScreenSpace);
-		mData.tokens.placeTokenNearby(t, attemptedLocationGridSpace, mData.grid);
-		this.mData.tokens.addToken(t);
+		PointF attemptedLocationGridSpace = this.getData().grid.gridSpaceToScreenSpaceTransformer(this.getData().transformer).screenSpaceToWorldSpace(attemptedLocationScreenSpace);
+		getData().tokens.placeTokenNearby(t, attemptedLocationGridSpace, getData().grid);
+		this.getData().tokens.addToken(t);
 		invalidate();
 	}
 
 	public void clearAll() {
-		this.mData.mBackgroundLines.clear();
-		this.mData.mAnnotationLines.clear();
-		this.mData.tokens.clear();
+		this.getData().mBackgroundLines.clear();
+		this.getData().mAnnotationLines.clear();
+		this.getData().tokens.clear();
 		invalidate();
 	}
 	
@@ -177,10 +174,10 @@ public class CombatView extends View {
 				BaseToken toAdd = (BaseToken) event.getLocalState();
 				PointF location = getGridSpaceTransformer().screenSpaceToWorldSpace(new PointF(event.getX(), event.getY()));
 				if (shouldSnapToGrid) {
-					location = mData.grid.getNearestSnapPoint(location, toAdd.getSize());
+					location = getData().grid.getNearestSnapPoint(location, toAdd.getSize());
 				}
 				toAdd.setLocation(location);
-				mData.tokens.addToken(toAdd);
+				getData().tokens.addToken(toAdd);
 				invalidate();
 				return true;
 			}
@@ -196,11 +193,20 @@ public class CombatView extends View {
 	}
 
 	public TokenCollection getTokens() {
-		return mData.tokens;
+		return getData().tokens;
 	}
 
 	public CoordinateTransformer getGridSpaceTransformer() {
-		return mData.grid.gridSpaceToScreenSpaceTransformer(mData.transformer);
+		return getData().grid.gridSpaceToScreenSpaceTransformer(getData().transformer);
+	}
+
+	public void setData(MapData data) {
+		mData = data;
+		invalidate();
+	}
+
+	public MapData getData() {
+		return mData;
 	}
 
 }

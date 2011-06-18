@@ -1,8 +1,8 @@
 package com.tbocek.android.combatmap.view;
 
 import com.tbocek.android.combatmap.graphicscore.Line;
+import com.tbocek.android.combatmap.graphicscore.PointF;
 
-import android.graphics.PointF;
 import android.view.MotionEvent;
 
 public class FingerDrawInteractionMode extends CombatViewInteractionMode {

@@ -1,10 +1,14 @@
 package com.tbocek.android.combatmap.graphicscore;
 
-import android.graphics.PointF;
+import java.io.Serializable;
 
-public class CoordinateTransformer {
+public class CoordinateTransformer implements Serializable {
+	private static final long serialVersionUID = -336836518697184615L;
+	
 	// Conversion of lengths in world space to lengths in screen space
 	private float zoomLevel = 1.0f;
+	
+	// Origin, representing the U-L screen corner's position in screen space (NOT world space!)
 	private float originX = 0.0f;
 	private float originY = 0.0f;
 
@@ -53,6 +57,11 @@ public class CoordinateTransformer {
 		return new PointF((x - originX) / zoomLevel, (y - originY) / zoomLevel);
 	}
 	
+	public void setOriginInWorldSpace(float x, float y) {
+		originX = x * zoomLevel;
+		originY = y * zoomLevel;
+	}
+	
 	public float worldSpaceToScreenSpace(float d) {
 		return d * zoomLevel;
 	}
@@ -75,5 +84,10 @@ public class CoordinateTransformer {
 	public void moveOrigin(float dx, float dy) {
 		originX += dx;
 		originY += dy;
+	}
+
+	public void setZoom(float zoomLevel) {
+		this.zoomLevel = zoomLevel;
+		
 	}
 }

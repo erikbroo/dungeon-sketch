@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,14 +8,15 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 
 /**
  * Encapsulates a single vector-drawn line.
  * @author Tim
  *
  */
-public class Line {
+public class Line implements Serializable {
+	private static final long serialVersionUID = -4935518208097034463L;
+
 	public Line(int color, int strokeWidth) {
 		this.color = color;
 		this.width = strokeWidth;
@@ -86,5 +88,9 @@ public class Line {
 			}
 		}
 		return optimizedLines;
+	}
+	
+	public BoundingRectangle getBoundingRectangle() {
+		return boundingRectangle;
 	}
 }

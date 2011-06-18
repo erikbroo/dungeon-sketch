@@ -1,8 +1,12 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.Serializable;
+
 import android.graphics.Color;
 
-public class GridColorScheme {
+public class GridColorScheme implements Serializable{
+	private static final long serialVersionUID = -7991703730328026635L;
+	
 	public static final GridColorScheme STANDARD = new GridColorScheme(Color.WHITE, Color.rgb(200, 200, 200));
 	public static final GridColorScheme GRAPH_PAPER = new GridColorScheme(Color.rgb(248, 255, 180), Color.rgb(195, 255, 114));
 	public static final GridColorScheme GRASS = new GridColorScheme(Color.rgb(63, 172, 41), Color.rgb(11, 121, 34));

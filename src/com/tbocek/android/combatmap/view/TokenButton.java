@@ -1,11 +1,10 @@
 package com.tbocek.android.combatmap.view;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
-import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
+import com.tbocek.android.combatmap.graphicscore.PointF;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.PointF;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;

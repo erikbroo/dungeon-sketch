@@ -2,7 +2,6 @@ package com.tbocek.android.combatmap.graphicscore;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PointF;
 
 public class RectangularGrid extends Grid {
 	

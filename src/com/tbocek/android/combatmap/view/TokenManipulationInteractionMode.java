@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.view;
 
 import android.graphics.Canvas;
-import android.graphics.PointF;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -10,6 +9,7 @@ import android.view.SubMenu;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
+import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
 public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
@@ -29,7 +29,7 @@ public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
     		PointF currentPointScreenSpace = new PointF(e2.getX(), e2.getY());
     		if (view.shouldSnapToGrid) {
 	    		// Get the nearest snap point in screen space
-	    		PointF nearestSnapPointWorldSpace = view.mData.grid.getNearestSnapPoint(
+	    		PointF nearestSnapPointWorldSpace = view.getData().grid.getNearestSnapPoint(
 	    				transformer.screenSpaceToWorldSpace(
 	    						currentPointScreenSpace),
 	    				currentToken.getSize());

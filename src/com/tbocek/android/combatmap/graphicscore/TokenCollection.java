@@ -1,13 +1,15 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
-import android.graphics.PointF;
 
 
-public class TokenCollection {
+public class TokenCollection implements Serializable {
+	private static final long serialVersionUID = 4852258096470549968L;
+	
 	private List<BaseToken> tokens = new ArrayList<BaseToken>();
 
 	public BaseToken getTokenUnderPoint(PointF p, CoordinateTransformer transformer) {
@@ -87,6 +89,10 @@ public class TokenCollection {
 			tokens.get(i).drawInPosition(canvas, transformer);
 		}
 		
+	}
+
+	public List<BaseToken> getTokens() {
+		return tokens;
 	}
 	
 }

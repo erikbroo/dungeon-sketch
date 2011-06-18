@@ -15,5 +15,7 @@
         </activity>
 		<activity android:name="com.tbocek.android.combatmap.Settings"
 				  android:label="Settings"></activity>
+		<activity android:name="com.tbocek.android.combatmap.Load"
+				  android:label="Load"></activity>				  
     </application>
 </manifest>

@@ -1,10 +1,11 @@
 package com.tbocek.android.combatmap.view;
 
 
+import com.tbocek.android.combatmap.graphicscore.PointF;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.view.MotionEvent;
 
 public class EraserInteractionMode extends CombatViewInteractionMode {

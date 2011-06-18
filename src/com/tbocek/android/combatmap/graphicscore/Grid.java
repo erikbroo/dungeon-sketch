@@ -1,9 +1,11 @@
 package com.tbocek.android.combatmap.graphicscore;
 
-import android.graphics.Canvas;
-import android.graphics.PointF;
+import java.io.Serializable;
 
-public abstract class Grid {
+import android.graphics.Canvas;
+
+public abstract class Grid implements Serializable {
+	private static final long serialVersionUID = -6584074665656742604L;
 
 	public static Grid createGrid(String gridStyle, String colorScheme) {
 		Grid g = gridStyle.equals("hex") ? new HexGrid() : new RectangularGrid();

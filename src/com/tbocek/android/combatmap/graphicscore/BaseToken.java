@@ -1,10 +1,12 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.Serializable;
+
 import android.graphics.Canvas;
-import android.graphics.PointF;
 
-public abstract class BaseToken {
-
+public abstract class BaseToken implements Serializable{
+	private static final long serialVersionUID = 9080531944602251588L;
+	
 	private PointF location = new PointF(0,0);
 	private float size = 1.0f;
 	private boolean bloodied = false;
@@ -65,6 +67,13 @@ public abstract class BaseToken {
 
 	public float getSize() {
 		return size;
+	}
+	
+	public BoundingRectangle getBoundingRectangle() {
+		BoundingRectangle r = new BoundingRectangle();
+		r.updateBounds(new PointF(location.x - size/2, location.y - size/2));
+		r.updateBounds(new PointF(location.x + size/2, location.y + size/2));
+		return r;
 	}
 
 }

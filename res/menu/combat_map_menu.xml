@@ -13,6 +13,9 @@
 		android:title="Annotations" 
 		android:showAsAction="ifRoom|withText"/>
 	<item
+		android:id="@+id/zoom_to_fit"
+		android:title="Fit"/>
+	<item
 		android:id="@+id/clear_all"
 		android:title="Clear All"/>
 	<item
@@ -24,6 +27,13 @@
 		android:id="@+id/resize_grid"
 		android:title="Resize Grid"/>
 	<item
+		android:id="@+id/save"
+		android:title="Save"/>
+	<item
+		android:id="@+id/load"
+		android:title="Load"/>
+	<item
 		android:id="@+id/settings"
 		android:title="Settings"/>
+
 </menu>

@@ -1,8 +1,9 @@
 package com.tbocek.android.combatmap.view;
 
 
+import com.tbocek.android.combatmap.graphicscore.PointF;
+
 import android.graphics.Canvas;
-import android.graphics.PointF;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;

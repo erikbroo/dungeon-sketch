@@ -1,13 +1,15 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Canvas;
-import android.graphics.PointF;
 
 
-public class LineCollection {
+public class LineCollection implements Serializable {
+	private static final long serialVersionUID = 3807015512261579274L;
+	
 	public List<Line> lines = new ArrayList<Line>();
 	
 	public void drawAllLines(Canvas canvas, CoordinateTransformer transformer) {
