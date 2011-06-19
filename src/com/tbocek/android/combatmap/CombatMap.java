@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.Grid;
 import com.tbocek.android.combatmap.graphicscore.GridColorScheme;
 import com.tbocek.android.combatmap.graphicscore.MapData;
@@ -94,6 +95,8 @@ public class CombatMap extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        BuiltInImageToken.res = this.getApplicationContext().getResources();
         
         setContentView(R.layout.combat_map_layout);
         
