@@ -42,14 +42,9 @@ public class LetterToken extends BaseToken {
 	}
 
 	@Override
-	public void drawGhost(Canvas c, CoordinateTransformer transformer,
-			PointF ghostPoint) {
-		Paint p = new Paint();
-		p.setColor(Color.LTGRAY);
-		
-		PointF center = transformer.worldSpaceToScreenSpace(ghostPoint);
-		float radius = transformer.worldSpaceToScreenSpace(this.getSize() * 0.9f / 2);
-		draw(c, center.x, center.y, radius, p);
+	public void drawGhost(Canvas c, float x, float y, float radius) {
+		//TODO(tim.bocek): Make this look different
+		draw(c, x, y, radius);
 	}
 
 }

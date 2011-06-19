@@ -3,6 +3,8 @@ package com.tbocek.android.combatmap.graphicscore;
 import java.io.Serializable;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 
 public abstract class BaseToken implements Serializable{
 	private static final long serialVersionUID = 9080531944602251588L;
@@ -47,7 +49,13 @@ public abstract class BaseToken implements Serializable{
 	public abstract void draw(Canvas c, float x, float y,
 			float radius);
 
-	public abstract void drawGhost(Canvas c, CoordinateTransformer transformer, PointF ghostPoint);
+	protected abstract void drawGhost(Canvas c, float x, float y, float radius);
+	
+	public final void drawGhost(Canvas c, CoordinateTransformer transformer, PointF ghostPoint) {
+		PointF center = transformer.worldSpaceToScreenSpace(ghostPoint);
+		float radius = transformer.worldSpaceToScreenSpace(this.getSize() * 0.9f / 2);	
+		drawGhost(c, center.x, center.y, radius);
+	}
 
 	public void drawInPosition(Canvas c, CoordinateTransformer transformer) {
 		PointF center = transformer.worldSpaceToScreenSpace(getLocation());
@@ -90,5 +98,6 @@ public abstract class BaseToken implements Serializable{
 		r.updateBounds(new PointF(location.x + size/2, location.y + size/2));
 		return r;
 	}
+
 
 }

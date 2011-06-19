@@ -19,16 +19,12 @@ public class SolidColorToken extends BaseToken {
 	 * @param ghostPoint Location to draw the ghost, in world space
 	 */
 	@Override
-	public void drawGhost(Canvas c, CoordinateTransformer transformer, PointF ghostPoint) {
+	public void drawGhost(Canvas c, float x, float y, float radius) {
 		Paint p = new Paint();
 		p.setStrokeWidth(2);
 		p.setColor(color);
 		p.setStyle(Style.STROKE);
-		PointF center = transformer.worldSpaceToScreenSpace(ghostPoint);
-		
-		float radius = transformer.worldSpaceToScreenSpace(this.getSize() * 0.9f / 2);
-		
-		c.drawCircle(center.x, center.y, radius, p);		
+		c.drawCircle(x, y, radius, p);		
 	}
 	
 	@Override

@@ -17,6 +17,8 @@ import android.graphics.drawable.Drawable;
 public abstract class DrawableToken extends BaseToken {
 	private static final long serialVersionUID = -4586968232758191016L;
 
+	private static final int FULL_OPACITY = 255;
+	private static final int HALF_OPACITY = 128;
 
 	@Override
 	public void drawBloodied(Canvas c, float x, float y, float radius) {
@@ -58,8 +60,13 @@ public abstract class DrawableToken extends BaseToken {
 	}
 
 	@Override
-	public void drawGhost(Canvas c, CoordinateTransformer transformer,
-			PointF ghostPoint) {
+	protected void drawGhost(Canvas c, float x, float y, float radius) {
+		Drawable d = getDrawable();
+		if (d != null) {
+			d.setAlpha(HALF_OPACITY);
+			draw(c, x, y, radius);
+			d.setAlpha(FULL_OPACITY);
+		}
 	}
 	
 	protected Drawable getDrawable() {
