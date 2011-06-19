@@ -95,7 +95,7 @@ public class CombatMap extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         BuiltInImageToken.res = this.getApplicationContext().getResources();
         
         setContentView(R.layout.combat_map_layout);

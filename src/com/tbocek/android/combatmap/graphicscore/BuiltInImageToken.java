@@ -22,6 +22,11 @@ public class BuiltInImageToken extends DrawableToken {
 	}
 	
 	protected Drawable createDrawable() {
-		return res.getDrawable(mResourceId);
+		return res != null ? res.getDrawable(mResourceId) : null;
+	}
+	
+	@Override
+	public BaseToken clone() {
+		return new BuiltInImageToken(mResourceId);
 	}
 }

@@ -26,9 +26,24 @@ public abstract class BaseToken implements Serializable{
 
 	public abstract BaseToken clone();
 
+	/**
+	 * Draw a bloodied version of the token at the given coordinates and size.  Everything
+	 * in screen space.
+	 * @param c
+	 * @param x
+	 * @param y
+	 * @param radius
+	 */
 	public abstract void drawBloodied(Canvas c, float x, float y,
 			float radius);
 
+	/**
+	 * Draw the token at the given coordinates and size.  Everything in screen space.
+	 * @param c
+	 * @param x
+	 * @param y
+	 * @param radius
+	 */
 	public abstract void draw(Canvas c, float x, float y,
 			float radius);
 

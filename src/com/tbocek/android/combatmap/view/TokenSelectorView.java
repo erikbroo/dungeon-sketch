@@ -1,8 +1,10 @@
 package com.tbocek.android.combatmap.view;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.LetterToken;
 import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
+import com.tbocek.android.combatmap.R;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -19,6 +21,10 @@ public class TokenSelectorView extends HorizontalScrollView {
 		//Create and add the child layout, which will be a linear layout of tokens.
 		tokenLayout = new LinearLayout(context);
 		addView(tokenLayout);
+		
+		addTokenPrototype(new BuiltInImageToken(R.drawable.dragongirl_dragontigernight));
+		addTokenPrototype(new BuiltInImageToken(R.drawable.orc_libmed));
+		addTokenPrototype(new BuiltInImageToken(R.drawable.orc2_libmed));
 		
 		for (int h = 0; h < 360; h += 30) {
 			float [] hsv = {h, 1, 1};
