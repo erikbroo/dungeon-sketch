@@ -1,6 +1,10 @@
 package com.tbocek.android.combatmap.graphicscore;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
@@ -16,7 +20,14 @@ public abstract class DrawableToken extends BaseToken {
 	@Override
 	public void drawBloodied(Canvas c, float x, float y, float radius) {
 		// TODO Auto-generated method stub
-		draw(c,x,y,radius);
+		Drawable d = getDrawable();
+		if (d != null) {
+			ColorFilter cf = new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.OVERLAY);
+			d.setColorFilter(cf);
+			draw(c,x,y,radius);
+			d.setColorFilter(null);
+		}
+		
 	}
 
 	@Override
