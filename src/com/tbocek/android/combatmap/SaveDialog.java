@@ -19,7 +19,6 @@ public class SaveDialog extends Dialog {
 		
 		saveButton = (Button) this.findViewById(R.id.button_save);
 		nameText = (TextView) this.findViewById(R.id.save_file_name);
-		nameText.setText("");
 		nameText.requestFocus();
 		
 		saveButton.setOnClickListener(new View.OnClickListener() {
@@ -30,6 +29,10 @@ public class SaveDialog extends Dialog {
 				SaveDialog.this.listener.onSaveFilenameSelected(name);
 			}
 		});
+	}
+	
+	protected void onResume() {
+		nameText.setText("");
 	}
 
 }
