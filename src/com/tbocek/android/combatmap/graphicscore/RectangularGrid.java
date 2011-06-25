@@ -19,6 +19,10 @@ public class RectangularGrid extends Grid {
 		float numSquaresHorizontal = (float)width/squareSize;
 		float numSquaresVertical = (numSquaresHorizontal * ((float)height)/((float)width));
 		
+		boolean shouldDrawMinorLines = squareSize >= 5;
+		boolean shouldDrawMajorLines = squareSize >= 1;
+		boolean shouldDrawCurrentLine = true;
+		
 		PointF origin = transformer.getOrigin();
 		
 		float offsetX = origin.x % squareSize;
@@ -29,22 +33,32 @@ public class RectangularGrid extends Grid {
 		
 		for (int i = 0; i <= numSquaresHorizontal; ++i) {
 			if ((i-thickLineStartX)%5 == 0) {
-				paint.setStrokeWidth(2);
+				paint.setStrokeWidth(shouldDrawMinorLines ? 3 : 1);
+				shouldDrawCurrentLine = shouldDrawMajorLines;
 			}
 			else {
 				paint.setStrokeWidth(1);
+				shouldDrawCurrentLine = shouldDrawMinorLines;
 			}
-			canvas.drawLine(i * squareSize + offsetX, 0, i * squareSize + offsetX, height, paint);
+			
+			if (shouldDrawCurrentLine) {
+				canvas.drawLine(i * squareSize + offsetX, 0, i * squareSize + offsetX, height, paint);
+			}
 		}
 		
 		for (int i = 0; i <= numSquaresVertical; ++i) {
 			if ((i-thickLineStartY)%5 == 0) {
-				paint.setStrokeWidth(3);
+				paint.setStrokeWidth(shouldDrawMinorLines ? 3 : 1);
+				shouldDrawCurrentLine = shouldDrawMajorLines;
 			}
 			else {
 				paint.setStrokeWidth(1);
+				shouldDrawCurrentLine = shouldDrawMinorLines;
 			}
-			canvas.drawLine(0, i * squareSize + offsetY, width, i * squareSize + offsetY, paint);
+			
+			if (shouldDrawCurrentLine) {
+				canvas.drawLine(0, i * squareSize + offsetY, width, i * squareSize + offsetY, paint);
+			}
 		}
 	}
 	
