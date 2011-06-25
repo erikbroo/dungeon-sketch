@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/token_image_creator_pick" android:title="Pick Image" android:showAsAction="always|withText"></item>
+    <item android:id="@+id/token_image_creator_accept" android:showAsAction="always|withText" android:title="Accept"></item>
+</menu>

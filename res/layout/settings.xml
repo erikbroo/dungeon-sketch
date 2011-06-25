@@ -15,5 +15,8 @@
 		android:key="gridtype"
 		android:entries="@array/gridNames"
 		android:entryValues="@array/gridValues"/>
+	<CheckBoxPreference
+		android:title="Snap to Grid"
+		android:key="snaptogrid"/>
 		
 </PreferenceScreen>

@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap;
 
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,6 +11,8 @@ import java.util.List;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /**
  * This class manages saved map and token data and provides an interface to query it.
@@ -45,7 +48,6 @@ public class DataManager {
 		s.close();
 	}
 	
-	
 	public List<String> savedFiles() {
 		String[] files = context.fileList();
 		ArrayList<String> mapFiles = new ArrayList<String>();
@@ -55,5 +57,44 @@ public class DataManager {
 			}
 		}
 		return mapFiles;
+	}
+	
+	public List<String> tokenFiles() {
+		String[] files = context.fileList();
+		ArrayList<String> imageFiles = new ArrayList<String>();
+		for (String file : files) {
+			if ((isImageFileName(file)) && !file.contains("preview")) {
+				imageFiles.add(file);
+			}
+		}
+		return imageFiles;
+	}
+
+	public boolean isImageFileName(String file) {
+		return file.endsWith(".jpg") || file.endsWith(".png");
+	}
+	
+	public void saveImage(String name, Bitmap image) throws IOException {
+		FileOutputStream s = context.openFileOutput(name + ".jpg", Context.MODE_PRIVATE);
+		BufferedOutputStream buf = new BufferedOutputStream(s);
+		image.compress(Bitmap.CompressFormat.JPEG, 75, buf);
+		buf.close();
+		s.close();
+	}
+	
+	public Bitmap loadImage(String filename) throws IOException {
+		FileInputStream s = context.openFileInput(filename);
+		Bitmap b = BitmapFactory.decodeStream(s);
+		s.close();
+		return b;
+	}
+
+	/**
+	 * Deletes the save file and the associated preview image
+	 * @param fileName
+	 */
+	public void deleteSaveFile(String fileName) {
+		context.deleteFile(fileName + ".map");
+		context.deleteFile(fileName + ".preview.jpg");
 	}
 }

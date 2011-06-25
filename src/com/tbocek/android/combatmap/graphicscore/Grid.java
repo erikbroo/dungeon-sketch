@@ -32,7 +32,7 @@ public abstract class Grid implements Serializable {
 		drawGrid(canvas, transformer);
 	}
 
-	private void drawBackground(Canvas canvas) {
+	public void drawBackground(Canvas canvas) {
 		canvas.drawColor(colorScheme.getBackgroundColor());
 	}
 

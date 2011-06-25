@@ -1,5 +1,8 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -19,6 +22,8 @@ public abstract class DrawableToken extends BaseToken {
 
 	private static final int FULL_OPACITY = 255;
 	private static final int HALF_OPACITY = 128;
+	
+	private static Map<String, Drawable> drawableCache = new HashMap<String, Drawable>();
 
 	@Override
 	public void drawBloodied(Canvas c, float x, float y, float radius) {
@@ -70,9 +75,16 @@ public abstract class DrawableToken extends BaseToken {
 	}
 	
 	protected Drawable getDrawable() {
+		if (drawableCache.containsKey(getTokenId())) {
+			return drawableCache.get(getTokenId());
+		}
+		
 		if (mDrawable == null) {
 			mDrawable = createDrawable();
 		}
+		
+		if (mDrawable != null)
+			drawableCache.put(getTokenId(), mDrawable);
 		
 		return mDrawable;
 	}

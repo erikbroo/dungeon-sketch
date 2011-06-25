@@ -13,16 +13,21 @@
 		android:title="Annotations" 
 		android:showAsAction="ifRoom|withText"/>
 	<item
+		android:id="@+id/token_manager"
+		android:title="Token Manager" 
+		android:showAsAction="ifRoom|withText"/>
+	<item
 		android:id="@+id/zoom_to_fit"
 		android:title="Fit"/>
 	<item
-		android:id="@+id/clear_all"
-		android:title="Clear All"/>
-	<item
-		android:id="@+id/snap_to_grid"
-		android:title="Snap to Grid"
-		android:checkable="true"
-		android:checked="true"/>
+		android:id="@+id/clear_all_submenu"
+		android:title="Clear All">
+		<menu>
+			<item
+				android:id="@+id/clear_all"
+				android:title="Confirm"/>
+		</menu>
+	</item>
 	<item
 		android:id="@+id/resize_grid"
 		android:title="Resize Grid"/>

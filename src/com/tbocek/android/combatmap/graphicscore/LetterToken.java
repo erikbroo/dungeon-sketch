@@ -49,4 +49,9 @@ public class LetterToken extends BaseToken {
 		draw(c, x, y, radius, p);
 	}
 
+	@Override
+	protected String getTokenClassSpecificId() {
+		return letter;
+	}
+
 }

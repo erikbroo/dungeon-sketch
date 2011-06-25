@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -125,6 +126,17 @@ public class CombatView extends View {
 		}
 		
 		this.mGestureListener.draw(canvas);
+	}
+	
+	public Bitmap getPreview() {
+		Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		getData().grid.drawBackground(canvas);
+		getData().mBackgroundLines.drawAllLines(canvas, getData().transformer);
+		getData().tokens.drawAllTokens(canvas, getGridSpaceTransformer());
+		getData().mAnnotationLines.drawAllLines(canvas, getData().transformer);
+		
+		return bitmap;
 	}
 
 	public CoordinateTransformer getTransformer() {

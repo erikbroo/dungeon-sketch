@@ -29,4 +29,9 @@ public class BuiltInImageToken extends DrawableToken {
 	public BaseToken clone() {
 		return new BuiltInImageToken(mResourceId);
 	}
+
+	@Override
+	protected String getTokenClassSpecificId() {
+		return Integer.toString(mResourceId);
+	}
 }

@@ -18,13 +18,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.Grid;
-import com.tbocek.android.combatmap.graphicscore.GridColorScheme;
 import com.tbocek.android.combatmap.graphicscore.MapData;
-import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
@@ -134,13 +133,23 @@ public class CombatMap extends Activity {
     	}
 
     	
-    	//Reload preferences
-    	String colorScheme = sharedPreferences.getString("theme", "graphpaper");
-    	String gridType = sharedPreferences.getString("gridtype", "rect");
-    	mData.grid = Grid.createGrid(gridType, colorScheme, mData.grid.gridSpaceToWorldSpaceTransformer());
+    	reloadPreferences();
     	
     	mCombatView.invalidate();
+    	mTokenSelector.reloadAllTokens();
     }
+
+    /**
+     * Modifies the current map data according to any preferences the user has set.
+     */
+	private void reloadPreferences() {
+    	SharedPreferences sharedPreferences2 = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+    	String colorScheme = sharedPreferences2.getString("theme", "graphpaper");
+    	String gridType = sharedPreferences2.getString("gridtype", "rect");
+    	mCombatView.shouldSnapToGrid = sharedPreferences2.getBoolean("snaptogrid", true);
+    	mData.grid = Grid.createGrid(gridType, colorScheme, mData.grid.gridSpaceToWorldSpaceTransformer());
+	}
+
     
     @Override
     public void onPause() {
@@ -159,7 +168,9 @@ public class CombatMap extends Activity {
     private void saveMap(String name) {
 		// TODO Auto-generated method stub
     	try {
-    		new DataManager(getApplicationContext()).saveMapName(name);
+    		DataManager dm = new DataManager(getApplicationContext());
+    		dm.saveMapName(name);
+    		dm.saveImage(name + ".preview", mCombatView.getPreview());
     	} catch (Exception e) {
 			reportIOException(e, "save");
 			MapData.clear();
@@ -167,10 +178,24 @@ public class CombatMap extends Activity {
     	}
     }
     
+	public void loadMap(String name) {
+		try {
+			new DataManager(getApplicationContext()).loadMapName(name);
+		} catch (Exception e) {
+			reportIOException(e, "load");
+			MapData.clear();
+			setFilenamePreference(null);
+		}
+		mData = MapData.getInstance();
+		mCombatView.setData(mData);
+	}
+    
     private void reportIOException(Exception e, String attemptedAction) {
 		Log.e(TAG, "Could not " + attemptedAction + " file.  Reason:");
 		Log.e(TAG, e.toString());
-		//TODO(tim.bocek): Report this in a more user-friendly way.
+		e.printStackTrace();
+		Toast toast = Toast.makeText(this.getApplicationContext(), "Could not " + attemptedAction + " file.  Reason:" + e.toString(), Toast.LENGTH_LONG);
+		toast.show();	
 	}
 
 	private void setFilenamePreference(String newFilename) {
@@ -231,6 +256,9 @@ public class CombatMap extends Activity {
         	mBottomControlFrame.addView(mTokenSelector);
         	disableCurrentMode(item);
         	return true;
+        case R.id.token_manager:
+        	startActivity(new Intent(this, TokenCreator.class));
+        	return true;
         case R.id.zoom_to_fit:
         	mData.zoomToFit(mCombatView.getWidth(), mCombatView.getHeight());
         	return true;
@@ -238,11 +266,8 @@ public class CombatMap extends Activity {
         	MapData.clear();
         	setFilenamePreference(null);
         	mData = MapData.getInstance();
+        	reloadPreferences();
         	mCombatView.setData(mData);
-        	return true;
-        case R.id.snap_to_grid:
-        	item.setChecked(!item.isChecked());
-        	mCombatView.shouldSnapToGrid = item.isChecked();
         	return true;
         case R.id.settings:
         	startActivity(new Intent(this, Settings.class));
@@ -303,18 +328,4 @@ public class CombatMap extends Activity {
     public boolean onContextItemSelected(MenuItem item) {
     	return mCombatView.onContextItemSelected(item);
     }
-
-	public void loadMap(String name) {
-		try {
-			new DataManager(getApplicationContext()).loadMapName(name);
-		} catch (Exception e) {
-			reportIOException(e, "load");
-			MapData.clear();
-			setFilenamePreference(null);
-		}
-		mData = MapData.getInstance();
-		mCombatView.setData(mData);
-	}
-
-    
 }

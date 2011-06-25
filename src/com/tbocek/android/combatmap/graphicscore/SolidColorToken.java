@@ -50,4 +50,9 @@ public class SolidColorToken extends BaseToken {
 	public BaseToken clone() {
 		return new SolidColorToken(color);
 	}
+
+	@Override
+	protected String getTokenClassSpecificId() {
+		return Integer.toString(color);
+	}
 }

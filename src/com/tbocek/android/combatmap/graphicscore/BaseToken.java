@@ -98,6 +98,33 @@ public abstract class BaseToken implements Serializable{
 		r.updateBounds(new PointF(location.x + size/2, location.y + size/2));
 		return r;
 	}
+	
+	/**
+	 * Gets a unique identifier incorporating the token's type and a further differentiator depending
+	 * on the type
+	 * @return
+	 */
+	public String getTokenId() {
+		return this.getClass().getName() + getTokenClassSpecificId();
+	}
 
-
+	/**
+	 * Gets an ID that differentiates this token from others in its class.  Subclasses should override this
+	 * such that tokens that display the same thing return the same ID.  The class its self need not be
+	 * represented.
+	 * @return
+	 */
+	protected abstract String getTokenClassSpecificId();
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof BaseToken)) return false;
+		return ((BaseToken)other).getTokenId() == getTokenId();
+	}
+	
+	@Override
+	public int hashCode() {
+		return getTokenId().hashCode();
+	}
 }
