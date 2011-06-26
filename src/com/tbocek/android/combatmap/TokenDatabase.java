@@ -16,6 +16,7 @@ import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.CustomBitmapToken;
 import com.tbocek.android.combatmap.graphicscore.LetterToken;
 import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
+import com.tbocek.android.combatmap.graphicscore.Util;
 
 public class TokenDatabase {
 	public Map<String, Set<String>> tokensForTag = new HashMap<String, Set<String>>();
@@ -135,26 +136,9 @@ public class TokenDatabase {
 	}
 
 	private void loadColorTokens() {
-		for (int h = 0; h < 360; h += 30) {
-			float [] hsv = {h, 1, 1};
-			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
+		for (int color : Util.getStandardColorPalette()) {
+			addTokenPrototype(new SolidColorToken(color));
 		}
-		
-		for (int h = 0; h < 360; h += 30) {
-			float [] hsv = {h, .5f, 1};
-			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
-		}
-		
-		for (int h = 0; h < 360; h += 30) {
-			float [] hsv = {h, 1, .5f};
-			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
-		}
-		
-		addTokenPrototype( new SolidColorToken(Color.WHITE) );
-		addTokenPrototype(  new SolidColorToken(Color.LTGRAY) );
-		addTokenPrototype( new SolidColorToken(Color.GRAY) );
-		addTokenPrototype( new SolidColorToken(Color.DKGRAY) );
-		addTokenPrototype( new SolidColorToken(Color.BLACK) );
 	}
 
 	private void loadLetterTokens() {

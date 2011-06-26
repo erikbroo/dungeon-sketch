@@ -1,5 +1,7 @@
 package com.tbocek.android.combatmap.view;
 
+import com.tbocek.android.combatmap.graphicscore.Util;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
@@ -88,22 +90,17 @@ public class DrawOptionsView extends HorizontalScrollView {
 		layout.addView(panButton);
 		layout.addView(eraserButton);
 		
-		addColorButton("Black", Color.BLACK);
-		addColorButton("Red", Color.RED);
-		addColorButton("Blue", Color.BLUE);
-		addColorButton("Green", Color.GREEN);
-		addColorButton("Yellow", Color.YELLOW);
-		addColorButton("Dark Red", Color.rgb(128, 0, 0));
-		addColorButton("Dark Blue", Color.rgb(0, 0, 128));
-		addColorButton("Dark Green", Color.rgb(0, 128, 0));
 		addStrokeWidthButton(2);
 		addStrokeWidthButton(4);
 		addStrokeWidthButton(8);
+		
+		for (int color : Util.getStandardColorPalette()) {
+			addColorButton(color);
+		}
 	}
 	
-	private void addColorButton(String name, int color) {
-		Button b = new Button(this.getContext());
-		b.setText(name + " Pencil");
+	private void addColorButton(int color) {
+		PencilButton b = new PencilButton(this.getContext(), color);
 		b.setOnClickListener(new ColorListener(color));
 		layout.addView(b);
 	}
@@ -118,6 +115,4 @@ public class DrawOptionsView extends HorizontalScrollView {
 	public void setOnChangeDrawToolListener(OnChangeDrawToolListener onChangeDrawToolListener) {
 		this.onChangeDrawToolListener = onChangeDrawToolListener;
 	}
-
-
 }
