@@ -1,5 +1,8 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -33,5 +36,12 @@ public class BuiltInImageToken extends DrawableToken {
 	@Override
 	protected String getTokenClassSpecificId() {
 		return Integer.toString(mResourceId);
+	}
+	
+	public Set<String> getDefaultTags() {
+		Set<String> s = new HashSet<String>();
+		s.add("built-in");
+		s.add("image");
+		return s;
 	}
 }

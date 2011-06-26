@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap;
 
 import java.io.File;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -26,6 +27,7 @@ import com.tbocek.android.combatmap.graphicscore.Grid;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
+import com.tbocek.android.combatmap.view.TokenCategorySelector;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
 public class CombatMap extends Activity {
@@ -37,8 +39,11 @@ public class CombatMap extends Activity {
 	private CombatView mCombatView;
 	private TokenSelectorView mTokenSelector;
 	private FrameLayout mBottomControlFrame;
+	private FrameLayout mPopupFrame;
 	private DrawOptionsView mDrawOptionsView;
+	private TokenCategorySelector mTokenCategorySelector;
 	private static MapData mData;
+	private TokenDatabase tokenDatabase = new TokenDatabase();
 	
 	private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener = new TokenSelectorView.OnTokenSelectedListener() {
 		@Override
@@ -104,15 +109,46 @@ public class CombatMap extends Activity {
         
         mTokenSelector = new TokenSelectorView(this.getApplicationContext());
         mTokenSelector.setOnTokenSelectedListener(mOnTokenSelectedListener);
+        mTokenSelector.setOnClickTokenManagerListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				startActivity(new Intent(CombatMap.this, TokenCreator.class));
+			}
+        });
+        
+        mTokenSelector.setOnClickGroupSelectorListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (mPopupFrame.getVisibility() == View.VISIBLE) {
+					mPopupFrame.setVisibility(View.INVISIBLE);
+				} else {
+					mPopupFrame.setVisibility(View.VISIBLE);
+				}
+			}   	
+        });
         
         mDrawOptionsView = new DrawOptionsView(this.getApplicationContext());
         mDrawOptionsView.setOnChangeDrawToolListener(mOnChangeDrawToolListener);
         
         FrameLayout mainContentFrame = (FrameLayout) this.findViewById(R.id.mainContentFrame);
         mBottomControlFrame = (FrameLayout) this.findViewById(R.id.bottomControlAreaFrame);
+        mPopupFrame = (FrameLayout) this.findViewById(R.id.popupControlAreaFrame);
+        
+        mTokenCategorySelector = new TokenCategorySelector(this);
+        mTokenCategorySelector.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT));
+        mTokenCategorySelector.setOnCheckedListChangedListener(new TokenCategorySelector.OnCheckedListChangedListener() {	
+			@Override
+			public void onCheckedChanged(List<String> checkedTags) {
+				mTokenSelector.setSelectedTags(checkedTags);
+			}
+		});
+        
+        mPopupFrame.addView(mTokenCategorySelector);
         
         mainContentFrame.addView(mCombatView);
         mBottomControlFrame.addView(mTokenSelector);
+        
+       // mTokenCategorySelector = (TokenCategorySelector) this.findViewById(R.id.tokenCategorySelector);
         
         mCombatView.setTokenManipulationMode();
         mCombatView.requestFocus();
@@ -136,7 +172,10 @@ public class CombatMap extends Activity {
     	reloadPreferences();
     	
     	mCombatView.invalidate();
-    	mTokenSelector.reloadAllTokens();
+    
+        tokenDatabase.populate(new DataManager(this.getApplicationContext()));
+        mTokenCategorySelector.setTokenDatabase(tokenDatabase);
+        mTokenSelector.setTokenDatabase(tokenDatabase);
     }
 
     /**
@@ -166,16 +205,17 @@ public class CombatMap extends Activity {
     }
     
     private void saveMap(String name) {
-		// TODO Auto-generated method stub
-    	try {
-    		DataManager dm = new DataManager(getApplicationContext());
-    		dm.saveMapName(name);
-    		dm.saveImage(name + ".preview", mCombatView.getPreview());
-    	} catch (Exception e) {
-			reportIOException(e, "save");
-			MapData.clear();
-			setFilenamePreference(null);
-    	}
+		if (MapData.getInstance().hasData()) {
+	    	try {
+	    		DataManager dm = new DataManager(getApplicationContext());
+	    		dm.saveMapName(name);
+	    		dm.savePreviewImage(name, mCombatView.getPreview());
+	    	} catch (Exception e) {
+				reportIOException(e, "save");
+				MapData.clear();
+				setFilenamePreference(null);
+	    	}
+		}
     }
     
 	public void loadMap(String name) {
@@ -205,7 +245,6 @@ public class CombatMap extends Activity {
     	editor.putString("filename", newFilename);
     	editor.commit();
     }
-
     
     MenuItem backgroundLayerItem;
     MenuItem annotationLayerItem;
@@ -242,6 +281,7 @@ public class CombatMap extends Activity {
         	mBottomControlFrame.removeAllViews();
         	mBottomControlFrame.addView(this.mDrawOptionsView);
         	disableCurrentMode(item);
+        	mPopupFrame.setVisibility(View.INVISIBLE);
         	return true;
         case R.id.edit_annotations:
         	mCombatView.setDrawMode();
@@ -249,15 +289,13 @@ public class CombatMap extends Activity {
         	mBottomControlFrame.removeAllViews();
         	mBottomControlFrame.addView(this.mDrawOptionsView);
         	disableCurrentMode(item);
+        	mPopupFrame.setVisibility(View.INVISIBLE);
         	return true;
         case R.id.combat_on:
         	mCombatView.setTokenManipulationMode();
         	mBottomControlFrame.removeAllViews();
         	mBottomControlFrame.addView(mTokenSelector);
         	disableCurrentMode(item);
-        	return true;
-        case R.id.token_manager:
-        	startActivity(new Intent(this, TokenCreator.class));
         	return true;
         case R.id.zoom_to_fit:
         	mData.zoomToFit(mCombatView.getWidth(), mCombatView.getHeight());

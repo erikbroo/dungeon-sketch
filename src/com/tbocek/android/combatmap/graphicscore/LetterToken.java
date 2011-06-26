@@ -1,5 +1,8 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -53,5 +56,11 @@ public class LetterToken extends BaseToken {
 	protected String getTokenClassSpecificId() {
 		return letter;
 	}
-
+	
+	public Set<String> getDefaultTags() {
+		Set<String> s = new HashSet<String>();
+		s.add("built-in");
+		s.add("letter");
+		return s;
+	}
 }

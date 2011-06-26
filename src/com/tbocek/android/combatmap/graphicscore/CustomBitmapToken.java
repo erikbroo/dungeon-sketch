@@ -1,6 +1,8 @@
 package com.tbocek.android.combatmap.graphicscore;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.tbocek.android.combatmap.DataManager;
 
@@ -45,4 +47,10 @@ public class CustomBitmapToken extends DrawableToken {
 		return filename;
 	}
 
+	public Set<String> getDefaultTags() {
+		Set<String> s = new HashSet<String>();
+		s.add("custom");
+		s.add("image");
+		return s;
+	}
 }

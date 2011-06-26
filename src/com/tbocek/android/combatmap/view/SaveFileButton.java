@@ -5,8 +5,10 @@ import com.tbocek.android.combatmap.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,5 +40,12 @@ public class SaveFileButton extends LinearLayout{
 	
 	public String getFileName() {
 		return text.getText().toString();
+	}
+	
+	@Override
+	public void setOnCreateContextMenuListener(View.OnCreateContextMenuListener l) {
+		super.setOnCreateContextMenuListener(l);
+		preview.setOnCreateContextMenuListener(l);
+		text.setOnCreateContextMenuListener(l);
 	}
 }

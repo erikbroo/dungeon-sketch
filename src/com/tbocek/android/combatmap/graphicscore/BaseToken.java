@@ -1,6 +1,8 @@
 package com.tbocek.android.combatmap.graphicscore;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -126,5 +128,9 @@ public abstract class BaseToken implements Serializable{
 	@Override
 	public int hashCode() {
 		return getTokenId().hashCode();
+	}
+	
+	public Set<String> getDefaultTags() {
+		return new HashSet<String>();
 	}
 }

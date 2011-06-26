@@ -1,5 +1,7 @@
 package com.tbocek.android.combatmap.view;
 
+import java.util.List;
+
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.CustomBitmapToken;
@@ -7,24 +9,33 @@ import com.tbocek.android.combatmap.graphicscore.LetterToken;
 import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 import com.tbocek.android.combatmap.DataManager;
 import com.tbocek.android.combatmap.R;
+import com.tbocek.android.combatmap.TokenDatabase;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-public class TokenSelectorView extends HorizontalScrollView {
+public class TokenSelectorView extends LinearLayout {
 	LinearLayout tokenLayout;
+	
+	Button groupSelector;
+	Button tokenManager;
 	
 	public TokenSelectorView(Context context) {
 		super(context);
-		
+		LayoutInflater.from(context).inflate(R.layout.token_selector, this);
 		//Create and add the child layout, which will be a linear layout of tokens.
-		tokenLayout = new LinearLayout(context);
-		addView(tokenLayout);
 		
-
+		tokenLayout = new LinearLayout(context);
+		((HorizontalScrollView) findViewById(R.id.token_scroll_view)).addView(tokenLayout);
+		
+		groupSelector = (Button)findViewById(R.id.token_category_selector_button);
+		tokenManager = (Button)findViewById(R.id.token_manager_button);
 	}
 	
 
@@ -50,81 +61,38 @@ public class TokenSelectorView extends HorizontalScrollView {
 	
 	OnTokenSelectedListener onTokenSelectedListener = null;
 
+	private TokenDatabase tokenDatabase;
+
 	public void setOnTokenSelectedListener(OnTokenSelectedListener onTokenSelectedListener) {
 		this.onTokenSelectedListener = onTokenSelectedListener;
 	}
 
-	public void reloadAllTokens() {
-		tokenLayout.removeAllViews();
-		loadCustomImageTokens();
-		loadBuiltInImageTokens();
-		loadColorTokens();
-		loadLetterTokens();
-	}
 
-	private void loadCustomImageTokens() {
-		DataManager dataManager = new DataManager(this.getContext());
-		CustomBitmapToken.dataManager = dataManager;
-		for (String filename : dataManager.tokenFiles()) {
-			addTokenPrototype(new CustomBitmapToken(filename));
-		}
+	
+	public void setOnClickGroupSelectorListener(View.OnClickListener listener) {
+		groupSelector.setOnClickListener(listener);
 	}
 	
-	private void loadBuiltInImageTokens() {
-		addTokenPrototype(new BuiltInImageToken(R.drawable.dragongirl_dragontigernight));
-		addTokenPrototype(new BuiltInImageToken(R.drawable.orc_libmed));
-		addTokenPrototype(new BuiltInImageToken(R.drawable.orc2_libmed));
+	public void setOnClickTokenManagerListener(View.OnClickListener listener) {
+		tokenManager.setOnClickListener(listener);
 	}
 
-	private void loadColorTokens() {
-		for (int h = 0; h < 360; h += 30) {
-			float [] hsv = {h, 1, 1};
-			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
+
+
+	public void setTokenDatabase(TokenDatabase tokenDatabase) {
+		this.tokenDatabase = tokenDatabase;
+		tokenLayout.removeAllViews();
+		for (BaseToken token : tokenDatabase.getAllTokens()) {
+			addTokenPrototype(token);
 		}
-		
-		for (int h = 0; h < 360; h += 30) {
-			float [] hsv = {h, .5f, 1};
-			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
-		}
-		
-		for (int h = 0; h < 360; h += 30) {
-			float [] hsv = {h, 1, .5f};
-			addTokenPrototype( new SolidColorToken(Color.HSVToColor(hsv)));
-		}
-		
-		addTokenPrototype( new SolidColorToken(Color.WHITE) );
-		addTokenPrototype(  new SolidColorToken(Color.LTGRAY) );
-		addTokenPrototype( new SolidColorToken(Color.GRAY) );
-		addTokenPrototype( new SolidColorToken(Color.DKGRAY) );
-		addTokenPrototype( new SolidColorToken(Color.BLACK) );
 	}
 
-	private void loadLetterTokens() {
-		addTokenPrototype(new LetterToken("A"));
-		addTokenPrototype(new LetterToken("B"));
-		addTokenPrototype(new LetterToken("C"));
-		addTokenPrototype(new LetterToken("D"));
-		addTokenPrototype(new LetterToken("E"));
-		addTokenPrototype(new LetterToken("F"));
-		addTokenPrototype(new LetterToken("G"));
-		addTokenPrototype(new LetterToken("H"));
-		addTokenPrototype(new LetterToken("I"));
-		addTokenPrototype(new LetterToken("J"));
-		addTokenPrototype(new LetterToken("K"));
-		addTokenPrototype(new LetterToken("L"));
-		addTokenPrototype(new LetterToken("M"));
-		addTokenPrototype(new LetterToken("N"));
-		addTokenPrototype(new LetterToken("O"));
-		addTokenPrototype(new LetterToken("P"));
-		addTokenPrototype(new LetterToken("Q"));
-		addTokenPrototype(new LetterToken("R"));
-		addTokenPrototype(new LetterToken("S"));
-		addTokenPrototype(new LetterToken("T"));
-		addTokenPrototype(new LetterToken("U"));
-		addTokenPrototype(new LetterToken("V"));
-		addTokenPrototype(new LetterToken("W"));
-		addTokenPrototype(new LetterToken("X"));
-		addTokenPrototype(new LetterToken("Y"));
-		addTokenPrototype(new LetterToken("Z"));
+
+
+	public void setSelectedTags(List<String> checkedTags) {
+		tokenLayout.removeAllViews();
+		for (BaseToken token : tokenDatabase.tokensForTags(checkedTags)) {
+			addTokenPrototype(token);
+		}
 	}
 }

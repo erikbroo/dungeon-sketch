@@ -1,5 +1,8 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -54,5 +57,12 @@ public class SolidColorToken extends BaseToken {
 	@Override
 	protected String getTokenClassSpecificId() {
 		return Integer.toString(color);
+	}
+	
+	public Set<String> getDefaultTags() {
+		Set<String> s = new HashSet<String>();
+		s.add("built-in");
+		s.add("solid color");
+		return s;
 	}
 }

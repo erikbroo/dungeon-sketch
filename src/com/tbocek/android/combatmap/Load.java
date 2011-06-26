@@ -67,7 +67,7 @@ public class Load extends Activity {
 	private View createLayout(List<View> views) {
 		TableLayout layout = new TableLayout(this);
 		TableRow currentRow = null;
-		int viewsPerRow = getWindowManager().getDefaultDisplay().getWidth() / (FILE_VIEW_WIDTH + 2 * FILE_VIEW_PADDING); //TODO: how to compute this
+		int viewsPerRow = getWindowManager().getDefaultDisplay().getWidth() / (FILE_VIEW_WIDTH + 2 * FILE_VIEW_PADDING);
 		int i = 0;
 		for (View v: views) {
 			if (i%viewsPerRow == 0) {
@@ -84,7 +84,7 @@ public class Load extends Activity {
 		SaveFileButton b = new SaveFileButton(this);
 		b.setFileName(saveFile);
 		try {
-			b.setPreviewImage(dataMgr.loadImage(saveFile + ".preview.jpg")); //TODO: make this code not suck (preview filename creation logic should be in DataManager)
+			b.setPreviewImage(dataMgr.loadPreviewImage(saveFile));
 		} catch (IOException e) {
 			//no-op
 		}
@@ -93,6 +93,7 @@ public class Load extends Activity {
 		b.setMinimumHeight(FILE_VIEW_HEIGHT);
 		b.setOnClickListener(new SaveFileButtonClickListener(saveFile));
 		registerForContextMenu(b);
+		b.setOnCreateContextMenuListener(contextMenuListener);
 		return b;
 	}
 	
@@ -119,12 +120,14 @@ public class Load extends Activity {
 	
 	SaveFileButton contextMenuTrigger = null;
 	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		contextMenuTrigger = (SaveFileButton) v;
-		getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
-	}
+	private View.OnCreateContextMenuListener contextMenuListener = new View.OnCreateContextMenuListener() {
+		@Override
+		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+			while (!(v instanceof SaveFileButton)) v = (View) v.getParent();
+			contextMenuTrigger = (SaveFileButton) v;
+			getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
+		}
+	};
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
@@ -132,6 +135,12 @@ public class Load extends Activity {
 	  switch (item.getItemId()) {
 	  case R.id.delete_save_file:
 		  dataMgr.deleteSaveFile(contextMenuTrigger.getFileName());
+		  SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+		  // If we deleted the currently open file, set us up to create a new file when
+		  // we return to the main activity.
+		  if (contextMenuTrigger.getFileName() == sharedPreferences.getString("filename", null)) {
+			  setFilenamePreference(null);
+		  }
 		  setup();
 		  return true;
 	  default:

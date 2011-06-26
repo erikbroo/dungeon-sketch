@@ -94,5 +94,9 @@ public class TokenCollection implements Serializable {
 	public List<BaseToken> getTokens() {
 		return tokens;
 	}
+
+	public boolean isEmpty() {
+		return tokens.isEmpty();
+	}
 	
 }

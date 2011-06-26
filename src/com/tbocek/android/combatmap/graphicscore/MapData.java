@@ -85,4 +85,8 @@ public class MapData implements Serializable {
 		this.transformer.setZoom(scaleFactor);
 		this.transformer.setOriginInWorldSpace(r.getXMin(), r.getYMin());
 	}
+	
+	public boolean hasData() {
+		return !mBackgroundLines.isEmpty() && !mAnnotationLines.isEmpty() && !tokens.isEmpty();
+	}
 }

@@ -13,10 +13,6 @@
 		android:title="Annotations" 
 		android:showAsAction="ifRoom|withText"/>
 	<item
-		android:id="@+id/token_manager"
-		android:title="Token Manager" 
-		android:showAsAction="ifRoom|withText"/>
-	<item
 		android:id="@+id/zoom_to_fit"
 		android:title="Fit"/>
 	<item

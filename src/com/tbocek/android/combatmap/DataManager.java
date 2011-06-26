@@ -20,6 +20,10 @@ import android.graphics.BitmapFactory;
  *
  */
 public class DataManager {
+	private static final String MAP_EXTENSION = ".map";
+	private static final String IMAGE_EXTENSION = ".jpg";
+	private static final String PREVIEW_TAG = ".preview";
+	private static final String PREVIEW_EXTENSION = PREVIEW_TAG + IMAGE_EXTENSION;
 	private Context context;
 	public DataManager(Context context) {
 		this.context = context;
@@ -32,7 +36,7 @@ public class DataManager {
 	 * @throws IOException 
 	 */
 	public void loadMapName(String name) throws IOException, ClassNotFoundException {
-		FileInputStream s = context.openFileInput(name + ".map");
+		FileInputStream s = context.openFileInput(name + MAP_EXTENSION);
 		MapData.loadFromStream(s);
 		s.close();
 	}
@@ -43,7 +47,7 @@ public class DataManager {
 	 * @throws IOException 
 	 */
 	public void saveMapName(String name) throws IOException {
-		FileOutputStream s = context.openFileOutput(name + ".map", Context.MODE_PRIVATE);
+		FileOutputStream s = context.openFileOutput(name + MAP_EXTENSION, Context.MODE_PRIVATE);
 		MapData.saveToStream(s);
 		s.close();
 	}
@@ -52,8 +56,8 @@ public class DataManager {
 		String[] files = context.fileList();
 		ArrayList<String> mapFiles = new ArrayList<String>();
 		for (String file : files) {
-			if (!file.equals("tmp.map") && file.endsWith(".map")) {
-				mapFiles.add(file.replace(".map", ""));
+			if (!file.equals("tmp" + MAP_EXTENSION) && file.endsWith(MAP_EXTENSION)) {
+				mapFiles.add(file.replace(MAP_EXTENSION, ""));
 			}
 		}
 		return mapFiles;
@@ -63,7 +67,7 @@ public class DataManager {
 		String[] files = context.fileList();
 		ArrayList<String> imageFiles = new ArrayList<String>();
 		for (String file : files) {
-			if ((isImageFileName(file)) && !file.contains("preview")) {
+			if ((isImageFileName(file)) && !file.endsWith(PREVIEW_EXTENSION)) {
 				imageFiles.add(file);
 			}
 		}
@@ -71,15 +75,19 @@ public class DataManager {
 	}
 
 	public boolean isImageFileName(String file) {
-		return file.endsWith(".jpg") || file.endsWith(".png");
+		return file.endsWith(IMAGE_EXTENSION);
 	}
 	
 	public void saveImage(String name, Bitmap image) throws IOException {
-		FileOutputStream s = context.openFileOutput(name + ".jpg", Context.MODE_PRIVATE);
+		FileOutputStream s = context.openFileOutput(name + IMAGE_EXTENSION, Context.MODE_PRIVATE);
 		BufferedOutputStream buf = new BufferedOutputStream(s);
 		image.compress(Bitmap.CompressFormat.JPEG, 75, buf);
 		buf.close();
 		s.close();
+	}
+	
+	public void savePreviewImage(String name, Bitmap preview) throws IOException {
+		saveImage(name + PREVIEW_TAG, preview);
 	}
 	
 	public Bitmap loadImage(String filename) throws IOException {
@@ -88,13 +96,19 @@ public class DataManager {
 		s.close();
 		return b;
 	}
+	
+	public Bitmap loadPreviewImage(String saveFile) throws IOException {
+		return loadImage(saveFile + PREVIEW_EXTENSION);
+	}
 
 	/**
 	 * Deletes the save file and the associated preview image
 	 * @param fileName
 	 */
 	public void deleteSaveFile(String fileName) {
-		context.deleteFile(fileName + ".map");
-		context.deleteFile(fileName + ".preview.jpg");
+		context.deleteFile(fileName + MAP_EXTENSION);
+		context.deleteFile(fileName + PREVIEW_EXTENSION);
 	}
+
+
 }

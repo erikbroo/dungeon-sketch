@@ -45,4 +45,8 @@ public class LineCollection implements Serializable {
 		lines.clear();
 		lines.addAll(newLines);
 	}
+
+	public boolean isEmpty() {
+		return lines.isEmpty();
+	}
 }
