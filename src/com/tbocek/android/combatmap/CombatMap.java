@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
@@ -173,7 +174,11 @@ public class CombatMap extends Activity {
     	
     	mCombatView.invalidate();
     
-        tokenDatabase.populate(new DataManager(this.getApplicationContext()));
+    	try {
+    		tokenDatabase = TokenDatabase.load(this.getApplicationContext());
+    	} catch (Exception e) {
+    		tokenDatabase = new TokenDatabase();
+    	}
         mTokenCategorySelector.setTokenDatabase(tokenDatabase);
         mTokenSelector.setTokenDatabase(tokenDatabase);
     }
@@ -202,10 +207,15 @@ public class CombatMap extends Activity {
     	}
     	saveMap(filename);
 
+    	try {
+			tokenDatabase.save(this.getApplicationContext());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     private void saveMap(String name) {
-		if (MapData.getInstance().hasData()) {
 	    	try {
 	    		DataManager dm = new DataManager(getApplicationContext());
 	    		dm.saveMapName(name);
@@ -215,7 +225,6 @@ public class CombatMap extends Activity {
 				MapData.clear();
 				setFilenamePreference(null);
 	    	}
-		}
     }
     
 	public void loadMap(String name) {

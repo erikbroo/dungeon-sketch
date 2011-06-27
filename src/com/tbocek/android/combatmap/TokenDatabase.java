@@ -1,5 +1,12 @@
 package com.tbocek.android.combatmap;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.content.Context;
 import android.graphics.Color;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
@@ -18,11 +26,11 @@ import com.tbocek.android.combatmap.graphicscore.LetterToken;
 import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
-public class TokenDatabase {
+public class TokenDatabase implements Serializable {
 	public Map<String, Set<String>> tokensForTag = new HashMap<String, Set<String>>();
 	public Map<String, Set<String>> tagsForToken = new HashMap<String, Set<String>>();
 	public Set<String> validTokenIds = new HashSet<String>();
-	public Map<String, BaseToken> tokenForId = new HashMap<String, BaseToken>();
+	public transient Map<String, BaseToken> tokenForId = new HashMap<String, BaseToken>();
 	
 	/**
 	 * Adds a token to the database, signaling its availability to link to a token ID.
@@ -127,7 +135,23 @@ public class TokenDatabase {
 			addTokenPrototype(new CustomBitmapToken(filename));
 		}
 	}
-
+	
+	public void save(Context context) throws IOException {
+		FileOutputStream output = context.openFileOutput("token_database", Context.MODE_PRIVATE);
+		ObjectOutputStream objectOut = new ObjectOutputStream(output);
+		objectOut.writeObject(this);
+		objectOut.close();
+	}
+	
+	public static TokenDatabase load(Context context) throws IOException, ClassNotFoundException {
+		FileInputStream input = context.openFileInput("token_database");
+		ObjectInputStream objectIn = new ObjectInputStream(input);
+		TokenDatabase d = (TokenDatabase) objectIn.readObject();
+		objectIn.close();
+		d.tokenForId = new HashMap<String, BaseToken>();
+		d.populate(new DataManager(context));
+		return d;
+	}
 
 	private void loadBuiltInImageTokens() {
 		addTokenPrototype(new BuiltInImageToken(R.drawable.dragongirl_dragontigernight));
