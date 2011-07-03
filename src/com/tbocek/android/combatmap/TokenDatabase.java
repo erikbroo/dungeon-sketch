@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,15 +59,29 @@ public class TokenDatabase implements Serializable {
 		tagsForToken.get(tokenId).addAll(tags);
 	}
 	
+	public void addEmptyTag(String tag) {
+		tokensForTag.put(tag, new HashSet<String>());
+	}
 	
 	public void tagToken(BaseToken token, Set<String> tags) {
 		tagToken(token.getTokenId(), tags);
 	}
-	
+
+	public void tagToken(String tokenId, String tag) {
+		Set<String> tags = new HashSet<String>();
+		tags.add(tag);
+		tagToken(tokenId, tags);
+		
+	}
 
 	public Collection<String> getTags() {
 		ArrayList<String> l = new ArrayList<String>(tokensForTag.keySet());
-		Collections.sort(l);
+		Collections.sort(l, new Comparator<String>() {
+			@Override
+			public int compare(String s1, String s2) {
+				return s1.toUpperCase().compareTo(s2.toUpperCase());
+			}
+		});
 		return l;
 	}
 	
@@ -110,7 +125,12 @@ public class TokenDatabase implements Serializable {
 		}
 		return tokens;
 	}
-	
+
+	public List<BaseToken> getTokensForTag(String newTag) {
+		ArrayList<String> tags = new ArrayList<String>();
+		tags.add(newTag);
+		return tokensForTags(tags);
+	}
 	
 	private void addTokenPrototype(BaseToken token) {
 		addToken(token);
@@ -193,5 +213,6 @@ public class TokenDatabase implements Serializable {
 		addTokenPrototype(new LetterToken("Y"));
 		addTokenPrototype(new LetterToken("Z"));
 	}
+
 
 }

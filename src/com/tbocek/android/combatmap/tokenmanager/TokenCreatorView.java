@@ -1,4 +1,4 @@
-package com.tbocek.android.combatmap.view;
+package com.tbocek.android.combatmap.tokenmanager;
 
 import com.tbocek.android.combatmap.graphicscore.PointF;
 

@@ -1,10 +1,13 @@
-package com.tbocek.android.combatmap;
+package com.tbocek.android.combatmap.tokenmanager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 
-import com.tbocek.android.combatmap.view.TokenCreatorView;
+import com.tbocek.android.combatmap.DataManager;
+import com.tbocek.android.combatmap.R;
+import com.tbocek.android.combatmap.R.id;
+import com.tbocek.android.combatmap.R.menu;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -28,6 +31,7 @@ public class TokenCreator extends Activity {
     	super.onCreate(savedInstanceState);
     	view = new TokenCreatorView(this);
     	setContentView(view);
+    	startImageSelectorActivity();
     }
     
     @Override
@@ -41,10 +45,7 @@ public class TokenCreator extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     	case R.id.token_image_creator_pick:
-            startActivityForResult(new Intent(
-            		Intent.ACTION_PICK,
-            		MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
-                PICK_IMAGE_REQUEST);
+            startImageSelectorActivity();
     		return true;
     	case R.id.token_image_creator_accept:
     		//view.setImage(new BitmapDrawable(view.getClippedBitmap()));
@@ -59,6 +60,13 @@ public class TokenCreator extends Activity {
     	}
 		return false;
     }
+
+	private void startImageSelectorActivity() {
+		startActivityForResult(new Intent(
+				Intent.ACTION_PICK,
+				MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
+		    PICK_IMAGE_REQUEST);
+	}
     
     private void saveToInternalImage(String name) throws IOException {
    		Bitmap bitmap = view.getClippedBitmap();

@@ -26,6 +26,8 @@ import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.Grid;
 import com.tbocek.android.combatmap.graphicscore.MapData;
+import com.tbocek.android.combatmap.tokenmanager.TokenCreator;
+import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
 import com.tbocek.android.combatmap.view.TokenCategorySelector;
@@ -113,7 +115,7 @@ public class CombatMap extends Activity {
         mTokenSelector.setOnClickTokenManagerListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				startActivity(new Intent(CombatMap.this, TokenCreator.class));
+				startActivity(new Intent(CombatMap.this, TokenManager.class));
 			}
         });
         
@@ -342,7 +344,11 @@ public class CombatMap extends Activity {
     public Dialog onCreateDialog(int id) {
     	switch(id) {
     	case DIALOG_ID_SAVE:
-    		 return new SaveDialog(this, onFilenameSelected);
+    		 return new TextPromptDialog(this, new TextPromptDialog.OnTextConfirmedListener() {
+				public void onTextConfirmed(String text) {
+					onFilenameSelected.onSaveFilenameSelected(text);
+				}
+			}, "Save Map", "Save");
     	}
     	return null;
     }

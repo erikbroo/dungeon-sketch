@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 
 public class TokenSelectorView extends LinearLayout {
 	LinearLayout tokenLayout;
@@ -43,6 +44,7 @@ public class TokenSelectorView extends LinearLayout {
 	public void addTokenPrototype(BaseToken prototype) {
 		TokenButton b = new TokenButton(this.getContext(), prototype);
 		b.setOnClickListener(onClickListener);
+		b.setLayoutParams(new LinearLayout.LayoutParams(80, 80));
 		tokenLayout.addView(b);
 	}
 	

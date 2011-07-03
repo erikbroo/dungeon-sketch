@@ -34,9 +34,7 @@ public class TokenButton extends Button {
 		
 		//Set up listener to see if a drag has started.
 		gestureDetector = new GestureDetector(this.getContext(), gestureListener);
-		
-		this.setWidth(80);
-		this.setHeight(70);
+
 		this.prototype.setLocation(new PointF(40, 35));
 	}
 	
