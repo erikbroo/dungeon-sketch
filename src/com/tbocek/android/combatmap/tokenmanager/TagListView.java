@@ -89,6 +89,10 @@ public class TagListView extends ScrollView {
 		}
 	}
 	
+	public String getTag() {
+		return this.highlightedText;
+	}
+	
 	public View.OnDragListener mOnDrag = new View.OnDragListener() {
 		@Override
 		public boolean onDrag(View view, DragEvent event) {

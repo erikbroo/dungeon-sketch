@@ -15,11 +15,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnDragListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,7 +39,7 @@ public class TokenManager extends Activity {
 	
     private ScrollView scrollView;
     
-    private ImageView trashButton;
+    private TokenDeleteButton trashButton;
     
     private TagListView.OnTagListActionListener onTagListActionListener = new TagListView.OnTagListActionListener() {
 		@Override
@@ -56,28 +58,7 @@ public class TokenManager extends Activity {
 		}
     };
     
-    private OnDragListener onDragToTrashCanListener = new OnDragListener() {
-		@Override
-		public boolean onDrag(View view, DragEvent event) {
-			Log.d("DRAG", Integer.toString(event.getAction()));
-			ImageView iv = (ImageView) view;
-			if (event.getAction() == DragEvent.ACTION_DROP) {
-				//TODO: Open a menu
-			}
-			else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-				iv.setImageResource(R.drawable.trashcan_hover_over);
-				return true;
-			}
-			else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
-				iv.setImageResource(R.drawable.trashcan);
-				return true;
-			}
-			else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-				return true;
-			}
-			return true;
-		}
-    };
+ 
     
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,13 +68,14 @@ public class TokenManager extends Activity {
     	tagListView = new TagListView(this);
     	tagListView.setOnTagListActionListener(onTagListActionListener);
     	
+    	trashButton = new TokenDeleteButton(this);
+    	this.registerForContextMenu(trashButton);
+    	((FrameLayout)this.findViewById(R.id.token_manager_delete_button_frame)).addView(trashButton);
+    	
+    	
     	FrameLayout tagListFrame = (FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
     	tagListFrame.addView(tagListView);
     	
-    	trashButton = (ImageView) this.findViewById(R.id.token_manager_delete_button);
-    	trashButton.setImageResource(R.drawable.trashcan);
-    	trashButton.setOnDragListener(this.onDragToTrashCanListener);
- 
     	scrollView = (ScrollView) this.findViewById(R.id.token_manager_scroll_view);
     	
     }
@@ -105,6 +87,7 @@ public class TokenManager extends Activity {
 	private int getHeight() {
 		return this.getWindowManager().getDefaultDisplay().getHeight();
 	}
+
 	
 	@Override
 	public void onResume() {
@@ -188,5 +171,17 @@ public class TokenManager extends Activity {
 			}, "New Tag", "Create");
     	}
     	return null;
+    }
+    
+	
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenuInfo menuInfo) {
+      	if (v == this.trashButton) {
+      		menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE, "Delete Token");
+      		if (this.tagListView.getTag() != TagListView.ALL) {
+      			menu.add(Menu.NONE, R.id.token_delete_from_tag, Menu.NONE, "Remove '" + tagListView.getTag() + "' Tag");
+      		}
+      	}
     }
 }

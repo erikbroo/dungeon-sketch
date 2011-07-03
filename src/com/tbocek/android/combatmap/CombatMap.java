@@ -371,13 +371,6 @@ public class CombatMap extends Activity {
     }
     
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenuInfo menuInfo) {
-      super.onCreateContextMenu(menu, v, menuInfo);
-
-    }
-    
-    @Override
     public boolean onContextItemSelected(MenuItem item) {
     	return mCombatView.onContextItemSelected(item);
     }

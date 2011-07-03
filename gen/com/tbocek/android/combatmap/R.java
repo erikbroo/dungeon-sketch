@@ -57,12 +57,14 @@ public final class R {
         public static final int token_context_size_quarter=0x7f070021;
         public static final int token_context_size_tenth=0x7f070020;
         public static final int token_context_size_two=0x7f070024;
-        public static final int token_image_creator_accept=0x7f070027;
-        public static final int token_image_creator_pick=0x7f070026;
+        public static final int token_delete_entire_token=0x7f070027;
+        public static final int token_delete_from_tag=0x7f070026;
+        public static final int token_image_creator_accept=0x7f070029;
+        public static final int token_image_creator_pick=0x7f070028;
         public static final int token_manager_button=0x7f070012;
-        public static final int token_manager_delete_button=0x7f07000b;
-        public static final int token_manager_new_tag=0x7f070029;
-        public static final int token_manager_new_token=0x7f070028;
+        public static final int token_manager_delete_button_frame=0x7f07000b;
+        public static final int token_manager_new_tag=0x7f07002b;
+        public static final int token_manager_new_token=0x7f07002a;
         public static final int token_manager_scroll_view=0x7f07000d;
         public static final int token_manager_taglist_frame=0x7f07000c;
         public static final int token_scroll_view=0x7f070010;
@@ -84,8 +86,9 @@ public final class R {
         public static final int combat_map_menu=0x7f060000;
         public static final int save_file_context_menu=0x7f060001;
         public static final int token_context_menu=0x7f060002;
-        public static final int token_image_creator=0x7f060003;
-        public static final int token_manager_menu=0x7f060004;
+        public static final int token_delete_menu=0x7f060003;
+        public static final int token_image_creator=0x7f060004;
+        public static final int token_manager_menu=0x7f060005;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
