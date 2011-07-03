@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="New Token" android:id="@+id/token_manager_new_token" android:showAsAction="always|withText"></item>
+    <item android:id="@+id/token_manager_new_tag" android:title="New Tag" android:showAsAction="ifRoom|withText"></item>
+</menu>
