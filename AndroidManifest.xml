@@ -17,7 +17,9 @@
 				  android:label="Settings"></activity>
 		<activity android:name="com.tbocek.android.combatmap.Load"
 				  android:label="Load"></activity>		
-		<activity android:name="com.tbocek.android.combatmap.TokenCreator"
-				  android:label="Token Creator"></activity>				  
+		<activity android:name="com.tbocek.android.combatmap.tokenmanager.TokenCreator"
+				  android:label="Token Creator"></activity>	
+        <activity android:name="com.tbocek.android.combatmap.tokenmanager.TokenManager"
+				  android:label="Token Creator"></activity>					  
     </application>
 </manifest>
