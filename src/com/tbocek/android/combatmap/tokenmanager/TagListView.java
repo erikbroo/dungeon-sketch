@@ -103,7 +103,7 @@ public class TagListView extends ScrollView {
 				return true;
 			}
 			else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-				tv.setTextColor(Color.YELLOW);
+				tv.setTextColor(Color.rgb(41, 162, 255));
 				return true;
 			}
 			else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {

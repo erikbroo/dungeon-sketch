@@ -12,11 +12,15 @@ import com.tbocek.android.combatmap.view.TokenButton;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnDragListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 public class TokenManager extends Activity {
     private static final int DIALOG_ID_NEW_TOKEN = 0;
@@ -51,6 +56,29 @@ public class TokenManager extends Activity {
 		}
     };
     
+    private OnDragListener onDragToTrashCanListener = new OnDragListener() {
+		@Override
+		public boolean onDrag(View view, DragEvent event) {
+			Log.d("DRAG", Integer.toString(event.getAction()));
+			ImageView iv = (ImageView) view;
+			if (event.getAction() == DragEvent.ACTION_DROP) {
+				//TODO: Open a menu
+			}
+			else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+				iv.setImageResource(R.drawable.trashcan_hover_over);
+				return true;
+			}
+			else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
+				iv.setImageResource(R.drawable.trashcan);
+				return true;
+			}
+			else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+				return true;
+			}
+			return true;
+		}
+    };
+    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,6 +92,7 @@ public class TokenManager extends Activity {
     	
     	trashButton = (ImageView) this.findViewById(R.id.token_manager_delete_button);
     	trashButton.setImageResource(R.drawable.trashcan);
+    	trashButton.setOnDragListener(this.onDragToTrashCanListener);
  
     	scrollView = (ScrollView) this.findViewById(R.id.token_manager_scroll_view);
     	
