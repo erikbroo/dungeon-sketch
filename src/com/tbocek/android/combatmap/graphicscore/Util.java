@@ -18,6 +18,12 @@ public final class Util {
 	public static List<Integer> getStandardColorPalette() {
 		List<Integer> palette = new ArrayList<Integer>();
 		
+		palette.add(Color.WHITE);
+		palette.add(Color.LTGRAY);
+		palette.add(Color.GRAY);
+		palette.add(Color.DKGRAY);
+		palette.add(Color.BLACK);
+		
 		for (int h = 0; h < 360; h += 30) {
 			float [] hsv = {h, 1, 1};
 			palette.add(Color.HSVToColor(hsv));
@@ -32,13 +38,7 @@ public final class Util {
 			float [] hsv = {h, 1, .5f};
 			palette.add(Color.HSVToColor(hsv));
 		}
-		
-		palette.add(Color.WHITE);
-		palette.add(Color.LTGRAY);
-		palette.add(Color.GRAY);
-		palette.add(Color.DKGRAY);
-		palette.add(Color.BLACK);
-		
+
 		return palette;
 	}
 }

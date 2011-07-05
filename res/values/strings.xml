@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, CombatMap!</string>
-    <string name="app_name">CombatMap</string>
+    <string name="app_name">Dungeon Sketch</string>
     <string name="preferences">com.tbocek.combatmap_preferences</string>
     <string name="save">Save</string>
 </resources>

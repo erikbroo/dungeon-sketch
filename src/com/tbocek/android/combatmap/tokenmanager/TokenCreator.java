@@ -50,7 +50,8 @@ public class TokenCreator extends Activity {
     	case R.id.token_image_creator_accept:
     		//view.setImage(new BitmapDrawable(view.getClippedBitmap()));
     		try {
-    			saveToInternalImage(Integer.toString(new Random().nextInt()));
+    			//TODO: Pick a better filename, at least try to guarantee no clashes.
+    			saveToInternalImage(Integer.toString(Math.abs(new Random().nextInt())));
     			setResult(Activity.RESULT_OK);
     			finish();
     		} catch (IOException e) {
@@ -60,6 +61,8 @@ public class TokenCreator extends Activity {
     	}
 		return false;
     }
+    
+    
 
 	private void startImageSelectorActivity() {
 		startActivityForResult(new Intent(
@@ -71,7 +74,7 @@ public class TokenCreator extends Activity {
     private void saveToInternalImage(String name) throws IOException {
    		Bitmap bitmap = view.getClippedBitmap();
    		if (bitmap == null) return;
-		new DataManager(this.getApplicationContext()).saveImage(name, bitmap);
+		new DataManager(this.getApplicationContext()).saveTokenImage(name, bitmap);
 	}
 
 	@Override

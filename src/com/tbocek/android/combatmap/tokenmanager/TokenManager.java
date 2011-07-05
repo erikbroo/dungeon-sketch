@@ -3,6 +3,7 @@ package com.tbocek.android.combatmap.tokenmanager;
 import java.io.IOException;
 import java.util.Collection;
 
+import com.tbocek.android.combatmap.DataManager;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
@@ -31,6 +32,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TokenManager extends Activity {
     private static final int DIALOG_ID_NEW_TOKEN = 0;
@@ -44,12 +46,9 @@ public class TokenManager extends Activity {
     private TagListView.OnTagListActionListener onTagListActionListener = new TagListView.OnTagListActionListener() {
 		@Override
 		public void onChangeSelectedTag(String newTag) {
-			scrollView.removeAllViews();
-			if (newTag == TagListView.ALL)
-				scrollView.addView(getTokenButtonLayout(tokenDatabase.getAllTokens()));
-			else
-				scrollView.addView(getTokenButtonLayout(tokenDatabase.getTokensForTag(newTag)));
+			reloadScrollView(newTag);
 		}
+
 
 		@Override
 		public void onDragTokenToTag(BaseToken token, String tag) {
@@ -58,8 +57,14 @@ public class TokenManager extends Activity {
 		}
     };
     
- 
-    
+	private void reloadScrollView(String tag) {
+		scrollView.removeAllViews();
+		if (tag == TagListView.ALL)
+			scrollView.addView(getTokenButtonLayout(tokenDatabase.getAllTokens()));
+		else
+			scrollView.addView(getTokenButtonLayout(tokenDatabase.getTokensForTag(tag)));
+	}
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -178,10 +183,37 @@ public class TokenManager extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenuInfo menuInfo) {
       	if (v == this.trashButton) {
-      		menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE, "Delete Token");
+      		if (!this.trashButton.managedToken.isBuiltIn()) {
+      			menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE, "Delete Token");
+      		}
       		if (this.tagListView.getTag() != TagListView.ALL) {
       			menu.add(Menu.NONE, R.id.token_delete_from_tag, Menu.NONE, "Remove '" + tagListView.getTag() + "' Tag");
       		}
       	}
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case R.id.token_delete_entire_token:
+    		BaseToken token = this.trashButton.managedToken;
+    		this.tokenDatabase.removeToken(token);
+    		try {
+    			token.maybeDeletePermanently();
+    			reloadScrollView(this.tagListView.getTag());
+    		} catch (IOException e) {
+    			Toast toast = Toast.makeText(this.getApplicationContext(), "Did not delete the token, probably because the external storage isn't writable." + e.toString(), Toast.LENGTH_LONG);
+    			toast.show();	
+    		}
+    		return true;
+    	case R.id.token_delete_from_tag:
+    		token = this.trashButton.managedToken;
+    		String tag = this.tagListView.getTag();
+    		this.tokenDatabase.removeTagFromToken(token.getTokenId(), tag);
+    		reloadScrollView(tag);
+    		return true;
+    	default:
+    		return super.onContextItemSelected(item);	
+    	}
     }
 }

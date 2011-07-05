@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -132,5 +133,13 @@ public abstract class BaseToken implements Serializable{
 	
 	public Set<String> getDefaultTags() {
 		return new HashSet<String>();
+	}
+	
+	public boolean maybeDeletePermanently() throws IOException {
+		return false;
+	}
+
+	public boolean isBuiltIn() {
+		return true;
 	}
 }

@@ -17,13 +17,28 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int dragongirl_dragontigernight=0x7f020000;
-        public static final int icon=0x7f020001;
-        public static final int orc2_libmed=0x7f020002;
-        public static final int orc_libmed=0x7f020003;
-        public static final int pencil=0x7f020004;
-        public static final int trashcan=0x7f020005;
-        public static final int trashcan_hover_over=0x7f020006;
+        public static final int cheetah=0x7f020000;
+        public static final int cougar=0x7f020001;
+        public static final int cute_horses=0x7f020002;
+        public static final int dog=0x7f020003;
+        public static final int dogs=0x7f020004;
+        public static final int douchy_guy=0x7f020005;
+        public static final int dragongirl_dragontigernight=0x7f020006;
+        public static final int fox=0x7f020007;
+        public static final int icon=0x7f020008;
+        public static final int lamb=0x7f020009;
+        public static final int lion=0x7f02000a;
+        public static final int orc2_libmed=0x7f02000b;
+        public static final int orc_libmed=0x7f02000c;
+        public static final int pencil=0x7f02000d;
+        public static final int pig=0x7f02000e;
+        public static final int rad_stag=0x7f02000f;
+        public static final int stag2=0x7f020010;
+        public static final int swan=0x7f020011;
+        public static final int tiger1=0x7f020012;
+        public static final int tiger2=0x7f020013;
+        public static final int trashcan=0x7f020014;
+        public static final int trashcan_hover_over=0x7f020015;
     }
     public static final class id {
         public static final int black_pencil=0x7f070006;

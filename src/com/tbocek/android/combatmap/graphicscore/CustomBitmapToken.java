@@ -29,7 +29,7 @@ public class CustomBitmapToken extends DrawableToken {
 		if (dataManager == null) return null;
 		Bitmap b;
 		try {
-			b = dataManager.loadImage(filename);
+			b = dataManager.loadTokenImage(filename);
 			return new BitmapDrawable(b);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -52,5 +52,16 @@ public class CustomBitmapToken extends DrawableToken {
 		s.add("custom");
 		s.add("image");
 		return s;
+	}
+	
+	@Override
+	public boolean maybeDeletePermanently() throws IOException {
+		dataManager.deleteTokenImage(filename);
+		return true;
+	}
+	
+	@Override
+	public boolean isBuiltIn() {
+		return false;
 	}
 }

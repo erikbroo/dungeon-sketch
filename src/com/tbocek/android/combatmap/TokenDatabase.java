@@ -30,7 +30,6 @@ import com.tbocek.android.combatmap.graphicscore.Util;
 public class TokenDatabase implements Serializable {
 	public Map<String, Set<String>> tokensForTag = new HashMap<String, Set<String>>();
 	public Map<String, Set<String>> tagsForToken = new HashMap<String, Set<String>>();
-	public Set<String> validTokenIds = new HashSet<String>();
 	public transient Map<String, BaseToken> tokenForId = new HashMap<String, BaseToken>();
 	
 	/**
@@ -41,11 +40,9 @@ public class TokenDatabase implements Serializable {
 	 */
 	public void addToken(BaseToken token) {
 		tokenForId.put(token.getTokenId(), token);
-		validTokenIds.add(token.getTokenId());
 	}
 	
 	public void tagToken(String tokenId, Set<String> tags) {
-		validTokenIds.add(tokenId); // We've seen this token ID
 		for (String tag: tags) {
 			if (!tokensForTag.containsKey(tag)) {
 				tokensForTag.put(tag, new HashSet<String>());
@@ -174,9 +171,28 @@ public class TokenDatabase implements Serializable {
 	}
 
 	private void loadBuiltInImageTokens() {
-		addTokenPrototype(new BuiltInImageToken(R.drawable.dragongirl_dragontigernight));
-		addTokenPrototype(new BuiltInImageToken(R.drawable.orc_libmed));
-		addTokenPrototype(new BuiltInImageToken(R.drawable.orc2_libmed));
+		addBuiltin(R.drawable.dragongirl_dragontigernight);
+		addBuiltin(R.drawable.orc_libmed);
+		addBuiltin(R.drawable.orc2_libmed);
+		addBuiltin(R.drawable.cheetah);
+		addBuiltin(R.drawable.cougar);
+		addBuiltin(R.drawable.cute_horses);
+		addBuiltin(R.drawable.dog);
+		addBuiltin(R.drawable.dogs);
+		addBuiltin(R.drawable.douchy_guy);
+		addBuiltin(R.drawable.fox);
+		addBuiltin(R.drawable.lamb);
+		addBuiltin(R.drawable.lion);
+		addBuiltin(R.drawable.pig);
+		addBuiltin(R.drawable.rad_stag);
+		addBuiltin(R.drawable.stag2);
+		addBuiltin(R.drawable.swan);
+		addBuiltin(R.drawable.tiger1);
+		addBuiltin(R.drawable.tiger2);
+	}
+
+	private void addBuiltin(int resourceId) {
+		addTokenPrototype(new BuiltInImageToken(resourceId));
 	}
 
 	private void loadColorTokens() {
@@ -212,6 +228,20 @@ public class TokenDatabase implements Serializable {
 		addTokenPrototype(new LetterToken("X"));
 		addTokenPrototype(new LetterToken("Y"));
 		addTokenPrototype(new LetterToken("Z"));
+	}
+
+	public void removeTagFromToken(String tokenId, String tag) {
+		this.tagsForToken.get(tokenId).remove(tag);
+		this.tokensForTag.get(tag).remove(tokenId);
+		
+	}
+
+	public void removeToken(BaseToken token) {
+		for (String tag : tagsForToken.get(token.getTokenId())) {
+			tokensForTag.get(tag).remove(token.getTokenId());
+		}
+		tagsForToken.remove(token.getTokenId());
+		tokenForId.remove(token.getTokenId());
 	}
 
 

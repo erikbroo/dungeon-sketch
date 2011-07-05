@@ -29,8 +29,8 @@ public class TokenDeleteButton extends ImageView {
 		public boolean onDrag(View view, DragEvent event) {
 			Log.d("DRAG", Integer.toString(event.getAction()));
 			ImageView iv = (ImageView) view;
+			BaseToken t = (BaseToken) event.getLocalState();
 			if (event.getAction() == DragEvent.ACTION_DROP) {
-				BaseToken t = (BaseToken) event.getLocalState();
 				managedToken = t;
 				iv.showContextMenu();			
 				iv.setImageResource(R.drawable.trashcan);
