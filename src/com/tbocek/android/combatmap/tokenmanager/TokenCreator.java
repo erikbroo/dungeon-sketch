@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.tokenmanager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Random;
 
 import com.tbocek.android.combatmap.DataManager;
@@ -48,10 +49,12 @@ public class TokenCreator extends Activity {
             startImageSelectorActivity();
     		return true;
     	case R.id.token_image_creator_accept:
-    		//view.setImage(new BitmapDrawable(view.getClippedBitmap()));
     		try {
-    			//TODO: Pick a better filename, at least try to guarantee no clashes.
-    			saveToInternalImage(Integer.toString(Math.abs(new Random().nextInt())));
+    			// Pick a filename based on the current date and time.  This ensures
+    			// that the tokens load in the order added.
+    			Date now = new Date();
+    			String filename = Long.toString(now.getTime());
+    			saveToInternalImage(filename);
     			setResult(Activity.RESULT_OK);
     			finish();
     		} catch (IOException e) {
