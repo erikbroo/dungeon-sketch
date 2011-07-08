@@ -1,6 +1,10 @@
 package com.tbocek.android.combatmap.view;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
@@ -27,6 +31,8 @@ public class TokenSelectorView extends LinearLayout {
 	Button groupSelector;
 	Button tokenManager;
 	
+	Map<BaseToken, View> cachedViews = new HashMap<BaseToken, View>();
+	
 	public TokenSelectorView(Context context) {
 		super(context);
 		LayoutInflater.from(context).inflate(R.layout.token_selector, this);
@@ -41,11 +47,14 @@ public class TokenSelectorView extends LinearLayout {
 	
 
 	
-	public void addTokenPrototype(BaseToken prototype) {
+	public View createTokenPrototype(BaseToken prototype) {
+		if (cachedViews.containsKey(prototype)) return cachedViews.get(prototype);
+		
 		TokenButton b = new TokenButton(this.getContext(), prototype);
 		b.setOnClickListener(onClickListener);
 		b.setLayoutParams(new LinearLayout.LayoutParams(80, 80));
-		tokenLayout.addView(b);
+		cachedViews.put(prototype, b);
+		return b;
 	}
 	
 	private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -83,18 +92,21 @@ public class TokenSelectorView extends LinearLayout {
 
 	public void setTokenDatabase(TokenDatabase tokenDatabase) {
 		this.tokenDatabase = tokenDatabase;
-		tokenLayout.removeAllViews();
-		for (BaseToken token : tokenDatabase.getAllTokens()) {
-			addTokenPrototype(token);
-		}
+		setTokenList(tokenDatabase.getAllTokens());
 	}
 
 
 
 	public void setSelectedTags(List<String> checkedTags) {
+		setTokenList(tokenDatabase.tokensForTags(checkedTags));
+	}
+	
+	public void setTokenList(Collection<BaseToken> tokens) {
 		tokenLayout.removeAllViews();
-		for (BaseToken token : tokenDatabase.tokensForTags(checkedTags)) {
-			addTokenPrototype(token);
+		List<View> toAdd = new ArrayList<View>();
+		for (BaseToken token : tokens) {
+			tokenLayout.addView(createTokenPrototype(token));
 		}
+		
 	}
 }

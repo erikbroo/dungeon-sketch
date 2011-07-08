@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Button;
+import android.widget.ImageView;
 
 /**
  * Represents a button that contains a prototype for a token.  Draws the button based on the token's prototype,
@@ -17,7 +18,7 @@ import android.widget.Button;
  * @author Tim
  *
  */
-public class TokenButton extends Button {
+public class TokenButton extends ImageView {
 	BaseToken prototype;
 	private GestureDetector gestureDetector;
 	

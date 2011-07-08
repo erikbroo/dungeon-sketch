@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -142,7 +143,9 @@ public class CombatMap extends Activity {
         mTokenCategorySelector.setOnCheckedListChangedListener(new TokenCategorySelector.OnCheckedListChangedListener() {	
 			@Override
 			public void onCheckedChanged(List<String> checkedTags) {
+				Debug.startMethodTracing("setSelectedTags");
 				mTokenSelector.setSelectedTags(checkedTags);
+				Debug.stopMethodTracing();
 			}
 		});
         
@@ -351,23 +354,6 @@ public class CombatMap extends Activity {
 			}, "Save Map", "Save");
     	}
     	return null;
-    }
-    
-    private void loadImages() {
-    	//TODO: Use a worker thread here.
-    	
-    	// Make sure we can read the internal storage
-    	if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-    		return;
-    	}
-    	
-    	// Make sure the TOKEN_IMAGE_DIRECTORY exists, creating it if necessary
-    	File tokenImageDirectory = new File(TOKEN_IMAGE_DIRECTORY);
-    	tokenImageDirectory.mkdirs();
-
-    	for (File file: tokenImageDirectory.listFiles()) {
-    		
-    	}
     }
     
     @Override

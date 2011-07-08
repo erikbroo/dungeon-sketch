@@ -102,13 +102,24 @@ public abstract class BaseToken implements Serializable{
 		return r;
 	}
 	
+	//OPTIMIZATIONS FOR TOKEN ID
+	//TODO: get rid of this optimization if thread safety is needed.
+	private static StringBuffer concatbuffer = new StringBuffer(1024);
+	private String cachedTokenId = null;
+	
 	/**
 	 * Gets a unique identifier incorporating the token's type and a further differentiator depending
 	 * on the type
 	 * @return
 	 */
 	public String getTokenId() {
-		return this.getClass().getName() + getTokenClassSpecificId();
+		if (cachedTokenId == null) {
+			concatbuffer.setLength(0);
+			concatbuffer.append(this.getClass().getName());
+			concatbuffer.append(getTokenClassSpecificId());
+			cachedTokenId = concatbuffer.toString();
+		}
+		return cachedTokenId;
 	}
 
 	/**

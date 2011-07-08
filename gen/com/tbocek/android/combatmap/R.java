@@ -74,8 +74,8 @@ public final class R {
         public static final int token_context_size_two=0x7f070024;
         public static final int token_delete_entire_token=0x7f070027;
         public static final int token_delete_from_tag=0x7f070026;
-        public static final int token_image_creator_accept=0x7f070029;
-        public static final int token_image_creator_pick=0x7f070028;
+        public static final int token_image_creator_accept=0x7f070028;
+        public static final int token_image_creator_pick=0x7f070029;
         public static final int token_manager_button=0x7f070012;
         public static final int token_manager_delete_button_frame=0x7f07000b;
         public static final int token_manager_new_tag=0x7f07002b;
