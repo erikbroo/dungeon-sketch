@@ -1,11 +1,20 @@
 package com.tbocek.android.combatmap;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +41,8 @@ public class TokenDatabase implements Serializable {
 	public Map<String, Set<String>> tagsForToken = new HashMap<String, Set<String>>();
 	public transient Map<String, BaseToken> tokenForId = new HashMap<String, BaseToken>();
 	
+	private static final String FILE_DELIMITER="`";
+	
 	/**
 	 * Adds a token to the database, signaling its availability to link to a token ID.
 	 * There may be tokens represented in the database that are not attached to an actual token.
@@ -42,7 +53,7 @@ public class TokenDatabase implements Serializable {
 		tokenForId.put(token.getTokenId(), token);
 	}
 	
-	public void tagToken(String tokenId, Set<String> tags) {
+	public void tagToken(String tokenId, Collection<String> tags) {
 		for (String tag: tags) {
 			if (!tokensForTag.containsKey(tag)) {
 				tokensForTag.put(tag, new HashSet<String>());
@@ -155,19 +166,46 @@ public class TokenDatabase implements Serializable {
 	
 	public void save(Context context) throws IOException {
 		FileOutputStream output = context.openFileOutput("token_database", Context.MODE_PRIVATE);
-		ObjectOutputStream objectOut = new ObjectOutputStream(output);
-		objectOut.writeObject(this);
-		objectOut.close();
+		BufferedWriter dataOut = new BufferedWriter(new OutputStreamWriter(output));
+		save(dataOut);
+		dataOut.close();
 	}
 	
+	private void save(BufferedWriter output) throws IOException {
+		for (String tokenName : this.tagsForToken.keySet()) {
+			output.write(tokenName);
+			output.write(FILE_DELIMITER);
+			for(String tag : this.tagsForToken.get(tokenName)) {
+				output.write(tag);
+				output.write(FILE_DELIMITER);
+			}
+			output.newLine();
+		}
+	}
+
 	public static TokenDatabase load(Context context) throws IOException, ClassNotFoundException {
-		FileInputStream input = context.openFileInput("token_database");
-		ObjectInputStream objectIn = new ObjectInputStream(input);
-		TokenDatabase d = (TokenDatabase) objectIn.readObject();
-		objectIn.close();
-		d.tokenForId = new HashMap<String, BaseToken>();
+		TokenDatabase d = new TokenDatabase();
 		d.populate(new DataManager(context));
+		
+		FileInputStream input = context.openFileInput("token_database");
+		BufferedReader dataIn = new BufferedReader(new InputStreamReader(input));
+		d.load(dataIn);
+		dataIn.close();
+		
 		return d;
+	}
+
+	private void load(BufferedReader dataIn) throws IOException {
+		String line;
+		while ((line = dataIn.readLine()) != null) {
+			String[] tokens = line.split(FILE_DELIMITER);
+			String tokenId = tokens[0];
+			ArrayList<String> tags = new ArrayList<String>();
+			for (int i = 1; i < tokens.length; ++i) {
+				tags.add(tokens[i]);
+			}
+			this.tagToken(tokenId, tags);
+		}
 	}
 
 	private void loadBuiltInImageTokens() {
