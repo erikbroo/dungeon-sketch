@@ -15,6 +15,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
@@ -68,6 +69,8 @@ public class TokenManager extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Debug.startMethodTracing("tokenmanager");
+		
 		setContentView(R.layout.token_manager_layout);
 		
     	tagListView = new TagListView(this);
@@ -101,11 +104,13 @@ public class TokenManager extends Activity {
     		tokenDatabase = TokenDatabase.load(this.getApplicationContext());
     	} catch (Exception e) {
     		tokenDatabase = new TokenDatabase();
+    		tokenDatabase.populate(new DataManager(this));
     	}
     	
     	tagListView.setTagList(tokenDatabase.getTags());
     	scrollView.removeAllViews();
     	scrollView.addView(getTokenButtonLayout(tokenDatabase.getAllTokens()));
+    	Debug.stopMethodTracing();
 	}
 	
 	@Override

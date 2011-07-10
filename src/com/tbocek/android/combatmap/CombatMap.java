@@ -183,6 +183,7 @@ public class CombatMap extends Activity {
     		tokenDatabase = TokenDatabase.load(this.getApplicationContext());
     	} catch (Exception e) {
     		tokenDatabase = new TokenDatabase();
+    		tokenDatabase.populate(new DataManager(this));
     	}
         mTokenCategorySelector.setTokenDatabase(tokenDatabase);
         mTokenSelector.setTokenDatabase(tokenDatabase);
