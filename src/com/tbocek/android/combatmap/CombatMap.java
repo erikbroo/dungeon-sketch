@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -140,10 +141,15 @@ public class CombatMap extends Activity {
         
         mTokenCategorySelector = new TokenCategorySelector(this);
         mTokenCategorySelector.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT));
-        mTokenCategorySelector.setOnCheckedListChangedListener(new TokenCategorySelector.OnCheckedListChangedListener() {	
+        mTokenCategorySelector.setOnCheckedListChangedListener(new TokenCategorySelector.OnTagSelectedListener() {	
 			@Override
-			public void onCheckedChanged(List<String> checkedTags) {
+			public void onTagSelected(String checkedTag) {
 				Debug.startMethodTracing("setSelectedTags");
+				
+				//TODO(tbocek): Refactor so this conversion isn't needed.
+				List<String> checkedTags = new ArrayList<String>(1);
+				checkedTags.add(checkedTag);
+				
 				mTokenSelector.setSelectedTags(checkedTags);
 				Debug.stopMethodTracing();
 			}
