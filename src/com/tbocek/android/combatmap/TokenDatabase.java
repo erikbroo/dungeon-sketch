@@ -43,6 +43,27 @@ public class TokenDatabase implements Serializable {
 	
 	private static final String FILE_DELIMITER="`";
 	
+	private TokenDatabase() {}
+	
+	private static TokenDatabase instance;
+	
+	/**
+	 * Returns the instance of the token manager
+	 * @param context A context to use when loading data if needed.
+	 * @return
+	 */
+	public static TokenDatabase getInstance(Context context) {
+		if (instance == null) {
+	    	try {
+	    		instance = TokenDatabase.load(context);
+	    	} catch (Exception e) {
+	    		instance = new TokenDatabase();
+	    		instance.populate(new DataManager(context));
+	    	}
+		}
+		return instance;
+	}
+	
 	/**
 	 * Adds a token to the database, signaling its availability to link to a token ID.
 	 * There may be tokens represented in the database that are not attached to an actual token.

@@ -48,7 +48,7 @@ public class CombatMap extends Activity {
 	private DrawOptionsView mDrawOptionsView;
 	private TokenCategorySelector mTokenCategorySelector;
 	private static MapData mData;
-	private TokenDatabase tokenDatabase = new TokenDatabase();
+	private TokenDatabase tokenDatabase;
 	
 	private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener = new TokenSelectorView.OnTokenSelectedListener() {
 		@Override
@@ -185,12 +185,7 @@ public class CombatMap extends Activity {
     	
     	mCombatView.invalidate();
     
-    	try {
-    		tokenDatabase = TokenDatabase.load(this.getApplicationContext());
-    	} catch (Exception e) {
-    		tokenDatabase = new TokenDatabase();
-    		tokenDatabase.populate(new DataManager(this));
-    	}
+    	tokenDatabase = TokenDatabase.getInstance(this);
         mTokenCategorySelector.setTokenDatabase(tokenDatabase);
         mTokenSelector.setTokenDatabase(tokenDatabase);
     }

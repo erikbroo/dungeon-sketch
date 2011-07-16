@@ -98,12 +98,14 @@ public class DataManager {
 		getTokenImageDir().mkdirs();
 	}
 	
-	public void saveTokenImage(String name, Bitmap image) throws IOException {
-		FileOutputStream s = new FileOutputStream(getTokenImageFile(name + IMAGE_EXTENSION));
+	public String saveTokenImage(String name, Bitmap image) throws IOException {
+		String filename = name + IMAGE_EXTENSION;
+		FileOutputStream s = new FileOutputStream(getTokenImageFile(filename));
 		BufferedOutputStream buf = new BufferedOutputStream(s);
 		image.compress(Bitmap.CompressFormat.JPEG, 75, buf);
 		buf.close();
 		s.close();
+		return filename;
 	}
 	
 	public void savePreviewImage(String name, Bitmap preview) throws IOException {

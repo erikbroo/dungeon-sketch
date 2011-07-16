@@ -100,13 +100,7 @@ public class TokenManager extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-    	try {
-    		tokenDatabase = TokenDatabase.load(this.getApplicationContext());
-    	} catch (Exception e) {
-    		tokenDatabase = new TokenDatabase();
-    		tokenDatabase.populate(new DataManager(this));
-    	}
-    	
+    	tokenDatabase = TokenDatabase.getInstance(this);
     	tagListView.setTagList(tokenDatabase.getTags());
     	scrollView.removeAllViews();
     	scrollView.addView(getTokenButtonLayout(tokenDatabase.getAllTokens()));

@@ -7,8 +7,11 @@ import java.util.Random;
 
 import com.tbocek.android.combatmap.DataManager;
 import com.tbocek.android.combatmap.R;
+import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.R.id;
 import com.tbocek.android.combatmap.R.menu;
+import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.graphicscore.CustomBitmapToken;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -54,7 +57,14 @@ public class TokenCreator extends Activity {
     			// that the tokens load in the order added.
     			Date now = new Date();
     			String filename = Long.toString(now.getTime());
-    			saveToInternalImage(filename);
+    			filename = saveToInternalImage(filename);
+    			
+    			// Add this token to the token database
+    			TokenDatabase tokenDatabase = TokenDatabase.getInstance(this);
+    			BaseToken t = new CustomBitmapToken(filename);
+    			tokenDatabase.addToken(t);
+    			tokenDatabase.tagToken(t, t.getDefaultTags());
+    			
     			setResult(Activity.RESULT_OK);
     			finish();
     		} catch (IOException e) {
@@ -74,10 +84,16 @@ public class TokenCreator extends Activity {
 		    PICK_IMAGE_REQUEST);
 	}
     
-    private void saveToInternalImage(String name) throws IOException {
+	/**
+	 * 
+	 * @param name
+	 * @return The filename that was saved to.
+	 * @throws IOException
+	 */
+    private String saveToInternalImage(String name) throws IOException {
    		Bitmap bitmap = view.getClippedBitmap();
-   		if (bitmap == null) return;
-		new DataManager(this.getApplicationContext()).saveTokenImage(name, bitmap);
+   		if (bitmap == null) return null;
+		return new DataManager(this.getApplicationContext()).saveTokenImage(name, bitmap);
 	}
 
 	@Override
