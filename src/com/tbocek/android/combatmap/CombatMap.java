@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -117,6 +118,7 @@ public class CombatMap extends Activity {
         mTokenSelector.setOnClickTokenManagerListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				Debug.startMethodTracing("tokenmanager");
 				startActivity(new Intent(CombatMap.this, TokenManager.class));
 			}
         });
@@ -212,26 +214,46 @@ public class CombatMap extends Activity {
     		setFilenamePreference("tmp");
     		filename = "tmp";
     	}
-    	saveMap(filename);
 
-    	try {
-			tokenDatabase.save(this.getApplicationContext());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    	Thread saveThread = new Thread(new MapSaver(filename, this.getApplicationContext()));
+    	saveThread.setPriority(1);
+    	saveThread.start();
+    }
+    
+    private class MapSaver implements Runnable {
+    	private String filename;
+		private Context context;
+		public MapSaver(String filename, Context context) {
+    		this.filename = filename;
+    		this.context = context;
+    	}
+		@Override
+		public void run() {
+			// Force a sleep to allow the UI to remain responsive
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
+	    	try {
+	    		DataManager dm = new DataManager(context);
+	    		dm.saveMapName(filename);
+	    		dm.savePreviewImage(filename, mCombatView.getPreview());
+	    	} catch (Exception e) {
+				MapData.clear();
+		    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		    	// Persist the filename that we saved to so that we can load from that file again.
+		    	Editor editor = sharedPreferences.edit();
+		    	editor.putString("filename", null);
+		    	editor.commit();
+		    	// TODO: open a toast
+	    	}			
 		}
     }
     
     private void saveMap(String name) {
-	    	try {
-	    		DataManager dm = new DataManager(getApplicationContext());
-	    		dm.saveMapName(name);
-	    		dm.savePreviewImage(name, mCombatView.getPreview());
-	    	} catch (Exception e) {
-				reportIOException(e, "save");
-				MapData.clear();
-				setFilenamePreference(null);
-	    	}
+
     }
     
 	public void loadMap(String name) {

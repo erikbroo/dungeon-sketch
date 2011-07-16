@@ -69,7 +69,6 @@ public class TokenManager extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Debug.startMethodTracing("tokenmanager");
 		
 		setContentView(R.layout.token_manager_layout);
 		
