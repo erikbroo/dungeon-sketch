@@ -102,8 +102,6 @@ public class TokenManager extends Activity {
 		super.onResume();
     	tokenDatabase = TokenDatabase.getInstance(this);
     	tagListView.setTagList(tokenDatabase.getTags());
-    	scrollView.removeAllViews();
-    	scrollView.addView(getTokenButtonLayout(tokenDatabase.getAllTokens()));
     	Debug.stopMethodTracing();
 	}
 	
