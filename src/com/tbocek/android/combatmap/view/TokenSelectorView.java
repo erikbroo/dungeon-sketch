@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
@@ -31,8 +30,8 @@ public class TokenSelectorView extends LinearLayout {
 	Button groupSelector;
 	Button tokenManager;
 	
-	Map<BaseToken, View> cachedViews = new HashMap<BaseToken, View>();
-	
+	TokenViewFactory mTokenViewFactory;
+
 	public TokenSelectorView(Context context) {
 		super(context);
 		LayoutInflater.from(context).inflate(R.layout.token_selector, this);
@@ -43,17 +42,18 @@ public class TokenSelectorView extends LinearLayout {
 		
 		groupSelector = (Button)findViewById(R.id.token_category_selector_button);
 		tokenManager = (Button)findViewById(R.id.token_manager_button);
+		
+		mTokenViewFactory = new TokenViewFactory(context);
 	}
 	
 
 	
 	public View createTokenPrototype(BaseToken prototype) {
-		if (cachedViews.containsKey(prototype)) return cachedViews.get(prototype);
+
 		
-		TokenButton b = new TokenButton(this.getContext(), prototype);
+		View b = this.mTokenViewFactory.getTokenView(prototype);
 		b.setOnClickListener(onClickListener);
 		b.setLayoutParams(new LinearLayout.LayoutParams(80, 80));
-		cachedViews.put(prototype, b);
 		return b;
 	}
 	
@@ -103,7 +103,6 @@ public class TokenSelectorView extends LinearLayout {
 	
 	public void setTokenList(Collection<BaseToken> tokens) {
 		tokenLayout.removeAllViews();
-		List<View> toAdd = new ArrayList<View>();
 		for (BaseToken token : tokens) {
 			tokenLayout.addView(createTokenPrototype(token));
 		}

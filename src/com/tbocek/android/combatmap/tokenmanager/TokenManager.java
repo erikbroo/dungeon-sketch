@@ -9,6 +9,7 @@ import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.view.TokenButton;
+import com.tbocek.android.combatmap.view.TokenViewFactory;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -44,6 +45,8 @@ public class TokenManager extends Activity {
     
     private TokenDeleteButton trashButton;
     
+    TokenViewFactory mTokenViewFactory;
+    
     private TagListView.OnTagListActionListener onTagListActionListener = new TagListView.OnTagListActionListener() {
 		@Override
 		public void onChangeSelectedTag(String newTag) {
@@ -71,6 +74,8 @@ public class TokenManager extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.token_manager_layout);
+		
+		mTokenViewFactory = new TokenViewFactory(this);
 		
     	tagListView = new TagListView(this);
     	tagListView.setOnTagListActionListener(onTagListActionListener);
@@ -127,7 +132,14 @@ public class TokenManager extends Activity {
 		LinearLayout currentRow = null;
 		int i = 0;
 		for (BaseToken t : tokens) {
-			TokenButton b = new TokenButton(this, t);
+			View b = mTokenViewFactory.getTokenView(t);
+			
+			// Remove all views from the parent, if there is one.
+			// This is safe because we are totally replacing the view contents here.
+			LinearLayout parent = (LinearLayout)b.getParent();
+			if (parent != null)
+				parent.removeAllViews();
+
 			b.setLayoutParams(new LinearLayout.LayoutParams(tokenWidth, tokenHeight));
 			if (i%tokensPerRow == 0) {
 				currentRow = new LinearLayout(this);
