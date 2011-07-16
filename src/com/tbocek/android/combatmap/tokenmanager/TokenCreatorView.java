@@ -19,7 +19,8 @@ import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 import android.view.View;
 
 public class TokenCreatorView extends View {
-
+	private static final int MAX_TOKEN_SIZE=300;
+	
 	private boolean hasCircle = false;
 	
 	// All of the following in screen space
@@ -122,8 +123,10 @@ public class TokenCreatorView extends View {
 		float scale = getScaleFactor();
 		
 		float squareSizeImageSpace = 2 * circleRadius * scale;
+		int bitmapSquareSize = Math.min((int)squareSizeImageSpace, MAX_TOKEN_SIZE);
+		
 		Bitmap bitmap = Bitmap.createBitmap(
-				(int)squareSizeImageSpace, (int)squareSizeImageSpace, Bitmap.Config.ARGB_8888);
+				bitmapSquareSize, bitmapSquareSize, Bitmap.Config.ARGB_8888);
 		int DEBUG_width = bitmap.getWidth();
 		int DEBUG_height = bitmap.getHeight();
 		
@@ -141,8 +144,11 @@ public class TokenCreatorView extends View {
 				(int)(-upperLeftImageSpace.y + currentImage.getIntrinsicHeight()));
 		
 		Canvas canvas = new Canvas(bitmap);
+		float outputScale = ((float)bitmapSquareSize)/squareSizeImageSpace;
+		canvas.scale(outputScale, outputScale);
 		currentImage.setBounds(clippingRect);
 		currentImage.draw(canvas);
+		
 		return bitmap;
 	}
 	
