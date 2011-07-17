@@ -8,6 +8,7 @@ import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenViewFactory;
 
@@ -74,6 +75,9 @@ public class TokenManager extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.token_manager_layout);
+
+        BuiltInImageToken.registerResources(
+        		this.getApplicationContext().getResources());
 		
 		mTokenViewFactory = new TokenViewFactory(this);
 		
