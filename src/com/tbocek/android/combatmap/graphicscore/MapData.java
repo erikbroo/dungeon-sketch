@@ -58,14 +58,8 @@ public class MapData implements Serializable {
 	public BoundingRectangle getBoundingRectangle() {
 		BoundingRectangle r = new BoundingRectangle();
 		
-		for (Line l : mBackgroundLines.lines) {
-			r.updateBounds(l.getBoundingRectangle());
-		}
-		
-
-		for (Line l : mAnnotationLines.lines) {
-			r.updateBounds(l.getBoundingRectangle());
-		}
+		r.updateBounds(mBackgroundLines.getBoundingRectangle());
+		r.updateBounds(mAnnotationLines.getBoundingRectangle());
 		
 		for (BaseToken t: tokens.getTokens()) {
 			r.updateBounds(t.getBoundingRectangle());
