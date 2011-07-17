@@ -45,6 +45,7 @@ public class DrawOptionsView extends HorizontalScrollView {
 		public void onClick(View v) {
 			onChangeDrawToolListener.onChooseStrokeWidth(width);	
 			untoggleGroup(toolsGroup);
+			setGroupVisibility(colorGroup, View.VISIBLE);
 			((ImageToggleButton)v).setToggled(true);
 		}
 	}
@@ -90,6 +91,7 @@ public class DrawOptionsView extends HorizontalScrollView {
 			public void onClick(View arg0) {
 				onChangeDrawToolListener.onChoosePanTool();
 				untoggleGroup(toolsGroup);
+				setGroupVisibility(colorGroup, View.GONE);
 				panButton.setToggled(true);
 			}
 		});
@@ -99,6 +101,7 @@ public class DrawOptionsView extends HorizontalScrollView {
 			public void onClick(View arg0) {
 				onChangeDrawToolListener.onChooseEraser();
 				untoggleGroup(toolsGroup);
+				setGroupVisibility(colorGroup, View.GONE);
 				eraserButton.setToggled(true);
 			}
 		});
@@ -146,6 +149,18 @@ public class DrawOptionsView extends HorizontalScrollView {
 	private void untoggleGroup(List<ImageToggleButton> group) {
 		for (ImageToggleButton b:group) {
 			b.setToggled(false);
+		}
+	}
+	
+	/**
+	 * Sets the visibility of a group of buttons.
+	 * @param group The list of views to modify.
+	 * @param visibility Visibility to pass to each view's setVisibility method.
+	 */
+	private void setGroupVisibility(final List<ImageToggleButton> group,
+			final int visibility) {
+		for (ImageToggleButton b : group) {
+			b.setVisibility(visibility);
 		}
 	}
 }
