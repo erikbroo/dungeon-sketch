@@ -93,4 +93,11 @@ public class Line implements Serializable {
 	public BoundingRectangle getBoundingRectangle() {
 		return boundingRectangle;
 	}
+
+	/**
+	 * @return This line's stroke width.
+	 */
+	public int getStrokeWidth() {
+		return this.width;
+	}
 }

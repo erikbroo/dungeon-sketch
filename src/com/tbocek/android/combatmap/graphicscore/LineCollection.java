@@ -2,12 +2,16 @@ package com.tbocek.android.combatmap.graphicscore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import android.graphics.Canvas;
 
 /**
  * Provides operations over an aggregate collection of lines.
+ * Invariant: Lines are sorted by descending stroke width.  This is so that
+ * a thick line can be used to paint an area bounded by a thin line.
  * @author Tim Bocek
  */
 public final class LineCollection implements Serializable {
@@ -19,7 +23,7 @@ public final class LineCollection implements Serializable {
 	/**
 	 * The internal list of lines.
 	 */
-	private List<Line> lines = new ArrayList<Line>();
+	private List<Line> lines = new LinkedList<Line>();
 	
 	/**
 	 * Draws all lines on the given canvas.
@@ -43,8 +47,28 @@ public final class LineCollection implements Serializable {
 	public Line createLine(
 			final int newLineColor, final int newLineStrokeWidth) {
 		Line l = new Line(newLineColor, newLineStrokeWidth);
-		lines.add(l);
+		insertLine(l);
 		return l;
+	}
+	
+	/**
+	 * Inserts a new line into the list of lines, making sure that the lines are
+	 * sorted by line width.
+	 * @param line The line to add.
+	 */
+	private void insertLine(final Line line) {
+		if (lines.isEmpty()) {
+			lines.add(line);
+			return;
+		}
+		
+		ListIterator<Line> it = lines.listIterator();
+		while (it.hasNext()
+				&& lines.get(it.nextIndex()).getStrokeWidth() 
+					>= line.getStrokeWidth()) {
+			it.next();
+		}
+		it.add(line);
 	}
 
 	/**
@@ -72,7 +96,7 @@ public final class LineCollection implements Serializable {
 	 * newly disjoint sections.
 	 */
 	public void optimize() {
-		List<Line> newLines = new ArrayList<Line>();
+		List<Line> newLines = new LinkedList<Line>();
 		for (int i = 0; i < lines.size(); ++i) {
 			List<Line> optimizedLines = lines.get(i).removeErasedPoints();
 			newLines.addAll(optimizedLines);
