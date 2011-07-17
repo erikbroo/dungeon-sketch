@@ -1,7 +1,5 @@
 package com.tbocek.android.combatmap;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +11,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Debug;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,16 +24,16 @@ import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.Grid;
 import com.tbocek.android.combatmap.graphicscore.MapData;
-import com.tbocek.android.combatmap.tokenmanager.TokenCreator;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
 import com.tbocek.android.combatmap.view.TokenCategorySelector;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
-public class CombatMap extends Activity {
+public final class CombatMap extends Activity {
 	
-	private static final String TOKEN_IMAGE_DIRECTORY = "/sdcard/dungeon_sketch_tokens";
+	private static final String TOKEN_IMAGE_DIRECTORY =
+		"/sdcard/dungeon_sketch_tokens";
 
 	private static final String TAG = "CombatMap";
 	
@@ -51,14 +46,16 @@ public class CombatMap extends Activity {
 	private static MapData mData;
 	private TokenDatabase tokenDatabase;
 	
-	private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener = new TokenSelectorView.OnTokenSelectedListener() {
+	private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener =
+		new TokenSelectorView.OnTokenSelectedListener() {
 		@Override
 		public void onTokenSelected(BaseToken t) {
 			mCombatView.placeToken(t);
 		}
 	};
 	
-	private DrawOptionsView.OnChangeDrawToolListener mOnChangeDrawToolListener = new DrawOptionsView.OnChangeDrawToolListener() {
+	private DrawOptionsView.OnChangeDrawToolListener mOnChangeDrawToolListener =
+		new DrawOptionsView.OnChangeDrawToolListener() {
 		
 		@Override
 		public void onChooseEraser() {
@@ -86,11 +83,11 @@ public class CombatMap extends Activity {
 		}
 	};
 	
-	private FilenameSelectedListener onFilenameSelected = new FilenameSelectedListener() {
+	private FilenameSelectedListener onFilenameSelected =
+		new FilenameSelectedListener() {
 		@Override
 		public void onSaveFilenameSelected(String name) {
-			saveMap(name);
-			setFilenamePreference(name);
+	    	new MapSaver(name, getApplicationContext(), false).run();
 		}
 
 		@Override
@@ -116,7 +113,8 @@ public class CombatMap extends Activity {
         
         mTokenSelector = new TokenSelectorView(this.getApplicationContext());
         mTokenSelector.setOnTokenSelectedListener(mOnTokenSelectedListener);
-        mTokenSelector.setOnClickTokenManagerListener(new View.OnClickListener() {
+        mTokenSelector.setOnClickTokenManagerListener(
+        		new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				Debug.startMethodTracing("tokenmanager");
@@ -124,7 +122,8 @@ public class CombatMap extends Activity {
 			}
         });
         
-        mTokenSelector.setOnClickGroupSelectorListener(new View.OnClickListener() {
+        mTokenSelector.setOnClickGroupSelectorListener(
+        		new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if (mPopupFrame.getVisibility() == View.VISIBLE) {
@@ -138,13 +137,19 @@ public class CombatMap extends Activity {
         mDrawOptionsView = new DrawOptionsView(this.getApplicationContext());
         mDrawOptionsView.setOnChangeDrawToolListener(mOnChangeDrawToolListener);
         
-        FrameLayout mainContentFrame = (FrameLayout) this.findViewById(R.id.mainContentFrame);
-        mBottomControlFrame = (FrameLayout) this.findViewById(R.id.bottomControlAreaFrame);
-        mPopupFrame = (FrameLayout) this.findViewById(R.id.popupControlAreaFrame);
+        FrameLayout mainContentFrame =
+        	(FrameLayout) this.findViewById(R.id.mainContentFrame);
+        mBottomControlFrame =
+        	(FrameLayout) this.findViewById(R.id.bottomControlAreaFrame);
+        mPopupFrame =
+        	(FrameLayout) this.findViewById(R.id.popupControlAreaFrame);
         
         mTokenCategorySelector = new TokenCategorySelector(this);
-        mTokenCategorySelector.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT));
-        mTokenCategorySelector.setOnCheckedListChangedListener(new TokenCategorySelector.OnTagSelectedListener() {	
+        mTokenCategorySelector.setLayoutParams(new FrameLayout.LayoutParams(
+        		FrameLayout.LayoutParams.MATCH_PARENT,
+        		FrameLayout.LayoutParams.MATCH_PARENT));
+        mTokenCategorySelector.setOnCheckedListChangedListener(
+        		new TokenCategorySelector.OnTagSelectedListener() {	
 			@Override
 			public void onTagSelected(String checkedTag) {
 				Debug.startMethodTracing("setSelectedTags");
@@ -163,8 +168,6 @@ public class CombatMap extends Activity {
         mainContentFrame.addView(mCombatView);
         mBottomControlFrame.addView(mTokenSelector);
         
-       // mTokenCategorySelector = (TokenCategorySelector) this.findViewById(R.id.tokenCategorySelector);
-        
         mCombatView.setTokenManipulationMode();
         mCombatView.requestFocus();
     }
@@ -172,8 +175,12 @@ public class CombatMap extends Activity {
     @Override 
     public void onResume() {
     	super.onResume();
-    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-    	// Attempt to load map data.  If we can't load map data, create a new map.
+    	SharedPreferences sharedPreferences =
+    		PreferenceManager.getDefaultSharedPreferences(
+    			this.getApplicationContext());
+    	
+    	// Attempt to load map data.  If we can't load map data, create a new
+    	// map.
     	String filename = sharedPreferences.getString("filename", null);
     	if (filename == null) {
     		MapData.clear();
@@ -194,21 +201,29 @@ public class CombatMap extends Activity {
     }
 
     /**
-     * Modifies the current map data according to any preferences the user has set.
+     * Modifies the current map data according to any preferences the user has 
+     * set.
      */
 	private void reloadPreferences() {
-    	SharedPreferences sharedPreferences2 = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-    	String colorScheme = sharedPreferences2.getString("theme", "graphpaper");
-    	String gridType = sharedPreferences2.getString("gridtype", "rect");
-    	mCombatView.shouldSnapToGrid = sharedPreferences2.getBoolean("snaptogrid", true);
-    	mData.grid = Grid.createGrid(gridType, colorScheme, mData.grid.gridSpaceToWorldSpaceTransformer());
+    	SharedPreferences sharedPreferences =
+    		PreferenceManager.getDefaultSharedPreferences(
+    				this.getApplicationContext());
+    	String colorScheme = sharedPreferences.getString("theme", "graphpaper");
+    	String gridType = sharedPreferences.getString("gridtype", "rect");
+    	mCombatView.shouldSnapToGrid =
+    		sharedPreferences.getBoolean("snaptogrid", true);
+    	mData.grid = Grid.createGrid(
+    			gridType, colorScheme, 
+    			mData.grid.gridSpaceToWorldSpaceTransformer());
 	}
 
     
     @Override
     public void onPause() {
     	super.onPause();
-    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+    	SharedPreferences sharedPreferences =
+    		PreferenceManager.getDefaultSharedPreferences(
+    				this.getApplicationContext());
 
     	String filename = sharedPreferences.getString("filename", null);
     	if (filename == null) {
@@ -216,7 +231,8 @@ public class CombatMap extends Activity {
     		filename = "tmp";
     	}
 
-    	Thread saveThread = new Thread(new MapSaver(filename, this.getApplicationContext()));
+    	Thread saveThread = new Thread(
+    			new MapSaver(filename, this.getApplicationContext()));
     	saveThread.setPriority(1);
     	saveThread.start();
     }
@@ -224,17 +240,27 @@ public class CombatMap extends Activity {
     private class MapSaver implements Runnable {
     	private String filename;
 		private Context context;
+		private boolean runAsThread;
+		
 		public MapSaver(String filename, Context context) {
     		this.filename = filename;
     		this.context = context;
     	}
+		
+		public MapSaver(String filename, Context context, boolean runAsThread) {
+    		this(filename, context);
+    		this.runAsThread = runAsThread;
+    	}
+		
 		@Override
 		public void run() {
 			// Force a sleep to allow the UI to remain responsive
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+			if (this.runAsThread) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			}
 			
 	    	try {
@@ -243,18 +269,16 @@ public class CombatMap extends Activity {
 	    		dm.savePreviewImage(filename, mCombatView.getPreview());
 	    	} catch (Exception e) {
 				MapData.clear();
-		    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-		    	// Persist the filename that we saved to so that we can load from that file again.
+		    	SharedPreferences sharedPreferences =
+		    		PreferenceManager.getDefaultSharedPreferences(context);
+		    	// Persist the filename that we saved to so that we can load
+		    	// from that file again.
 		    	Editor editor = sharedPreferences.edit();
 		    	editor.putString("filename", null);
 		    	editor.commit();
 		    	// TODO: open a toast
 	    	}			
 		}
-    }
-    
-    private void saveMap(String name) {
-
     }
     
 	public void loadMap(String name) {
@@ -273,13 +297,19 @@ public class CombatMap extends Activity {
 		Log.e(TAG, "Could not " + attemptedAction + " file.  Reason:");
 		Log.e(TAG, e.toString());
 		e.printStackTrace();
-		Toast toast = Toast.makeText(this.getApplicationContext(), "Could not " + attemptedAction + " file.  Reason:" + e.toString(), Toast.LENGTH_LONG);
+		Toast toast = Toast.makeText(this.getApplicationContext(), 
+				"Could not " + attemptedAction + " file.  Reason:"
+				+ e.toString(),
+				Toast.LENGTH_LONG);
 		toast.show();	
 	}
 
 	private void setFilenamePreference(String newFilename) {
-    	SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-    	// Persist the filename that we saved to so that we can load from that file again.
+    	SharedPreferences sharedPreferences =
+    		PreferenceManager.getDefaultSharedPreferences(
+    				this.getApplicationContext());
+    	// Persist the filename that we saved to so that we can load from that
+    	// file again.
     	Editor editor = sharedPreferences.edit();
     	editor.putString("filename", newFilename);
     	editor.commit();
@@ -372,7 +402,8 @@ public class CombatMap extends Activity {
     public Dialog onCreateDialog(int id) {
     	switch(id) {
     	case DIALOG_ID_SAVE:
-    		 return new TextPromptDialog(this, new TextPromptDialog.OnTextConfirmedListener() {
+    		 return new TextPromptDialog(this,
+    				 new TextPromptDialog.OnTextConfirmedListener() {
 				public void onTextConfirmed(String text) {
 					onFilenameSelected.onSaveFilenameSelected(text);
 				}
