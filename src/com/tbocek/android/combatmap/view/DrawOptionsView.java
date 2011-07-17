@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.view;
 
+import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
 import android.content.Context;
@@ -7,6 +8,8 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class DrawOptionsView extends HorizontalScrollView {
@@ -67,11 +70,11 @@ public class DrawOptionsView extends HorizontalScrollView {
 		addView(layout);
 		
 
-		Button panButton = new Button(context);
-		panButton.setText("Pan");
+		ImageButton panButton = new ImageButton(context);
+		panButton.setImageResource(R.drawable.transform_move);
 		
-		Button eraserButton = new Button(context);
-		eraserButton.setText("Erase");
+		ImageButton eraserButton = new ImageButton(context);
+		eraserButton.setImageResource(R.drawable.eraser);
 		
 		panButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
@@ -90,9 +93,15 @@ public class DrawOptionsView extends HorizontalScrollView {
 		layout.addView(panButton);
 		layout.addView(eraserButton);
 		
-		addStrokeWidthButton(2);
-		addStrokeWidthButton(4);
-		addStrokeWidthButton(8);
+		addStrokeWidthButton(2, R.drawable.pencil);
+		addStrokeWidthButton(4, R.drawable.pen);
+		addStrokeWidthButton(12, R.drawable.paintbrush);
+		addStrokeWidthButton(40, R.drawable.inktube);
+		
+		//Create a seperator
+		ImageView seperator = new ImageView(this.getContext());
+		seperator.setLayoutParams(new LinearLayout.LayoutParams(20, LinearLayout.LayoutParams.MATCH_PARENT));
+		layout.addView(seperator);
 		
 		for (int color : Util.getStandardColorPalette()) {
 			addColorButton(color);
@@ -105,9 +114,9 @@ public class DrawOptionsView extends HorizontalScrollView {
 		layout.addView(b);
 	}
 	
-	private void addStrokeWidthButton(int width) {
-		Button b = new Button(this.getContext());
-		b.setText("Width " + Integer.toString(width));
+	private void addStrokeWidthButton(int width, int resourceId) {
+		ImageButton b = new ImageButton(this.getContext());
+		b.setImageResource(resourceId);
 		b.setOnClickListener(new StrokeWidthListener(width));
 		layout.addView(b);
 	}
