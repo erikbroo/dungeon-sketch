@@ -5,7 +5,7 @@ import android.preference.PreferenceActivity;
 
 /**
  * Preferences activity for Dungeon Sketch.
- * @author Tim
+ * @author Tim Bocek
  *
  */
 public final class Settings extends PreferenceActivity {
