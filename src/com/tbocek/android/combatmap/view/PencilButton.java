@@ -11,9 +11,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class PencilButton extends ImageView {
+public class PencilButton extends ImageToggleButton {
 
 	int color;
 	

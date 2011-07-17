@@ -1,5 +1,8 @@
 package com.tbocek.android.combatmap.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
@@ -8,13 +11,15 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class DrawOptionsView extends HorizontalScrollView {
 
 	LinearLayout layout;
+	
+	List<ImageToggleButton> toolsGroup = new ArrayList<ImageToggleButton>();
+	List<ImageToggleButton> colorGroup = new ArrayList<ImageToggleButton>();
 	
 	private class ColorListener implements View.OnClickListener {
 		private int color;
@@ -25,6 +30,8 @@ public class DrawOptionsView extends HorizontalScrollView {
 		@Override
 		public void onClick(View v) {
 			onChangeDrawToolListener.onChooseColoredPen(color);
+			untoggleGroup(colorGroup);
+			((ImageToggleButton)v).setToggled(true);
 		}
 	}
 	
@@ -36,7 +43,9 @@ public class DrawOptionsView extends HorizontalScrollView {
 		
 		@Override
 		public void onClick(View v) {
-			onChangeDrawToolListener.onChooseStrokeWidth(width);		
+			onChangeDrawToolListener.onChooseStrokeWidth(width);	
+			untoggleGroup(toolsGroup);
+			((ImageToggleButton)v).setToggled(true);
 		}
 	}
 	
@@ -70,16 +79,18 @@ public class DrawOptionsView extends HorizontalScrollView {
 		addView(layout);
 		
 
-		ImageButton panButton = new ImageButton(context);
+		final ImageToggleButton panButton = new ImageToggleButton(context);
 		panButton.setImageResource(R.drawable.transform_move);
 		
-		ImageButton eraserButton = new ImageButton(context);
+		final ImageToggleButton eraserButton = new ImageToggleButton(context);
 		eraserButton.setImageResource(R.drawable.eraser);
 		
 		panButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View arg0) {
 				onChangeDrawToolListener.onChoosePanTool();
+				untoggleGroup(toolsGroup);
+				panButton.setToggled(true);
 			}
 		});
 		
@@ -87,11 +98,15 @@ public class DrawOptionsView extends HorizontalScrollView {
 			@Override
 			public void onClick(View arg0) {
 				onChangeDrawToolListener.onChooseEraser();
+				untoggleGroup(toolsGroup);
+				eraserButton.setToggled(true);
 			}
 		});
 		
 		layout.addView(panButton);
 		layout.addView(eraserButton);
+		toolsGroup.add(panButton);
+		toolsGroup.add(eraserButton);
 		
 		addStrokeWidthButton(2, R.drawable.pencil);
 		addStrokeWidthButton(4, R.drawable.pen);
@@ -111,17 +126,26 @@ public class DrawOptionsView extends HorizontalScrollView {
 	private void addColorButton(int color) {
 		PencilButton b = new PencilButton(this.getContext(), color);
 		b.setOnClickListener(new ColorListener(color));
+		b.setLayoutParams(new LinearLayout.LayoutParams(48,48));
 		layout.addView(b);
+		colorGroup.add(b);
 	}
 	
 	private void addStrokeWidthButton(int width, int resourceId) {
-		ImageButton b = new ImageButton(this.getContext());
+		ImageToggleButton b = new ImageToggleButton(this.getContext());
 		b.setImageResource(resourceId);
 		b.setOnClickListener(new StrokeWidthListener(width));
 		layout.addView(b);
+		toolsGroup.add(b);
 	}
 
 	public void setOnChangeDrawToolListener(OnChangeDrawToolListener onChangeDrawToolListener) {
 		this.onChangeDrawToolListener = onChangeDrawToolListener;
+	}
+	
+	private void untoggleGroup(List<ImageToggleButton> group) {
+		for (ImageToggleButton b:group) {
+			b.setToggled(false);
+		}
 	}
 }
