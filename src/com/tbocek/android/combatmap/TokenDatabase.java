@@ -28,6 +28,7 @@ import java.util.Set;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.widget.Toast;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
@@ -51,6 +52,7 @@ public class TokenDatabase implements Serializable {
 	 * Returns the instance of the token manager
 	 * @param context A context to use when loading data if needed.
 	 * @return
+	 * @throws Exception 
 	 */
 	public static TokenDatabase getInstance(Context context) {
 		if (instance == null) {
@@ -59,6 +61,7 @@ public class TokenDatabase implements Serializable {
 	    	} catch (Exception e) {
 	    		instance = new TokenDatabase();
 	    		instance.populate(new DataManager(context));
+	    		Toast t = Toast.makeText(context, "Could not open the token database: " + e.toString(), Toast.LENGTH_LONG);
 	    	}
 		}
 		return instance;
@@ -302,6 +305,7 @@ public class TokenDatabase implements Serializable {
 		tagsForToken.remove(token.getTokenId());
 		tokenForId.remove(token.getTokenId());
 	}
+
 
 
 }
