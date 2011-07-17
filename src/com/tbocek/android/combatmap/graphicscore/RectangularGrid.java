@@ -19,8 +19,8 @@ public class RectangularGrid extends Grid {
 		float numSquaresHorizontal = (float)width/squareSize;
 		float numSquaresVertical = (numSquaresHorizontal * ((float)height)/((float)width));
 		
-		boolean shouldDrawMinorLines = squareSize >= 5;
-		boolean shouldDrawMajorLines = squareSize >= 1;
+		boolean shouldDrawMinorLines = squareSize >= 8;
+		boolean shouldDrawMajorLines = squareSize >= 4;
 		boolean shouldDrawCurrentLine = true;
 		
 		PointF origin = transformer.getOrigin();
