@@ -22,7 +22,7 @@ import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
 
-public class CombatView extends View {
+public final class CombatView extends View {
 	Paint paint = new Paint();
 	
 	private GestureDetector gestureDetector;
@@ -122,14 +122,16 @@ public class CombatView extends View {
 		getData().tokens.drawAllTokens(canvas, getGridSpaceTransformer());
 		
 		if (this.shouldDrawAnnotations) {
-			getData().mAnnotationLines.drawAllLines(canvas, getData().transformer);
+			getData().mAnnotationLines.drawAllLines(
+					canvas, getData().transformer);
 		}
 		
 		this.mGestureListener.draw(canvas);
 	}
 	
 	public Bitmap getPreview() {
-		Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(
+				this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 		getData().grid.drawBackground(canvas);
 		getData().mBackgroundLines.drawAllLines(canvas, getData().transformer);
@@ -144,13 +146,20 @@ public class CombatView extends View {
 	}
 	
 	public Line createLine() {
-		return mActiveLines.createLine(this.newLineColor, this.newLineStrokeWidth);
+		return mActiveLines.createLine(
+				this.newLineColor, this.newLineStrokeWidth);
 	}
 
 	public void placeToken(BaseToken t) {
-		PointF attemptedLocationScreenSpace = new PointF(this.getWidth() / 2, this.getHeight() / 2);
-		PointF attemptedLocationGridSpace = this.getData().grid.gridSpaceToScreenSpaceTransformer(this.getData().transformer).screenSpaceToWorldSpace(attemptedLocationScreenSpace);
-		getData().tokens.placeTokenNearby(t, attemptedLocationGridSpace, getData().grid);
+		PointF attemptedLocationScreenSpace =
+			new PointF(this.getWidth() / 2, this.getHeight() / 2);
+		//TODO: This smells really bad.
+		PointF attemptedLocationGridSpace =
+			this.getData().grid.gridSpaceToScreenSpaceTransformer(
+					this.getData().transformer)
+					.screenSpaceToWorldSpace(attemptedLocationScreenSpace);
+		getData().tokens.placeTokenNearby(
+				t, attemptedLocationGridSpace, getData().grid);
 		this.getData().tokens.addToken(t);
 		invalidate();
 	}
@@ -184,9 +193,12 @@ public class CombatView extends View {
 			Log.d("DRAG", Integer.toString(event.getAction()));
 			if (event.getAction() == DragEvent.ACTION_DROP) {
 				BaseToken toAdd = (BaseToken) event.getLocalState();
-				PointF location = getGridSpaceTransformer().screenSpaceToWorldSpace(new PointF(event.getX(), event.getY()));
+				PointF location = 
+					getGridSpaceTransformer().screenSpaceToWorldSpace(
+							new PointF(event.getX(), event.getY()));
 				if (shouldSnapToGrid) {
-					location = getData().grid.getNearestSnapPoint(location, toAdd.getSize());
+					location = getData().grid.getNearestSnapPoint(
+							location, toAdd.getSize());
 				}
 				toAdd.setLocation(location);
 				getData().tokens.addToken(toAdd);
@@ -209,7 +221,8 @@ public class CombatView extends View {
 	}
 
 	public CoordinateTransformer getGridSpaceTransformer() {
-		return getData().grid.gridSpaceToScreenSpaceTransformer(getData().transformer);
+		return getData().grid.gridSpaceToScreenSpaceTransformer(
+				getData().transformer);
 	}
 
 	public void setData(MapData data) {
