@@ -20,7 +20,7 @@ public class PencilButton extends ImageView {
 	public PencilButton(Context context, int color) {
 		super(context);
 		this.color = color;
-		Drawable d = context.getResources().getDrawable(R.drawable.pencil);
+		Drawable d = context.getResources().getDrawable(R.drawable.pencilbw);
 		ColorFilter cf = new PorterDuffColorFilter(color, PorterDuff.Mode.OVERLAY);
 		this.setImageDrawable(d);
 		this.setColorFilter(cf);

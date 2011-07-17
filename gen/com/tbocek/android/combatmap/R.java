@@ -30,7 +30,7 @@ public final class R {
         public static final int lion=0x7f02000a;
         public static final int orc2_libmed=0x7f02000b;
         public static final int orc_libmed=0x7f02000c;
-        public static final int pencil=0x7f02000d;
+        public static final int pencilbw=0x7f02000d;
         public static final int pig=0x7f02000e;
         public static final int rad_stag=0x7f02000f;
         public static final int stag2=0x7f020010;
