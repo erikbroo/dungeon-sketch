@@ -37,7 +37,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TokenManager extends Activity {
+public final class TokenManager extends Activity {
     private static final int DIALOG_ID_NEW_TOKEN = 0;
 	TagListView tagListView;
     private TokenDatabase tokenDatabase;
@@ -48,7 +48,8 @@ public class TokenManager extends Activity {
     
     TokenViewFactory mTokenViewFactory;
     
-    private TagListView.OnTagListActionListener onTagListActionListener = new TagListView.OnTagListActionListener() {
+    private TagListView.OnTagListActionListener onTagListActionListener =
+    	new TagListView.OnTagListActionListener() {
 		@Override
 		public void onChangeSelectedTag(String newTag) {
 			reloadScrollView(newTag);
@@ -65,9 +66,11 @@ public class TokenManager extends Activity {
 	private void reloadScrollView(String tag) {
 		scrollView.removeAllViews();
 		if (tag == TagListView.ALL)
-			scrollView.addView(getTokenButtonLayout(tokenDatabase.getAllTokens()));
+			scrollView.addView(
+					getTokenButtonLayout(tokenDatabase.getAllTokens()));
 		else
-			scrollView.addView(getTokenButtonLayout(tokenDatabase.getTokensForTag(tag)));
+			scrollView.addView(
+					getTokenButtonLayout(tokenDatabase.getTokensForTag(tag)));
 	}
 	
 	@Override
@@ -86,13 +89,17 @@ public class TokenManager extends Activity {
     	
     	trashButton = new TokenDeleteButton(this);
     	this.registerForContextMenu(trashButton);
-    	((FrameLayout)this.findViewById(R.id.token_manager_delete_button_frame)).addView(trashButton);
+    	((FrameLayout) this.findViewById(
+    			R.id.token_manager_delete_button_frame))
+    			.addView(trashButton);
     	
     	
-    	FrameLayout tagListFrame = (FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
+    	FrameLayout tagListFrame =
+    		(FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
     	tagListFrame.addView(tagListView);
     	
-    	scrollView = (ScrollView) this.findViewById(R.id.token_manager_scroll_view);
+    	scrollView =
+    		(ScrollView) this.findViewById(R.id.token_manager_scroll_view);
     	
     }
 
@@ -139,12 +146,14 @@ public class TokenManager extends Activity {
 			View b = mTokenViewFactory.getTokenView(t);
 			
 			// Remove all views from the parent, if there is one.
-			// This is safe because we are totally replacing the view contents here.
+			// This is safe because we are totally replacing the view contents
+			// here.
 			LinearLayout parent = (LinearLayout)b.getParent();
 			if (parent != null)
 				parent.removeAllViews();
 
-			b.setLayoutParams(new LinearLayout.LayoutParams(tokenWidth, tokenHeight));
+			b.setLayoutParams(
+					new LinearLayout.LayoutParams(tokenWidth, tokenHeight));
 			if (i%tokensPerRow == 0) {
 				currentRow = new LinearLayout(this);
 				currentRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -180,7 +189,8 @@ public class TokenManager extends Activity {
     public Dialog onCreateDialog(int id) {
     	switch(id) {
     	case DIALOG_ID_NEW_TOKEN:
-    		 return new TextPromptDialog(this, new TextPromptDialog.OnTextConfirmedListener() {
+    		 return new TextPromptDialog(this, 
+    				 new TextPromptDialog.OnTextConfirmedListener() {
 				public void onTextConfirmed(String text) {
 					tokenDatabase.addEmptyTag(text);
 					tagListView.setTagList(tokenDatabase.getTags());
@@ -196,10 +206,12 @@ public class TokenManager extends Activity {
                                     ContextMenuInfo menuInfo) {
       	if (v == this.trashButton) {
       		if (!this.trashButton.managedToken.isBuiltIn()) {
-      			menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE, "Delete Token");
+      			menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
+      					 "Delete Token");
       		}
       		if (this.tagListView.getTag() != TagListView.ALL) {
-      			menu.add(Menu.NONE, R.id.token_delete_from_tag, Menu.NONE, "Remove '" + tagListView.getTag() + "' Tag");
+      			menu.add(Menu.NONE, R.id.token_delete_from_tag, Menu.NONE,
+      					 "Remove '" + tagListView.getTag() + "' Tag");
       		}
       	}
     }
@@ -214,7 +226,10 @@ public class TokenManager extends Activity {
     			token.maybeDeletePermanently();
     			reloadScrollView(this.tagListView.getTag());
     		} catch (IOException e) {
-    			Toast toast = Toast.makeText(this.getApplicationContext(), "Did not delete the token, probably because the external storage isn't writable." + e.toString(), Toast.LENGTH_LONG);
+    			Toast toast = Toast.makeText(this.getApplicationContext(), 
+    					"Did not delete the token, probably because the " +
+    					"external storage isn't writable." + e.toString(),
+    					Toast.LENGTH_LONG);
     			toast.show();	
     		}
     		return true;
