@@ -4,35 +4,66 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.widget.ImageButton;
 
+/**
+ * An ImageButton that stores a toggled state, and allows the toggle to be set.
+ * The toggle is not intrinsically set by any logic in the button; client code
+ * needs to set it.
+ * @author Tim
+ *
+ */
 public class ImageToggleButton extends ImageButton {
-	public boolean toggled = false;
-	public ImageToggleButton(Context context) {
+	/**
+	 * The color to use when drawing a border around toggled buttons.
+	 */
+	private static final int TOGGLE_BORDER_COLOR = Color.rgb(0, 127, 255);
+	
+	/**
+	 * Width of the toggle border line.
+	 */
+	private static final int TOGGLE_BORDER_WIDTH = 3;
+	
+	/**
+	 * Whether to draw the button toggled.
+	 */
+	private boolean mToggled = false;
+	
+	/**
+	 * Creates a new ImageToggleButton in the given context.
+	 * @param context Context to use.
+	 */
+	public ImageToggleButton(final Context context) {
 		super(context);
 	}
 	
-	public boolean isToggled() {
-		return toggled;
+	/**
+	 * @return Whether the button is toggled.
+	 */
+	public final boolean isToggled() {
+		return mToggled;
 	}
 	
-	public void setToggled(boolean toggled) {
-		this.toggled = toggled;
+	/**
+	 * Sets the toggled state.
+	 * @param toggled Whether the button should be toggled.
+	 */
+	public final void setToggled(final boolean toggled) {
+		this.mToggled = toggled;
 		invalidate();
 	}
 	
 	@Override
-	public void onDraw(Canvas c) {
+	public void onDraw(final Canvas c) {
 		super.onDraw(c);
 		
 		Paint paint = new Paint();
-		paint.setColor(Color.rgb(0, 127, 255));
-		paint.setStrokeWidth(3);
-		if (toggled) {
-			c.drawLine(0, 0, 0, getHeight(), paint);
-			c.drawLine(0, 0, getWidth(), 0, paint);
-			c.drawLine(getWidth(), 0, getWidth(), getHeight(), paint);
-			c.drawLine(0, getHeight(), getWidth(), getHeight(), paint);
+		paint.setColor(TOGGLE_BORDER_COLOR);
+		paint.setStrokeWidth(TOGGLE_BORDER_WIDTH);
+		paint.setStyle(Style.STROKE);
+		if (mToggled) {
+			c.drawRect(0, 0, this.getWidth(), this.getHeight(), paint);
 		}
 	}
 }
