@@ -2,67 +2,115 @@ package com.tbocek.android.combatmap.graphicscore;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 
-public abstract class BaseToken implements Serializable{
+/**
+ * Base class for token representing entities in combat.
+ * @author Tim Bocek
+ *
+ */
+public abstract class BaseToken implements Serializable {
+	/**
+	 * The class's ID for serialization.
+	 */
 	private static final long serialVersionUID = 9080531944602251588L;
 	
-	private PointF location = new PointF(0,0);
-	private float size = 1.0f;
-	private boolean bloodied = false;
+	/**
+	 * Tweak to the token's size so that it doesn't totally inscribe a grid
+	 * square.
+	 */
+	private static final float TOKEN_SIZE_TWEAK = 0.9f;
+	
+	/**
+	 * The token's location in grid space.
+	 */
+	private PointF mLocation = new PointF(0, 0);
+	
+	/**
+	 * The token's diameter in grid space.
+	 */
+	private float mSize = 1.0f;
+	
+	/**
+	 * Whether the token is bloodied.
+	 */
+	private boolean mBloodied = false;
 
-	public BaseToken() {
-		super();
+	/**
+	 * Moves this token the given distance relative to its current location.
+	 * In grid space.
+	 * @param distanceX Distance to move in X coordinate in grid space.
+	 * @param distanceY Distance to move in Y coordinate in grid space.
+	 */
+	public final void move(final float distanceX, final float distanceY) {
+		setLocation(new PointF(
+				getLocation().x - distanceX, getLocation().y - distanceY));
 	}
 
-	public void move(float distanceX, float distanceY) {
-		setLocation(new PointF(getLocation().x - distanceX, getLocation().y - distanceY));
-		
-	}
-
-	public void setDiameter(float d) {
-		this.setSize(d);
-	}
-
+	/**
+	 * @return A copy of this token.
+	 */
 	public abstract BaseToken clone();
 
 	/**
-	 * Draw a bloodied version of the token at the given coordinates and size.  Everything
-	 * in screen space.
-	 * @param c
-	 * @param x
-	 * @param y
-	 * @param radius
+	 * Draw the token at the given coordinates and size.
+	 * Everything in screen space.
+	 * @param c Canvas to draw on.
+	 * @param x The x coordinate in screen space to draw the token at.
+	 * @param y The y coordinate in screen space to draw the token at.
+	 * @param radius The radius of the token in screen space.
+	 */
+	public abstract void draw(Canvas c, float x, float y, float radius);
+	
+	/**
+	 * Draw a bloodied version of the token at the given coordinates and size. 
+	 * Everything in screen space.
+	 * @param c Canvas to draw on.
+	 * @param x The x coordinate in screen space to draw the token at.
+	 * @param y The y coordinate in screen space to draw the token at.
+	 * @param radius The radius of the token in screen space.
 	 */
 	public abstract void drawBloodied(Canvas c, float x, float y,
 			float radius);
 
 	/**
-	 * Draw the token at the given coordinates and size.  Everything in screen space.
-	 * @param c
-	 * @param x
-	 * @param y
-	 * @param radius
+	 * Draw a ghost version of the token at the given coordinates and size.  
+	 * Everything in screen space.
+	 * @param c Canvas to draw on.
+	 * @param x The x coordinate in screen space to draw the token at.
+	 * @param y The y coordinate in screen space to draw the token at.
+	 * @param radius The radius of the token in screen space.
 	 */
-	public abstract void draw(Canvas c, float x, float y,
-			float radius);
-
 	protected abstract void drawGhost(Canvas c, float x, float y, float radius);
 	
-	public final void drawGhost(Canvas c, CoordinateTransformer transformer, PointF ghostPoint) {
+	/**
+	 * Draw a ghost version of this token on the given canvas at the given
+	 * point in grid space.
+	 * @param c The canvas to draw the ghost on.
+	 * @param transformer Transformer between grid space and screen space.
+	 * @param ghostPoint The point to draw the ghost at.
+	 */
+	public final void drawGhost(
+			final Canvas c, final CoordinateTransformer transformer,
+			final PointF ghostPoint) {
 		PointF center = transformer.worldSpaceToScreenSpace(ghostPoint);
-		float radius = transformer.worldSpaceToScreenSpace(this.getSize() * 0.9f / 2);	
+		float radius = transformer.worldSpaceToScreenSpace(
+				this.getSize() * TOKEN_SIZE_TWEAK / 2);	
 		drawGhost(c, center.x, center.y, radius);
 	}
 
-	public void drawInPosition(Canvas c, CoordinateTransformer transformer) {
+	/**
+	 * Draws this token in the correct position on the given canvas.
+	 * @param c The canvas to draw on.
+	 * @param transformer Grid space to screen space transformer.
+	 */
+	public final void drawInPosition(
+			final Canvas c, final CoordinateTransformer transformer) {
 		PointF center = transformer.worldSpaceToScreenSpace(getLocation());
-		float radius = transformer.worldSpaceToScreenSpace(this.getSize() * 0.9f / 2);
+		float radius = transformer.worldSpaceToScreenSpace(
+				this.getSize() * TOKEN_SIZE_TWEAK / 2);
 	
 		if (isBloodied()) {
 			drawBloodied(c, center.x, center.y, radius);
@@ -71,85 +119,129 @@ public abstract class BaseToken implements Serializable{
 		}
 	}
 
-	public void setBloodied(boolean bloodied) {
-		this.bloodied = bloodied;
+	/**
+	 * Marks this token as bloodied.
+	 * @param bloodied Whether the token should be set to bloodied.
+	 */
+	public final void setBloodied(final boolean bloodied) {
+		this.mBloodied = bloodied;
 	}
 
-	public boolean isBloodied() {
-		return bloodied;
+	/**
+	 * @return True if the token is currently bloodied.
+	 */
+	public final boolean isBloodied() {
+		return mBloodied;
 	}
 
-	public void setLocation(PointF location) {
-		this.location = location;
+	/**
+	 * Sets the location of the token in grid space.
+	 * @param location The new location in grid space.
+	 */
+	public final void setLocation(final PointF location) {
+		this.mLocation = location;
 	}
 
-	public PointF getLocation() {
-		return location;
+	/**
+	 * @return The location of the token in grid space.
+	 */
+	public final PointF getLocation() {
+		return mLocation;
 	}
 
-	public void setSize(float size) {
-		this.size = size;
+	/**
+	 * Sets the diameter of the token in grid space.
+	 * @param size The new diameter in grid space.
+	 */
+	public final void setSize(final float size) {
+		this.mSize = size;
 	}
 
-	public float getSize() {
-		return size;
+	/**
+	 * @return The radius of this token in grid space
+	 */
+	public final float getSize() {
+		return mSize;
 	}
 	
-	public BoundingRectangle getBoundingRectangle() {
+	/**
+	 * @return A rectangle that bounds the circle that this token draws as.
+	 */
+	public final BoundingRectangle getBoundingRectangle() {
 		BoundingRectangle r = new BoundingRectangle();
-		r.updateBounds(new PointF(location.x - size/2, location.y - size/2));
-		r.updateBounds(new PointF(location.x + size/2, location.y + size/2));
+		r.updateBounds(
+				new PointF(mLocation.x - mSize / 2, mLocation.y - mSize / 2));
+		r.updateBounds(
+				new PointF(mLocation.x + mSize / 2, mLocation.y + mSize / 2));
 		return r;
 	}
 	
-	//OPTIMIZATIONS FOR TOKEN ID
-	//TODO: get rid of this optimization if thread safety is needed.
-	private static StringBuffer concatbuffer = new StringBuffer(1024);
+	/**
+	 * OPTIMIZATION: Shared, preallocated StringBuffer used to concatenate
+	 * strings for token IDs.  
+	 */
+	private static final StringBuffer CONCAT_BUFFER = new StringBuffer(1024);
+	
+	/**
+	 * OPTIMIZATION: This token's ID.  Because the token ID is computed using
+	 * relatively expensive operations, is needed frequently, and never changes
+	 * throughout the object's lifetime, it can be cached here. 
+	 */
 	private String cachedTokenId = null;
 	
 	/**
-	 * Gets a unique identifier incorporating the token's type and a further differentiator depending
-	 * on the type
-	 * @return
+	 * Gets a unique identifier incorporating the token's type and a further
+	 * differentiator depending on the type.
+	 * @return The token ID.
 	 */
-	public String getTokenId() {
+	public final String getTokenId() {
 		if (cachedTokenId == null) {
-			concatbuffer.setLength(0);
-			concatbuffer.append(this.getClass().getName());
-			concatbuffer.append(getTokenClassSpecificId());
-			cachedTokenId = concatbuffer.toString();
+			CONCAT_BUFFER.setLength(0);
+			CONCAT_BUFFER.append(this.getClass().getName());
+			CONCAT_BUFFER.append(getTokenClassSpecificId());
+			cachedTokenId = CONCAT_BUFFER.toString();
 		}
 		return cachedTokenId;
 	}
 
 	/**
-	 * Gets an ID that differentiates this token from others in its class.  Subclasses should override this
-	 * such that tokens that display the same thing return the same ID.  The class its self need not be
-	 * represented.
-	 * @return
+	 * Gets an ID that differentiates this token from others in its class.  
+	 * Subclasses should override this such that tokens that display the same 
+	 * thing return the same ID.  The class its self need not be represented.
+	 * @return The class-specific part of the ID.
 	 */
 	protected abstract String getTokenClassSpecificId();
 	
 	@Override
-	public boolean equals(Object other) {
-		if (this == other) return true;
-		if (!(other instanceof BaseToken)) return false;
-		return ((BaseToken)other).getTokenId() == getTokenId();
+	public final boolean equals(final Object other) {
+		if (this == other) { return true; }
+		if (!(other instanceof BaseToken)) { return false; }
+		return ((BaseToken) other).getTokenId() == getTokenId();
 	}
 	
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return getTokenId().hashCode();
 	}
 	
-	public Set<String> getDefaultTags() {
-		return new HashSet<String>();
-	}
+	/**
+	 * @return A set of tags to apply to this token by default.
+	 */
+	public abstract Set<String> getDefaultTags();
 	
+	/**
+	 * If possible, permanently deletes this token from internal storage.
+	 * @return True if the token was deleted.
+	 * @throws IOException If the token was attempted to be deleted but there
+	 * 		was an error.
+	 */
 	public boolean maybeDeletePermanently() throws IOException {
 		return false;
 	}
 
+	/**
+	 * @return True if this is a built-in token, False otherwise.
+	 */
 	public boolean isBuiltIn() {
 		return true;
 	}

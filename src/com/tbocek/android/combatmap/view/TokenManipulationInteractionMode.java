@@ -97,22 +97,22 @@ public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
 			view.getTokens().remove(currentToken);
 			return true;
 		case R.id.token_context_size_tenth:
-			currentToken.setDiameter(.1f);
+			currentToken.setSize(.1f);
 			return true;
 		case R.id.token_context_size_quarter:
-			currentToken.setDiameter(.25f);
+			currentToken.setSize(.25f);
 			return true;
 		case R.id.token_context_size_half:
-			currentToken.setDiameter(.5f);
+			currentToken.setSize(.5f);
 			return true;
 		case R.id.token_context_size_one:
-			currentToken.setDiameter(1);
+			currentToken.setSize(1);
 			return true;
 		case R.id.token_context_size_two:
-			currentToken.setDiameter(2);
+			currentToken.setSize(2);
 			return true;
 		case R.id.token_context_size_four:
-			currentToken.setDiameter(4);
+			currentToken.setSize(4);
 			return true;
 		}
 		return false;
