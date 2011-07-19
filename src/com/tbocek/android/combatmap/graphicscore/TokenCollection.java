@@ -7,7 +7,7 @@ import java.util.List;
 import android.graphics.Canvas;
 
 
-public class TokenCollection implements Serializable {
+public final class TokenCollection implements Serializable {
 	private static final long serialVersionUID = 4852258096470549968L;
 	
 	private List<BaseToken> tokens = new ArrayList<BaseToken>();

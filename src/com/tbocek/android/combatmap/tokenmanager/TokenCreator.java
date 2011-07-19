@@ -26,7 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class TokenCreator extends Activity {
+public final class TokenCreator extends Activity {
 	static final int PICK_IMAGE_REQUEST = 0;
 	
 	TokenCreatorView view;

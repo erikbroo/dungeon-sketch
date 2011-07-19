@@ -12,7 +12,7 @@ import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
 import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
-public class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
+public final class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
 	private static final int GRID_SNAP_THRESHOLD = 20;
 	public TokenManipulationInteractionMode(CombatView view) {
 		super(view);

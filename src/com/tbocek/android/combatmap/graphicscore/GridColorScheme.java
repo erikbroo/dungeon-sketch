@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import android.graphics.Color;
 
-public class GridColorScheme implements Serializable{
+public final class GridColorScheme implements Serializable{
 	private static final long serialVersionUID = -7991703730328026635L;
 	
 	public static final GridColorScheme STANDARD = new GridColorScheme(Color.WHITE, Color.rgb(200, 200, 200));

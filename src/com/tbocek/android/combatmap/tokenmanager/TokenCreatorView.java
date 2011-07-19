@@ -18,7 +18,7 @@ import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 import android.view.View;
 
-public class TokenCreatorView extends View {
+public final class TokenCreatorView extends View {
 	private static final int MAX_TOKEN_SIZE=300;
 	
 	private boolean hasCircle = false;

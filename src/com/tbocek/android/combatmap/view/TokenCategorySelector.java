@@ -14,7 +14,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-public class TokenCategorySelector extends ScrollView {
+public final class TokenCategorySelector extends ScrollView {
 	private LinearLayout innerLayout;
 	private TokenDatabase tokenDatabase;
 	private OnTagSelectedListener onTagSelectedListener;

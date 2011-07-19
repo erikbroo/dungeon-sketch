@@ -14,7 +14,7 @@ import android.view.View.OnDragListener;
 import android.widget.ImageView;
 
 
-public class TokenDeleteButton extends ImageView {
+public final class TokenDeleteButton extends ImageView {
 
 	public BaseToken managedToken;
 

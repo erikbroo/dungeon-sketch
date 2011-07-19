@@ -15,7 +15,7 @@ import android.graphics.drawable.Drawable;
  * @author Tim
  *
  */
-public class CustomBitmapToken extends DrawableToken {
+public final class CustomBitmapToken extends DrawableToken {
 	public static transient DataManager dataManager = null;
 
 	private String filename = null;

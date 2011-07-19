@@ -24,7 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 
-public class TokenSelectorView extends LinearLayout {
+public final class TokenSelectorView extends LinearLayout {
 	LinearLayout tokenLayout;
 	
 	Button groupSelector;

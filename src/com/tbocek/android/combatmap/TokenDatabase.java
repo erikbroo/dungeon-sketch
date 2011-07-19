@@ -37,7 +37,7 @@ import com.tbocek.android.combatmap.graphicscore.LetterToken;
 import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
-public class TokenDatabase implements Serializable {
+public final class TokenDatabase implements Serializable {
 	public Map<String, Set<String>> tokensForTag = new HashMap<String, Set<String>>();
 	public Map<String, Set<String>> tagsForToken = new HashMap<String, Set<String>>();
 	public transient Map<String, BaseToken> tokenForId = new HashMap<String, BaseToken>();

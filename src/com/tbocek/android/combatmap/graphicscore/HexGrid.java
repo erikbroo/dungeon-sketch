@@ -3,7 +3,7 @@ package com.tbocek.android.combatmap.graphicscore;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class HexGrid extends Grid {
+public final class HexGrid extends Grid {
 	private static float TANGENT_30_DEGREES = (float) Math.tan(30 * Math.PI / 180);
 	
 	@Override

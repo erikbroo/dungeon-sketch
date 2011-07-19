@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 
-public class TokenViewFactory {
+public final class TokenViewFactory {
 	public Map<BaseToken, View> cachedViews = new HashMap<BaseToken, View>();
 	private Context context;
 

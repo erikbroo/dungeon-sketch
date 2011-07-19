@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 
-public class EraserInteractionMode extends CombatViewInteractionMode {
+public final class EraserInteractionMode extends CombatViewInteractionMode {
 	private static final float ERASER_RADIUS = 30;
 	private boolean erasing;
 	private PointF lastErasedPoint;

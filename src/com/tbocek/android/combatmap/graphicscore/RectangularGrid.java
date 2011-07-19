@@ -7,7 +7,7 @@ import android.graphics.Paint;
  * Represents a grid of squares that will draw as virtual "graph paper".
  * @author Tim Bocek
  */
-public class RectangularGrid extends Grid {
+public final class RectangularGrid extends Grid {
 	
 	/**
 	 * Every MAJOR_GRID_LINE_FREQUENCYth line will be a major grid line.

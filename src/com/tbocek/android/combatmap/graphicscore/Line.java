@@ -14,7 +14,7 @@ import android.graphics.Paint;
  * @author Tim
  *
  */
-public class Line implements Serializable {
+public final class Line implements Serializable {
 	private static final long serialVersionUID = -4935518208097034463L;
 
 	public Line(int color, int strokeWidth) {

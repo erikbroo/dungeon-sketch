@@ -6,7 +6,7 @@ import com.tbocek.android.combatmap.graphicscore.Util;
 
 import android.view.MotionEvent;
 
-public class FingerDrawInteractionMode extends CombatViewInteractionMode {
+public final class FingerDrawInteractionMode extends CombatViewInteractionMode {
 	private float lastPointX;
 	private float lastPointY;
 	public FingerDrawInteractionMode(CombatView view) {

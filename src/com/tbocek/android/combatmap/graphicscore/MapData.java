@@ -15,7 +15,7 @@ import java.io.StreamCorruptedException;
  * @author Tim
  *
  */
-public class MapData implements Serializable {
+public final class MapData implements Serializable {
 	/**
 	 * 
 	 */

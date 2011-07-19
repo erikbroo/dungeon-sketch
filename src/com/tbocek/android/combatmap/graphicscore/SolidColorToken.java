@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
-public class SolidColorToken extends BaseToken {
+public final class SolidColorToken extends BaseToken {
 	private int color;
 	
 	public SolidColorToken(int c){

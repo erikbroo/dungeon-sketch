@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class TagListView extends ScrollView {
+public final class TagListView extends ScrollView {
 	public interface OnTagListActionListener {
 		public void onChangeSelectedTag(String newTag);
 		public void onDragTokenToTag(BaseToken token, String tag);

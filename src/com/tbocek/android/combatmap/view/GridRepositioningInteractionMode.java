@@ -5,7 +5,7 @@ import com.tbocek.android.combatmap.graphicscore.PointF;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-public class GridRepositioningInteractionMode extends CombatViewInteractionMode {
+public final class GridRepositioningInteractionMode extends CombatViewInteractionMode {
 
 	public GridRepositioningInteractionMode(CombatView view) {
 		super(view);

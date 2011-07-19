@@ -2,7 +2,7 @@ package com.tbocek.android.combatmap.graphicscore;
 
 import java.io.Serializable;
 
-public class CoordinateTransformer implements Serializable {
+public final class CoordinateTransformer implements Serializable {
 	private static final long serialVersionUID = -336836518697184615L;
 	
 	// Conversion of lengths in world space to lengths in screen space

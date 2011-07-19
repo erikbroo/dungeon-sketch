@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
-public class LetterToken extends BaseToken {
+public final class LetterToken extends BaseToken {
 	private String letter;
 	
 	public LetterToken(String letter) {

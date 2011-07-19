@@ -18,7 +18,7 @@ import android.widget.ImageView;
  * @author Tim
  *
  */
-public class TokenButton extends ImageView {
+public final class TokenButton extends ImageView {
 	BaseToken prototype;
 	private GestureDetector gestureDetector;
 	

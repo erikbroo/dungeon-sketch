@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SaveFileButton extends LinearLayout{
+public final class SaveFileButton extends LinearLayout{
 	ImageView preview;
 	TextView text;
 	
