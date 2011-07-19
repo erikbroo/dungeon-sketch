@@ -56,14 +56,14 @@ public class CombatViewInteractionMode extends SimpleAllGestureListener {
 	  public boolean onContextItemSelected(MenuItem item) {
 	      return false;
     }
-	
+ 
 	  /**
 	   * Allows the manipulation mode to draw custom user interface elements.
 	   * @param c The canvas to draw on.
 	   */
 	  public void draw(Canvas c) {
 		}
-	
+ 
     /**
      * Action to take when a finger is lifted.
      * @param event Event info.
