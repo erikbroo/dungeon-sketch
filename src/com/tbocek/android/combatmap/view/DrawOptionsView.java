@@ -7,6 +7,9 @@ import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -42,6 +45,11 @@ public final class DrawOptionsView extends HorizontalScrollView {
 	 */
 	private List<ImageToggleButton> colorGroup =
 		new ArrayList<ImageToggleButton>();
+	
+	/**
+	 * A drawable that will contain the colored pencil image
+	 */
+	Drawable coloredPencilDrawable;
 	
 	/**
 	 * OnClickListener for when a button representing a color is clicked.
@@ -154,6 +162,8 @@ public final class DrawOptionsView extends HorizontalScrollView {
 		layout = new LinearLayout(context);
 		addView(layout);
 		
+		coloredPencilDrawable =
+			context.getResources().getDrawable(R.drawable.pencilbw);
 
 		final ImageToggleButton panButton = new ImageToggleButton(context);
 		panButton.setImageResource(R.drawable.transform_move);
@@ -209,10 +219,13 @@ public final class DrawOptionsView extends HorizontalScrollView {
 	 * @param color The color that this button will select.
 	 */
 	private void addColorButton(final int color) {
-		PencilButton b = new PencilButton(this.getContext(), color);
+		ImageToggleButton b = new ImageToggleButton(this.getContext());
 		b.setOnClickListener(new ColorListener(color));
 		b.setLayoutParams(new LinearLayout.LayoutParams(
 				COLOR_BUTTON_SIZE, COLOR_BUTTON_SIZE));
+		b.setImageDrawable(coloredPencilDrawable);
+		b.setColorFilter(
+				new PorterDuffColorFilter(color, PorterDuff.Mode.OVERLAY));
 		layout.addView(b);
 		colorGroup.add(b);
 	}
