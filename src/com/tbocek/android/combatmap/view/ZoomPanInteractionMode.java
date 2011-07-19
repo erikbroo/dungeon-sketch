@@ -16,16 +16,16 @@ public class ZoomPanInteractionMode extends CombatViewInteractionMode {
      *
      * @param view The CombatView that this interaction mode interacts with.
      */
-	  public ZoomPanInteractionMode(CombatView view) {
-		  super(view);
-	  }
-	
+    public ZoomPanInteractionMode(CombatView view) {
+        super(view);
+    }
+ 
     @Override
-	  public boolean onScroll(
+    public boolean onScroll(
             MotionEvent e1, MotionEvent e2, 
             float distanceX, float distanceY) {
-    	  view.getTransformer().moveOrigin(-distanceX, -distanceY);
-    	  view.invalidate();
+        view.getTransformer().moveOrigin(-distanceX, -distanceY);
+        view.invalidate();
         return true;
-	  }
+    }
 }
