@@ -15,34 +15,69 @@ import android.graphics.Paint;
  *
  */
 public final class Line implements Serializable {
+
+    /**
+     * ID for serialization.
+     */
     private static final long serialVersionUID = -4935518208097034463L;
 
-    public Line(int color, int strokeWidth) {
+    // TODO: Create and cache a pen.
+
+    /**
+     * The color to draw this line with.
+     */
+    private int color = Color.BLACK;
+    
+    /**
+     * The stroke width to draw this line with.
+     */
+    private int width = 2;
+
+    /**
+     * Cached rectangle that bounds all the points in this line.
+     * This could be computed on demand, but it is easy enough to update
+     * every time a point is added.
+     */
+    private BoundingRectangle boundingRectangle = new BoundingRectangle();
+    
+    /**
+     * The points that comprise this line.
+     */
+    private List<PointF> points = new ArrayList<PointF>();
+    
+    /**
+     * Whether each point in the line should be drawn.  This allows us to
+     * temporarily suppress drawing the points when the line is being erased.
+     * However, it's only a temporary fix; the line should later be optimized
+     * so that points that shouldn't draw get removed instead.
+     */
+    private List<Boolean> shouldDraw = new ArrayList<Boolean>();
+    
+    /**
+     * Constructor.
+     * @param color Line color.
+     * @param strokeWidth Line stroke width.
+     */
+    public Line(final int color, final int strokeWidth) {
         this.color = color;
         this.width = strokeWidth;
     }
 
-    private static float MIN_POINT_DISTANCE = 0;
-    private int color = Color.BLACK;
-    private int width = 2;
-
-    private BoundingRectangle boundingRectangle = new BoundingRectangle();
-    private List<PointF> points = new ArrayList<PointF>();
-    private List<Boolean> shouldDraw = new ArrayList<Boolean>();
-
+    /**
+     * Adds the given point to the line.
+     * @param p The point to add.
+     */
     public void addPoint(PointF p) {
-        if (points.size() == 0 || isFarEnoughFromLastPoint(p)) {
-            points.add(p);
-            shouldDraw.add(true);
-            boundingRectangle.updateBounds(p);
-        }
+        points.add(p);
+        shouldDraw.add(true);
+        boundingRectangle.updateBounds(p);
     }
 
-    private boolean isFarEnoughFromLastPoint(PointF p) {
-        return Util.distance(p, points.get(points.size() - 1)) > MIN_POINT_DISTANCE;
-    }
-
-
+    /**
+     * Draws the line on the given canvas.
+     * @param c Canvas to draw on.
+     * @param transformer World space to screen space transformer.
+     */
     public void draw(Canvas c, CoordinateTransformer transformer) {
         //Do not try to draw a line with too few points.
         if (points.size() < 2) return;
@@ -60,6 +95,14 @@ public final class Line implements Serializable {
         }
     }
 
+    /**
+     * Erases all points in the line that fall in the circle specified by
+     * the given center and radius.  This does not delete the points, just
+     * marks them as erased.  removeErasedPoints() needs to be called afterward
+     * to get the true result of the erase operation.
+     * @param center Center of the circle to erase.
+     * @param radius Radius of the circle to erase.
+     */
     public void erase(PointF center, float radius) {
         if (boundingRectangle.intersectsWithCircle(center, radius)) {
             for (int i = 0; i < points.size(); ++i) {
@@ -70,6 +113,13 @@ public final class Line implements Serializable {
         }
     }
 
+    /**
+     * Returns a list of lines that are created by removing any erased points
+     * from this line.  There will often be more than one line returned, as it
+     * is a common case to erase the middle of the line.  The current line is
+     * not modified, but should be considered deprecated.
+     * @return A list of lines that results from removing erased points.
+     */
     public List<Line> removeErasedPoints() {
         List<Line> optimizedLines = new ArrayList<Line>();
         Line l = new Line(color, width);
@@ -90,6 +140,10 @@ public final class Line implements Serializable {
         return optimizedLines;
     }
 
+    /**
+     * Gets the smallest rectangle needed to fully enclose the line.
+     * @return The bounding rectangle.
+     */
     public BoundingRectangle getBoundingRectangle() {
         return boundingRectangle;
     }
