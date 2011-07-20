@@ -41,13 +41,13 @@ public final class TokenManager extends Activity {
     private static final int DIALOG_ID_NEW_TOKEN = 0;
 	TagListView tagListView;
     private TokenDatabase tokenDatabase;
-	
+
     private ScrollView scrollView;
-    
+
     private TokenDeleteButton trashButton;
-    
+
     TokenViewFactory mTokenViewFactory;
-    
+
     private TagListView.OnTagListActionListener onTagListActionListener =
     	new TagListView.OnTagListActionListener() {
 		@Override
@@ -59,10 +59,10 @@ public final class TokenManager extends Activity {
 		@Override
 		public void onDragTokenToTag(BaseToken token, String tag) {
 			tokenDatabase.tagToken(token.getTokenId(), tag);
-			
+
 		}
     };
-    
+
 	private void reloadScrollView(String tag) {
 		scrollView.removeAllViews();
 		if (tag == TagListView.ALL)
@@ -72,46 +72,46 @@ public final class TokenManager extends Activity {
 			scrollView.addView(
 					getTokenButtonLayout(tokenDatabase.getTokensForTag(tag)));
 	}
-	
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.token_manager_layout);
 
         BuiltInImageToken.registerResources(
         		this.getApplicationContext().getResources());
-		
+
 		mTokenViewFactory = new TokenViewFactory(this);
-		
+
     	tagListView = new TagListView(this);
     	tagListView.setOnTagListActionListener(onTagListActionListener);
-    	
+
     	trashButton = new TokenDeleteButton(this);
     	this.registerForContextMenu(trashButton);
     	((FrameLayout) this.findViewById(
     			R.id.token_manager_delete_button_frame))
     			.addView(trashButton);
-    	
-    	
+
+
     	FrameLayout tagListFrame =
     		(FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
     	tagListFrame.addView(tagListView);
-    	
+
     	scrollView =
     		(ScrollView) this.findViewById(R.id.token_manager_scroll_view);
-    	
+
     }
 
 	private int getWidth() {
 		return this.getWindowManager().getDefaultDisplay().getWidth();
 	}
-	
+
 	private int getHeight() {
 		return this.getWindowManager().getDefaultDisplay().getHeight();
 	}
 
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -119,7 +119,7 @@ public final class TokenManager extends Activity {
 		tagListView.setTagList(tokenDatabase.getTags());
     	Debug.stopMethodTracing();
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -130,21 +130,21 @@ public final class TokenManager extends Activity {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private View getTokenButtonLayout(Collection<BaseToken> tokens){
 		int width = 3*this.getWidth()/4;
 		int tokenWidth = 150;
 		int tokenHeight = 150;
 		int tokensPerRow = width/tokenWidth;
-		
-		
+
+
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.VERTICAL);
 		LinearLayout currentRow = null;
 		int i = 0;
 		for (BaseToken t : tokens) {
 			View b = mTokenViewFactory.getTokenView(t);
-			
+
 			// Remove all views from the parent, if there is one.
 			// This is safe because we are totally replacing the view contents
 			// here.
@@ -164,14 +164,14 @@ public final class TokenManager extends Activity {
 		}
 		return layout;
 	}
-	
+
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.token_manager_menu, menu);
     	return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
@@ -184,12 +184,12 @@ public final class TokenManager extends Activity {
     	}
     	return false;
     }
-    
+
     @Override
     public Dialog onCreateDialog(int id) {
     	switch(id) {
     	case DIALOG_ID_NEW_TOKEN:
-    		 return new TextPromptDialog(this, 
+    		 return new TextPromptDialog(this,
     				 new TextPromptDialog.OnTextConfirmedListener() {
 				public void onTextConfirmed(String text) {
 					tokenDatabase.addEmptyTag(text);
@@ -199,8 +199,8 @@ public final class TokenManager extends Activity {
     	}
     	return null;
     }
-    
-	
+
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenuInfo menuInfo) {
@@ -215,7 +215,7 @@ public final class TokenManager extends Activity {
       		}
       	}
     }
-    
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
@@ -226,11 +226,11 @@ public final class TokenManager extends Activity {
     			token.maybeDeletePermanently();
     			reloadScrollView(this.tagListView.getTag());
     		} catch (IOException e) {
-    			Toast toast = Toast.makeText(this.getApplicationContext(), 
+    			Toast toast = Toast.makeText(this.getApplicationContext(),
     					"Did not delete the token, probably because the " +
     					"external storage isn't writable." + e.toString(),
     					Toast.LENGTH_LONG);
-    			toast.show();	
+    			toast.show();
     		}
     		return true;
     	case R.id.token_delete_from_tag:
@@ -240,7 +240,7 @@ public final class TokenManager extends Activity {
     		reloadScrollView(tag);
     		return true;
     	default:
-    		return super.onContextItemSelected(item);	
+    		return super.onContextItemSelected(item);
     	}
     }
 }

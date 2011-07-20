@@ -9,9 +9,9 @@ import android.preference.PreferenceActivity;
  *
  */
 public final class Settings extends PreferenceActivity {
-	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.layout.settings);
-	}
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.layout.settings);
+    }
 }

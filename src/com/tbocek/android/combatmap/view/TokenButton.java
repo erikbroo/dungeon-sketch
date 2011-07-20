@@ -19,39 +19,39 @@ import android.widget.ImageView;
  *
  */
 public final class TokenButton extends ImageView {
-	BaseToken prototype;
-	private GestureDetector gestureDetector;
-	
-	private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
-		public void onLongPress(MotionEvent e) {
-			//TODO(tbocek): StartDrag
-			startDrag(null, new View.DragShadowBuilder(TokenButton.this), prototype.clone(), 0);
-		}
-	};
-	
-	public TokenButton(Context context, BaseToken prototype) {
-		super(context);
-		this.prototype = prototype;
-		
-		//Set up listener to see if a drag has started.
-		gestureDetector = new GestureDetector(this.getContext(), gestureListener);
+    BaseToken prototype;
+    private GestureDetector gestureDetector;
 
-		this.prototype.setLocation(new PointF(40, 35));
-	}
-	
-	public void onDraw(Canvas c) {
-		prototype.draw(c, (float)this.getWidth()/2, (float)this.getHeight()/2, Math.min(this.getWidth(), this.getHeight()) * .8f / 2);
-	}
-	
-	public BaseToken getClone() {
-		return prototype.clone();
-	}
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		this.gestureDetector.onTouchEvent(ev);
-		return super.onTouchEvent(ev);
-	}
+    private SimpleOnGestureListener gestureListener = new SimpleOnGestureListener() {
+        public void onLongPress(MotionEvent e) {
+            //TODO(tbocek): StartDrag
+            startDrag(null, new View.DragShadowBuilder(TokenButton.this), prototype.clone(), 0);
+        }
+    };
+
+    public TokenButton(Context context, BaseToken prototype) {
+        super(context);
+        this.prototype = prototype;
+
+        //Set up listener to see if a drag has started.
+        gestureDetector = new GestureDetector(this.getContext(), gestureListener);
+
+        this.prototype.setLocation(new PointF(40, 35));
+    }
+
+    public void onDraw(Canvas c) {
+        prototype.draw(c, (float)this.getWidth()/2, (float)this.getHeight()/2, Math.min(this.getWidth(), this.getHeight()) * .8f / 2);
+    }
+
+    public BaseToken getClone() {
+        return prototype.clone();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        this.gestureDetector.onTouchEvent(ev);
+        return super.onTouchEvent(ev);
+    }
 
 
 }

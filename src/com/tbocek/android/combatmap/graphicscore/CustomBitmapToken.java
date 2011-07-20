@@ -16,52 +16,52 @@ import android.graphics.drawable.Drawable;
  *
  */
 public final class CustomBitmapToken extends DrawableToken {
-	public static transient DataManager dataManager = null;
+    public static transient DataManager dataManager = null;
 
-	private String filename = null;
-	
-	public CustomBitmapToken(String filename) {
-		this.filename = filename;
-	}
+    private String filename = null;
 
-	@Override
-	protected Drawable createDrawable() {
-		if (dataManager == null) return null;
-		Bitmap b;
-		try {
-			b = dataManager.loadTokenImage(filename);
-			return new BitmapDrawable(b);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public CustomBitmapToken(String filename) {
+        this.filename = filename;
+    }
 
-	@Override
-	public BaseToken clone() {
-		return new CustomBitmapToken(filename);
-	}
+    @Override
+    protected Drawable createDrawable() {
+        if (dataManager == null) return null;
+        Bitmap b;
+        try {
+            b = dataManager.loadTokenImage(filename);
+            return new BitmapDrawable(b);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	@Override
-	protected String getTokenClassSpecificId() {
-		return filename;
-	}
+    @Override
+    public BaseToken clone() {
+        return new CustomBitmapToken(filename);
+    }
 
-	public Set<String> getDefaultTags() {
-		Set<String> s = new HashSet<String>();
-		s.add("custom");
-		s.add("image");
-		return s;
-	}
-	
-	@Override
-	public boolean maybeDeletePermanently() throws IOException {
-		dataManager.deleteTokenImage(filename);
-		return true;
-	}
-	
-	@Override
-	public boolean isBuiltIn() {
-		return false;
-	}
+    @Override
+    protected String getTokenClassSpecificId() {
+        return filename;
+    }
+
+    public Set<String> getDefaultTags() {
+        Set<String> s = new HashSet<String>();
+        s.add("custom");
+        s.add("image");
+        return s;
+    }
+
+    @Override
+    public boolean maybeDeletePermanently() throws IOException {
+        dataManager.deleteTokenImage(filename);
+        return true;
+    }
+
+    @Override
+    public boolean isBuiltIn() {
+        return false;
+    }
 }

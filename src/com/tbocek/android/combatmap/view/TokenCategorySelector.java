@@ -15,50 +15,50 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 public final class TokenCategorySelector extends ScrollView {
-	private LinearLayout innerLayout;
-	private TokenDatabase tokenDatabase;
-	private OnTagSelectedListener onTagSelectedListener;
-	
-	public void setOnCheckedListChangedListener(
-			OnTagSelectedListener onCheckedListChangedListener) {
-		this.onTagSelectedListener = onCheckedListChangedListener;
-	}
+    private LinearLayout innerLayout;
+    private TokenDatabase tokenDatabase;
+    private OnTagSelectedListener onTagSelectedListener;
 
-	public TokenCategorySelector(Context context) {
-		super(context);
-		innerLayout = new LinearLayout(this.getContext());
-		innerLayout.setOrientation(LinearLayout.VERTICAL);
-		this.addView(innerLayout);
+    public void setOnCheckedListChangedListener(
+            OnTagSelectedListener onCheckedListChangedListener) {
+        this.onTagSelectedListener = onCheckedListChangedListener;
+    }
 
-	}
-	
-	private void addCheckbox(String text) {
-		Button b = new Button(this.getContext());
-		b.setText(text);
-		b.setTextSize(16);
-		innerLayout.addView(b);
-		b.setOnClickListener(new OnClickListener() {
+    public TokenCategorySelector(Context context) {
+        super(context);
+        innerLayout = new LinearLayout(this.getContext());
+        innerLayout.setOrientation(LinearLayout.VERTICAL);
+        this.addView(innerLayout);
 
-			@Override
-			public void onClick(View v) {
-				if (onTagSelectedListener != null) {
-					onTagSelectedListener.onTagSelected(((Button)v).getText().toString());
-				}
-			}
-		});
-	}
+    }
 
-	public void setTokenDatabase(TokenDatabase tokenDatabase) {
-		this.tokenDatabase = tokenDatabase;
-		innerLayout.removeAllViews();
-		for (String tag: tokenDatabase.getTags()) {
-			addCheckbox(tag);
-		}
-	}
+    private void addCheckbox(String text) {
+        Button b = new Button(this.getContext());
+        b.setText(text);
+        b.setTextSize(16);
+        innerLayout.addView(b);
+        b.setOnClickListener(new OnClickListener() {
 
-	
-	public interface OnTagSelectedListener {
-		public void onTagSelected(String checkedTag);
-	}
+            @Override
+            public void onClick(View v) {
+                if (onTagSelectedListener != null) {
+                    onTagSelectedListener.onTagSelected(((Button)v).getText().toString());
+                }
+            }
+        });
+    }
+
+    public void setTokenDatabase(TokenDatabase tokenDatabase) {
+        this.tokenDatabase = tokenDatabase;
+        innerLayout.removeAllViews();
+        for (String tag: tokenDatabase.getTags()) {
+            addCheckbox(tag);
+        }
+    }
+
+
+    public interface OnTagSelectedListener {
+        public void onTagSelected(String checkedTag);
+    }
 
 }
