@@ -49,7 +49,7 @@ public class CombatViewInteractionMode
      * Allows the interaction mode to specify custom context menu options.
      * @param menu The context menu to populate
      */
-      public void onCreateContextMenu(ContextMenu menu) {
+      public void onCreateContextMenu(final ContextMenu menu) {
       }
 
     /**
@@ -57,7 +57,7 @@ public class CombatViewInteractionMode
      * response to context menu items that it added.
      * @param item The context menu item clicked.
      */
-      public boolean onContextItemSelected(MenuItem item) {
+      public boolean onContextItemSelected(final MenuItem item) {
           return false;
     }
 
@@ -65,58 +65,59 @@ public class CombatViewInteractionMode
        * Allows the manipulation mode to draw custom user interface elements.
        * @param c The canvas to draw on.
        */
-      public void draw(Canvas c) {
+      public void draw(final Canvas c) {
         }
 
     /**
      * Action to take when a finger is lifted.
      * @param event Event info.
      */
-      public void onUp(MotionEvent event) {
+      public void onUp(final MotionEvent event) {
       }
 
       @Override
-      public boolean onDown(MotionEvent event) {
+      public boolean onDown(final MotionEvent event) {
           return false;
       }
 
       @Override
-      public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2,
-              float arg3) {
+      public boolean onFling(
+    		  final MotionEvent arg0, final MotionEvent arg1, final float arg2,
+    		  final float arg3) {
           return false;
       }
 
       @Override
-      public void onLongPress(MotionEvent arg0) {
+      public void onLongPress(final MotionEvent arg0) {
       }
 
       @Override
-      public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
-              float arg3) {
+      public boolean onScroll(final MotionEvent arg0, final MotionEvent arg1,
+    		  final float arg2, final float arg3) {
           return false;
       }
 
       @Override
-      public void onShowPress(MotionEvent arg0) {
+      public void onShowPress(final MotionEvent arg0) {
       }
 
       @Override
-      public boolean onSingleTapUp(MotionEvent ev) {
+      public boolean onSingleTapUp(final MotionEvent ev) {
           return false;
       }
 
       @Override
-      public boolean onDoubleTap(MotionEvent arg0) {
+      public boolean onDoubleTap(final MotionEvent arg0) {
           return true;
       }
 
       @Override
-      public boolean onDoubleTapEvent(MotionEvent arg0) {
+      public boolean onDoubleTapEvent(final MotionEvent arg0) {
           return true;
       }
 
       @Override
-      public boolean onSingleTapConfirmed(MotionEvent arg0) {
+      public boolean onSingleTapConfirmed(final MotionEvent arg0) {
           return true;
       }
 
