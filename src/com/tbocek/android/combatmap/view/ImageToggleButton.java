@@ -14,7 +14,7 @@ import android.widget.ImageButton;
  * @author Tim
  *
  */
-public class ImageToggleButton extends ImageButton {
+public final class ImageToggleButton extends ImageButton {
     /**
      * The color to use when drawing a border around toggled buttons.
      */
