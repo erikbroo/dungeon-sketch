@@ -8,6 +8,9 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 
 /**
  * This class roots a strategy pattern hierarchy that primarily defines actions
@@ -17,23 +20,24 @@ import android.view.ScaleGestureDetector;
  *
  * @author Tim Bocek
  */
-public class CombatViewInteractionMode extends SimpleAllGestureListener {
-
+public class CombatViewInteractionMode
+		extends SimpleOnScaleGestureListener
+		implements OnGestureListener, OnDoubleTapListener {
     /**
      * The CombatView that this interaction mode manipulates.
      */
     protected CombatView view;
 
     /**
-     * Constructor
+     * Constructor.
      * @param view The CombatView that this interaction mode manipulates.
      */
-      public CombatViewInteractionMode(CombatView view) {
+      public CombatViewInteractionMode(final CombatView view) {
           this.view = view;
       }
 
       @Override
-      public boolean onScale(ScaleGestureDetector detector) {
+      public boolean onScale(final ScaleGestureDetector detector) {
         view.getTransformer().zoom(
             detector.getScaleFactor(),
             new PointF(detector.getFocusX(), detector.getFocusY()));
@@ -70,4 +74,50 @@ public class CombatViewInteractionMode extends SimpleAllGestureListener {
      */
       public void onUp(MotionEvent event) {
       }
+
+      @Override
+      public boolean onDown(MotionEvent event) {
+          return false;
+      }
+
+      @Override
+      public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2,
+              float arg3) {
+          return false;
+      }
+
+      @Override
+      public void onLongPress(MotionEvent arg0) {
+      }
+
+      @Override
+      public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
+              float arg3) {
+          return false;
+      }
+
+      @Override
+      public void onShowPress(MotionEvent arg0) {
+      }
+
+      @Override
+      public boolean onSingleTapUp(MotionEvent ev) {
+          return false;
+      }
+
+      @Override
+      public boolean onDoubleTap(MotionEvent arg0) {
+          return true;
+      }
+
+      @Override
+      public boolean onDoubleTapEvent(MotionEvent arg0) {
+          return true;
+      }
+
+      @Override
+      public boolean onSingleTapConfirmed(MotionEvent arg0) {
+          return true;
+      }
+
 }
