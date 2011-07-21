@@ -361,6 +361,11 @@ public final class TokenDatabase implements Serializable {
         addTokenPrototype(new LetterToken("Z"));
     }
 
+    /**
+     * Saves the token database to internal storage.
+     * @param context Context to use when saving the database.
+     * @throws IOException on write error.
+     */
     public void save(Context context) throws IOException {
         FileOutputStream output = 
                 context.openFileOutput("token_database", Context.MODE_PRIVATE);
@@ -370,6 +375,11 @@ public final class TokenDatabase implements Serializable {
         dataOut.close();
     }
 
+    /**
+     * Writes the token database to the given writer.
+     * @param output The writer to write the token database to.
+     * @throws IOException on write error.
+     */
     private void save(BufferedWriter output) throws IOException {
         for (String tokenName : this.tagsForToken.keySet()) {
             output.write(tokenName);
