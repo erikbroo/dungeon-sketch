@@ -60,10 +60,7 @@ public final class MapData implements Serializable {
 
         r.updateBounds(mBackgroundLines.getBoundingRectangle());
         r.updateBounds(mAnnotationLines.getBoundingRectangle());
-
-        for (BaseToken t: tokens.getTokens()) {
-            r.updateBounds(t.getBoundingRectangle());
-        }
+        r.updateBounds(tokens.getBoundingRectangle());
 
         return r;
     }
