@@ -11,7 +11,7 @@ import android.graphics.Paint.Style;
 /**
  * This class represents a token that draws as a capital letter
  * inside a circle.
- * 
+ *
  * @author Tim Bocek
  *
  */
@@ -21,30 +21,32 @@ public final class LetterToken extends BaseToken {
      * The letter to draw in the circle.  While this could be anything, it
      * should really only be a single character.
      */
-    private String letter;
+    private String mLetter;
 
     /**
      * Constructor.
      * @param letter The single character to draw in the circle.
      */
     public LetterToken(final String letter) {
-        this.letter = letter;
+        this.mLetter = letter;
     }
 
     @Override
     public BaseToken clone() {
-        return new LetterToken(letter);
+        return new LetterToken(mLetter);
     }
 
     @Override
-    public void drawBloodied(final Canvas c, final float x, final float y, final float radius) {
+    public void drawBloodied(final Canvas c, final float x, final float y,
+    		final float radius) {
         Paint p = new Paint();
         p.setColor(Color.RED);
         draw(c, x, y, radius, p);
     }
 
     @Override
-    public void draw(final Canvas c, final float x, final float y, final float radius) {
+    public void draw(final Canvas c, final float x, final float y,
+    		final float radius) {
         Paint p = new Paint();
         p.setColor(Color.BLACK);
         draw(c, x, y, radius, p);
@@ -58,18 +60,20 @@ public final class LetterToken extends BaseToken {
      * @param radius Radius of the token, in screen space.
      * @param paint Paint object to use when drawing the circle and text.
      */
-    private void draw(final Canvas c, final float x, final float y, final float radius, final Paint paint) {
+    private void draw(final Canvas c, final float x, final float y,
+    		final float radius, final Paint paint) {
         paint.setStrokeWidth(3);
         paint.setStyle(Style.STROKE);
         c.drawCircle(x, y, radius, paint);
         paint.setTextSize(radius);
         paint.setStrokeWidth(2);
         paint.setStyle(Style.FILL);
-        c.drawText(letter, x-radius/4, y+radius/4, paint);
+        c.drawText(mLetter, x - radius / 4, y + radius / 4, paint);
     }
 
     @Override
-    public void drawGhost(final Canvas c, final float x, final float y, final float radius) {
+    public void drawGhost(final Canvas c, final float x, final float y,
+    		final float radius) {
         //TODO(tim.bocek): Make this look different
         Paint p = new Paint();
         p.setColor(Color.GRAY);
@@ -78,9 +82,9 @@ public final class LetterToken extends BaseToken {
 
     @Override
     protected String getTokenClassSpecificId() {
-        return letter;
+        return mLetter;
     }
-    
+
     @Override
     public Set<String> getDefaultTags() {
         Set<String> s = new HashSet<String>();
