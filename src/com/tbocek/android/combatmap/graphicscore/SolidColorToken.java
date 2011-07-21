@@ -8,10 +8,24 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
+/**
+ * A built-in token type that draws as a solid color.
+ * 
+ * @author Tim Bocek
+ *
+ */
 public final class SolidColorToken extends BaseToken {
+    
+    /**
+     * This token's color.
+     */
     private int color;
 
-    public SolidColorToken(int c){
+    /**
+     * Constructor.
+     * @param c The color to draw this token with.
+     */
+    public SolidColorToken(final int c){
         this.color = c;
     }
 
@@ -22,7 +36,7 @@ public final class SolidColorToken extends BaseToken {
      * @param ghostPoint Location to draw the ghost, in world space
      */
     @Override
-    public void drawGhost(Canvas c, float x, float y, float radius) {
+    public void drawGhost(final Canvas c, final float x, final float y, final float radius) {
         Paint p = new Paint();
         p.setStrokeWidth(2);
         p.setColor(color);
@@ -31,14 +45,14 @@ public final class SolidColorToken extends BaseToken {
     }
 
     @Override
-    public void draw(Canvas c, float x, float y, float radius) {
+    public void draw(final Canvas c, final float x, final float y, final float radius) {
         Paint p = new Paint();
         p.setColor(color);
         c.drawCircle(x, y, radius, p);
     }
 
     @Override
-    public void drawBloodied(Canvas c, float x, float y, float radius) {
+    public void drawBloodied(final Canvas c, final float x, final float y, final float radius) {
         draw(c, x, y, radius);
 
         Paint p = new Paint();
@@ -59,6 +73,7 @@ public final class SolidColorToken extends BaseToken {
         return Integer.toString(color);
     }
 
+    @Override
     public Set<String> getDefaultTags() {
         Set<String> s = new HashSet<String>();
         s.add("built-in");
