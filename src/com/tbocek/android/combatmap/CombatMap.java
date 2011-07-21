@@ -30,20 +30,68 @@ import com.tbocek.android.combatmap.view.DrawOptionsView;
 import com.tbocek.android.combatmap.view.TokenCategorySelector;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
+/**
+ * This is the main activity that allows the user to sketch a map, and place
+ * and manipulate tokens.  Most of the application logic that does not relate
+ * to token management occurs in this activity or one of its views.
+ */
 public final class CombatMap extends Activity {
 
+    /**
+     * Where token images are saved.
+     * TODO: Make this configurable.
+     */
     private static final String TOKEN_IMAGE_DIRECTORY =
         "/sdcard/dungeon_sketch_tokens";
 
+    /**
+     * Tag for debug messages.
+     */
     private static final String TAG = "CombatMap";
 
+    /**
+     * The view that manages the main canvas for drawing and tokens.
+     */
     private CombatView mCombatView;
-    private TokenSelectorView mTokenSelector;
+   
+    /**
+     * This frame renders on the bottom of the screen to provide controls
+     * related to the current interaction mode, i.e. the token list or drawing
+     * tools.
+     */
     private FrameLayout mBottomControlFrame;
+    
+    /**
+     * This view provides an area to render controls in a region that draws
+     * over the main canvas and can be displayed or hidden as needed.  Currently
+     * used to draw the token category selector.
+     */
     private FrameLayout mPopupFrame;
-    private DrawOptionsView mDrawOptionsView;
+    
+    /**
+     * The view that allows the user to select a token for the map.
+     */
+    private TokenSelectorView mTokenSelector;
+
+    /**
+     * The view that allows the user to select a drawing tool or color.
+     */
+    private DrawOptionsView mDrawOptionsView;  
+    
+    /**
+     * The view that allows the user to select a token category to display in
+     * the token selector.
+     */
     private TokenCategorySelector mTokenCategorySelector;
+       
+    /**
+     * The current map.
+     */
     private static MapData mData;
+    
+    /**
+     * Database of available combat tokens.
+     */
     private TokenDatabase tokenDatabase;
 
     private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener =
