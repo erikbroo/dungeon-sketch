@@ -37,12 +37,6 @@ import com.tbocek.android.combatmap.view.TokenSelectorView;
  */
 public final class CombatMap extends Activity {
 
-    /**
-     * Where token images are saved.
-     * TODO: Make this configurable.
-     */
-    private static final String TOKEN_IMAGE_DIRECTORY =
-        "/sdcard/dungeon_sketch_tokens";
 
     /**
      * Tag for debug messages.
