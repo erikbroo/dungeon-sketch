@@ -182,7 +182,7 @@ public final class TokenDatabase implements Serializable {
     }
 
     private void loadCustomImageTokens(DataManager dataManager) {
-        CustomBitmapToken.dataManager = dataManager;
+        CustomBitmapToken.registerDataManager(dataManager);
         for (String filename : dataManager.tokenFiles()) {
             addTokenPrototype(new CustomBitmapToken(filename));
         }
