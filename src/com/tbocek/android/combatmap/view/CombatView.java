@@ -21,12 +21,31 @@ import com.tbocek.android.combatmap.graphicscore.LineCollection;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
-
+********************************************************************************
+/**
+ * This view is the main canvas on which the map and combat tokens are drawn
+ * and manipulated.
+ * @author Tim Bocek
+ *
+ */
 public final class CombatView extends View {
     Paint paint = new Paint();
 
+    /**
+     * Detector object to detect regular gestures.
+     */
     private GestureDetector gestureDetector;
+    
+    /**
+     * Detector object to detect pinch zoom.
+     */
     private ScaleGestureDetector scaleDetector;
+    
+    /**
+     * Interaction mode, defining how the view should currently respond to
+     * user input.
+     * TODO: refactor/rename.
+     */
     private CombatViewInteractionMode mGestureListener;
 
 
@@ -34,8 +53,14 @@ public final class CombatView extends View {
     public int newLineColor = Color.BLACK;
     public int newLineStrokeWidth = 2;
 
+    /**
+     * The current map.
+     */
     private MapData mData;
 
+    /**
+     * Reference to the collection of lines that are actively being drawn.
+     */
     private LineCollection mActiveLines;
 
     public boolean shouldSnapToGrid = true;
