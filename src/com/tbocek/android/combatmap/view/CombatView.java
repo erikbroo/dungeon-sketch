@@ -21,7 +21,7 @@ import com.tbocek.android.combatmap.graphicscore.LineCollection;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
-********************************************************************************
+
 /**
  * This view is the main canvas on which the map and combat tokens are drawn
  * and manipulated.
@@ -48,9 +48,14 @@ public final class CombatView extends View {
      */
     private CombatViewInteractionMode mGestureListener;
 
-
-
+    /**
+     * The color to use when creating a new line.
+     */
     public int newLineColor = Color.BLACK;
+    
+    /**
+     * The stroke width to use when creating a new line.
+     */
     public int newLineStrokeWidth = 2;
 
     /**
@@ -62,8 +67,15 @@ public final class CombatView extends View {
      * Reference to the collection of lines that are actively being drawn.
      */
     private LineCollection mActiveLines;
-
+    
+    /**
+     * Whether tokens being moved should snap to the grid.
+     */
     public boolean shouldSnapToGrid = true;
+    
+    /**
+     * Whether to draw the annotation layer.
+     */
     boolean shouldDrawAnnotations = false;
 
     public interface CombatViewEventListener {
@@ -82,23 +94,41 @@ public final class CombatView extends View {
         this.setOnDragListener(mOnDrag);
     }
 
+    /**
+     * Sets the interaction mode to simple zooming and panning.
+     */
     public void setZoomPanMode() {
         setGestureListener(new ZoomPanInteractionMode(this));
     }
 
+    /**
+     * Sets the interaction mode to dragging tokens; this will zoom and pan
+     * when not on a token.  Note that annotations should always draw in this
+     * mode.
+     */
     public void setTokenManipulationMode() {
         setGestureListener(new TokenManipulationInteractionMode(this));
         shouldDrawAnnotations = true;
     }
 
+    /**
+     * Sets the interaction mode to drawing lines.
+     */
     public void setDrawMode() {
         setGestureListener(new FingerDrawInteractionMode(this));
     }
-
+    
+    /**
+     * Sets the interaction mode to erasing lines.
+     */
     public void setEraseMode() {
         setGestureListener(new EraserInteractionMode(this));
     }
 
+    /**
+     * Sets the interaction mode to resizing the grid independent of anything
+     * already drawn.
+     */
     public void setResizeGridMode() {
         setGestureListener(new GridRepositioningInteractionMode(this));
     }
