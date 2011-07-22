@@ -198,6 +198,10 @@ public final class CombatView extends View {
         this.mGestureListener.draw(canvas);
     }
 
+    /**
+     * Gets a preview image of the map currently displayed in the view.
+     * @return A bitmap containing the preview image.
+     */
     public Bitmap getPreview() {
         Bitmap bitmap = Bitmap.createBitmap(
                 this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
@@ -210,15 +214,26 @@ public final class CombatView extends View {
         return bitmap;
     }
 
+    /**
+     * Returns the world space to screen space transformer used by the view.
+     */
     public CoordinateTransformer getTransformer() {
         return this.getData().transformer;
     }
 
+    /**
+     * Creates a new line on whatever line set is currently active, using the
+     * currently set color and stroke width.
+     */
     public Line createLine() {
         return mActiveLines.createLine(
                 this.newLineColor, this.newLineStrokeWidth);
     }
 
+    /**
+     * Places a token on the screen, at a location chosen by the view.
+     * @param t The token to place.
+     */
     public void placeToken(BaseToken t) {
         PointF attemptedLocationScreenSpace =
             new PointF(this.getWidth() / 2, this.getHeight() / 2);
@@ -233,6 +248,10 @@ public final class CombatView extends View {
         invalidate();
     }
 
+    /**
+     * Removes all data.
+     * TODO: still used?
+     */
     public void clearAll() {
         this.getData().mBackgroundLines.clear();
         this.getData().mAnnotationLines.clear();
@@ -240,6 +259,9 @@ public final class CombatView extends View {
         invalidate();
     }
 
+    /**
+     * Removes all erased points from the currently active set of lines.
+     */
     public void optimizeActiveLines() {
         mActiveLines.optimize();
     }
