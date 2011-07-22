@@ -35,12 +35,12 @@ public final class CombatView extends View {
      * Detector object to detect regular gestures.
      */
     private GestureDetector gestureDetector;
-    
+
     /**
      * Detector object to detect pinch zoom.
      */
     private ScaleGestureDetector scaleDetector;
-    
+
     /**
      * Interaction mode, defining how the view should currently respond to
      * user input.
@@ -52,7 +52,7 @@ public final class CombatView extends View {
      * The color to use when creating a new line.
      */
     public int newLineColor = Color.BLACK;
-    
+
     /**
      * The stroke width to use when creating a new line.
      */
@@ -67,12 +67,12 @@ public final class CombatView extends View {
      * Reference to the collection of lines that are actively being drawn.
      */
     private LineCollection mActiveLines;
-    
+
     /**
      * Whether tokens being moved should snap to the grid.
      */
     public boolean shouldSnapToGrid = true;
-    
+
     /**
      * Whether to draw the annotation layer.
      */
@@ -117,7 +117,7 @@ public final class CombatView extends View {
     public void setDrawMode() {
         setGestureListener(new FingerDrawInteractionMode(this));
     }
-    
+
     /**
      * Sets the interaction mode to erasing lines.
      */
@@ -272,7 +272,6 @@ public final class CombatView extends View {
         mGestureListener.onCreateContextMenu(menu);
     }
 
-    @Override
     public boolean onContextItemSelected(final MenuItem item) {
         boolean ret = mGestureListener.onContextItemSelected(item);
         if (ret) invalidate(); // Gesture listener made changes, need to redraw.
