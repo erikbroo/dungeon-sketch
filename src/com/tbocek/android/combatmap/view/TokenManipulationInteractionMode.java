@@ -12,18 +12,38 @@ import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
 import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
+/**
+ * An interaction mode that allows the user to drag tokens around the canvas.
+ * @author Tim Bocek
+ *
+ */
 public final class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
     private static final int GRID_SNAP_THRESHOLD = 20;
-    public TokenManipulationInteractionMode(CombatView view) {
+    /**
+     * constructor
+     * @param view The CombatView that this mode will interact with.
+     */
+    public TokenManipulationInteractionMode(final CombatView view) {
         super(view);
-        // TODO Auto-generated constructor stub
     }
 
-    BaseToken currentToken = null;
+    /**
+     * The token currently being dragged around.
+     */
+    private BaseToken currentToken = null;
+    
+    /**
+     * The original location of the token being dragged around.
+     */
     private PointF originalLocation;
-    boolean down = false;
+    
+    /**
+     * Whether the use is currently dragging a token.
+     */
+    private boolean down = false;
+    
     @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
         if (currentToken != null) {
             CoordinateTransformer transformer = view.getGridSpaceTransformer();
             PointF currentPointScreenSpace = new PointF(e2.getX(), e2.getY());
@@ -51,7 +71,9 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
         view.invalidate();
         return true;
     }
-    public boolean onDown(MotionEvent e) {
+    
+    @Override
+    public boolean onDown(final MotionEvent e) {
         currentToken = view.getTokens().getTokenUnderPoint(new PointF(e.getX(), e.getY()), view.getGridSpaceTransformer());
 
         if (currentToken != null)
@@ -61,21 +83,23 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
         return true;
     }
 
-    public boolean onDoubleTap(MotionEvent e) {
+    @Override
+    public boolean onDoubleTap(final MotionEvent e) {
         if (currentToken != null)
             currentToken.setBloodied(!currentToken.isBloodied());
         view.invalidate();
         return true;
     }
 
-    public void onLongPress(MotionEvent e) {
+    @Override
+    public void onLongPress(final MotionEvent e) {
         if (currentToken != null) {
             view.showContextMenu();
         }
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu) {
+    public void onCreateContextMenu(final ContextMenu menu) {
         if (currentToken != null) {
             menu.add(menu.NONE, R.id.token_context_delete_token, menu.NONE, "Delete Token");
             SubMenu sm = menu.addSubMenu("Change Size");
@@ -91,7 +115,7 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(final MenuItem item) {
         switch(item.getItemId()) {
         case R.id.token_context_delete_token:
             view.getTokens().remove(currentToken);
@@ -117,13 +141,15 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
         }
         return false;
     }
-
-    public void onUp(MotionEvent ev) {
+    
+    @Override
+    public void onUp(final MotionEvent ev) {
         down = false;
         view.invalidate();
     }
 
-    public void draw(Canvas c) {
+    @Override
+    public void draw(final Canvas c) {
         if (currentToken != null && down) {
             currentToken.drawGhost(c, view.getGridSpaceTransformer(), originalLocation);
         }
