@@ -133,22 +133,36 @@ public final class CombatView extends View {
         setGestureListener(new GridRepositioningInteractionMode(this));
     }
 
+    /**
+     * Sets the background layer as the active layer, so that any draw commands
+     * will draw on the background.
+     */
     public void useBackgroundLayer() {
         mActiveLines = getData().mBackgroundLines;
         shouldDrawAnnotations = false;
     }
 
+    /**
+     * Sets the annotation layer as the active layer, so that any draw commands
+     * will draw on the annotations.
+     */
     public void useAnnotationLayer() {
         mActiveLines = getData().mAnnotationLines;
         shouldDrawAnnotations = true;
     }
 
+  //TODO: needed?
     public void setEraseAnnotationMode() {
         setGestureListener(new EraserInteractionMode(this));
         useAnnotationLayer();
         shouldDrawAnnotations = true;
     }
 
+    /**
+     * Sets the interaction mode to the given listener.
+     * TODO: Rename GestureListener to InteractionMode throughout.
+     * @param listener The interaction mode to use.
+     */
     private void setGestureListener(CombatViewInteractionMode listener) {
         gestureDetector = new GestureDetector(this.getContext(), listener);
         gestureDetector.setOnDoubleTapListener(listener);
