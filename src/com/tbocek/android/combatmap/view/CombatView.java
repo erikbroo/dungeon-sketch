@@ -84,7 +84,7 @@ public final class CombatView extends View {
 
     CombatViewEventListener mCombatViewEventListener;
 
-    public CombatView(Context context) {
+    public CombatView(final Context context) {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -163,7 +163,7 @@ public final class CombatView extends View {
      * TODO: Rename GestureListener to InteractionMode throughout.
      * @param listener The interaction mode to use.
      */
-    private void setGestureListener(CombatViewInteractionMode listener) {
+    private void setGestureListener(final CombatViewInteractionMode listener) {
         gestureDetector = new GestureDetector(this.getContext(), listener);
         gestureDetector.setOnDoubleTapListener(listener);
         scaleDetector = new ScaleGestureDetector(this.getContext(), listener);
@@ -171,7 +171,7 @@ public final class CombatView extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         this.gestureDetector.onTouchEvent(ev);
         this.scaleDetector.onTouchEvent(ev);
 
@@ -184,7 +184,7 @@ public final class CombatView extends View {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(final Canvas canvas) {
         // White background
         getData().grid.draw(canvas, getData().transformer);
         getData().mBackgroundLines.drawAllLines(canvas, getData().transformer);
@@ -234,7 +234,7 @@ public final class CombatView extends View {
      * Places a token on the screen, at a location chosen by the view.
      * @param t The token to place.
      */
-    public void placeToken(BaseToken t) {
+    public void placeToken(final BaseToken t) {
         PointF attemptedLocationScreenSpace =
             new PointF(this.getWidth() / 2, this.getHeight() / 2);
         //TODO: This smells really bad.
@@ -267,20 +267,24 @@ public final class CombatView extends View {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu) {
+    public void onCreateContextMenu(final ContextMenu menu) {
         super.onCreateContextMenu(menu);
         mGestureListener.onCreateContextMenu(menu);
     }
 
-    public boolean onContextItemSelected(MenuItem item) {
+    @Override
+    public boolean onContextItemSelected(final MenuItem item) {
         boolean ret = mGestureListener.onContextItemSelected(item);
         if (ret) invalidate(); // Gesture listener made changes, need to redraw.
         return ret;
     }
 
+    /**
+     * Drag and drop listener that allows the user to drop tokens onto the grid.
+     */
     public View.OnDragListener mOnDrag = new View.OnDragListener() {
         @Override
-        public boolean onDrag(View view, DragEvent event) {
+        public boolean onDrag(final View view, final DragEvent event) {
             Log.d("DRAG", Integer.toString(event.getAction()));
             if (event.getAction() == DragEvent.ACTION_DROP) {
                 BaseToken toAdd = (BaseToken) event.getLocalState();
@@ -303,24 +307,45 @@ public final class CombatView extends View {
         }
     };
 
+    /**
+     * Gets the currently active line collection.
+     * @return The active lines.
+     */
     public LineCollection getActiveLines() {
         return mActiveLines;
     }
 
+    /**
+     * Returns the current token collection
+     * @return The tokens.
+     */
     public TokenCollection getTokens() {
         return getData().tokens;
     }
 
+    /**
+     * Gets a transformer from grid space to screen space, by composing the
+     * grid to world and the world to screen transformers.
+     * @return The composed transformation.
+     */
     public CoordinateTransformer getGridSpaceTransformer() {
         return getData().grid.gridSpaceToScreenSpaceTransformer(
                 getData().transformer);
     }
 
-    public void setData(MapData data) {
+    /**
+     * Sets the map data displayed.  Forces a redraw.
+     * @param data The new map data.
+     */
+    public void setData(final MapData data) {
         mData = data;
         invalidate();
     }
 
+    /**
+     * Gets the current map data.
+     * @return data The map data.
+     */
     public MapData getData() {
         return mData;
     }
