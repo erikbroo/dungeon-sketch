@@ -13,59 +13,81 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 /**
- *
- * @author Tim
+ * Base class for tokens that display some sort of drawable.  Provides standard
+ * drawing methods and a caching scheme.  Subclasses need mainly to specify
+ * how to load the drawable.
+ * @author Tim Bocek
  *
  */
 public abstract class DrawableToken extends BaseToken {
-    private static final long serialVersionUID = -4586968232758191016L;
+    /**
+     * ID for serialization.
+     */
+	private static final long serialVersionUID = -4586968232758191016L;
 
+	/**
+	 * Alpha value that will draw at full opacity.
+	 */
     private static final int FULL_OPACITY = 255;
+
+    /**
+     * Alpha value that will draw at half opacity.
+     */
     private static final int HALF_OPACITY = 128;
 
-    private static Map<String, Drawable> drawableCache = new HashMap<String, Drawable>();
+    /**
+     * Map between token ID and the the drawable that has been loaded for that
+     * token ID, if it exists.  Drawables already in this map will be reused.
+     */
+    private static Map<String, Drawable> drawableCache
+    	= new HashMap<String, Drawable>();
 
     @Override
-    public void drawBloodied(Canvas c, float x, float y, float radius) {
-        // TODO Auto-generated method stub
+    public final void drawBloodied(
+    		final Canvas c, final float x, final float y, final float radius) {
         Drawable d = getDrawable();
         if (d != null) {
-            ColorFilter cf = new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.OVERLAY);
+            ColorFilter cf =
+            	new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.OVERLAY);
             d.setColorFilter(cf);
-            draw(c,x,y,radius);
+            draw(c, x, y, radius);
             d.setColorFilter(null);
         }
 
     }
 
     @Override
-    public void draw(Canvas c, float x, float y, float radius) {
+    public final void draw(
+    		final Canvas c, final float x, final float y, final  float radius) {
         Drawable d = getDrawable();
         if (d != null) {
             c.save(Canvas.CLIP_SAVE_FLAG);
             clipToCircle(c, x, y, radius);
-            d.setBounds(new Rect((int)(x-radius), (int)(y-radius),
-                                     (int)(x+radius), (int)(y+radius)));
+            d.setBounds(new Rect((int) (x - radius), (int) (y - radius),
+                                     (int) (x + radius), (int) (y + radius)));
             d.draw(c);
             c.restore();
         }
     }
 
     /**
-     * Sets the clip of the given canvas to a circle centered at (x,y) with radius r
-     * @param c
-     * @param x
-     * @param y
-     * @param radius
+     * Sets the clip of the given canvas to a circle centered at (x,y) with
+     * radius r.
+     * @param c The canvas we are drawing on.
+     * @param x X coordinate of the circle to clip to.
+     * @param y Y coordinate of the circle to clip to.
+     * @param radius Radius of the circle to clip to.
      */
-    private void clipToCircle(Canvas c, float x, float y, float radius) {
+    private void clipToCircle(
+    		final Canvas c, final float x, final float y, final float radius) {
         Path p = new Path();
         p.addCircle(x, y, radius, Path.Direction.CW);
         c.clipPath(p);
     }
 
     @Override
-    protected void drawGhost(Canvas c, float x, float y, float radius) {
+    protected final void drawGhost(
+    		final Canvas c, final float x, final float y, final float radius) {
         Drawable d = getDrawable();
         if (d != null) {
             d.setAlpha(HALF_OPACITY);
@@ -74,7 +96,12 @@ public abstract class DrawableToken extends BaseToken {
         }
     }
 
-    protected Drawable getDrawable() {
+    /**
+     * Returns the drawable associated with this token.  This may cause the
+     * drawable to be loaded.
+     * @return The drawable.
+     */
+    private Drawable getDrawable() {
         if (drawableCache.containsKey(getTokenId())) {
             return drawableCache.get(getTokenId());
         }
@@ -83,14 +110,24 @@ public abstract class DrawableToken extends BaseToken {
             mDrawable = createDrawable();
         }
 
-        if (mDrawable != null)
+        if (mDrawable != null) {
             drawableCache.put(getTokenId(), mDrawable);
+        }
 
         return mDrawable;
     }
 
+    /**
+     * Loads the drawable.  Subclasses override this to specify how to load
+     * their specific type of drawable.
+     * @return The created drawable, or null if the drawable could not be
+     * 		created.
+     */
     protected abstract Drawable createDrawable();
 
+    /**
+     * The loaded drawable to use.
+     */
     private transient Drawable mDrawable;
 
 }
