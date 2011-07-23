@@ -52,7 +52,7 @@ public final class HexGrid extends Grid {
     protected void drawGrid(final Canvas canvas,
             final CoordinateTransformer worldToScreenTransformer) {
         Paint paint = new Paint();
-        paint.setColor(colorScheme.getLineColor());
+        paint.setColor(getLineColor());
 
         CoordinateTransformer transformer =
             gridSpaceToScreenSpaceTransformer(worldToScreenTransformer);

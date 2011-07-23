@@ -39,7 +39,7 @@ public final class RectangularGrid extends Grid {
             final Canvas canvas,
             final CoordinateTransformer worldToScreenTransformer) {
         Paint paint = new Paint();
-        paint.setColor(colorScheme.getLineColor());
+        paint.setColor(getLineColor());
 
         CoordinateTransformer transformer =
             gridSpaceToScreenSpaceTransformer(worldToScreenTransformer);
