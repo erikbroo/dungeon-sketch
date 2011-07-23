@@ -26,12 +26,12 @@ public final class Line implements Serializable {
     /**
      * The color to draw this line with.
      */
-    private int color = Color.BLACK;
-    
+    private int mColor = Color.BLACK;
+
     /**
      * The stroke width to draw this line with.
      */
-    private int width = 2;
+    private int mWidth = 2;
 
     /**
      * Cached rectangle that bounds all the points in this line.
@@ -39,12 +39,12 @@ public final class Line implements Serializable {
      * every time a point is added.
      */
     private BoundingRectangle boundingRectangle = new BoundingRectangle();
-    
+
     /**
      * The points that comprise this line.
      */
     private List<PointF> points = new ArrayList<PointF>();
-    
+
     /**
      * Whether each point in the line should be drawn.  This allows us to
      * temporarily suppress drawing the points when the line is being erased.
@@ -52,22 +52,22 @@ public final class Line implements Serializable {
      * so that points that shouldn't draw get removed instead.
      */
     private List<Boolean> shouldDraw = new ArrayList<Boolean>();
-    
+
     /**
      * Constructor.
      * @param color Line color.
      * @param strokeWidth Line stroke width.
      */
     public Line(final int color, final int strokeWidth) {
-        this.color = color;
-        this.width = strokeWidth;
+        this.mColor = color;
+        this.mWidth = strokeWidth;
     }
 
     /**
      * Adds the given point to the line.
      * @param p The point to add.
      */
-    public void addPoint(PointF p) {
+    public void addPoint(final PointF p) {
         points.add(p);
         shouldDraw.add(true);
         boundingRectangle.updateBounds(p);
@@ -78,18 +78,22 @@ public final class Line implements Serializable {
      * @param c Canvas to draw on.
      * @param transformer World space to screen space transformer.
      */
-    public void draw(Canvas c, CoordinateTransformer transformer) {
+    public void draw(final Canvas c, final CoordinateTransformer transformer) {
         //Do not try to draw a line with too few points.
-        if (points.size() < 2) return;
+        if (points.size() < 2) {
+        	return;
+        }
 
         Paint paint = new Paint();
-        paint.setColor(color);
-        paint.setStrokeWidth(width);
+        paint.setColor(mColor);
+        paint.setStrokeWidth(mWidth);
 
         for (int i = 0; i < points.size() - 1; ++i) {
-            if (shouldDraw.get(i).booleanValue() && shouldDraw.get(i+1).booleanValue()) {
+            if (shouldDraw.get(i).booleanValue()
+            		&& shouldDraw.get(i + 1).booleanValue()) {
                 PointF p1 = transformer.worldSpaceToScreenSpace(points.get(i));
-                PointF p2 = transformer.worldSpaceToScreenSpace(points.get(i+1));
+                PointF p2 = transformer.worldSpaceToScreenSpace(
+                		points.get(i + 1));
                 c.drawLine(p1.x, p1.y, p2.x, p2.y, paint);
             }
         }
@@ -103,7 +107,7 @@ public final class Line implements Serializable {
      * @param center Center of the circle to erase.
      * @param radius Radius of the circle to erase.
      */
-    public void erase(PointF center, float radius) {
+    public void erase(final PointF center, final float radius) {
         if (boundingRectangle.intersectsWithCircle(center, radius)) {
             for (int i = 0; i < points.size(); ++i) {
                 if (Util.distance(center, points.get(i)) < radius) {
@@ -122,18 +126,17 @@ public final class Line implements Serializable {
      */
     public List<Line> removeErasedPoints() {
         List<Line> optimizedLines = new ArrayList<Line>();
-        Line l = new Line(color, width);
+        Line l = new Line(mColor, mWidth);
         optimizedLines.add(l);
         for (int i = 0; i < points.size(); ++i) {
             if (this.shouldDraw.get(i).booleanValue()) {
                 l.addPoint(points.get(i));
-            }
-            else if (l.points.size() > 0){
+            } else if (l.points.size() > 0) {
                 //Do not add a line with only one point in it, those are useless
                 if (l.points.size() == 1) {
                     optimizedLines.remove(l);
                 }
-                l = new Line(color, width);
+                l = new Line(mColor, mWidth);
                 optimizedLines.add(l);
             }
         }
@@ -152,6 +155,6 @@ public final class Line implements Serializable {
      * @return This line's stroke width.
      */
     public int getStrokeWidth() {
-        return this.width;
+        return this.mWidth;
     }
 }

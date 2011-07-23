@@ -3,7 +3,6 @@ package com.tbocek.android.combatmap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -52,7 +51,7 @@ public final class Load extends Activity {
     private static final int FILE_VIEW_PADDING = 16;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         dataMgr = new DataManager(this.getApplicationContext());

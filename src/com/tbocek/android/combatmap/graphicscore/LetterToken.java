@@ -17,7 +17,17 @@ import android.graphics.Paint.Style;
  */
 public final class LetterToken extends BaseToken {
 
-    /**
+	/**
+	 * The ID for serialization.
+	 */
+	private static final long serialVersionUID = -8395100608110965181L;
+
+	/**
+	 * The stroke width to use when drawing this token.
+	 */
+	private static final int STROKE_WIDTH = 3;
+
+	/**
      * The letter to draw in the circle.  While this could be anything, it
      * should really only be a single character.
      */
@@ -62,7 +72,7 @@ public final class LetterToken extends BaseToken {
      */
     private void draw(final Canvas c, final float x, final float y,
     		final float radius, final Paint paint) {
-        paint.setStrokeWidth(3);
+        paint.setStrokeWidth(STROKE_WIDTH);
         paint.setStyle(Style.STROKE);
         c.drawCircle(x, y, radius, paint);
         paint.setTextSize(radius);
