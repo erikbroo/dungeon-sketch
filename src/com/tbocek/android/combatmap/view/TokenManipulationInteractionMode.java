@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.view;
 
 import android.graphics.Canvas;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SubMenu;
@@ -17,10 +18,16 @@ import com.tbocek.android.combatmap.graphicscore.Util;
  * @author Tim Bocek
  *
  */
-public final class TokenManipulationInteractionMode extends ZoomPanInteractionMode {
+public final class TokenManipulationInteractionMode
+		extends ZoomPanInteractionMode {
+	/**
+	 * Distance in screen space that a token needs to be away from a snap point
+	 * until it will snap.
+	 */
     private static final int GRID_SNAP_THRESHOLD = 20;
+
     /**
-     * constructor
+     * Constructor.
      * @param view The CombatView that this mode will interact with.
      */
     public TokenManipulationInteractionMode(final CombatView view) {
@@ -31,53 +38,61 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
      * The token currently being dragged around.
      */
     private BaseToken currentToken = null;
-    
+
     /**
      * The original location of the token being dragged around.
      */
     private PointF originalLocation;
-    
+
     /**
      * Whether the use is currently dragging a token.
      */
     private boolean down = false;
-    
+
     @Override
-    public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+    		final float distanceX, final float distanceY) {
         if (currentToken != null) {
             CoordinateTransformer transformer = view.getGridSpaceTransformer();
             PointF currentPointScreenSpace = new PointF(e2.getX(), e2.getY());
             if (view.shouldSnapToGrid) {
                 // Get the nearest snap point in screen space
-                PointF nearestSnapPointWorldSpace = view.getData().grid.getNearestSnapPoint(
+                PointF nearestSnapPointWorldSpace =
+                	view.getData().grid.getNearestSnapPoint(
                         transformer.screenSpaceToWorldSpace(
                                 currentPointScreenSpace),
                         currentToken.getSize());
                 // Snap to that point if it is less than a threshold
                 float distanceToSnapPoint = Util.distance(
-                        transformer.worldSpaceToScreenSpace(nearestSnapPointWorldSpace),
+                        transformer.worldSpaceToScreenSpace(
+                        		nearestSnapPointWorldSpace),
                         currentPointScreenSpace);
 
-                currentToken.setLocation(distanceToSnapPoint < GRID_SNAP_THRESHOLD
-                    ? nearestSnapPointWorldSpace
-                    : transformer.screenSpaceToWorldSpace(currentPointScreenSpace));
+                currentToken.setLocation(
+                		distanceToSnapPoint < GRID_SNAP_THRESHOLD
+                		? nearestSnapPointWorldSpace
+                		: transformer.screenSpaceToWorldSpace(
+                				currentPointScreenSpace));
             } else {
-                currentToken.setLocation(transformer.screenSpaceToWorldSpace(currentPointScreenSpace));
+                currentToken.setLocation(
+                		transformer.screenSpaceToWorldSpace(
+                				currentPointScreenSpace));
             }
-        }
-        else {
+        } else {
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
         view.invalidate();
         return true;
     }
-    
+
     @Override
     public boolean onDown(final MotionEvent e) {
-        currentToken = view.getTokens().getTokenUnderPoint(new PointF(e.getX(), e.getY()), view.getGridSpaceTransformer());
+        currentToken = view.getTokens().getTokenUnderPoint(
+        		new PointF(e.getX(), e.getY()), view.getGridSpaceTransformer());
 
-        if (currentToken != null)
+        if (currentToken != null) {
             originalLocation = currentToken.getLocation();
+        }
 
         down = true;
         return true;
@@ -85,8 +100,9 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
 
     @Override
     public boolean onDoubleTap(final MotionEvent e) {
-        if (currentToken != null)
+        if (currentToken != null) {
             currentToken.setBloodied(!currentToken.isBloodied());
+        }
         view.invalidate();
         return true;
     }
@@ -101,14 +117,15 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
     @Override
     public void onCreateContextMenu(final ContextMenu menu) {
         if (currentToken != null) {
-            menu.add(menu.NONE, R.id.token_context_delete_token, menu.NONE, "Delete Token");
+            menu.add(Menu.NONE, R.id.token_context_delete_token,
+            		 Menu.NONE, "Delete Token");
             SubMenu sm = menu.addSubMenu("Change Size");
-            sm.add(menu.NONE, R.id.token_context_size_tenth, 1, "1/10");
-            sm.add(menu.NONE, R.id.token_context_size_quarter, 2, "1/4");
-            sm.add(menu.NONE, R.id.token_context_size_half, 3, "1/2");
-            sm.add(menu.NONE, R.id.token_context_size_one, 4, "1");
-            sm.add(menu.NONE, R.id.token_context_size_two, 5, "2");
-            sm.add(menu.NONE, R.id.token_context_size_four, 6, "4");
+            sm.add(Menu.NONE, R.id.token_context_size_tenth, 1, "1/10");
+            sm.add(Menu.NONE, R.id.token_context_size_quarter, 2, "1/4");
+            sm.add(Menu.NONE, R.id.token_context_size_half, 3, "1/2");
+            sm.add(Menu.NONE, R.id.token_context_size_one, 4, "1");
+            sm.add(Menu.NONE, R.id.token_context_size_two, 5, "2");
+            sm.add(Menu.NONE, R.id.token_context_size_four, 6, "4");
 
         }
 
@@ -116,7 +133,7 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
 
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
         case R.id.token_context_delete_token:
             view.getTokens().remove(currentToken);
             return true;
@@ -138,10 +155,11 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
         case R.id.token_context_size_four:
             currentToken.setSize(4);
             return true;
+        default:
+        	return false;
         }
-        return false;
     }
-    
+
     @Override
     public void onUp(final MotionEvent ev) {
         down = false;
@@ -151,7 +169,8 @@ public final class TokenManipulationInteractionMode extends ZoomPanInteractionMo
     @Override
     public void draw(final Canvas c) {
         if (currentToken != null && down) {
-            currentToken.drawGhost(c, view.getGridSpaceTransformer(), originalLocation);
+            currentToken.drawGhost(
+            		c, view.getGridSpaceTransformer(), originalLocation);
         }
     }
 }
