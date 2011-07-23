@@ -5,16 +5,27 @@ import com.tbocek.android.combatmap.graphicscore.PointF;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+/**
+ * Defines an interaction mode that lets the user scroll and pinch-zoom to move
+ * and resize the grid without affecting anything that has been drawn.
+ * @author Tim Bocek
+ *
+ */
 public final class GridRepositioningInteractionMode
 		extends CombatViewInteractionMode {
 
-    public GridRepositioningInteractionMode(CombatView view) {
+	/**
+	 * Constructor.
+	 * @param view The CombatView to interact with.
+	 */
+    public GridRepositioningInteractionMode(final CombatView view) {
         super(view);
     }
 
     @Override
     public boolean onScroll(
-    		MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+    		final MotionEvent e1, final MotionEvent e2,
+    		final float distanceX, final float distanceY) {
         view.getData().grid.gridSpaceToWorldSpaceTransformer().moveOrigin(
                 -view.getTransformer().screenSpaceToWorldSpace(distanceX),
                 -view.getTransformer().screenSpaceToWorldSpace(distanceY));
@@ -23,7 +34,7 @@ public final class GridRepositioningInteractionMode
     }
 
     @Override
-    public boolean onScale(ScaleGestureDetector detector) {
+    public boolean onScale(final ScaleGestureDetector detector) {
         PointF invariantPointWorldSpace =
         	view.getTransformer().screenSpaceToWorldSpace(
         			detector.getFocusX(), detector.getFocusY());
