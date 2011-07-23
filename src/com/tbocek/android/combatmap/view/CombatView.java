@@ -74,14 +74,8 @@ public final class CombatView extends View {
      */
     private boolean shouldDrawAnnotations = false;
 
-    public interface CombatViewEventListener {
-        public void onOpenTokenMenu(BaseToken t);
-    };
-
-    CombatViewEventListener mCombatViewEventListener;
-
     /**
-     * Constructor.s
+     * Constructor.
      * @param context The context to create this view in.\
      */
     public CombatView(final Context context) {
@@ -152,7 +146,6 @@ public final class CombatView extends View {
 
     /**
      * Sets the interaction mode to the given listener.
-     * TODO: Rename GestureListener to InteractionMode throughout.
      * @param mode The interaction mode to use.
      */
     private void setInteractionMode(final CombatViewInteractionMode mode) {
@@ -391,5 +384,4 @@ public final class CombatView extends View {
 	public int getNewLineColor() {
 		return mNewLineColor;
 	}
-
 }
