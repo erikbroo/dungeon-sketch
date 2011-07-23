@@ -58,7 +58,7 @@ public final class TokenManipulationInteractionMode
             if (view.shouldSnapToGrid()) {
                 // Get the nearest snap point in screen space
                 PointF nearestSnapPointWorldSpace =
-                	view.getData().grid.getNearestSnapPoint(
+                	view.getData().getGrid().getNearestSnapPoint(
                         transformer.screenSpaceToWorldSpace(
                                 currentPointScreenSpace),
                         currentToken.getSize());

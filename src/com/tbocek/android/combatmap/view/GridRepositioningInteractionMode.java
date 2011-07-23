@@ -26,7 +26,7 @@ public final class GridRepositioningInteractionMode
     public boolean onScroll(
     		final MotionEvent e1, final MotionEvent e2,
     		final float distanceX, final float distanceY) {
-        view.getData().grid.gridSpaceToWorldSpaceTransformer().moveOrigin(
+        view.getData().getGrid().gridSpaceToWorldSpaceTransformer().moveOrigin(
                 -view.getTransformer().screenSpaceToWorldSpace(distanceX),
                 -view.getTransformer().screenSpaceToWorldSpace(distanceY));
         view.invalidate();
@@ -38,7 +38,7 @@ public final class GridRepositioningInteractionMode
         PointF invariantPointWorldSpace =
         	view.getTransformer().screenSpaceToWorldSpace(
         			detector.getFocusX(), detector.getFocusY());
-        view.getData().grid.gridSpaceToWorldSpaceTransformer().zoom(
+        view.getData().getGrid().gridSpaceToWorldSpaceTransformer().zoom(
         		detector.getScaleFactor(), invariantPointWorldSpace);
         view.invalidate();
         return true;

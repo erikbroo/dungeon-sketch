@@ -238,9 +238,9 @@ public final class CombatMap extends Activity {
         String colorScheme = sharedPreferences.getString("theme", "graphpaper");
         String gridType = sharedPreferences.getString("gridtype", "rect");
         mCombatView.setShouldSnapToGrid(sharedPreferences.getBoolean("snaptogrid", true));
-        mData.grid = Grid.createGrid(
+        mData.setGrid(Grid.createGrid(
                 gridType, colorScheme,
-                mData.grid.gridSpaceToWorldSpaceTransformer());
+                mData.getGrid().gridSpaceToWorldSpaceTransformer()));
     }
 
 

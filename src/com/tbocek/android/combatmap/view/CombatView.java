@@ -131,7 +131,7 @@ public final class CombatView extends View {
      * will draw on the background.
      */
     public void useBackgroundLayer() {
-        mActiveLines = getData().mBackgroundLines;
+        mActiveLines = getData().getBackgroundLines();
         shouldDrawAnnotations = false;
     }
 
@@ -140,7 +140,7 @@ public final class CombatView extends View {
      * will draw on the annotations.
      */
     public void useAnnotationLayer() {
-        mActiveLines = getData().mAnnotationLines;
+        mActiveLines = getData().getAnnotationLines();
         shouldDrawAnnotations = true;
     }
 
@@ -171,12 +171,12 @@ public final class CombatView extends View {
     @Override
     public void onDraw(final Canvas canvas) {
         // White background
-        getData().grid.draw(canvas, getData().transformer);
-        getData().mBackgroundLines.drawAllLines(canvas, getData().transformer);
-        getData().tokens.drawAllTokens(canvas, getGridSpaceTransformer());
+        getData().getGrid().draw(canvas, getData().transformer);
+        getData().getBackgroundLines().drawAllLines(canvas, getData().transformer);
+        getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
 
         if (this.shouldDrawAnnotations) {
-            getData().mAnnotationLines.drawAllLines(
+            getData().getAnnotationLines().drawAllLines(
                     canvas, getData().transformer);
         }
 
@@ -191,10 +191,10 @@ public final class CombatView extends View {
         Bitmap bitmap = Bitmap.createBitmap(
                 this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        getData().grid.drawBackground(canvas);
-        getData().mBackgroundLines.drawAllLines(canvas, getData().transformer);
-        getData().tokens.drawAllTokens(canvas, getGridSpaceTransformer());
-        getData().mAnnotationLines.drawAllLines(canvas, getData().transformer);
+        getData().getGrid().drawBackground(canvas);
+        getData().getBackgroundLines().drawAllLines(canvas, getData().transformer);
+        getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
+        getData().getAnnotationLines().drawAllLines(canvas, getData().transformer);
 
         return bitmap;
     }
@@ -226,12 +226,12 @@ public final class CombatView extends View {
             new PointF(this.getWidth() / 2, this.getHeight() / 2);
         //TODO: This smells really bad.
         PointF attemptedLocationGridSpace =
-            this.getData().grid.gridSpaceToScreenSpaceTransformer(
+            this.getData().getGrid().gridSpaceToScreenSpaceTransformer(
                     this.getData().transformer)
                     .screenSpaceToWorldSpace(attemptedLocationScreenSpace);
-        getData().tokens.placeTokenNearby(
-                t, attemptedLocationGridSpace, getData().grid);
-        this.getData().tokens.addToken(t);
+        getData().getTokens().placeTokenNearby(
+                t, attemptedLocationGridSpace, getData().getGrid());
+        this.getData().getTokens().addToken(t);
         invalidate();
     }
 
@@ -240,9 +240,9 @@ public final class CombatView extends View {
      * TODO: still used?
      */
     public void clearAll() {
-        this.getData().mBackgroundLines.clear();
-        this.getData().mAnnotationLines.clear();
-        this.getData().tokens.clear();
+        this.getData().getBackgroundLines().clear();
+        this.getData().getAnnotationLines().clear();
+        this.getData().getTokens().clear();
         invalidate();
     }
 
@@ -286,11 +286,11 @@ public final class CombatView extends View {
                     getGridSpaceTransformer().screenSpaceToWorldSpace(
                             new PointF(event.getX(), event.getY()));
                 if (snapToGrid) {
-                    location = getData().grid.getNearestSnapPoint(
+                    location = getData().getGrid().getNearestSnapPoint(
                             location, toAdd.getSize());
                 }
                 toAdd.setLocation(location);
-                getData().tokens.addToken(toAdd);
+                getData().getTokens().addToken(toAdd);
                 invalidate();
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
@@ -313,7 +313,7 @@ public final class CombatView extends View {
      * @return The tokens.
      */
     public TokenCollection getTokens() {
-        return getData().tokens;
+        return getData().getTokens();
     }
 
     /**
@@ -322,7 +322,7 @@ public final class CombatView extends View {
      * @return The composed transformation.
      */
     public CoordinateTransformer getGridSpaceTransformer() {
-        return getData().grid.gridSpaceToScreenSpaceTransformer(
+        return getData().getGrid().gridSpaceToScreenSpaceTransformer(
                 getData().transformer);
     }
 
