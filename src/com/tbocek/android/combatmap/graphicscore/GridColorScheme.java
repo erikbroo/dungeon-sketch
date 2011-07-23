@@ -4,34 +4,88 @@ import java.io.Serializable;
 
 import android.graphics.Color;
 
+/**
+ * Stores a color scheme to use when drawing the grid.
+ * @author Tim Bocek
+ *
+ */
 public final class GridColorScheme implements Serializable{
+	/**
+	 * ID to use for serialization.
+	 */
     private static final long serialVersionUID = -7991703730328026635L;
 
-    public static final GridColorScheme STANDARD = new GridColorScheme(Color.WHITE, Color.rgb(200, 200, 200));
-    public static final GridColorScheme GRAPH_PAPER = new GridColorScheme(Color.rgb(248, 255, 180), Color.rgb(195, 255, 114));
-    public static final GridColorScheme GRASS = new GridColorScheme(Color.rgb(63, 172, 41), Color.rgb(11, 121, 34));
-    public static final GridColorScheme NIGHT = new GridColorScheme(Color.rgb(0, 0, 102), Color.rgb(83, 36, 0));
+    // BUILT-IN COLOR SCHEMES
 
-    public static GridColorScheme fromNamedScheme(String name) {
+    /**
+     * Grey on white.
+     */
+    public static final GridColorScheme STANDARD =
+    	new GridColorScheme(Color.WHITE, Color.rgb(200, 200, 200));
+
+    /**
+     * Green on light yellow, a classic graph paper look.
+     */
+    public static final GridColorScheme GRAPH_PAPER =
+    	new GridColorScheme(Color.rgb(248, 255, 180), Color.rgb(195, 255, 114));
+
+    /**
+     * Dark green on light green.
+     */
+    public static final GridColorScheme GRASS =
+    	new GridColorScheme(Color.rgb(63, 172, 41), Color.rgb(11, 121, 34));
+
+    /**
+     * Yellow on dark blue.
+     */
+    public static final GridColorScheme NIGHT =
+    	new GridColorScheme(Color.rgb(0, 0, 102), Color.rgb(83, 36, 0));
+
+    /**
+     * Given the name of a color scheme, returns the scheme represented by that
+     * name.  If the scheme is not found, returns the standard grey-on-white
+     * color scheme.
+     * @param name The name of the scheme to use.
+     * @return The color scheme.
+     */
+    public static GridColorScheme fromNamedScheme(final String name) {
         if (name.equals("graphpaper")) return GRAPH_PAPER;
         if (name.equals("grass")) return GRASS;
         if (name.equals("night")) return NIGHT;
         return STANDARD;
     }
 
-    private int backgroundColor;
-    private int lineColor;
+    /**
+     * The color to draw in the background.
+     */
+    private int mBackgroundColor;
 
-    public GridColorScheme(int backgroundColor, int lineColor) {
-        this.backgroundColor = backgroundColor;
-        this.lineColor = lineColor;
+    /**
+     * The color to draw grid lines with.
+     */
+    private int mLineColor;
+
+    /**
+     * Constructor.
+     * @param backgroundColor The color to draw in the background.
+     * @param lineColor The color to draw grid lines with.
+     */
+    public GridColorScheme(final int backgroundColor, final int lineColor) {
+        this.mBackgroundColor = backgroundColor;
+        this.mLineColor = lineColor;
     }
 
+    /**
+     * @return The color to draw in the background.
+     */
     int getBackgroundColor() {
-        return backgroundColor;
+        return mBackgroundColor;
     }
 
+    /**
+     * @return The color to draw grid lines with.
+     */
     int getLineColor() {
-        return lineColor;
+        return mLineColor;
     }
 }
