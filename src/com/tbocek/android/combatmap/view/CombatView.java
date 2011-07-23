@@ -41,9 +41,8 @@ public final class CombatView extends View {
     /**
      * Interaction mode, defining how the view should currently respond to
      * user input.
-     * TODO: refactor/rename.
      */
-    private CombatViewInteractionMode mGestureListener;
+    private CombatViewInteractionMode mInteractionMode;
 
     /**
      * The color to use when creating a new line.
@@ -73,7 +72,7 @@ public final class CombatView extends View {
     /**
      * Whether to draw the annotation layer.
      */
-    boolean shouldDrawAnnotations = false;
+    private boolean shouldDrawAnnotations = false;
 
     public interface CombatViewEventListener {
         public void onOpenTokenMenu(BaseToken t);
@@ -81,6 +80,10 @@ public final class CombatView extends View {
 
     CombatViewEventListener mCombatViewEventListener;
 
+    /**
+     * Constructor.s
+     * @param context The context to create this view in.\
+     */
     public CombatView(final Context context) {
         super(context);
         setFocusable(true);
@@ -94,7 +97,7 @@ public final class CombatView extends View {
      * Sets the interaction mode to simple zooming and panning.
      */
     public void setZoomPanMode() {
-        setGestureListener(new ZoomPanInteractionMode(this));
+        setInteractionMode(new ZoomPanInteractionMode(this));
     }
 
     /**
@@ -103,7 +106,7 @@ public final class CombatView extends View {
      * mode.
      */
     public void setTokenManipulationMode() {
-        setGestureListener(new TokenManipulationInteractionMode(this));
+        setInteractionMode(new TokenManipulationInteractionMode(this));
         shouldDrawAnnotations = true;
     }
 
@@ -111,14 +114,14 @@ public final class CombatView extends View {
      * Sets the interaction mode to drawing lines.
      */
     public void setDrawMode() {
-        setGestureListener(new FingerDrawInteractionMode(this));
+        setInteractionMode(new FingerDrawInteractionMode(this));
     }
 
     /**
      * Sets the interaction mode to erasing lines.
      */
     public void setEraseMode() {
-        setGestureListener(new EraserInteractionMode(this));
+        setInteractionMode(new EraserInteractionMode(this));
     }
 
     /**
@@ -126,7 +129,7 @@ public final class CombatView extends View {
      * already drawn.
      */
     public void setResizeGridMode() {
-        setGestureListener(new GridRepositioningInteractionMode(this));
+        setInteractionMode(new GridRepositioningInteractionMode(this));
     }
 
     /**
@@ -147,23 +150,16 @@ public final class CombatView extends View {
         shouldDrawAnnotations = true;
     }
 
-  //TODO: needed?
-    public void setEraseAnnotationMode() {
-        setGestureListener(new EraserInteractionMode(this));
-        useAnnotationLayer();
-        shouldDrawAnnotations = true;
-    }
-
     /**
      * Sets the interaction mode to the given listener.
      * TODO: Rename GestureListener to InteractionMode throughout.
-     * @param listener The interaction mode to use.
+     * @param mode The interaction mode to use.
      */
-    private void setGestureListener(final CombatViewInteractionMode listener) {
-        gestureDetector = new GestureDetector(this.getContext(), listener);
-        gestureDetector.setOnDoubleTapListener(listener);
-        scaleDetector = new ScaleGestureDetector(this.getContext(), listener);
-        mGestureListener = listener;
+    private void setInteractionMode(final CombatViewInteractionMode mode) {
+        gestureDetector = new GestureDetector(this.getContext(), mode);
+        gestureDetector.setOnDoubleTapListener(mode);
+        scaleDetector = new ScaleGestureDetector(this.getContext(), mode);
+        mInteractionMode = mode;
     }
 
     @Override
@@ -174,7 +170,7 @@ public final class CombatView extends View {
         //If a finger was removed, optimize the lines by removing unused points.
         //TODO(tim.bocek): Only do this if we are erasing.
         if (ev.getAction() == MotionEvent.ACTION_UP) {
-            this.mGestureListener.onUp(ev);
+            this.mInteractionMode.onUp(ev);
         }
         return true;
     }
@@ -191,7 +187,7 @@ public final class CombatView extends View {
                     canvas, getData().transformer);
         }
 
-        this.mGestureListener.draw(canvas);
+        this.mInteractionMode.draw(canvas);
     }
 
     /**
@@ -212,6 +208,7 @@ public final class CombatView extends View {
 
     /**
      * Returns the world space to screen space transformer used by the view.
+     * @return The transformation object.
      */
     public CoordinateTransformer getTransformer() {
         return this.getData().transformer;
@@ -220,6 +217,7 @@ public final class CombatView extends View {
     /**
      * Creates a new line on whatever line set is currently active, using the
      * currently set color and stroke width.
+     * @return The new line.
      */
     public Line createLine() {
         return mActiveLines.createLine(
@@ -265,19 +263,27 @@ public final class CombatView extends View {
     @Override
     public void onCreateContextMenu(final ContextMenu menu) {
         super.onCreateContextMenu(menu);
-        mGestureListener.onCreateContextMenu(menu);
+        mInteractionMode.onCreateContextMenu(menu);
     }
 
+    /**
+     * Forwards the context item selection event to the current interaction
+     * mode.
+     * @param item The selected item.
+     * @return True if the event was handled.
+     */
     public boolean onContextItemSelected(final MenuItem item) {
-        boolean ret = mGestureListener.onContextItemSelected(item);
-        if (ret) invalidate(); // Gesture listener made changes, need to redraw.
+        boolean ret = mInteractionMode.onContextItemSelected(item);
+        if (ret) {
+        	invalidate(); // Gesture listener made changes, need to redraw.
+        }
         return ret;
     }
 
     /**
      * Drag and drop listener that allows the user to drop tokens onto the grid.
      */
-    public View.OnDragListener mOnDrag = new View.OnDragListener() {
+    private View.OnDragListener mOnDrag = new View.OnDragListener() {
         @Override
         public boolean onDrag(final View view, final DragEvent event) {
             Log.d("DRAG", Integer.toString(event.getAction()));
@@ -294,8 +300,7 @@ public final class CombatView extends View {
                 getData().tokens.addToken(toAdd);
                 invalidate();
                 return true;
-            }
-            else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+            } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                 return true;
             }
             return false;
@@ -349,7 +354,7 @@ public final class CombatView extends View {
 	 * @param shouldSnapToGrid the shouldSnapToGrid to set
 	 */
 	public void setShouldSnapToGrid(final boolean shouldSnapToGrid) {
-		this.ssnapToGrid = shouldSnapToGrid;
+		this.snapToGrid = shouldSnapToGrid;
 	}
 
 	/**
