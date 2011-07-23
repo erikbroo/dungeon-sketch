@@ -205,7 +205,7 @@ public final class TokenManager extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenuInfo menuInfo) {
       	if (v == this.trashButton) {
-      		if (!this.trashButton.managedToken.isBuiltIn()) {
+      		if (!this.trashButton.getManagedToken().isBuiltIn()) {
       			menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
       					 "Delete Token");
       		}
@@ -218,9 +218,10 @@ public final class TokenManager extends Activity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+    	//TODO: Move more of this functionality into TokenDeleteButton.
     	switch (item.getItemId()) {
     	case R.id.token_delete_entire_token:
-    		BaseToken token = this.trashButton.managedToken;
+    		BaseToken token = this.trashButton.getManagedToken();
     		this.tokenDatabase.removeToken(token);
     		try {
     			token.maybeDeletePermanently();
@@ -234,7 +235,7 @@ public final class TokenManager extends Activity {
     		}
     		return true;
     	case R.id.token_delete_from_tag:
-    		token = this.trashButton.managedToken;
+    		token = this.trashButton.getManagedToken();
     		String tag = this.tagListView.getTag();
     		this.tokenDatabase.removeTagFromToken(token.getTokenId(), tag);
     		reloadScrollView(tag);
