@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
@@ -29,8 +28,6 @@ import com.tbocek.android.combatmap.graphicscore.TokenCollection;
  *
  */
 public final class CombatView extends View {
-    Paint paint = new Paint();
-
     /**
      * Detector object to detect regular gestures.
      */
@@ -51,12 +48,12 @@ public final class CombatView extends View {
     /**
      * The color to use when creating a new line.
      */
-    public int newLineColor = Color.BLACK;
+    private int mNewLineColor = Color.BLACK;
 
     /**
      * The stroke width to use when creating a new line.
      */
-    public int newLineStrokeWidth = 2;
+    private int mNewLineStrokeWidth = 2;
 
     /**
      * The current map.
@@ -71,7 +68,7 @@ public final class CombatView extends View {
     /**
      * Whether tokens being moved should snap to the grid.
      */
-    public boolean shouldSnapToGrid = true;
+    private boolean snapToGrid = true;
 
     /**
      * Whether to draw the annotation layer.
@@ -89,7 +86,6 @@ public final class CombatView extends View {
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        paint.setAntiAlias(true);
         this.setTokenManipulationMode();
         this.setOnDragListener(mOnDrag);
     }
@@ -227,7 +223,7 @@ public final class CombatView extends View {
      */
     public Line createLine() {
         return mActiveLines.createLine(
-                this.newLineColor, this.newLineStrokeWidth);
+                this.mNewLineColor, this.mNewLineStrokeWidth);
     }
 
     /**
@@ -290,7 +286,7 @@ public final class CombatView extends View {
                 PointF location =
                     getGridSpaceTransformer().screenSpaceToWorldSpace(
                             new PointF(event.getX(), event.getY()));
-                if (shouldSnapToGrid) {
+                if (snapToGrid) {
                     location = getData().grid.getNearestSnapPoint(
                             location, toAdd.getSize());
                 }
@@ -315,7 +311,7 @@ public final class CombatView extends View {
     }
 
     /**
-     * Returns the current token collection
+     * Returns the current token collection.
      * @return The tokens.
      */
     public TokenCollection getTokens() {
@@ -348,5 +344,47 @@ public final class CombatView extends View {
     public MapData getData() {
         return mData;
     }
+
+	/**
+	 * @param shouldSnapToGrid the shouldSnapToGrid to set
+	 */
+	public void setShouldSnapToGrid(final boolean shouldSnapToGrid) {
+		this.ssnapToGrid = shouldSnapToGrid;
+	}
+
+	/**
+	 * @return the shouldSnapToGrid
+	 */
+	public boolean shouldSnapToGrid() {
+		return snapToGrid;
+	}
+
+	/**
+	 * @param newLineStrokeWidth the newLineStrokeWidth to set
+	 */
+	public void setNewLineStrokeWidth(final int newLineStrokeWidth) {
+		this.mNewLineStrokeWidth = newLineStrokeWidth;
+	}
+
+	/**
+	 * @return the newLineStrokeWidth
+	 */
+	public int getNewLineStrokeWidth() {
+		return mNewLineStrokeWidth;
+	}
+
+	/**
+	 * @param newLineColor the newLineColor to set
+	 */
+	public void setNewLineColor(final int newLineColor) {
+		this.mNewLineColor = newLineColor;
+	}
+
+	/**
+	 * @return the newLineColor
+	 */
+	public int getNewLineColor() {
+		return mNewLineColor;
+	}
 
 }

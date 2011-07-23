@@ -56,6 +56,7 @@ public class CombatViewInteractionMode
      * Allows the interaction mode to specify the actions taken in
      * response to context menu items that it added.
      * @param item The context menu item clicked.
+     * @return Whether the event was handled.
      */
       public boolean onContextItemSelected(final MenuItem item) {
           return false;

@@ -108,7 +108,7 @@ public final class CombatMap extends Activity {
         public void onChooseColoredPen(int color) {
             // TODO Auto-generated method stub
             mCombatView.setDrawMode();
-            mCombatView.newLineColor = color;
+            mCombatView.setNewLineColor(color);
         }
 
         @Override
@@ -120,7 +120,7 @@ public final class CombatMap extends Activity {
         @Override
         public void onChooseStrokeWidth(int width) {
             mCombatView.setDrawMode();
-            mCombatView.newLineStrokeWidth = width;
+            mCombatView.setNewLineStrokeWidth(width);
 
         }
     };
@@ -252,8 +252,7 @@ public final class CombatMap extends Activity {
                     this.getApplicationContext());
         String colorScheme = sharedPreferences.getString("theme", "graphpaper");
         String gridType = sharedPreferences.getString("gridtype", "rect");
-        mCombatView.shouldSnapToGrid =
-            sharedPreferences.getBoolean("snaptogrid", true);
+        mCombatView.setShouldSnapToGrid(sharedPreferences.getBoolean("snaptogrid", true));
         mData.grid = Grid.createGrid(
                 gridType, colorScheme,
                 mData.grid.gridSpaceToWorldSpaceTransformer());

@@ -55,7 +55,7 @@ public final class TokenManipulationInteractionMode
         if (currentToken != null) {
             CoordinateTransformer transformer = view.getGridSpaceTransformer();
             PointF currentPointScreenSpace = new PointF(e2.getX(), e2.getY());
-            if (view.shouldSnapToGrid) {
+            if (view.shouldSnapToGrid()) {
                 // Get the nearest snap point in screen space
                 PointF nearestSnapPointWorldSpace =
                 	view.getData().grid.getNearestSnapPoint(

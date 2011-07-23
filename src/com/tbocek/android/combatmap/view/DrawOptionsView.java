@@ -15,6 +15,11 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+/**
+ * Provides a tool and color selector for drawing.
+ * @author Tim Bocek
+ *
+ */
 public final class DrawOptionsView extends HorizontalScrollView {
 
     /**
@@ -47,9 +52,9 @@ public final class DrawOptionsView extends HorizontalScrollView {
         new ArrayList<ImageToggleButton>();
 
     /**
-     * A drawable that will contain the colored pencil image
+     * A drawable that will contain the colored pencil image.
      */
-    Drawable coloredPencilDrawable;
+    private Drawable coloredPencilDrawable;
 
     /**
      * OnClickListener for when a button representing a color is clicked.
@@ -60,6 +65,11 @@ public final class DrawOptionsView extends HorizontalScrollView {
          * The color that this listener will pick when fired.
          */
         private int mColor;
+
+        /**
+         * Constructor.
+         * @param color The color that the listener will pick when fired.
+         */
         public ColorListener(final int color) {
             this.mColor = color;
         }
@@ -83,6 +93,12 @@ public final class DrawOptionsView extends HorizontalScrollView {
          * listener fires.
          */
         private int mWidth;
+
+        /**
+         * Constructor.
+         * @param width The line width that will be used when the listener
+         * 		fires.
+         */
         public StrokeWidthListener(final int width) {
             this.mWidth = width;
         }
@@ -132,18 +148,19 @@ public final class DrawOptionsView extends HorizontalScrollView {
      * @author Tim
      *
      */
-    public class NullChangeDrawToolListener implements OnChangeDrawToolListener {
+    public class NullChangeDrawToolListener
+    		implements OnChangeDrawToolListener {
         @Override
-        public void onChooseEraser() {}
+        public void onChooseEraser() { }
 
         @Override
-        public void onChooseColoredPen(int color) {}
+        public void onChooseColoredPen(final int color) { }
 
         @Override
-        public void onChoosePanTool() {}
+        public void onChoosePanTool() { }
 
         @Override
-        public void onChooseStrokeWidth(int width) {}
+        public void onChooseStrokeWidth(final int width) { }
     }
 
     /**
