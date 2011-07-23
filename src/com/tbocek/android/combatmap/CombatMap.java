@@ -47,21 +47,21 @@ public final class CombatMap extends Activity {
      * The view that manages the main canvas for drawing and tokens.
      */
     private CombatView mCombatView;
-   
+
     /**
      * This frame renders on the bottom of the screen to provide controls
      * related to the current interaction mode, i.e. the token list or drawing
      * tools.
      */
     private FrameLayout mBottomControlFrame;
-    
+
     /**
      * This view provides an area to render controls in a region that draws
      * over the main canvas and can be displayed or hidden as needed.  Currently
      * used to draw the token category selector.
      */
     private FrameLayout mPopupFrame;
-    
+
     /**
      * The view that allows the user to select a token for the map.
      */
@@ -70,19 +70,19 @@ public final class CombatMap extends Activity {
     /**
      * The view that allows the user to select a drawing tool or color.
      */
-    private DrawOptionsView mDrawOptionsView;  
-    
+    private DrawOptionsView mDrawOptionsView;
+
     /**
      * The view that allows the user to select a token category to display in
      * the token selector.
      */
     private TokenCategorySelector mTokenCategorySelector;
-       
+
     /**
      * The current map.
      */
     private static MapData mData;
-    
+
     /**
      * Database of available combat tokens.
      */
@@ -124,21 +124,6 @@ public final class CombatMap extends Activity {
 
         }
     };
-
-    private FilenameSelectedListener onFilenameSelected =
-        new FilenameSelectedListener() {
-        @Override
-        public void onSaveFilenameSelected(String name) {
-            new MapSaver(name, getApplicationContext(), false).run();
-        }
-
-        @Override
-        public void onLoadFilenameSelected(String name) {
-            loadMap(name);
-            setFilenamePreference(name);
-        }
-    };
-
 
     /** Called when the activity is first created. */
     @Override
@@ -446,7 +431,7 @@ public final class CombatMap extends Activity {
              return new TextPromptDialog(this,
                      new TextPromptDialog.OnTextConfirmedListener() {
                 public void onTextConfirmed(String text) {
-                    onFilenameSelected.onSaveFilenameSelected(text);
+                	new MapSaver(text, getApplicationContext(), false).run();
                 }
             }, "Save Map", "Save");
         }
