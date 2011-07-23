@@ -9,7 +9,13 @@ import android.graphics.Paint;
  */
 public final class RectangularGrid extends Grid {
 
-    /**
+
+	/**
+	 * ID for serialization.
+	 */
+	private static final long serialVersionUID = 2762147734569183378L;
+
+	/**
      * Every MAJOR_GRID_LINE_FREQUENCYth line will be a major grid line.
      */
     private static final int MAJOR_GRID_LINE_FREQUENCY = 5;
@@ -35,7 +41,7 @@ public final class RectangularGrid extends Grid {
     private static final float MINOR_GRID_LINE_WIDTH = 3;
 
     @Override
-    protected final void drawGrid(
+    protected void drawGrid(
             final Canvas canvas,
             final CoordinateTransformer worldToScreenTransformer) {
         Paint paint = new Paint();
