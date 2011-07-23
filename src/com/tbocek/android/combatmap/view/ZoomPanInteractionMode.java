@@ -12,18 +12,17 @@ import android.view.MotionEvent;
  */
 public class ZoomPanInteractionMode extends CombatViewInteractionMode {
     /**
-     * Constructor
-     *
+     * Constructor.
      * @param view The CombatView that this interaction mode interacts with.
      */
-    public ZoomPanInteractionMode(CombatView view) {
+    public ZoomPanInteractionMode(final CombatView view) {
         super(view);
     }
 
     @Override
     public boolean onScroll(
-            MotionEvent e1, MotionEvent e2,
-            float distanceX, float distanceY) {
+            final MotionEvent e1, final MotionEvent e2,
+            final float distanceX, final float distanceY) {
         view.getTransformer().moveOrigin(-distanceX, -distanceY);
         view.invalidate();
         return true;

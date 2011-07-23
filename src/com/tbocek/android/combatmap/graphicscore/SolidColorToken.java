@@ -10,13 +10,18 @@ import android.graphics.Paint.Style;
 
 /**
  * A built-in token type that draws as a solid color.
- * 
+ *
  * @author Tim Bocek
  *
  */
 public final class SolidColorToken extends BaseToken {
-    
-    /**
+
+	/**
+	 * ID for serialization.
+	 */
+	private static final long serialVersionUID = 6989219234978442286L;
+
+	/**
      * This token's color.
      */
     private int color;

@@ -172,7 +172,8 @@ public final class CombatView extends View {
     public void onDraw(final Canvas canvas) {
         // White background
         getData().getGrid().draw(canvas, getData().transformer);
-        getData().getBackgroundLines().drawAllLines(canvas, getData().transformer);
+        getData().getBackgroundLines().drawAllLines(
+        		canvas, getData().transformer);
         getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
 
         if (this.shouldDrawAnnotations) {
@@ -192,9 +193,11 @@ public final class CombatView extends View {
                 this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         getData().getGrid().drawBackground(canvas);
-        getData().getBackgroundLines().drawAllLines(canvas, getData().transformer);
+        getData().getBackgroundLines().drawAllLines(
+        		canvas, getData().transformer);
         getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
-        getData().getAnnotationLines().drawAllLines(canvas, getData().transformer);
+        getData().getAnnotationLines().drawAllLines(
+        		canvas, getData().transformer);
 
         return bitmap;
     }
