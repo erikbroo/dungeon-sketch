@@ -3,78 +3,113 @@ package com.tbocek.android.combatmap.tokenmanager;
 import java.io.IOException;
 import java.util.Collection;
 
-import com.tbocek.android.combatmap.DataManager;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Debug;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Toast;
+
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
-import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenViewFactory;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.DragEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnDragListener;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
-
+/**
+ * This activity lets the user view their library of tokens and manage which
+ * tags apply to which tokens.
+ * @author Tim Bocek
+ *
+ */
 public final class TokenManager extends Activity {
-    private static final int DIALOG_ID_NEW_TOKEN = 0;
-	TagListView tagListView;
+	/**
+	 * The proportion of the screen that the token layout should take up.
+	 */
+	private static final float TOKEN_LAYOUT_RELATIVE_SIZE = .75f;
+
+	/**
+	 * The width and height of each token button.
+	 */
+	private static final int TOKEN_BUTTON_SIZE = 150;
+
+	/**
+	 * ID for the dialog that will create a new tag.
+	 */
+    private static final int DIALOG_ID_NEW_TAG = 0;
+
+    /**
+     * View that displays tags in the token database.
+     */
+	private TagListView tagListView;
+
+	/**
+	 * The database to load tags and tokens from.
+	 */
     private TokenDatabase tokenDatabase;
 
+    /**
+     * Scroll view that wraps the layout of tokens for the currently selected
+     * tag and allows it to scroll.
+     */
     private ScrollView scrollView;
 
+    /**
+     * Drag target to delete tokens.
+     */
     private TokenDeleteButton trashButton;
 
-    TokenViewFactory mTokenViewFactory;
+    /**
+     * Factory that creates views to display tokens and implements a caching
+     * scheme.
+     */
+    private TokenViewFactory mTokenViewFactory;
 
+    /**
+     * Listener that reloads the token view when a new tag is selected, and
+     * tags a token when a token is dragged onto that tag.
+     */
     private TagListView.OnTagListActionListener onTagListActionListener =
     	new TagListView.OnTagListActionListener() {
 		@Override
-		public void onChangeSelectedTag(String newTag) {
-			reloadScrollView(newTag);
+		public void onChangeSelectedTag(final String newTag) {
+			setScrollViewTag(newTag);
 		}
 
-
 		@Override
-		public void onDragTokenToTag(BaseToken token, String tag) {
+		public void onDragTokenToTag(final BaseToken token, final String tag) {
 			tokenDatabase.tagToken(token.getTokenId(), tag);
 
 		}
     };
 
-	private void reloadScrollView(String tag) {
+    /**
+     * Sets the tag that the scroll view will display tokens from.
+     * @param tag The new tag to display tokens for.
+     */
+	private void setScrollViewTag(final String tag) {
 		scrollView.removeAllViews();
-		if (tag == TagListView.ALL)
+		if (tag == TagListView.ALL) {
 			scrollView.addView(
 					getTokenButtonLayout(tokenDatabase.getAllTokens()));
-		else
+		} else {
 			scrollView.addView(
 					getTokenButtonLayout(tokenDatabase.getTokensForTag(tag)));
+		}
 	}
 
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.token_manager_layout);
@@ -103,12 +138,11 @@ public final class TokenManager extends Activity {
 
     }
 
+	/**
+	 * @return Width of the activity for layout purposes.
+	 */
 	private int getWidth() {
 		return this.getWindowManager().getDefaultDisplay().getWidth();
-	}
-
-	private int getHeight() {
-		return this.getWindowManager().getDefaultDisplay().getHeight();
 	}
 
 
@@ -126,16 +160,21 @@ public final class TokenManager extends Activity {
 		try {
 			tokenDatabase.save(this);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	private View getTokenButtonLayout(Collection<BaseToken> tokens){
-		int width = 3*this.getWidth()/4;
-		int tokenWidth = 150;
-		int tokenHeight = 150;
-		int tokensPerRow = width/tokenWidth;
+	/**
+	 * Given a list of tokens, creates views representing the tokens and lays
+	 * them out in a table.
+	 * @param tokens The tokens to represent in the view.
+	 * @return Composite view that lays out buttons representing all tokens.
+	 */
+	private View getTokenButtonLayout(final Collection<BaseToken> tokens) {
+		int width =  (int) (TOKEN_LAYOUT_RELATIVE_SIZE * this.getWidth());
+		int tokenWidth = TOKEN_BUTTON_SIZE;
+		int tokenHeight = TOKEN_BUTTON_SIZE;
+		int tokensPerRow = width / tokenWidth;
 
 
 		LinearLayout layout = new LinearLayout(this);
@@ -148,13 +187,14 @@ public final class TokenManager extends Activity {
 			// Remove all views from the parent, if there is one.
 			// This is safe because we are totally replacing the view contents
 			// here.
-			LinearLayout parent = (LinearLayout)b.getParent();
-			if (parent != null)
+			LinearLayout parent = (LinearLayout) b.getParent();
+			if (parent != null) {
 				parent.removeAllViews();
+			}
 
 			b.setLayoutParams(
 					new LinearLayout.LayoutParams(tokenWidth, tokenHeight));
-			if (i%tokensPerRow == 0) {
+			if (i % tokensPerRow == 0) {
 				currentRow = new LinearLayout(this);
 				currentRow.setOrientation(LinearLayout.HORIZONTAL);
 				layout.addView(currentRow);
@@ -166,44 +206,47 @@ public final class TokenManager extends Activity {
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.token_manager_menu, menu);
     	return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
     	switch (item.getItemId()) {
     	case R.id.token_manager_new_token:
     		startActivity(new Intent(this, TokenCreator.class));
     		return true;
     	case R.id.token_manager_new_tag:
-    		showDialog(DIALOG_ID_NEW_TOKEN);
+    		showDialog(DIALOG_ID_NEW_TAG);
     		return true;
+    	default:
+    		return false;
     	}
-    	return false;
     }
 
     @Override
-    public Dialog onCreateDialog(int id) {
+    public Dialog onCreateDialog(final int id) {
     	switch(id) {
-    	case DIALOG_ID_NEW_TOKEN:
+    	case DIALOG_ID_NEW_TAG:
     		 return new TextPromptDialog(this,
     				 new TextPromptDialog.OnTextConfirmedListener() {
-				public void onTextConfirmed(String text) {
+				public void onTextConfirmed(final String text) {
 					tokenDatabase.addEmptyTag(text);
 					tagListView.setTagList(tokenDatabase.getTags());
 				}
 			}, "New Tag", "Create");
+    	default:
+        	return null;
+
     	}
-    	return null;
     }
 
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(final ContextMenu menu, final View v,
+                                    final ContextMenuInfo menuInfo) {
       	if (v == this.trashButton) {
       		if (!this.trashButton.getManagedToken().isBuiltIn()) {
       			menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
@@ -217,7 +260,7 @@ public final class TokenManager extends Activity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(final MenuItem item) {
     	//TODO: Move more of this functionality into TokenDeleteButton.
     	switch (item.getItemId()) {
     	case R.id.token_delete_entire_token:
@@ -225,11 +268,11 @@ public final class TokenManager extends Activity {
     		this.tokenDatabase.removeToken(token);
     		try {
     			token.maybeDeletePermanently();
-    			reloadScrollView(this.tagListView.getTag());
+    			setScrollViewTag(this.tagListView.getTag());
     		} catch (IOException e) {
     			Toast toast = Toast.makeText(this.getApplicationContext(),
-    					"Did not delete the token, probably because the " +
-    					"external storage isn't writable." + e.toString(),
+    					"Did not delete the token, probably because the "
+    					+ "external storage isn't writable." + e.toString(),
     					Toast.LENGTH_LONG);
     			toast.show();
     		}
@@ -238,7 +281,7 @@ public final class TokenManager extends Activity {
     		token = this.trashButton.getManagedToken();
     		String tag = this.tagListView.getTag();
     		this.tokenDatabase.removeTagFromToken(token.getTokenId(), tag);
-    		reloadScrollView(tag);
+    		setScrollViewTag(tag);
     		return true;
     	default:
     		return super.onContextItemSelected(item);
