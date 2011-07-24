@@ -1,8 +1,5 @@
 package com.tbocek.android.combatmap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -185,11 +182,7 @@ public final class CombatMap extends Activity {
             public void onTagSelected(final String selectedTag) {
                 Debug.startMethodTracing("setSelectedTags");
 
-                //TODO(tbocek): Refactor so this conversion isn't needed.
-                List<String> checkedTags = new ArrayList<String>(1);
-                checkedTags.add(selectedTag);
-
-                mTokenSelector.setSelectedTags(checkedTags);
+                mTokenSelector.setSelectedTag(selectedTag);
                 Debug.stopMethodTracing();
             }
         });

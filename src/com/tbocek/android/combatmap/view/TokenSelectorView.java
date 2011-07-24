@@ -1,110 +1,179 @@
 package com.tbocek.android.combatmap.view;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
-import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
-import com.tbocek.android.combatmap.graphicscore.CustomBitmapToken;
-import com.tbocek.android.combatmap.graphicscore.LetterToken;
-import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
-import com.tbocek.android.combatmap.DataManager;
-import com.tbocek.android.combatmap.R;
-import com.tbocek.android.combatmap.TokenDatabase;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 
+import com.tbocek.android.combatmap.R;
+import com.tbocek.android.combatmap.TokenDatabase;
+import com.tbocek.android.combatmap.graphicscore.BaseToken;
+
+/**
+ * Provides a horizontally scrolling list of tokens, allowing the user to
+ * pick one.
+ * @author Tim Bocek
+ *
+ */
 public final class TokenSelectorView extends LinearLayout {
-    LinearLayout tokenLayout;
 
-    Button groupSelector;
-    Button tokenManager;
+	/**
+	 * Dimensions of the square token views.
+	 */
+	private static final int TOKEN_VIEW_SIZE = 80;
 
-    TokenViewFactory mTokenViewFactory;
+	/**
+     * The inner layout that contains the tokens.
+     */
+	private LinearLayout tokenLayout;
 
-    public TokenSelectorView(Context context) {
+	/**
+	 * Button that represents opening the tag selector.
+	 */
+    private Button groupSelector;
+
+    /**
+     * Button that represents opening the token manager.
+     */
+    private Button tokenManager;
+
+    /**
+     * A factory that caches views already created for a given token.
+     */
+    private TokenViewFactory mTokenViewFactory;
+
+    /**
+     * Constructor.
+     * @param context The context to create this view in.
+     */
+    public TokenSelectorView(final Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.token_selector, this);
-        //Create and add the child layout, which will be a linear layout of tokens.
+        //Create and add the child layout, which will be a linear layout of
+        // tokens.
 
         tokenLayout = new LinearLayout(context);
-        ((HorizontalScrollView) findViewById(R.id.token_scroll_view)).addView(tokenLayout);
+        ((HorizontalScrollView) findViewById(R.id.token_scroll_view))
+        		.addView(tokenLayout);
 
-        groupSelector = (Button)findViewById(R.id.token_category_selector_button);
-        tokenManager = (Button)findViewById(R.id.token_manager_button);
+        groupSelector = (Button) findViewById(
+        		R.id.token_category_selector_button);
+        tokenManager = (Button) findViewById(R.id.token_manager_button);
 
         mTokenViewFactory = new TokenViewFactory(context);
     }
 
 
-
-    public View createTokenPrototype(BaseToken prototype) {
-
-
+    /**
+     * Creates a view that allows a token to be selected.
+     * @param prototype  The token prototype this view will represent.
+     * @return The view.
+     */
+    private View createTokenView(final BaseToken prototype) {
         View b = this.mTokenViewFactory.getTokenView(prototype);
         b.setOnClickListener(onClickListener);
-        b.setLayoutParams(new LinearLayout.LayoutParams(80, 80));
+        b.setLayoutParams(new LinearLayout.LayoutParams(
+        		TOKEN_VIEW_SIZE, TOKEN_VIEW_SIZE));
         return b;
     }
 
+    /**
+     * Listener that fires when an individual token is clicked.  This forwards
+     * the call on.
+     */
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             TokenButton clicked = (TokenButton) v;
-            if (onTokenSelectedListener != null)
-                onTokenSelectedListener.onTokenSelected(clicked.getClone());
+            if (mOnTokenSelectedListener != null) {
+                mOnTokenSelectedListener.onTokenSelected(clicked.getClone());
+            }
         }
     };
 
+    /**
+     * Listener that fires when a token is selected.
+     * @author Tim Bocek
+     *
+     */
     public interface OnTokenSelectedListener {
+    	/**
+    	 *
+    	 * @param t The selected token.  This is already a unique clone.
+    	 */
         void onTokenSelected(BaseToken t);
     }
 
-    OnTokenSelectedListener onTokenSelectedListener = null;
+    /**
+     * Listener that fires when a token is selected.
+     */
+    private OnTokenSelectedListener mOnTokenSelectedListener = null;
 
+    /**
+     * Database to load tokens from.
+     */
     private TokenDatabase tokenDatabase;
 
-    public void setOnTokenSelectedListener(OnTokenSelectedListener onTokenSelectedListener) {
-        this.onTokenSelectedListener = onTokenSelectedListener;
+    /**
+     * Sets the listener to fire when a token is selected.
+     * @param onTokenSelectedListener The listener.
+     */
+    public void setOnTokenSelectedListener(
+    		final OnTokenSelectedListener onTokenSelectedListener) {
+        this.mOnTokenSelectedListener = onTokenSelectedListener;
     }
 
 
 
-    public void setOnClickGroupSelectorListener(View.OnClickListener listener) {
+    /**
+     * Sets an OnClickListener for the tag selector button.
+     * @param listener The listener to use when the tag selector is clicked.
+     */
+    public void setOnClickGroupSelectorListener(
+    		final View.OnClickListener listener) {
         groupSelector.setOnClickListener(listener);
     }
 
-    public void setOnClickTokenManagerListener(View.OnClickListener listener) {
+    /**
+     * Sets an OnClickLIstener for the token manager button.
+     * @param listener The listener to use when the token manager button is
+     * 		clicked.
+     */
+    public void setOnClickTokenManagerListener(
+    		final View.OnClickListener listener) {
         tokenManager.setOnClickListener(listener);
     }
 
 
-
-    public void setTokenDatabase(TokenDatabase tokenDatabase) {
-        this.tokenDatabase = tokenDatabase;
+    /**
+     * Sets the token database to query for tokens.
+     * @param database The token database.
+     */
+    public void setTokenDatabase(final TokenDatabase database) {
+        this.tokenDatabase = database;
         setTokenList(tokenDatabase.getAllTokens());
     }
 
-
-
-    public void setSelectedTags(List<String> checkedTags) {
-        setTokenList(tokenDatabase.tokensForTags(checkedTags));
+    /**
+     * Sets the tag currently being displayed.
+     * @param checkedTag The tag currently being displayed.
+     */
+    public void setSelectedTag(final String checkedTag) {
+        setTokenList(tokenDatabase.getTokensForTag(checkedTag));
     }
 
-    public void setTokenList(Collection<BaseToken> tokens) {
+    /**
+     * Sets the list of tokens displayed to the given collection.
+     * @param tokens Tokens to offer in the selector.
+     */
+    private void setTokenList(final Collection<BaseToken> tokens) {
         tokenLayout.removeAllViews();
         for (BaseToken token : tokens) {
-            tokenLayout.addView(createTokenPrototype(token));
+            tokenLayout.addView(createTokenView(token));
         }
 
     }
