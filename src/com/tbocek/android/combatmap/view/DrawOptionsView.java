@@ -52,11 +52,6 @@ public final class DrawOptionsView extends HorizontalScrollView {
         new ArrayList<ImageToggleButton>();
 
     /**
-     * A drawable that will contain the colored pencil image.
-     */
-    private Drawable coloredPencilDrawable;
-
-    /**
      * OnClickListener for when a button representing a color is clicked.
      * @author Tim Bocek
      */
@@ -179,9 +174,6 @@ public final class DrawOptionsView extends HorizontalScrollView {
         layout = new LinearLayout(context);
         addView(layout);
 
-        coloredPencilDrawable =
-            context.getResources().getDrawable(R.drawable.pencilbw);
-
         final ImageToggleButton panButton = new ImageToggleButton(context);
         panButton.setImageResource(R.drawable.transform_move);
 
@@ -240,7 +232,9 @@ public final class DrawOptionsView extends HorizontalScrollView {
         b.setOnClickListener(new ColorListener(color));
         b.setLayoutParams(new LinearLayout.LayoutParams(
                 COLOR_BUTTON_SIZE, COLOR_BUTTON_SIZE));
-        b.setImageDrawable(coloredPencilDrawable);
+        Drawable pencil =
+            this.getContext().getResources().getDrawable(R.drawable.pencilbw);
+        b.setImageDrawable(pencil);
         b.setColorFilter(
                 new PorterDuffColorFilter(color, PorterDuff.Mode.OVERLAY));
         layout.addView(b);
