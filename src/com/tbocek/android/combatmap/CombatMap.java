@@ -34,6 +34,20 @@ import com.tbocek.android.combatmap.view.TokenSelectorView;
  * @author Tim Bocek
  */
 public final class CombatMap extends Activity {
+	/**
+	 * Identifier for the draw background mode.
+	 */
+	private static final int MODE_DRAW_BACKGROUND = 1;
+
+	/**
+	 * Identifier for the manipulate tokens mode.
+	 */
+	private static final int MODE_TOKENS = 2;
+
+	/**
+	 * Identifier for the draw annotations mode.
+	 */
+	private static final int MODE_DRAW_ANNOTATIONS = 3;
 
     /**
      * The view that manages the main canvas for drawing and tokens.
@@ -224,7 +238,8 @@ public final class CombatMap extends Activity {
         mTokenSelector.setTokenDatabase(tokenDatabase);
     }
 
-    /**
+
+	/**
      * Modifies the current map data according to any preferences the user has
      * set.
      */
@@ -239,6 +254,11 @@ public final class CombatMap extends Activity {
         mData.setGrid(Grid.createGrid(
                 gridType, colorScheme,
                 mData.getGrid().gridSpaceToWorldSpaceTransformer()));
+
+        // Set the current mode to the selected mode.
+        setManipulationMode(
+        		sharedPreferences.getInt(
+        				"manipulation_mode", MODE_DRAW_BACKGROUND));
     }
 
 
@@ -346,26 +366,13 @@ public final class CombatMap extends Activity {
         // Handle item selection
         switch (item.getItemId()) {
         case R.id.edit_background:
-            mCombatView.setDrawMode();
-            mCombatView.useBackgroundLayer();
-            mBottomControlFrame.removeAllViews();
-            mBottomControlFrame.addView(this.mDrawOptionsView);
-            disableCurrentMode(item);
-            mPopupFrame.setVisibility(View.INVISIBLE);
+        	setManipulationMode(MODE_DRAW_BACKGROUND);
             return true;
         case R.id.edit_annotations:
-            mCombatView.setDrawMode();
-            mCombatView.useAnnotationLayer();
-            mBottomControlFrame.removeAllViews();
-            mBottomControlFrame.addView(this.mDrawOptionsView);
-            disableCurrentMode(item);
-            mPopupFrame.setVisibility(View.INVISIBLE);
+        	setManipulationMode(MODE_DRAW_ANNOTATIONS);
             return true;
         case R.id.combat_on:
-            mCombatView.setTokenManipulationMode();
-            mBottomControlFrame.removeAllViews();
-            mBottomControlFrame.addView(mTokenSelector);
-            disableCurrentMode(item);
+        	setManipulationMode(MODE_TOKENS);
             return true;
         case R.id.zoom_to_fit:
             mData.zoomToFit(mCombatView.getWidth(), mCombatView.getHeight());
@@ -395,6 +402,61 @@ public final class CombatMap extends Activity {
         	return false;
         }
     }
+
+    /**
+     * Sets the manipulation mode to the given mode.
+     * @param manipulationMode The mode to set to; should be a MODE_ constant
+     * 		declared in this class.
+     */
+    private void setManipulationMode(final int manipulationMode) {
+		switch (manipulationMode) {
+		case MODE_DRAW_BACKGROUND:
+            mCombatView.setDrawMode();
+            mCombatView.useBackgroundLayer();
+            mBottomControlFrame.removeAllViews();
+            mBottomControlFrame.addView(this.mDrawOptionsView);
+            disableCurrentMode(this.backgroundLayerItem);
+            mPopupFrame.setVisibility(View.INVISIBLE);
+            setModePreference(manipulationMode);
+			return;
+		case MODE_DRAW_ANNOTATIONS:
+            mCombatView.setDrawMode();
+            mCombatView.useAnnotationLayer();
+            mBottomControlFrame.removeAllViews();
+            mBottomControlFrame.addView(this.mDrawOptionsView);
+            disableCurrentMode(this.annotationLayerItem);
+            mPopupFrame.setVisibility(View.INVISIBLE);
+            setModePreference(manipulationMode);
+			return;
+		case MODE_TOKENS:
+            mCombatView.setTokenManipulationMode();
+            mBottomControlFrame.removeAllViews();
+            mBottomControlFrame.addView(mTokenSelector);
+            disableCurrentMode(this.combatItem);
+            setModePreference(manipulationMode);
+			return;
+		default:
+			throw new IllegalArgumentException(
+					"Invalid manipulation mode: "
+					+ Integer.toString(manipulationMode));
+		}
+	}
+
+    /**
+     * Sets the preference that will persist the active mode between sessions.
+     * @param mode The mode to set
+     */
+    private void setModePreference(final int mode) {
+        SharedPreferences sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                    this.getApplicationContext());
+        // Persist the filename that we saved to so that we can load from that
+        // file again.
+        Editor editor = sharedPreferences.edit();
+        editor.putInt("manipulation_mode", mode);
+        editor.commit();
+    }
+
 
     /**
      * Dialog ID to use for the save file dialog.
