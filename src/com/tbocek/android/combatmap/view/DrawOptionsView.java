@@ -221,6 +221,9 @@ public final class DrawOptionsView extends HorizontalScrollView {
         for (int color : Util.getStandardColorPalette()) {
             addColorButton(color);
         }
+
+        // Start out with the pan button selected.
+        panButton.performClick();
     }
 
     /**
