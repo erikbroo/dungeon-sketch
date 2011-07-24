@@ -347,7 +347,7 @@ public final class CombatMap extends Activity {
         backgroundLayerItem = menu.findItem(R.id.edit_background);
         annotationLayerItem = menu.findItem(R.id.edit_annotations);
         combatItem = menu.findItem(R.id.combat_on);
-        disableCurrentMode(combatItem); // Starts out in combat mode.
+        //TODO: Disable the initially loaded mode.
         return true;
     }
 
@@ -356,6 +356,10 @@ public final class CombatMap extends Activity {
      * @param modeItem The menu item to check.
      */
     private void disableCurrentMode(final MenuItem modeItem) {
+    	if (modeItem == null) {
+    		return;
+    	}
+
         backgroundLayerItem.setEnabled(modeItem != backgroundLayerItem);
         annotationLayerItem.setEnabled(modeItem != annotationLayerItem);
         combatItem.setEnabled(modeItem != combatItem);
