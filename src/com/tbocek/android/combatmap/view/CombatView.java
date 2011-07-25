@@ -334,7 +334,13 @@ public final class CombatView extends View {
      * @param data The new map data.
      */
     public void setData(final MapData data) {
+
+    	boolean useBackgroundLines = (mData == null)
+    			|| this.mActiveLines == mData.getBackgroundLines();
         mData = data;
+        this.mActiveLines = useBackgroundLines
+        		? mData.getBackgroundLines()
+        		: mData.getAnnotationLines();
         invalidate();
     }
 
