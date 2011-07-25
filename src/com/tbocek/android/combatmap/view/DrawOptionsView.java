@@ -166,6 +166,13 @@ public final class DrawOptionsView extends HorizontalScrollView {
         new NullChangeDrawToolListener();
 
     /**
+     * The button that activates the pan tool.
+     * This is stored as a class-level variable so that we can simulate clicks
+     * to set it as the default.
+     */
+    private ImageToggleButton panButton;
+
+    /**
      * Constructs a new DrawOptionsView.
      * @param context The context to construct in.
      */
@@ -174,7 +181,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
         layout = new LinearLayout(context);
         addView(layout);
 
-        final ImageToggleButton panButton = new ImageToggleButton(context);
+        panButton = new ImageToggleButton(context);
         panButton.setImageResource(R.drawable.transform_move);
 
         final ImageToggleButton eraserButton = new ImageToggleButton(context);
@@ -221,7 +228,12 @@ public final class DrawOptionsView extends HorizontalScrollView {
         for (int color : Util.getStandardColorPalette()) {
             addColorButton(color);
         }
+    }
 
+    /**
+     * Automatically loads the default tool.
+     */
+    public void setDefault() {
         // Start out with the pan button selected.
         panButton.performClick();
     }

@@ -254,13 +254,7 @@ public final class CombatMap extends Activity {
         mData.setGrid(Grid.createGrid(
                 gridType, colorScheme,
                 mData.getGrid().gridSpaceToWorldSpaceTransformer()));
-
-        // Set the current mode to the selected mode.
-        setManipulationMode(
-        		sharedPreferences.getInt(
-        				"manipulation_mode", MODE_DRAW_BACKGROUND));
     }
-
 
     @Override
     public void onPause() {
@@ -347,7 +341,10 @@ public final class CombatMap extends Activity {
         backgroundLayerItem = menu.findItem(R.id.edit_background);
         annotationLayerItem = menu.findItem(R.id.edit_annotations);
         combatItem = menu.findItem(R.id.combat_on);
-        //TODO: Disable the initially loaded mode.
+
+        // We defer loading the manipulation mode until now, so that the correct
+        // item is disabled after the menu is loaded.
+        loadModePreference();
         return true;
     }
 
@@ -422,6 +419,7 @@ public final class CombatMap extends Activity {
             disableCurrentMode(this.backgroundLayerItem);
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
+            mDrawOptionsView.setDefault();
 			return;
 		case MODE_DRAW_ANNOTATIONS:
             mCombatView.setDrawMode();
@@ -431,6 +429,7 @@ public final class CombatMap extends Activity {
             disableCurrentMode(this.annotationLayerItem);
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
+            mDrawOptionsView.setDefault();
 			return;
 		case MODE_TOKENS:
             mCombatView.setTokenManipulationMode();
@@ -461,6 +460,19 @@ public final class CombatMap extends Activity {
         editor.commit();
     }
 
+    /**
+     * Loads the preference that controls what the current manipulation mode
+     * is.
+     */
+	private void loadModePreference() {
+		SharedPreferences sharedPreferences =
+	            PreferenceManager.getDefaultSharedPreferences(
+	                    this.getApplicationContext());
+		// Set the current mode to the selected mode.
+        setManipulationMode(
+        		sharedPreferences.getInt(
+        				"manipulation_mode", MODE_DRAW_BACKGROUND));
+	}
 
     /**
      * Dialog ID to use for the save file dialog.
