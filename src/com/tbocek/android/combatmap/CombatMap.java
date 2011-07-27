@@ -23,7 +23,7 @@ import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
-import com.tbocek.android.combatmap.view.TokenCategorySelector;
+import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
 /**
@@ -48,6 +48,11 @@ public final class CombatMap extends Activity {
 	 * Identifier for the draw annotations mode.
 	 */
 	private static final int MODE_DRAW_ANNOTATIONS = 3;
+
+	/**
+	 * Text size to use in the list of tags.
+	 */
+	private static final int TAG_LIST_TEXT_SIZE = 20;
 
     /**
      * The view that manages the main canvas for drawing and tokens.
@@ -82,7 +87,7 @@ public final class CombatMap extends Activity {
      * The view that allows the user to select a token category to display in
      * the token selector.
      */
-    private TokenCategorySelector mTokenCategorySelector;
+    private TagListView mTokenCategorySelector;
 
     /**
      * The current map.
@@ -149,6 +154,23 @@ public final class CombatMap extends Activity {
 		}
     };
 
+    /**
+     * Listener that fires when a new token category is selected.
+     */
+    private TagListView.OnTagListActionListener onTagListActionListener =
+    	new TagListView.OnTagListActionListener() {
+
+			@Override
+			public void onDragTokenToTag(
+					final BaseToken token, final String tag) {
+			}
+
+			@Override
+			public void onChangeSelectedTag(final String newTag) {
+				mTokenSelector.setSelectedTag(newTag);
+			}
+		};
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,20 +219,13 @@ public final class CombatMap extends Activity {
         mPopupFrame =
             (FrameLayout) this.findViewById(R.id.popupControlAreaFrame);
 
-        mTokenCategorySelector = new TokenCategorySelector(this);
+        mTokenCategorySelector = new TagListView(this);
         mTokenCategorySelector.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT));
-        mTokenCategorySelector.setOnCheckedListChangedListener(
-                new TokenCategorySelector.OnTagSelectedListener() {
-            @Override
-            public void onTagSelected(final String selectedTag) {
-                Debug.startMethodTracing("setSelectedTags");
-
-                mTokenSelector.setSelectedTag(selectedTag);
-                Debug.stopMethodTracing();
-            }
-        });
+        mTokenCategorySelector.setOnTagListActionListener(
+        		onTagListActionListener);
+        mTokenCategorySelector.setTextSize(TAG_LIST_TEXT_SIZE);
 
         mPopupFrame.addView(mTokenCategorySelector);
 
@@ -244,8 +259,9 @@ public final class CombatMap extends Activity {
         mCombatView.invalidate();
 
         tokenDatabase = TokenDatabase.getInstance(this);
-        mTokenCategorySelector.setTokenDatabase(tokenDatabase);
         mTokenSelector.setTokenDatabase(tokenDatabase);
+        mTokenCategorySelector.setTagList(tokenDatabase.getTags());
+
     }
 
 

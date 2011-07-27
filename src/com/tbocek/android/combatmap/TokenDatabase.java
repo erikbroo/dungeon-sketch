@@ -55,6 +55,11 @@ public final class TokenDatabase {
     private transient Map<String, BaseToken> tokenForId
             = new HashMap<String, BaseToken>();
 
+	/**
+	 * Always-present member at the top of the tag list that selects all tokens.
+	 */
+	public static final String ALL = "All";
+
     /**
      * Delimiter to use when saving the token database.
      */
@@ -159,24 +164,8 @@ public final class TokenDatabase {
      * Gets all tokens in the collection, sorted by ID.
      * @return The tokens.
      */
-    public Collection<BaseToken> getAllTokens() {
-        //TODO: De-dupe
-        ArrayList<String> sortedIds =
-            new ArrayList<String>(tokenForId.keySet());
-        Collections.sort(sortedIds);
-
-        List<BaseToken> tokens = new ArrayList<BaseToken>();
-
-        for (String tokenId : sortedIds) {
-            // Add the token for this ID.
-            // No worries if the token doesn't exist - by design the database
-            // could include tokens that don't exist anymore since it connects a
-            // loaded token id to stored information about that ID.
-            if (tokenForId.containsKey(tokenId)) {
-                tokens.add(tokenForId.get(tokenId));
-            }
-        }
-        return tokens;
+    public List<BaseToken> getAllTokens() {
+    	return tokenIdsToTokens(tokenForId.keySet());
     }
 
     /**
@@ -190,7 +179,31 @@ public final class TokenDatabase {
         for (String tag : tags) {
             tokenIds.addAll(this.tokensForTag.get(tag));
         }
-        ArrayList<String> sortedIds = new ArrayList<String>(tokenIds);
+        return tokenIdsToTokens(tokenIds);
+    }
+
+    /**
+     * Given a tag, returns a sorted list of all tokens that have that tag.
+     * @param tag The tag to look for.
+     * @return The tokens associated with the requested tag.
+     */
+    public List<BaseToken> getTokensForTag(final String tag) {
+    	if (tag == ALL) {
+    		return this.getAllTokens();
+    	}
+    	Set<String> tokenIds = this.tokensForTag.get(tag);
+    	return tokenIdsToTokens(tokenIds);
+    }
+
+	/**
+	 * Given a collection of token IDs, returns a list of tokens, sorted by
+	 * ID, that that contains the known tokens that match those IDs.
+	 * @param tokenIds Collection of IDs to look up.
+	 * @return List of tokens.
+	 */
+	private List<BaseToken> tokenIdsToTokens(
+			final Collection<String> tokenIds) {
+		ArrayList<String> sortedIds = new ArrayList<String>(tokenIds);
         Collections.sort(sortedIds);
 
         List<BaseToken> tokens = new ArrayList<BaseToken>();
@@ -205,18 +218,7 @@ public final class TokenDatabase {
             }
         }
         return tokens;
-    }
-
-    /**
-     * Given a tag, returns a sorted list of all tokens that have that tag.
-     * @param tag The tag to look for.
-     * @return The tokens associated with the requested tag.
-     */
-    public List<BaseToken> getTokensForTag(final String tag) {
-        ArrayList<String> tags = new ArrayList<String>();
-        tags.add(tag);
-        return tokensForTags(tags);
-    }
+	}
 
     /**
      * Adds a token and tags it with default tags.

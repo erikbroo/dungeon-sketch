@@ -24,6 +24,7 @@ import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
+import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenViewFactory;
 
 /**
@@ -99,7 +100,7 @@ public final class TokenManager extends Activity {
      */
 	private void setScrollViewTag(final String tag) {
 		scrollView.removeAllViews();
-		if (tag == TagListView.ALL) {
+		if (tag == TokenDatabase.ALL) {
 			scrollView.addView(
 					getTokenButtonLayout(tokenDatabase.getAllTokens()));
 		} else {
@@ -252,7 +253,7 @@ public final class TokenManager extends Activity {
       			menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
       					 "Delete Token");
       		}
-      		if (this.tagListView.getTag() != TagListView.ALL) {
+      		if (this.tagListView.getTag() != TokenDatabase.ALL) {
       			menu.add(Menu.NONE, R.id.token_delete_from_tag, Menu.NONE,
       					 "Remove '" + tagListView.getTag() + "' Tag");
       		}

@@ -2,10 +2,10 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/combatMapMainLayout">
-  		
+
 	   <FrameLayout android:id="@+id/mainContentFrame" android:layout_width="fill_parent" android:layout_alignParentTop="true" android:layout_above="@+id/bottomControlAreaFrame" android:layout_height="fill_parent"></FrameLayout>
 	   <FrameLayout android:layout_width="fill_parent" android:id="@+id/bottomControlAreaFrame" android:layout_height="wrap_content" android:layout_alignParentBottom="true"></FrameLayout>
-	   <FrameLayout android:layout_width="200px" android:layout_height="250px" android:id="@+id/popupControlAreaFrame" android:layout_above="@+id/bottomControlAreaFrame" android:layout_alignRight="@+id/bottomControlAreaFrame" android:visibility="invisible">
-		<Button android:layout_width="match_parent" android:layout_height="match_parent"/>  
+	   <FrameLayout android:layout_width="200px" android:layout_height="350px" android:id="@+id/popupControlAreaFrame" android:layout_above="@+id/bottomControlAreaFrame" android:layout_alignRight="@+id/bottomControlAreaFrame" android:visibility="invisible">
+		<Button android:layout_width="match_parent" android:layout_height="match_parent"/>
 	   </FrameLayout>
 </RelativeLayout>

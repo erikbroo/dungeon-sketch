@@ -1,9 +1,10 @@
-package com.tbocek.android.combatmap.tokenmanager;
+package com.tbocek.android.combatmap.view;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 
 import android.content.Context;
@@ -45,19 +46,14 @@ public final class TagListView extends ScrollView {
     }
 
     /**
-     * Always-present member at the top of the tag list that selects all tokens.
-     */
-    public static final String ALL = "All";
-
-    /**
-     * Size in points of the text used in the child tag views.
-     */
-    private static final int TEXT_SIZE = 30;
-
-    /**
-     * Number of pixes to pad the top and bottom of each text view with.
+     * Number of pixels to pad the top and bottom of each text view with.
      */
     private static final int VERTICAL_PADDING = 8;
+
+    /**
+     * Number of pixels to pad the left of each view with.
+     */
+    private static final int HORIZONTAL_PADDING = 6;
 
     /**
      * Color to highlight text with when a token is being dragged to it.
@@ -77,12 +73,17 @@ public final class TagListView extends ScrollView {
     /**
      * The tag that should be highlighted.
      */
-    private String highlightedTag = ALL;
+    private String highlightedTag = TokenDatabase.ALL;
 
     /**
      * The listener that is called when a tag is selected or dragged to.
      */
     private OnTagListActionListener onTagListAction;
+
+    /**
+     * Size in points of the text used in the child tag views.
+     */
+    private float textSize = 30;
 
     /**
      * Constructor.
@@ -103,7 +104,7 @@ public final class TagListView extends ScrollView {
     public void setTagList(final Collection<String> collection) {
         innerLayout.removeAllViews();
         textViews.clear();
-        innerLayout.addView(createTextView(ALL));
+        innerLayout.addView(createTextView(TokenDatabase.ALL));
         for (String tag : collection) {
             innerLayout.addView(createTextView(tag));
         }
@@ -115,6 +116,13 @@ public final class TagListView extends ScrollView {
         }
     }
 
+    public void setTextSize(final float size) {
+    	this.textSize = size;
+    	for (TextView view : textViews) {
+    		view.setTextSize(size);
+    	}
+    }
+
     /**
      * Creates a text view representing a tag.
      * @param text The tag represented.
@@ -123,8 +131,8 @@ public final class TagListView extends ScrollView {
     private TextView createTextView(final String text) {
         TextView v = new TextView(this.getContext());
         v.setText(text);
-        v.setTextSize(TEXT_SIZE);
-        v.setPadding(0, VERTICAL_PADDING, 0, VERTICAL_PADDING);
+        v.setTextSize(this.textSize);
+        v.setPadding(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, VERTICAL_PADDING);
         textViews.add(v);
         v.setOnClickListener(new OnClickListener() {
             @Override
