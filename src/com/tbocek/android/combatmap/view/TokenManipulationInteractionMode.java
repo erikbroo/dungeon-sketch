@@ -125,7 +125,10 @@ public final class TokenManipulationInteractionMode
             sm.add(Menu.NONE, R.id.token_context_size_half, 3, "1/2");
             sm.add(Menu.NONE, R.id.token_context_size_one, 4, "1");
             sm.add(Menu.NONE, R.id.token_context_size_two, 5, "2");
-            sm.add(Menu.NONE, R.id.token_context_size_four, 6, "4");
+            sm.add(Menu.NONE, R.id.token_context_size_three, 6, "3");
+            sm.add(Menu.NONE, R.id.token_context_size_four, 7, "4");
+            sm.add(Menu.NONE, R.id.token_context_size_five, 8, "5");
+            sm.add(Menu.NONE, R.id.token_context_size_six, 9, "6");
 
         }
 
@@ -152,8 +155,17 @@ public final class TokenManipulationInteractionMode
         case R.id.token_context_size_two:
             currentToken.setSize(2);
             return true;
+        case R.id.token_context_size_three:
+            currentToken.setSize(3);
+            return true;
         case R.id.token_context_size_four:
             currentToken.setSize(4);
+            return true;
+        case R.id.token_context_size_five:
+            currentToken.setSize(5);
+            return true;
+        case R.id.token_context_size_six:
+            currentToken.setSize(6);
             return true;
         default:
         	return false;
