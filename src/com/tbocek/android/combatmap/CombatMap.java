@@ -279,10 +279,11 @@ public final class CombatMap extends Activity {
             filename = "tmp";
         }
 
-        Thread saveThread = new Thread(
-                new MapSaver(filename, this.getApplicationContext()));
-        saveThread.setPriority(1);
-        saveThread.start();
+        // Thread saveThread = new Thread(
+        //         new MapSaver(filename, this.getApplicationContext()));
+        // saveThread.setPriority(1);
+        // saveThread.start();
+        new MapSaver(filename, this.getApplicationContext(), false).run();
     }
 
     /**
