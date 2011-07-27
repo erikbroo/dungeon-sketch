@@ -157,7 +157,9 @@ public final class TokenCollection implements Serializable {
     public void drawAllTokens(
     		final Canvas canvas, final CoordinateTransformer transformer) {
         for (int i = 0; i < tokens.size(); ++i) {
-            tokens.get(i).drawInPosition(canvas, transformer);
+        	// TODO: Take advantage of knowing whether we have a dark
+        	// background.
+            tokens.get(i).drawInPosition(canvas, transformer, false);
         }
 
     }

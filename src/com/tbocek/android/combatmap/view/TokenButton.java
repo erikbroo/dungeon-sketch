@@ -64,7 +64,8 @@ public final class TokenButton extends ImageView {
     public void onDraw(final Canvas c) {
         mPrototype.draw(c, (float) this.getWidth() / 2,
         		(float) this.getHeight() / 2,
-        		Math.min(this.getWidth(), this.getHeight()) * TOKEN_SCALE / 2);
+        		Math.min(this.getWidth(), this.getHeight()) * TOKEN_SCALE / 2,
+        		true);
     }
 
     /**

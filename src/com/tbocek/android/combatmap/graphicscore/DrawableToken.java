@@ -50,7 +50,7 @@ public abstract class DrawableToken extends BaseToken {
             ColorFilter cf =
             	new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.OVERLAY);
             d.setColorFilter(cf);
-            draw(c, x, y, radius);
+            draw(c, x, y, radius, false);
             d.setColorFilter(null);
         }
 
@@ -58,7 +58,8 @@ public abstract class DrawableToken extends BaseToken {
 
     @Override
     public final void draw(
-    		final Canvas c, final float x, final float y, final  float radius) {
+    		final Canvas c, final float x, final float y, final  float radius,
+    		final boolean darkBackground) {
         Drawable d = getDrawable();
         if (d != null) {
             c.save(Canvas.CLIP_SAVE_FLAG);
@@ -91,7 +92,7 @@ public abstract class DrawableToken extends BaseToken {
         Drawable d = getDrawable();
         if (d != null) {
             d.setAlpha(HALF_OPACITY);
-            draw(c, x, y, radius);
+            draw(c, x, y, radius, false);
             d.setAlpha(FULL_OPACITY);
         }
     }

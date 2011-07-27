@@ -50,7 +50,8 @@ public final class SolidColorToken extends BaseToken {
     }
 
     @Override
-    public void draw(final Canvas c, final float x, final float y, final float radius) {
+    public void draw(final Canvas c, final float x, final float y,
+    		final float radius, final boolean darkBackground) {
         Paint p = new Paint();
         p.setColor(color);
         c.drawCircle(x, y, radius, p);
@@ -58,7 +59,7 @@ public final class SolidColorToken extends BaseToken {
 
     @Override
     public void drawBloodied(final Canvas c, final float x, final float y, final float radius) {
-        draw(c, x, y, radius);
+        draw(c, x, y, radius, false);
 
         Paint p = new Paint();
         // If token is already colored red, use a dark red border so it's visible

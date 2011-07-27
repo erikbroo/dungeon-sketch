@@ -61,8 +61,12 @@ public abstract class BaseToken implements Serializable {
      * @param x The x coordinate in screen space to draw the token at.
      * @param y The y coordinate in screen space to draw the token at.
      * @param radius The radius of the token in screen space.
+     * @param darkBackground Whether the token is drawn against a dark
+     * 		background.  The token can try to make its self more visible in
+     * 		this case.
      */
-    public abstract void draw(Canvas c, float x, float y, float radius);
+    public abstract void draw(Canvas c, float x, float y, float radius,
+    		final boolean darkBackground);
 
     /**
      * Draw a bloodied version of the token at the given coordinates and size.
@@ -105,9 +109,13 @@ public abstract class BaseToken implements Serializable {
      * Draws this token in the correct position on the given canvas.
      * @param c The canvas to draw on.
      * @param transformer Grid space to screen space transformer.
+     * @param darkBackground Whether the token is drawn against a dark
+     * 		background.  The token can try to make its self more visible in
+     * 		this case.
      */
     public final void drawInPosition(
-            final Canvas c, final CoordinateTransformer transformer) {
+            final Canvas c, final CoordinateTransformer transformer,
+            final boolean darkBackground) {
         PointF center = transformer.worldSpaceToScreenSpace(getLocation());
         float radius = transformer.worldSpaceToScreenSpace(
                 this.getSize() * TOKEN_SIZE_TWEAK / 2);
@@ -115,7 +123,7 @@ public abstract class BaseToken implements Serializable {
         if (isBloodied()) {
             drawBloodied(c, center.x, center.y, radius);
         } else {
-            draw(c, center.x, center.y, radius);
+            draw(c, center.x, center.y, radius, darkBackground);
         }
     }
 

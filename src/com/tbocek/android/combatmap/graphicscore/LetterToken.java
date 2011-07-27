@@ -56,9 +56,9 @@ public final class LetterToken extends BaseToken {
 
     @Override
     public void draw(final Canvas c, final float x, final float y,
-    		final float radius) {
+    		final float radius, final boolean darkBackground) {
         Paint p = new Paint();
-        p.setColor(Color.BLACK);
+        p.setColor(darkBackground ? Color.WHITE : Color.BLACK);
         draw(c, x, y, radius, p);
     }
 
