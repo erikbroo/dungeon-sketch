@@ -121,7 +121,7 @@ public final class Line implements Serializable {
      * Returns a list of lines that are created by removing any erased points
      * from this line.  There will often be more than one line returned, as it
      * is a common case to erase the middle of the line.  The current line is
-     * not modified, but should be considered deprecated.
+     * set to draw all points again.
      * @return A list of lines that results from removing erased points.
      */
     public List<Line> removeErasedPoints() {
@@ -139,8 +139,23 @@ public final class Line implements Serializable {
                 l = new Line(mColor, mWidth);
                 optimizedLines.add(l);
             }
+            this.shouldDraw.set(i, true);
         }
+
         return optimizedLines;
+    }
+
+    /**
+     * @return True if an optimization pass is needed on this line (i.e. if it
+     * was just erased).
+     */
+    public boolean needsOptimization() {
+    	for (boolean b : shouldDraw) {
+    		if (!b) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     /**

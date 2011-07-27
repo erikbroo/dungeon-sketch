@@ -119,14 +119,12 @@ public final class CombatMap extends Activity {
 
         @Override
         public void onChooseColoredPen(final int color) {
-            // TODO Auto-generated method stub
             mCombatView.setDrawMode();
             mCombatView.setNewLineColor(color);
         }
 
         @Override
         public void onChoosePanTool() {
-            // TODO Auto-generated method stub
             mCombatView.setZoomPanMode();
         }
 
@@ -136,6 +134,19 @@ public final class CombatMap extends Activity {
             mCombatView.setNewLineStrokeWidth(width);
 
         }
+
+		@Override
+		public void onClickUndo() {
+			mCombatView.getActiveLines().undo();
+			mCombatView.invalidate();
+
+		}
+
+		@Override
+		public void onClickRedo() {
+			mCombatView.getActiveLines().redo();
+			mCombatView.invalidate();
+		}
     };
 
     @Override
@@ -206,7 +217,6 @@ public final class CombatMap extends Activity {
         mainContentFrame.addView(mCombatView);
         mBottomControlFrame.addView(mTokenSelector);
 
-        mCombatView.setTokenManipulationMode();
         mCombatView.requestFocus();
     }
 

@@ -12,6 +12,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -134,6 +135,16 @@ public final class DrawOptionsView extends HorizontalScrollView {
          * @param width The new stroke width.
          */
         void onChooseStrokeWidth(int width);
+
+        /**
+         * Fired when the undo button is clicked.
+         */
+        void onClickUndo();
+
+        /**
+         * Fired when the redo button is clicked.
+         */
+        void onClickRedo();
     }
 
     /**
@@ -156,6 +167,12 @@ public final class DrawOptionsView extends HorizontalScrollView {
 
         @Override
         public void onChooseStrokeWidth(final int width) { }
+
+		@Override
+		public void onClickUndo() { }
+
+		@Override
+		public void onClickRedo() { }
     }
 
     /**
@@ -207,8 +224,28 @@ public final class DrawOptionsView extends HorizontalScrollView {
             }
         });
 
+        ImageButton undoButton = new ImageButton(this.getContext());
+        undoButton.setImageResource(R.drawable.undo);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View arg0) {
+				onChangeDrawToolListener.onClickUndo();
+			}
+        });
+
+        ImageButton redoButton = new ImageButton(this.getContext());
+        redoButton.setImageResource(R.drawable.redo);
+        redoButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View arg0) {
+				onChangeDrawToolListener.onClickRedo();
+			}
+        });
+
         layout.addView(panButton);
         layout.addView(eraserButton);
+        layout.addView(undoButton);
+        layout.addView(redoButton);
         toolsGroup.add(panButton);
         toolsGroup.add(eraserButton);
 

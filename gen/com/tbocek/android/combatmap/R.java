@@ -38,13 +38,15 @@ public final class R {
         public static final int pencilbw=0x7f020012;
         public static final int pig=0x7f020013;
         public static final int rad_stag=0x7f020014;
-        public static final int stag2=0x7f020015;
-        public static final int swan=0x7f020016;
-        public static final int tiger1=0x7f020017;
-        public static final int tiger2=0x7f020018;
-        public static final int transform_move=0x7f020019;
-        public static final int trashcan=0x7f02001a;
-        public static final int trashcan_hover_over=0x7f02001b;
+        public static final int redo=0x7f020015;
+        public static final int stag2=0x7f020016;
+        public static final int swan=0x7f020017;
+        public static final int tiger1=0x7f020018;
+        public static final int tiger2=0x7f020019;
+        public static final int transform_move=0x7f02001a;
+        public static final int trashcan=0x7f02001b;
+        public static final int trashcan_hover_over=0x7f02001c;
+        public static final int undo=0x7f02001d;
     }
     public static final class id {
         public static final int black_pencil=0x7f070006;

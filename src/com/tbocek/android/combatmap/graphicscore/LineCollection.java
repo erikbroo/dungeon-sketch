@@ -1,9 +1,14 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Stack;
 
 import android.graphics.Canvas;
 
@@ -23,6 +28,16 @@ public final class LineCollection implements Serializable {
      * The internal list of lines.
      */
     private List<Line> lines = new LinkedList<Line>();
+
+    /**
+     * Operations on this line collection that are available to undo.
+     */
+    private transient Stack<Command> toUndo = new Stack<Command>();
+
+    /**
+     * Operations on this line collection that are available to redo.
+     */
+    private transient Stack<Command> toRedo = new Stack<Command>();
 
     /**
      * Draws all lines on the given canvas.
@@ -46,7 +61,9 @@ public final class LineCollection implements Serializable {
     public Line createLine(
             final int newLineColor, final int newLineStrokeWidth) {
         Line l = new Line(newLineColor, newLineStrokeWidth);
-        insertLine(l);
+        Command c = new Command(this);
+        c.addCreatedLine(l);
+        execute(c);
         return l;
     }
 
@@ -95,13 +112,15 @@ public final class LineCollection implements Serializable {
      * newly disjoint sections.
      */
     public void optimize() {
-        List<Line> newLines = new LinkedList<Line>();
+    	Command c = new Command(this);
         for (int i = 0; i < lines.size(); ++i) {
-            List<Line> optimizedLines = lines.get(i).removeErasedPoints();
-            newLines.addAll(optimizedLines);
+        	if (lines.get(i).needsOptimization()) {
+	            List<Line> optimizedLines = lines.get(i).removeErasedPoints();
+	            c.addDeletedLine(lines.get(i));
+	            c.addCreatedLines(optimizedLines);
+        	}
         }
-        lines.clear();
-        lines.addAll(newLines);
+        execute(c);
     }
 
     /**
@@ -120,5 +139,165 @@ public final class LineCollection implements Serializable {
             r.updateBounds(l.getBoundingRectangle());
         }
         return r;
+    }
+
+    /**
+     * Undo the last line operation.
+     */
+    public void undo() {
+    	if (canUndo()) {
+	    	Command c = toUndo.pop();
+	    	c.undo();
+	    	toRedo.push(c);
+    	}
+    }
+
+    /**
+     * Redo the last line operation.
+     */
+    public void redo() {
+    	if (canRedo()) {
+	    	Command c = toRedo.pop();
+	    	c.execute();
+	    	toUndo.push(c);
+    	}
+    }
+
+    /**
+     * @return True if the undo operation can be performed, false otherwise.
+     */
+    public boolean canUndo() {
+    	return !toUndo.isEmpty();
+    }
+
+    /**
+     * @return True if the redo operation can be performed, false otherwise.
+     */
+    public boolean canRedo() {
+    	return !toRedo.isEmpty();
+    }
+
+    /**
+     * Executes the given command.  This should not be called on commands to
+     * redo.
+     * @param command The command to execute.
+     */
+    private void execute(final Command command) {
+    	if (!command.isNoop()) {
+	    	command.execute();
+	    	toUndo.add(command);
+	    	toRedo.clear();
+    	}
+    }
+
+    /**
+     * Deserializes the object.  This uses the standard deserialization but
+     * must also create transient objects that manage undo and redo.
+     * @param inputStream Stream to deserialize from.
+     * @throws IOException On read error.
+     * @throws ClassNotFoundException On deserialization error.
+     */
+    private void readObject(final ObjectInputStream inputStream)
+    		throws IOException, ClassNotFoundException {
+    	inputStream.defaultReadObject();
+    	toUndo = new Stack<Command>();
+    	toRedo = new Stack<Command>();
+    }
+
+    /**
+     * This class represents a command that adds and deletes lines.
+     * @author Tim Bocek
+     *
+     */
+    private class Command {
+    	/**
+    	 * Lines created in this operation.
+    	 */
+    	private Collection<Line> mCreated = new ArrayList<Line>();
+
+    	/**
+    	 * Lines deleted in this operation.
+    	 */
+    	private Collection<Line> mDeleted = new ArrayList<Line>();
+
+    	/**
+    	 * Collection of lines to modify.
+    	 */
+    	private LineCollection mLineCollection;
+
+    	/**
+    	 * Constructor.
+    	 * @param lineCollection The LineCollection that this command modifies.
+    	 */
+    	public Command(final LineCollection lineCollection) {
+    		mLineCollection = lineCollection;
+    	}
+
+    	/**
+    	 * Executes the command on the LineCollection that this command mutates.
+    	 */
+    	public void execute() {
+    		List<Line> newLines = new LinkedList<Line>();
+    		for (Line l : mLineCollection.lines) {
+    			if (!mDeleted.contains(l)) {
+    				newLines.add(l);
+    			}
+    		}
+    		mLineCollection.lines = newLines;
+
+    		for (Line l : mCreated) {
+    			mLineCollection.insertLine(l);
+    		}
+    	}
+
+    	/**
+    	 * Undoes the command on the LineCollection that this command mutates.
+    	 */
+    	public void undo() {
+    		List<Line> newLines = new LinkedList<Line>();
+    		for (Line l : mLineCollection.lines) {
+    			Line DEBUG_LINE = l;
+    			if (!mCreated.contains(l)) {
+    				newLines.add(l);
+    			}
+    		}
+    		mLineCollection.lines = newLines;
+
+    		for (Line l : mDeleted) {
+    			mLineCollection.insertLine(l);
+    		}
+    	}
+
+    	/**
+    	 * Adds a line to the list of lines created by this command.
+    	 * @param l The line to add.
+    	 */
+    	public void addCreatedLine(final Line l) {
+    		mCreated.add(l);
+    	}
+
+    	/**
+    	 * Adds several lines to the list of lines created by this command.
+    	 * @param lc The lines to add.
+    	 */
+    	public void addCreatedLines(final Collection<Line> lc) {
+    		mCreated.addAll(lc);
+    	}
+
+    	/**
+    	 * Adds a line to the list of lines removed by this command.
+    	 * @param l The line to remove.
+    	 */
+    	public void addDeletedLine(final Line l) {
+    		mDeleted.add(l);
+    	}
+
+    	/**
+    	 * @return True if the command is a no-op, false if it modifies lines.
+    	 * noop.
+    	 */
+    	public boolean isNoop() {
+    		return mCreated.isEmpty() && mDeleted.isEmpty();
+    	}
     }
 }
