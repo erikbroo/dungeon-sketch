@@ -313,8 +313,10 @@ public final class TokenDatabase {
      * Populates the database with solid-colored tokens.
      */
     private void loadColorTokens() {
+    	int sortOrder = 0;
         for (int color : Util.getStandardColorPalette()) {
-            addTokenPrototype(new SolidColorToken(color));
+            addTokenPrototype(new SolidColorToken(color, sortOrder));
+            sortOrder += 1;
         }
     }
 

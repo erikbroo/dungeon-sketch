@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,17 +22,29 @@ public final class SolidColorToken extends BaseToken {
 	 */
 	private static final long serialVersionUID = 6989219234978442286L;
 
+	private static final DecimalFormat SORT_ORDER_FORMAT =
+		new DecimalFormat("#0000.###");
+
 	/**
      * This token's color.
      */
     private int color;
 
     /**
+     * A sort order for the token, since sorting on color does not produce a
+     * pleasing ordering to the tokens.
+     */
+    private int sortOrder;
+
+    /**
      * Constructor.
      * @param c The color to draw this token with.
+     * @param sortOrder Ordering for this token.  We manually specify this
+     * 		because sorting on color doesn't produce good-looking results.
      */
-    public SolidColorToken(final int c){
+    public SolidColorToken(final int c, final int sortOrder){
         this.color = c;
+        this.sortOrder  = sortOrder;
     }
 
     /**
@@ -71,12 +84,14 @@ public final class SolidColorToken extends BaseToken {
 
     @Override
     public BaseToken clone() {
-        return new SolidColorToken(color);
+        return new SolidColorToken(color, sortOrder);
     }
 
     @Override
     protected String getTokenClassSpecificId() {
-        return Integer.toString(color);
+    	SORT_ORDER_FORMAT.setDecimalSeparatorAlwaysShown(false);
+        return SORT_ORDER_FORMAT.format(sortOrder)
+        		+ "_" + Integer.toString(color);
     }
 
     @Override
