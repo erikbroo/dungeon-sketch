@@ -74,7 +74,7 @@ public final class TokenManager extends Activity {
      * Factory that creates views to display tokens and implements a caching
      * scheme.
      */
-    private TokenViewFactory mTokenViewFactory;
+    private MultiSelectTokenViewFactory mTokenViewFactory;
 
     /**
      * Listener that reloads the token view when a new tag is selected, and
@@ -88,8 +88,11 @@ public final class TokenManager extends Activity {
 		}
 
 		@Override
-		public void onDragTokenToTag(final BaseToken token, final String tag) {
-			tokenDatabase.tagToken(token.getTokenId(), tag);
+		public void onDragTokensToTag(
+				final Collection<BaseToken> tokens, final String tag) {
+			for (BaseToken t : tokens) {
+				tokenDatabase.tagToken(t.getTokenId(), tag);
+			}
 
 		}
     };
@@ -99,6 +102,7 @@ public final class TokenManager extends Activity {
      * @param tag The new tag to display tokens for.
      */
 	private void setScrollViewTag(final String tag) {
+		mTokenViewFactory.getMultiSelectManager().selectNone();
 		scrollView.removeAllViews();
 		if (tag == TokenDatabase.ALL) {
 			scrollView.addView(
@@ -118,7 +122,7 @@ public final class TokenManager extends Activity {
         BuiltInImageToken.registerResources(
         		this.getApplicationContext().getResources());
 
-		mTokenViewFactory = new TokenViewFactory(this);
+		mTokenViewFactory = new MultiSelectTokenViewFactory(this);
 
     	tagListView = new TagListView(this);
     	tagListView.setOnTagListActionListener(onTagListActionListener);
@@ -249,15 +253,49 @@ public final class TokenManager extends Activity {
     public void onCreateContextMenu(final ContextMenu menu, final View v,
                                     final ContextMenuInfo menuInfo) {
       	if (v == this.trashButton) {
-      		if (!this.trashButton.getManagedToken().isBuiltIn()) {
-      			menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
-      					 "Delete Token");
+      		Collection<BaseToken> tokens = this.trashButton.getManagedTokens();
+      		int builtInTokens = countBuiltInTokens(tokens);
+      		int customTokens = tokens.size() - builtInTokens;
+      		if (customTokens > 0) {
+      			String deleteText = "";
+      			if (customTokens == 1) {
+      				deleteText = "Delete Token";
+      			} else {
+      				deleteText = "Delete " + Integer.toString(customTokens)
+      					+ " Tokens";
+      			}
+
+      			if (builtInTokens == 1) {
+      				deleteText += " (1 token can't be deleted)";
+      			} else if (builtInTokens > 1) {
+      				deleteText += " (" + Integer.toString(builtInTokens)
+      					+ " tokens can't be deleted)";
+      			}
+	      		menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
+	      				deleteText);
       		}
+
       		if (this.tagListView.getTag() != TokenDatabase.ALL) {
+      			String removeText = "Remove '" + tagListView.getTag() + "' Tag";
+
+      			if (tokens.size() > 1) {
+      				removeText += " from " + Integer.toString(tokens.size())
+      					+ " tokens";
+      			}
       			menu.add(Menu.NONE, R.id.token_delete_from_tag, Menu.NONE,
-      					 "Remove '" + tagListView.getTag() + "' Tag");
+      					 removeText);
       		}
       	}
+    }
+
+    private int countBuiltInTokens(Collection<BaseToken> tokens) {
+    	int count = 0;
+    	for (BaseToken t : tokens) {
+    		if (t.isBuiltIn()) {
+    			count++;
+    		}
+    	}
+    	return count;
     }
 
     @Override
@@ -265,25 +303,33 @@ public final class TokenManager extends Activity {
     	//TODO: Move more of this functionality into TokenDeleteButton.
     	switch (item.getItemId()) {
     	case R.id.token_delete_entire_token:
-    		BaseToken token = this.trashButton.getManagedToken();
-    		this.tokenDatabase.removeToken(token);
-    		try {
-    			token.maybeDeletePermanently();
-    			setScrollViewTag(this.tagListView.getTag());
-    		} catch (IOException e) {
-    			Toast toast = Toast.makeText(this.getApplicationContext(),
-    					"Did not delete the token, probably because the "
-    					+ "external storage isn't writable." + e.toString(),
-    					Toast.LENGTH_LONG);
-    			toast.show();
+    		Collection<BaseToken> tokens = this.trashButton.getManagedTokens();
+    		for (BaseToken token : tokens) {
+    			if (!token.isBuiltIn()) {
+		    		this.tokenDatabase.removeToken(token);
+		    		try {
+		    			token.maybeDeletePermanently();
+		    		} catch (IOException e) {
+		    			Toast toast = Toast.makeText(
+		    					this.getApplicationContext(),
+		    					"Did not delete the token, probably because "
+		    					+ "the external storage isn't writable."
+		    					+ e.toString(),
+		    					Toast.LENGTH_LONG);
+		    			toast.show();
+		    		}
+    			}
     		}
+    		setScrollViewTag(this.tagListView.getTag());
     		return true;
     	case R.id.token_delete_from_tag:
-    		token = this.trashButton.getManagedToken();
+    		tokens = this.trashButton.getManagedTokens();
     		String tag = this.tagListView.getTag();
-    		this.tokenDatabase.removeTagFromToken(token.getTokenId(), tag);
-    		setScrollViewTag(tag);
-    		return true;
+    		for (BaseToken token : tokens) {
+	    		this.tokenDatabase.removeTagFromToken(token.getTokenId(), tag);
+	    		setScrollViewTag(tag);
+    		}
+	    	return true;
     	default:
     		return super.onContextItemSelected(item);
     	}

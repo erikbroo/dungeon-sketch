@@ -1,5 +1,7 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
+import java.util.Collection;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.DragEvent;
@@ -21,7 +23,7 @@ public final class TokenDeleteButton extends ImageView {
 	/**
 	 * The token that was last dropped onto the button.
 	 */
-    private BaseToken managedToken;
+    private Collection<BaseToken> managedTokens;
 
     /**
      * Constructor.
@@ -34,17 +36,17 @@ public final class TokenDeleteButton extends ImageView {
     }
 
     /**
-	 * @param token The token to manage.
+	 * @param tokens The tokens to manage.
 	 */
-	public void setManagedToken(final BaseToken token) {
-		this.managedToken = token;
+	public void setManagedTokens(final Collection<BaseToken> tokens) {
+		this.managedTokens = tokens;
 	}
 
 	/**
-	 * @return The managed token.
+	 * @return The managed tokens.
 	 */
-	public BaseToken getManagedToken() {
-		return managedToken;
+	public Collection<BaseToken> getManagedTokens() {
+		return managedTokens;
 	}
 
 	/**
@@ -56,9 +58,10 @@ public final class TokenDeleteButton extends ImageView {
         public boolean onDrag(final View view, final DragEvent event) {
             Log.d("DRAG", Integer.toString(event.getAction()));
             ImageView iv = (ImageView) view;
-            BaseToken t = (BaseToken) event.getLocalState();
             if (event.getAction() == DragEvent.ACTION_DROP) {
-                managedToken = t;
+                Collection<BaseToken> t =
+                	(Collection<BaseToken>) event.getLocalState();
+                managedTokens = t;
                 iv.showContextMenu();
                 iv.setImageResource(R.drawable.trashcan);
             } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {

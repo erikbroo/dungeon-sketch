@@ -1,5 +1,7 @@
 package com.tbocek.android.combatmap;
 
+import java.util.Collection;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -161,8 +163,8 @@ public final class CombatMap extends Activity {
     	new TagListView.OnTagListActionListener() {
 
 			@Override
-			public void onDragTokenToTag(
-					final BaseToken token, final String tag) {
+			public void onDragTokensToTag(
+					final Collection<BaseToken> tokens, final String tag) {
 			}
 
 			@Override

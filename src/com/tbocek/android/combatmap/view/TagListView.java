@@ -42,7 +42,7 @@ public final class TagListView extends ScrollView {
          * @param token The token that was dragged.
          * @param tag The tag that the token was dragged to.
          */
-        void onDragTokenToTag(BaseToken token, String tag);
+        void onDragTokensToTag(Collection<BaseToken> token, String tag);
     }
 
     /**
@@ -58,7 +58,7 @@ public final class TagListView extends ScrollView {
     /**
      * Color to highlight text with when a token is being dragged to it.
      */
-    private static final int DRAG_HIGHLIGHT_COLOR = Color.rgb(41, 162, 255);
+    public static final int DRAG_HIGHLIGHT_COLOR = Color.rgb(41, 162, 255);
 
     /**
      * The layout that contains the list of tags.
@@ -116,6 +116,10 @@ public final class TagListView extends ScrollView {
         }
     }
 
+    /**
+     * Sets the text size to use in child views.
+     * @param size The size to set.
+     */
     public void setTextSize(final float size) {
     	this.textSize = size;
     	for (TextView view : textViews) {
@@ -198,9 +202,10 @@ public final class TagListView extends ScrollView {
             Log.d("DRAG", Integer.toString(event.getAction()));
             TextView tv = (TextView) view;
             if (event.getAction() == DragEvent.ACTION_DROP) {
-                BaseToken toAdd = (BaseToken) event.getLocalState();
+                Collection<BaseToken> toAdd =
+                	(Collection<BaseToken>) event.getLocalState();
                 if (onTagListAction != null) {
-                    onTagListAction.onDragTokenToTag(
+                    onTagListAction.onDragTokensToTag(
                     		toAdd, tv.getText().toString());
                 }
                 setTextViewColorToCorrectHighlight(tv);

@@ -16,7 +16,7 @@ import android.widget.ImageView;
  * @author Tim Bocek
  *
  */
-public final class TokenButton extends ImageView {
+public class TokenButton extends ImageView {
 
 	/**
 	 * How much to scale the token by.  1.0 means it is completely inscribed in
@@ -41,12 +41,19 @@ public final class TokenButton extends ImageView {
     private SimpleOnGestureListener gestureListener =
     	new SimpleOnGestureListener() {
         public void onLongPress(final MotionEvent e) {
-            startDrag(null, new View.DragShadowBuilder(TokenButton.this),
-            		  mPrototype.clone(), 0);
+        	TokenButton.this.onStartDrag();
         }
     };
 
     /**
+     * Called when a drag and drop operation should start.
+     */
+    protected void onStartDrag() {
+        startDrag(null, new View.DragShadowBuilder(TokenButton.this),
+      		  mPrototype.clone(), 0);
+    }
+
+	/**
      * Constructor.
      * @param context The context to create this view in.
      * @param prototype The prototype token that this view represents.
@@ -64,16 +71,31 @@ public final class TokenButton extends ImageView {
     public void onDraw(final Canvas c) {
         mPrototype.draw(c, (float) this.getWidth() / 2,
         		(float) this.getHeight() / 2,
-        		Math.min(this.getWidth(), this.getHeight()) * TOKEN_SCALE / 2,
+        		getTokenRadius(),
         		true);
     }
+
+	/**
+	 * @return The radius that should be used when drawing a token.
+	 */
+	protected final float getTokenRadius() {
+		return Math.min(this.getWidth(), this.getHeight()) * TOKEN_SCALE / 2;
+	}
 
     /**
      * Gets a new token that is a clone of the token specified here.
      * @return A clone of the token.
      */
-    public BaseToken getClone() {
+    public final BaseToken getClone() {
         return mPrototype.clone();
+    }
+
+    /**
+     * Gets the token ID of the managed token.
+     * @return The token ID.
+     */
+    public final String getTokenId() {
+    	return mPrototype.getTokenId();
     }
 
     @Override
