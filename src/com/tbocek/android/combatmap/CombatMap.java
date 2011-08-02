@@ -15,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
@@ -100,6 +102,11 @@ public final class CombatMap extends Activity {
      * Database of available combat tokens.
      */
     private TokenDatabase tokenDatabase;
+
+    /**
+     * Whether the control tray on the bottom of the screen is expanded.
+     */
+    private boolean isControlTrayExpanded = true;
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -233,6 +240,24 @@ public final class CombatMap extends Activity {
 
         mainContentFrame.addView(mCombatView);
         mBottomControlFrame.addView(mTokenSelector);
+
+        final Button collapseButton =
+        	(Button) this.findViewById(R.id.bottomControlAreaExpandButton);
+        collapseButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View arg0) {
+				isControlTrayExpanded = !isControlTrayExpanded;
+				if (isControlTrayExpanded) {
+					mBottomControlFrame.getLayoutParams().height =
+						RelativeLayout.LayoutParams.WRAP_CONTENT;
+					collapseButton.setText("v  v  v  v  v  v  v  v  v  v");
+				} else {
+					mBottomControlFrame.getLayoutParams().height = 0;
+					collapseButton.setText("^  ^  ^  ^  ^  ^  ^  ^  ^  ^");
+				}
+				findViewById(R.id.combatMapMainLayout).requestLayout();
+			}
+        });
 
         mCombatView.requestFocus();
     }
