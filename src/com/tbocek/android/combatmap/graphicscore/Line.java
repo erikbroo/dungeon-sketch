@@ -8,6 +8,7 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 
 /**
  * Encapsulates a single vector-drawn line.
@@ -25,6 +26,11 @@ public final class Line implements Serializable {
      * The paint object that will be used to draw this line.
      */
     private transient Paint paint;
+
+    /**
+     * Cached path that represents this line.
+     */
+    private transient Path mPath = null;
 
     /**
      * The color to draw this line with.
@@ -74,7 +80,15 @@ public final class Line implements Serializable {
         points.add(p);
         shouldDraw.add(true);
         boundingRectangle.updateBounds(p);
+        invalidatePath();
     }
+
+	/**
+	 * Invalidates the path so that it is recreated on the next draw operation.
+	 */
+	private void invalidatePath() {
+		this.mPath = null;
+	}
 
     /**
      * Draws the line on the given canvas.
@@ -88,15 +102,32 @@ public final class Line implements Serializable {
         }
 
         ensurePaintCreated();
-        for (int i = 0; i < points.size() - 1; ++i) {
-            if (shouldDraw.get(i).booleanValue()
-            		&& shouldDraw.get(i + 1).booleanValue()) {
-                PointF p1 = points.get(i);
-                PointF p2 = points.get(i + 1);
-                c.drawLine(p1.x, p1.y, p2.x, p2.y, paint);
-            }
-        }
+        ensurePathCreated();
+        c.drawPath(mPath, paint);
     }
+
+	/**
+	 * Creates the path if it is currently invalid.
+	 */
+	private void ensurePathCreated() {
+		if (mPath == null) {
+	        mPath = new Path();
+	        boolean penDown = false;
+	        for (int i = 0; i < points.size(); ++i) {
+	            if (shouldDraw.get(i).booleanValue()) {
+	            	PointF p1 = points.get(i);
+	            	if (penDown) {
+	            		mPath.lineTo(p1.x, p1.y);
+	            	} else {
+	            		mPath.moveTo(p1.x, p1.y);
+	            	}
+	            	penDown = true;
+	            } else {
+	            	penDown = false;
+	            }
+	        }
+        }
+	}
 
 	/**
 	 * If there is no Paint object cached for this line, create one and set
@@ -107,6 +138,7 @@ public final class Line implements Serializable {
 	        paint = new Paint();
 	        paint.setColor(mColor);
 	        paint.setStrokeWidth(mWidth);
+	        paint.setStyle(Paint.Style.STROKE);
         }
 	}
 
@@ -126,6 +158,7 @@ public final class Line implements Serializable {
                 }
             }
         }
+        invalidatePath();
     }
 
     /**
