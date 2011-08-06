@@ -94,14 +94,8 @@ public final class Line implements Serializable {
     /**
      * Draws the line on the given canvas.
      * @param c Canvas to draw on.
-     * @param transformer World space to screen space transformer.
      */
     public void draw(final Canvas c) {
-        //Do not try to draw a line with too few points.
-        if (points.size() < 2) {
-        	return;
-        }
-
         ensurePaintCreated();
         ensurePathCreated();
         c.drawPath(mPath, paint);
@@ -112,6 +106,11 @@ public final class Line implements Serializable {
 	 */
 	private void ensurePathCreated() {
 		if (mPath == null) {
+	        //Do not try to draw a line with too few points.
+	        if (points.size() < 2) {
+	        	return;
+	        }
+
 	        mPath = new Path();
 	        boolean penDown = false;
 	        for (int i = 0; i < points.size(); ++i) {
