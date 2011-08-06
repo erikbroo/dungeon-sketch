@@ -21,7 +21,10 @@ public final class Line implements Serializable {
      */
     private static final long serialVersionUID = -4935518208097034463L;
 
-    // TODO: Create and cache a pen.
+    /**
+     * The paint object that will be used to draw this line.
+     */
+    private transient Paint paint;
 
     /**
      * The color to draw this line with.
@@ -31,7 +34,7 @@ public final class Line implements Serializable {
     /**
      * The stroke width to draw this line with.
      */
-    private int mWidth = 2;
+    private float mWidth = 2;
 
     /**
      * Cached rectangle that bounds all the points in this line.
@@ -56,11 +59,11 @@ public final class Line implements Serializable {
     /**
      * Constructor.
      * @param color Line color.
-     * @param strokeWidth Line stroke width.
+     * @param newLineStrokeWidth Line stroke width.
      */
-    public Line(final int color, final int strokeWidth) {
+    public Line(final int color, final float newLineStrokeWidth) {
         this.mColor = color;
-        this.mWidth = strokeWidth;
+        this.mWidth = newLineStrokeWidth;
     }
 
     /**
@@ -78,26 +81,34 @@ public final class Line implements Serializable {
      * @param c Canvas to draw on.
      * @param transformer World space to screen space transformer.
      */
-    public void draw(final Canvas c, final CoordinateTransformer transformer) {
+    public void draw(final Canvas c) {
         //Do not try to draw a line with too few points.
         if (points.size() < 2) {
         	return;
         }
 
-        Paint paint = new Paint();
-        paint.setColor(mColor);
-        paint.setStrokeWidth(mWidth);
-
+        ensurePaintCreated();
         for (int i = 0; i < points.size() - 1; ++i) {
             if (shouldDraw.get(i).booleanValue()
             		&& shouldDraw.get(i + 1).booleanValue()) {
-                PointF p1 = transformer.worldSpaceToScreenSpace(points.get(i));
-                PointF p2 = transformer.worldSpaceToScreenSpace(
-                		points.get(i + 1));
+                PointF p1 = points.get(i);
+                PointF p2 = points.get(i + 1);
                 c.drawLine(p1.x, p1.y, p2.x, p2.y, paint);
             }
         }
     }
+
+	/**
+	 * If there is no Paint object cached for this line, create one and set
+	 * the appropriate color and stroke width.
+	 */
+	private void ensurePaintCreated() {
+		if (paint == null) {
+	        paint = new Paint();
+	        paint.setColor(mColor);
+	        paint.setStrokeWidth(mWidth);
+        }
+	}
 
     /**
      * Erases all points in the line that fall in the circle specified by
@@ -169,7 +180,7 @@ public final class Line implements Serializable {
     /**
      * @return This line's stroke width.
      */
-    public int getStrokeWidth() {
+    public float getStrokeWidth() {
         return this.mWidth;
     }
 }

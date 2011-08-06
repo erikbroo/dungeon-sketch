@@ -52,7 +52,7 @@ public final class CombatView extends View {
     /**
      * The stroke width to use when creating a new line.
      */
-    private int mNewLineStrokeWidth = 2;
+    private float mNewLineStrokeWidth = .2f;
 
     /**
      * The current map.
@@ -172,13 +172,19 @@ public final class CombatView extends View {
     public void onDraw(final Canvas canvas) {
         // White background
         getData().getGrid().draw(canvas, getData().transformer);
-        getData().getBackgroundLines().drawAllLines(
-        		canvas, getData().transformer);
+
+        canvas.save();
+        getData().transformer.setMatrix(canvas);
+        getData().getBackgroundLines().drawAllLines(canvas);
+        canvas.restore();
+
         getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
 
         if (this.shouldDrawAnnotations) {
-            getData().getAnnotationLines().drawAllLines(
-                    canvas, getData().transformer);
+            canvas.save();
+            getData().transformer.setMatrix(canvas);
+            getData().getAnnotationLines().drawAllLines(canvas);
+            canvas.restore();
         }
 
         this.mInteractionMode.draw(canvas);
@@ -193,11 +199,18 @@ public final class CombatView extends View {
                 this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         getData().getGrid().drawBackground(canvas);
-        getData().getBackgroundLines().drawAllLines(
-        		canvas, getData().transformer);
+
+        canvas.save();
+        getData().transformer.setMatrix(canvas);
+        getData().getBackgroundLines().drawAllLines(canvas);
+        canvas.restore();
+
         getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
-        getData().getAnnotationLines().drawAllLines(
-        		canvas, getData().transformer);
+
+        canvas.save();
+        getData().transformer.setMatrix(canvas);
+        getData().getAnnotationLines().drawAllLines(canvas);
+        canvas.restore();
 
         return bitmap;
     }
@@ -367,16 +380,16 @@ public final class CombatView extends View {
 	}
 
 	/**
-	 * @param newLineStrokeWidth the newLineStrokeWidth to set
+	 * @param width the newLineStrokeWidth to set
 	 */
-	public void setNewLineStrokeWidth(final int newLineStrokeWidth) {
-		this.mNewLineStrokeWidth = newLineStrokeWidth;
+	public void setNewLineStrokeWidth(final float width) {
+		this.mNewLineStrokeWidth = width;
 	}
 
 	/**
 	 * @return the newLineStrokeWidth
 	 */
-	public int getNewLineStrokeWidth() {
+	public float getNewLineStrokeWidth() {
 		return mNewLineStrokeWidth;
 	}
 

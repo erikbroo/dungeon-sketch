@@ -88,15 +88,15 @@ public final class DrawOptionsView extends HorizontalScrollView {
          * The line width that the drawing tool will be changed to when this
          * listener fires.
          */
-        private int mWidth;
+        private float mWidth;
 
         /**
          * Constructor.
-         * @param width The line width that will be used when the listener
+         * @param f The line width that will be used when the listener
          * 		fires.
          */
-        public StrokeWidthListener(final int width) {
-            this.mWidth = width;
+        public StrokeWidthListener(final float f) {
+            this.mWidth = f;
         }
 
         @Override
@@ -134,7 +134,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
          * as selecting a pen tool with the given stroke width.
          * @param width The new stroke width.
          */
-        void onChooseStrokeWidth(int width);
+        void onChooseStrokeWidth(float width);
 
         /**
          * Fired when the undo button is clicked.
@@ -166,7 +166,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
         public void onChoosePanTool() { }
 
         @Override
-        public void onChooseStrokeWidth(final int width) { }
+        public void onChooseStrokeWidth(final float width) { }
 
 		@Override
 		public void onClickUndo() { }
@@ -249,10 +249,10 @@ public final class DrawOptionsView extends HorizontalScrollView {
         toolsGroup.add(panButton);
         toolsGroup.add(eraserButton);
 
-        addStrokeWidthButton(2, R.drawable.pencil);
-        addStrokeWidthButton(4, R.drawable.pen);
-        addStrokeWidthButton(12, R.drawable.paintbrush);
-        addStrokeWidthButton(40, R.drawable.inktube);
+        addStrokeWidthButton(.05f, R.drawable.pencil);
+        addStrokeWidthButton(.1f, R.drawable.pen);
+        addStrokeWidthButton(.5f, R.drawable.paintbrush);
+        addStrokeWidthButton(2.0f, R.drawable.inktube);
 
         //Create a seperator
         ImageView seperator = new ImageView(this.getContext());
@@ -296,13 +296,13 @@ public final class DrawOptionsView extends HorizontalScrollView {
     /**
      * Adds a button that changes the stroke width to the given width, and that
      * uses the given resource ID to represent its self.
-     * @param width The width that this button will change the stroke width to.
+     * @param f The width that this button will change the stroke width to.
      * @param resourceId ID of the image to draw on this button.
      */
-    private void addStrokeWidthButton(final int width, final int resourceId) {
+    private void addStrokeWidthButton(final float f, final int resourceId) {
         ImageToggleButton b = new ImageToggleButton(this.getContext());
         b.setImageResource(resourceId);
-        b.setOnClickListener(new StrokeWidthListener(width));
+        b.setOnClickListener(new StrokeWidthListener(f));
         layout.addView(b);
         toolsGroup.add(b);
     }

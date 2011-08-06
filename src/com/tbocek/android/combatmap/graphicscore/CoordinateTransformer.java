@@ -2,6 +2,8 @@ package com.tbocek.android.combatmap.graphicscore;
 
 import java.io.Serializable;
 
+import android.graphics.Canvas;
+
 /**
  * Defines a transformation from one 2D coordinate system to another coordinate
  * system.
@@ -175,6 +177,12 @@ public final class CoordinateTransformer implements Serializable {
      */
     public void setZoom(final float zoomLevel) {
         this.mZoomLevel = zoomLevel;
+
+    }
+
+    public void setMatrix(Canvas c) {
+    	c.translate(mOriginX, mOriginY);
+    	c.scale(mZoomLevel, mZoomLevel);
 
     }
 }

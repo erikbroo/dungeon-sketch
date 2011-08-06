@@ -42,12 +42,11 @@ public final class LineCollection implements Serializable {
     /**
      * Draws all lines on the given canvas.
      * @param canvas The canvas to draw on.
-     * @param transformer Transformer between screen space and world space.
      */
     public void drawAllLines(
-            final Canvas canvas, final CoordinateTransformer transformer) {
+            final Canvas canvas) {
         for (int i = 0; i < lines.size(); ++i) {
-            lines.get(i).draw(canvas, transformer);
+            lines.get(i).draw(canvas);
         }
     }
 
@@ -59,7 +58,7 @@ public final class LineCollection implements Serializable {
      * @return The new line.
      */
     public Line createLine(
-            final int newLineColor, final int newLineStrokeWidth) {
+            final int newLineColor, final float newLineStrokeWidth) {
         Line l = new Line(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
         c.addCreatedLine(l);
