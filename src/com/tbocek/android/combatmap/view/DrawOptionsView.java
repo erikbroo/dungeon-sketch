@@ -253,6 +253,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
         addStrokeWidthButton(.1f, R.drawable.pen);
         addStrokeWidthButton(.5f, R.drawable.paintbrush);
         addStrokeWidthButton(2.0f, R.drawable.inktube);
+        addStrokeWidthButton(Float.POSITIVE_INFINITY, R.drawable.freehand_shape);
 
         //Create a seperator
         ImageView seperator = new ImageView(this.getContext());

@@ -38,7 +38,8 @@ public final class Line implements Serializable {
     private int mColor = Color.BLACK;
 
     /**
-     * The stroke width to draw this line with.
+     * The stroke width to draw this line with.  +Infinity will use a fill
+     * instead (to ensure that it draws beneath all lines).
      */
     private float mWidth = 2;
 
@@ -137,8 +138,12 @@ public final class Line implements Serializable {
 		if (paint == null) {
 	        paint = new Paint();
 	        paint.setColor(mColor);
-	        paint.setStrokeWidth(mWidth);
-	        paint.setStyle(Paint.Style.STROKE);
+	        if (mWidth == Float.POSITIVE_INFINITY) {
+	        	paint.setStyle(Paint.Style.FILL);
+	        } else {
+		        paint.setStrokeWidth(mWidth);
+		        paint.setStyle(Paint.Style.STROKE);
+	        }
         }
 	}
 
