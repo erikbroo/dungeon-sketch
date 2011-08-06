@@ -191,6 +191,9 @@ public final class Line implements Serializable {
             this.shouldDraw.set(i, true);
         }
 
+        // shouldDraw was reset, path is invalid
+        invalidatePath();
+
         return optimizedLines;
     }
 
