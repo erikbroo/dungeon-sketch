@@ -172,19 +172,13 @@ public final class CombatView extends View {
     public void onDraw(final Canvas canvas) {
         // White background
         getData().getGrid().draw(canvas, getData().transformer);
-
-        canvas.save();
-        getData().transformer.setMatrix(canvas);
-        getData().getBackgroundLines().drawAllLines(canvas);
-        canvas.restore();
-
-        getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
+        getData().getBackgroundLines().drawAllLines(
+        		canvas, getData().transformer);
+        getData().getTokens().drawAllTokens(canvas, getData().transformer);
 
         if (this.shouldDrawAnnotations) {
-            canvas.save();
-            getData().transformer.setMatrix(canvas);
-            getData().getAnnotationLines().drawAllLines(canvas);
-            canvas.restore();
+            getData().getAnnotationLines().drawAllLines(
+            		canvas, getData().transformer);
         }
 
         this.mInteractionMode.draw(canvas);
@@ -199,18 +193,13 @@ public final class CombatView extends View {
                 this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         getData().getGrid().drawBackground(canvas);
+        getData().getBackgroundLines().drawAllLines(
+        		canvas, getData().transformer);
+        getData().getTokens().drawAllTokens(canvas, getData().transformer);
 
-        canvas.save();
-        getData().transformer.setMatrix(canvas);
-        getData().getBackgroundLines().drawAllLines(canvas);
-        canvas.restore();
-
-        getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
-
-        canvas.save();
-        getData().transformer.setMatrix(canvas);
-        getData().getAnnotationLines().drawAllLines(canvas);
-        canvas.restore();
+        //getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
+        getData().getAnnotationLines().drawAllLines(
+        		canvas, getData().transformer);
 
         return bitmap;
     }
@@ -245,6 +234,7 @@ public final class CombatView extends View {
             this.getData().getGrid().gridSpaceToScreenSpaceTransformer(
                     this.getData().transformer)
                     .screenSpaceToWorldSpace(attemptedLocationScreenSpace);
+
         getData().getTokens().placeTokenNearby(
                 t, attemptedLocationGridSpace, getData().getGrid());
         this.getData().getTokens().addToken(t);

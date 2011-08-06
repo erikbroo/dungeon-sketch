@@ -44,10 +44,13 @@ public final class LineCollection implements Serializable {
      * @param canvas The canvas to draw on.
      */
     public void drawAllLines(
-            final Canvas canvas) {
+            final Canvas canvas, final CoordinateTransformer transform) {
+    	canvas.save();
+    	transform.setMatrix(canvas);
         for (int i = 0; i < lines.size(); ++i) {
             lines.get(i).draw(canvas);
         }
+        canvas.restore();
     }
 
     /**
