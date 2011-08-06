@@ -98,7 +98,9 @@ public final class Line implements Serializable {
     public void draw(final Canvas c) {
         ensurePaintCreated();
         ensurePathCreated();
-        c.drawPath(mPath, paint);
+        if (mPath != null) {
+        	c.drawPath(mPath, paint);
+        }
     }
 
 	/**
