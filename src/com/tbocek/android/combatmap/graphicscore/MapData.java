@@ -87,6 +87,11 @@ public final class MapData implements Serializable {
     private LineCollection mBackgroundLines = new LineCollection();
 
     /**
+     * Lines that represent the fog of war
+     */
+    private LineCollection mFogOfWar = new LineCollection();
+
+    /**
      * Annotation lines.
      */
     private LineCollection mAnnotationLines = new LineCollection();
@@ -149,6 +154,13 @@ public final class MapData implements Serializable {
 	 */
 	public LineCollection getBackgroundLines() {
 		return mBackgroundLines;
+	}
+
+	/**
+	 * @return the fog of war lines.
+	 */
+	public LineCollection getFogOfWar() {
+		return mFogOfWar;
 	}
 
 	/**

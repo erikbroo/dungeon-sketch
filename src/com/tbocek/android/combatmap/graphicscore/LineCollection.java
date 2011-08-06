@@ -43,14 +43,30 @@ public final class LineCollection implements Serializable {
      * Draws all lines on the given canvas.
      * @param canvas The canvas to draw on.
      */
-    public void drawAllLines(
-            final Canvas canvas, final CoordinateTransformer transform) {
-    	canvas.save();
-    	transform.setMatrix(canvas);
+    public void drawAllLines(final Canvas canvas) {
         for (int i = 0; i < lines.size(); ++i) {
             lines.get(i).draw(canvas);
         }
-        canvas.restore();
+    }
+
+    /**
+     * Draws all lines on the given canvas.
+     * @param canvas The canvas to draw on.
+     */
+    public void drawFogOfWar(final Canvas canvas) {
+        for (int i = 0; i < lines.size(); ++i) {
+            lines.get(i).drawFogOfWar(canvas);
+        }
+    }
+
+    /**
+     * Draws all lines on the given canvas.
+     * @param canvas The canvas to draw on.
+     */
+    public void clipFogOfWar(final Canvas canvas) {
+        for (int i = 0; i < lines.size(); ++i) {
+            lines.get(i).clipFogOfWar(canvas);
+        }
     }
 
     /**

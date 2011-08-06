@@ -2,15 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item
 		android:id="@+id/edit_background"
-		android:title="Background" 
+		android:title="Background"
 		android:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/edit_fog_of_war"
+        android:title="Fog of War"
+        android:showAsAction="ifRoom|withText">
+     </item>
+
 	<item
 		android:id="@+id/combat_on"
-		android:title="Combat" 
+		android:title="Combat"
 		android:showAsAction="ifRoom|withText"/>
 	<item
 		android:id="@+id/edit_annotations"
-		android:title="Annotations" 
+		android:title="Annotations"
 		android:showAsAction="ifRoom|withText"/>
 	<item
 		android:id="@+id/zoom_to_fit"
@@ -36,5 +43,6 @@
 	<item
 		android:id="@+id/settings"
 		android:title="Settings"/>
+
 
 </menu>

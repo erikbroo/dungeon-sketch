@@ -54,6 +54,11 @@ public final class CombatMap extends Activity {
 	private static final int MODE_DRAW_ANNOTATIONS = 3;
 
 	/**
+	 * Identifier for the fog of war edit mode.
+	 */
+	private static final int MODE_FOG_OF_WAR = 4;
+
+	/**
 	 * Text size to use in the list of tags.
 	 */
 	private static final int TAG_LIST_TEXT_SIZE = 20;
@@ -382,6 +387,13 @@ public final class CombatMap extends Activity {
     private MenuItem annotationLayerItem;
 
     /**
+     * The menu item that will cause the fog of war to be actively drawn.
+     * This is cached here so it can be disabled when this is the active menu
+     * item.
+     */
+    private MenuItem fogOfWarLayerItem;
+
+    /**
      * The menu item that will cause the combat tokens to be manipulated.
      * This is cached here so it can be disabled when this is the active menu
      * item.
@@ -394,6 +406,7 @@ public final class CombatMap extends Activity {
         inflater.inflate(R.menu.combat_map_menu, menu);
         backgroundLayerItem = menu.findItem(R.id.edit_background);
         annotationLayerItem = menu.findItem(R.id.edit_annotations);
+        fogOfWarLayerItem = menu.findItem(R.id.edit_fog_of_war);
         combatItem = menu.findItem(R.id.combat_on);
 
         // We defer loading the manipulation mode until now, so that the correct
@@ -414,6 +427,7 @@ public final class CombatMap extends Activity {
         backgroundLayerItem.setEnabled(modeItem != backgroundLayerItem);
         annotationLayerItem.setEnabled(modeItem != annotationLayerItem);
         combatItem.setEnabled(modeItem != combatItem);
+        fogOfWarLayerItem.setEnabled(modeItem != fogOfWarLayerItem);
     }
 
     @Override
@@ -429,6 +443,9 @@ public final class CombatMap extends Activity {
         case R.id.combat_on:
         	setManipulationMode(MODE_TOKENS);
             return true;
+        case R.id.edit_fog_of_war:
+        	setManipulationMode(MODE_FOG_OF_WAR);
+        	return true;
         case R.id.zoom_to_fit:
             mData.zoomToFit(mCombatView.getWidth(), mCombatView.getHeight());
             return true;
@@ -468,6 +485,7 @@ public final class CombatMap extends Activity {
 		case MODE_DRAW_BACKGROUND:
             mCombatView.setDrawMode();
             mCombatView.useBackgroundLayer();
+            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
             disableCurrentMode(this.backgroundLayerItem);
@@ -475,9 +493,21 @@ public final class CombatMap extends Activity {
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
 			return;
+		case MODE_FOG_OF_WAR:
+            mCombatView.setDrawMode();
+            mCombatView.useFogLayer();
+            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
+            mBottomControlFrame.removeAllViews();
+            mBottomControlFrame.addView(this.mDrawOptionsView);
+            disableCurrentMode(this.fogOfWarLayerItem);
+            mPopupFrame.setVisibility(View.INVISIBLE);
+            setModePreference(manipulationMode);
+            mDrawOptionsView.setDefault();
+			return;
 		case MODE_DRAW_ANNOTATIONS:
             mCombatView.setDrawMode();
             mCombatView.useAnnotationLayer();
+            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
             disableCurrentMode(this.annotationLayerItem);
@@ -487,6 +517,7 @@ public final class CombatMap extends Activity {
 			return;
 		case MODE_TOKENS:
             mCombatView.setTokenManipulationMode();
+            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(mTokenSelector);
             disableCurrentMode(this.combatItem);

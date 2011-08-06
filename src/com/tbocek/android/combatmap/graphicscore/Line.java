@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Region.Op;
 
 /**
  * Encapsulates a single vector-drawn line.
@@ -64,6 +65,12 @@ public final class Line implements Serializable {
     private List<Boolean> shouldDraw = new ArrayList<Boolean>();
 
     /**
+     * Paint object that is used when drawing fog of war regions for the fog
+     * of war editor.
+     */
+    private static Paint fogOfWarPaint = null;
+
+    /**
      * Constructor.
      * @param color Line color.
      * @param newLineStrokeWidth Line stroke width.
@@ -101,6 +108,36 @@ public final class Line implements Serializable {
         if (mPath != null) {
         	c.drawPath(mPath, paint);
         }
+    }
+
+    /**
+     * Draws this path specifically as a fog of war region.
+     * @param c Canvas to draw on.
+     */
+    public void drawFogOfWar(final Canvas c) {
+    	// Ensure the static fog of war pen is created.
+    	if (fogOfWarPaint == null) {
+    		fogOfWarPaint = new Paint();
+    		fogOfWarPaint.setColor(Color.RED);
+    		fogOfWarPaint.setAlpha(128);
+    		fogOfWarPaint.setStyle(Paint.Style.FILL);
+    	}
+
+    	ensurePathCreated();
+        if (mPath != null) {
+        	c.drawPath(mPath, fogOfWarPaint);
+        }
+    }
+
+    /**
+     * Clips out the region defined by this path on the fog of war.
+     * @param c Canvas to draw on.
+     */
+    public void clipFogOfWar(final Canvas c) {
+    	ensurePathCreated();
+    	if (mPath != null) {
+    		c.clipPath(mPath, Op.DIFFERENCE);
+    	}
     }
 
 	/**

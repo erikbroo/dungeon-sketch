@@ -75,6 +75,33 @@ public final class CombatView extends View {
     private boolean shouldDrawAnnotations = false;
 
     /**
+     * Options for what to do with the fog of war.
+     * @author Tim
+     *
+     */
+    public enum FogOfWarMode {
+    	/**
+    	 * Ignore the fog of war.
+    	 */
+    	NOTHING,
+
+    	/**
+    	 * Draw the fog of war as an overlay.
+    	 */
+    	DRAW,
+
+    	/**
+    	 * Use the fog of war to clip the background.
+    	 */
+    	CLIP
+    }
+
+    /**
+     * What to do with the fog of war when drawing.
+     */
+    private FogOfWarMode mFogOfWarMode;
+
+    /**
      * Constructor.
      * @param context The context to create this view in.\
      */
@@ -136,6 +163,15 @@ public final class CombatView extends View {
     }
 
     /**
+     * Sets the fog of war layer as the active layer, so that any draw commands
+     * will draw on the fog of war.
+     */
+    public void useFogLayer() {
+        mActiveLines = getData().getFogOfWar();
+        shouldDrawAnnotations = false;
+    }
+
+    /**
      * Sets the annotation layer as the active layer, so that any draw commands
      * will draw on the annotations.
      */
@@ -155,6 +191,14 @@ public final class CombatView extends View {
         mInteractionMode = mode;
     }
 
+    /**
+     * Sets what to do with the fog of war layer.
+     * @param mode The fog of war mode to use.
+     */
+    public void setFogOfWarMode(final FogOfWarMode mode) {
+    	mFogOfWarMode = mode;
+    }
+
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
         this.gestureDetector.onTouchEvent(ev);
@@ -172,13 +216,25 @@ public final class CombatView extends View {
     public void onDraw(final Canvas canvas) {
         // White background
         getData().getGrid().draw(canvas, getData().transformer);
-        getData().getBackgroundLines().drawAllLines(
-        		canvas, getData().transformer);
+
+    	canvas.save();
+    	getData().transformer.setMatrix(canvas);
+        if (mFogOfWarMode == FogOfWarMode.CLIP) {
+        	getData().getFogOfWar().clipFogOfWar(canvas);
+        }
+        getData().getBackgroundLines().drawAllLines(canvas);
+        if (mFogOfWarMode == FogOfWarMode.DRAW) {
+        	getData().getFogOfWar().drawFogOfWar(canvas);
+        }
+        canvas.restore();
+
         getData().getTokens().drawAllTokens(canvas, getData().transformer);
 
         if (this.shouldDrawAnnotations) {
-            getData().getAnnotationLines().drawAllLines(
-            		canvas, getData().transformer);
+        	canvas.save();
+        	getData().transformer.setMatrix(canvas);
+            getData().getAnnotationLines().drawAllLines(canvas);
+            canvas.restore();
         }
 
         this.mInteractionMode.draw(canvas);
@@ -193,13 +249,18 @@ public final class CombatView extends View {
                 this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         getData().getGrid().drawBackground(canvas);
-        getData().getBackgroundLines().drawAllLines(
-        		canvas, getData().transformer);
+
+    	canvas.save();
+    	getData().transformer.setMatrix(canvas);
+        getData().getBackgroundLines().drawAllLines(canvas);
+        canvas.restore();
+
         getData().getTokens().drawAllTokens(canvas, getData().transformer);
 
-        //getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer());
-        getData().getAnnotationLines().drawAllLines(
-        		canvas, getData().transformer);
+    	canvas.save();
+    	getData().transformer.setMatrix(canvas);
+        getData().getAnnotationLines().drawAllLines(canvas);
+        canvas.restore();
 
         return bitmap;
     }
