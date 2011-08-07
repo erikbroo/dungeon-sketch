@@ -27,6 +27,7 @@ import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
+import com.tbocek.android.combatmap.view.FogOfWarOptionsView;
 import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
@@ -91,6 +92,11 @@ public final class CombatMap extends Activity {
      * The view that allows the user to select a drawing tool or color.
      */
     private DrawOptionsView mDrawOptionsView;
+
+    /**
+     * View that allows the user to select a tool to manipulate the fog of war.
+     */
+    private FogOfWarOptionsView mFogOfWarOptionsView;
 
     /**
      * The view that allows the user to select a token category to display in
@@ -225,6 +231,11 @@ public final class CombatMap extends Activity {
 
         mDrawOptionsView = new DrawOptionsView(this.getApplicationContext());
         mDrawOptionsView.setOnChangeDrawToolListener(mOnChangeDrawToolListener);
+
+        mFogOfWarOptionsView =
+        	new FogOfWarOptionsView(this.getApplicationContext());
+        mFogOfWarOptionsView.setOnChangeDrawToolListener(
+        		mOnChangeDrawToolListener);
 
         FrameLayout mainContentFrame =
             (FrameLayout) this.findViewById(R.id.mainContentFrame);
@@ -498,7 +509,7 @@ public final class CombatMap extends Activity {
             mCombatView.useFogLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
             mBottomControlFrame.removeAllViews();
-            mBottomControlFrame.addView(this.mDrawOptionsView);
+            mBottomControlFrame.addView(this.mFogOfWarOptionsView);
             disableCurrentMode(this.fogOfWarLayerItem);
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
