@@ -106,6 +106,20 @@ public final class LineCollection implements Serializable {
     }
 
     /**
+     * Deletes all regions under the tapped point.
+     * @param tappedPoint The point that was tapped, in world space.
+     */
+    public void deleteRegionsUnderPoint(final PointF tappedPoint) {
+    	Command c = new Command(this);
+    	for (Line l : lines) {
+    		if (l.contains(tappedPoint)) {
+    			c.addDeletedLine(l);
+    		}
+    	}
+    	execute(c);
+    }
+
+    /**
      * Removes all lines.
      */
     public void clear() {

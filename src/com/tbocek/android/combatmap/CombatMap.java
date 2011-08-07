@@ -172,6 +172,11 @@ public final class CombatMap extends Activity {
 			mCombatView.getActiveLines().redo();
 			mCombatView.invalidate();
 		}
+
+		@Override
+		public void onChooseDeleteTool() {
+			mCombatView.setDeleteMode();
+		}
     };
 
     /**

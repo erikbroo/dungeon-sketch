@@ -23,12 +23,28 @@ public class FogOfWarOptionsView extends DrawOptionsViewBase {
 
         createAndAddPanButton();
         createAndAddEraserButton();
+
+        ImageToggleButton deleteButton =
+        	new ImageToggleButton(this.getContext());
+        deleteButton.setImageResource(R.drawable.editdelete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+	            onChangeDrawToolListener.onChooseDeleteTool();
+	            untoggleGroup(toolsGroup);
+	            ((ImageToggleButton) v).setToggled(true);
+			}
+		});
+        layout.addView(deleteButton);
+        toolsGroup.add(deleteButton);
+
         createAndAddUndoButton();
         createAndAddRedoButton();
 
-        ImageToggleButton b = new ImageToggleButton(this.getContext());
-        b.setImageResource(R.drawable.pencil);
-        b.setOnClickListener(new View.OnClickListener() {
+        ImageToggleButton pencilButton =
+        	new ImageToggleButton(this.getContext());
+        pencilButton.setImageResource(R.drawable.pencil);
+        pencilButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View v) {
 	            onChangeDrawToolListener.onChooseStrokeWidth(0);
@@ -36,7 +52,7 @@ public class FogOfWarOptionsView extends DrawOptionsViewBase {
 	            ((ImageToggleButton) v).setToggled(true);
 			}
         });
-        layout.addView(b);
-        toolsGroup.add(b);
+        layout.addView(pencilButton);
+        toolsGroup.add(pencilButton);
     }
 }

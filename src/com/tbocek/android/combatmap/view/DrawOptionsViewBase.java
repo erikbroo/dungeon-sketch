@@ -38,6 +38,11 @@ public class DrawOptionsViewBase extends HorizontalScrollView {
         void onChooseEraser();
 
         /**
+         * Fired when the delete region tool is selected.
+         */
+        void onChooseDeleteTool();
+
+        /**
          * Fired when the color is changed.
          * @param color The new color.
          */
@@ -77,6 +82,9 @@ public class DrawOptionsViewBase extends HorizontalScrollView {
     		implements OnChangeDrawToolListener {
         @Override
         public void onChooseEraser() { }
+
+        @Override
+        public void onChooseDeleteTool() { }
 
         @Override
         public void onChooseColoredPen(final int color) { }

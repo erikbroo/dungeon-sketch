@@ -262,4 +262,47 @@ public final class Line implements Serializable {
     public float getStrokeWidth() {
         return this.mWidth;
     }
+
+    /**
+     * Checks whether this point falls in the polygon created by closing this
+     * path.
+     * @param p The point to test
+     * @return True if the polygon contains the point.
+     */
+    public boolean contains(PointF p) {
+    	// First, check whether the bounding rectangle contains the point so
+    	// we can efficiently and quickly get rid of easy cases.
+    	if (!this.boundingRectangle.contains(p)) {
+    		return false;
+    	}
+
+    	// This algorithm adapted from http://alienryderflex.com/polygon/
+    	// The algorithm tests whether a horizontal line drawn through the test
+    	// point intersects an odd number of polygon sides to the left of the
+    	// point.
+
+    	// i and j store consecutive points, so they define a line segment.
+    	// Start with the line segment from the last point to the first point.
+    	int j = points.size() - 1;
+    	boolean oddNodes = false;
+    	for (int i = 0; i < points.size(); ++i) {
+    		PointF pj = points.get(j);
+    		PointF pi = points.get(i);
+
+    		// Check if the test point is in between the y coordinates of the
+    		// two points that make up this line segment.  This checks two
+    		// conditions: whether the horizontal line has an intersection
+    		// (avoids division by 0), and whether the intersection between
+    		// the extruded line and horizontal line occurs on the line segment.
+    		if (pi.y < p.y && pj.y >= p.y || pj.y < p.y && pi.y >= p.y) {
+    			// Check if the horizontal line/line segment intersectino occurs
+    			// to the left of the test point.
+    			if (pi.x + (p.y - pi.y) / (pj.y - pi.y) * (pj.x - pi.x) < p.x) {
+    		        oddNodes = !oddNodes;
+    		    }
+    		}
+    		j = i;
+    	}
+    	return oddNodes;
+    }
 }
