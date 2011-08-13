@@ -81,7 +81,7 @@ public final class TokenManipulationInteractionMode
         } else {
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
-        view.invalidate();
+        view.refreshMap();
         return true;
     }
 
@@ -103,7 +103,7 @@ public final class TokenManipulationInteractionMode
         if (currentToken != null) {
             currentToken.setBloodied(!currentToken.isBloodied());
         }
-        view.invalidate();
+        view.refreshMap();
         return true;
     }
 
@@ -175,7 +175,7 @@ public final class TokenManipulationInteractionMode
     @Override
     public void onUp(final MotionEvent ev) {
         down = false;
-        view.invalidate();
+        view.refreshMap();
     }
 
     @Override

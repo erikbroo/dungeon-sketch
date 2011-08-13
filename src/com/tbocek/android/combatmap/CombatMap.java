@@ -163,14 +163,14 @@ public final class CombatMap extends Activity {
 		@Override
 		public void onClickUndo() {
 			mCombatView.getActiveLines().undo();
-			mCombatView.invalidate();
+			mCombatView.refreshMap();
 
 		}
 
 		@Override
 		public void onClickRedo() {
 			mCombatView.getActiveLines().redo();
-			mCombatView.invalidate();
+			mCombatView.refreshMap();
 		}
 
 		@Override
@@ -304,7 +304,7 @@ public final class CombatMap extends Activity {
 
         reloadPreferences();
 
-        mCombatView.invalidate();
+        mCombatView.refreshMap();
 
         tokenDatabase = TokenDatabase.getInstance(this);
         mTokenSelector.setTokenDatabase(tokenDatabase);

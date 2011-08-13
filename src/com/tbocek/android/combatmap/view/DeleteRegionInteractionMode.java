@@ -26,8 +26,7 @@ public final class DeleteRegionInteractionMode
     	PointF tap = view.getTransformer().screenSpaceToWorldSpace(
     			ev.getX(), ev.getY());
     	view.getActiveLines().deleteRegionsUnderPoint(tap);
-    	view.invalidate();
+    	view.refreshMap();
         return true;
     }
-
 }

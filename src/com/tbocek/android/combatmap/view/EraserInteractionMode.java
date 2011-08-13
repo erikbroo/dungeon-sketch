@@ -57,7 +57,7 @@ public final class EraserInteractionMode extends CombatViewInteractionMode {
         				this.lastErasedPoint),
                 view.getTransformer().screenSpaceToWorldSpace(ERASER_RADIUS));
 
-        view.invalidate();
+        view.refreshMap();
         return true;
     }
 
@@ -65,7 +65,7 @@ public final class EraserInteractionMode extends CombatViewInteractionMode {
     public void onUp(final MotionEvent event) {
         this.erasing = false;
         this.view.optimizeActiveLines();
-        view.invalidate();
+        view.refreshMap();
     }
 
     @Override

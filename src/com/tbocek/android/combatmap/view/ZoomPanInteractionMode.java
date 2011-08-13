@@ -24,7 +24,7 @@ public class ZoomPanInteractionMode extends CombatViewInteractionMode {
             final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
         view.getTransformer().moveOrigin(-distanceX, -distanceY);
-        view.invalidate();
+        view.refreshMap();
         return true;
     }
 }

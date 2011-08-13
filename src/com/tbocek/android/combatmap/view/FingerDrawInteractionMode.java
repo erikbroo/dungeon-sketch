@@ -69,7 +69,7 @@ public final class FingerDrawInteractionMode extends CombatViewInteractionMode {
         currentLine.addPoint(
                 view.getTransformer().screenSpaceToWorldSpace(
                         new PointF(e.getX(), e.getY())));
-        view.invalidate(); // Redraw the screen
+        view.refreshMap(); // Redraw the screen
         lastPointX = e.getX();
         lastPointY = e.getY();
     }

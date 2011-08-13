@@ -41,7 +41,7 @@ public class CombatViewInteractionMode
         view.getTransformer().zoom(
             detector.getScaleFactor(),
             new PointF(detector.getFocusX(), detector.getFocusY()));
-        view.invalidate();
+        view.refreshMap();
         return true;
       }
 

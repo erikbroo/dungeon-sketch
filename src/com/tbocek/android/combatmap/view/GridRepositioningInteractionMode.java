@@ -29,7 +29,7 @@ public final class GridRepositioningInteractionMode
         view.getData().getGrid().gridSpaceToWorldSpaceTransformer().moveOrigin(
                 -view.getTransformer().screenSpaceToWorldSpace(distanceX),
                 -view.getTransformer().screenSpaceToWorldSpace(distanceY));
-        view.invalidate();
+        view.refreshMap();
         return true;
     }
 
@@ -40,7 +40,7 @@ public final class GridRepositioningInteractionMode
         			detector.getFocusX(), detector.getFocusY());
         view.getData().getGrid().gridSpaceToWorldSpaceTransformer().zoom(
         		detector.getScaleFactor(), invariantPointWorldSpace);
-        view.invalidate();
+        view.refreshMap();
         return true;
     }
 
