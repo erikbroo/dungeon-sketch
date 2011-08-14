@@ -40,6 +40,12 @@ public final class TokenCreator extends Activity {
      */
     private TokenCreatorView view;
 
+    /**
+     * Whether the image selector activity was started automatically.  If true,
+     * and the activity was cancelled, this activity should end as well.
+     */
+    private boolean imageSelectorStartedAutomatically = false;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,7 @@ public final class TokenCreator extends Activity {
         setContentView(view);
 
         // Automatically select a new image when the view starts.
+        imageSelectorStartedAutomatically = true;
         startImageSelectorActivity();
     }
 
@@ -61,6 +68,7 @@ public final class TokenCreator extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         case R.id.token_image_creator_pick:
+        	imageSelectorStartedAutomatically = false;
             startImageSelectorActivity();
             return true;
         case R.id.token_image_creator_accept:
@@ -127,20 +135,25 @@ public final class TokenCreator extends Activity {
     protected void onActivityResult(
     		final int requestCode, final int resultCode, final Intent data) {
         // If an image was successfully picked, use it.
-    	if (requestCode == PICK_IMAGE_REQUEST
-        		&& resultCode == Activity.RESULT_OK) {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-                        this.getContentResolver(), data.getData());
-                view.setImage(new BitmapDrawable(bitmap));
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast toast = Toast.makeText(
-                		this.getApplicationContext(),
-                		"Couldn't load image: " + e.toString(),
-                		Toast.LENGTH_LONG);
-                toast.show();
-            }
+    	if (requestCode == PICK_IMAGE_REQUEST) {
+        	if (resultCode == Activity.RESULT_OK) {
+	            try {
+	                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+	                        this.getContentResolver(), data.getData());
+	                view.setImage(new BitmapDrawable(bitmap));
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	                Toast toast = Toast.makeText(
+	                		this.getApplicationContext(),
+	                		"Couldn't load image: " + e.toString(),
+	                		Toast.LENGTH_LONG);
+	                toast.show();
+	            }
+        	} else if (resultCode == Activity.RESULT_CANCELED) {
+        		if (imageSelectorStartedAutomatically) {
+        			finish();
+        		}
+        	}
         }
     }
 }
