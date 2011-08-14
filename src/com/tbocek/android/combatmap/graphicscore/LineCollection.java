@@ -295,15 +295,15 @@ public final class LineCollection implements Serializable {
     	}
     }
 
-    public static class CommandHistory {
+    public static class CommandHistory implements Serializable {
 		/**
 		 * Operations on this line collection that are available to undo.
 		 */
-		private Stack<Command> toUndo = new Stack<Command>();
+		private transient Stack<Command> toUndo = new Stack<Command>();
 		/**
 		 * Operations on this line collection that are available to redo.
 		 */
-		private Stack<Command> toRedo = new Stack<Command>();
+		private transient Stack<Command> toRedo = new Stack<Command>();
 
 	    /**
 	     * Undo the last line operation.
