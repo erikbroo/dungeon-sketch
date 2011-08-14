@@ -74,6 +74,12 @@ public class DrawOptionsViewBase extends HorizontalScrollView {
          * Fired when the redo button is clicked.
          */
         void onClickRedo();
+
+        /**
+         * Fired when straight line mode is activated or deactivated.
+         * @param toggled
+         */
+		void onSetStraightLineMode(boolean drawStraight);
     }
 
     /**
@@ -108,6 +114,9 @@ public class DrawOptionsViewBase extends HorizontalScrollView {
 
 		@Override
 		public void onChooseMaskTool() { }
+
+		@Override
+		public void onSetStraightLineMode(final boolean drawStraight) { }
     }
 
 

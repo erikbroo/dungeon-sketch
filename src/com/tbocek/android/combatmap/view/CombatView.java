@@ -83,6 +83,12 @@ public final class CombatView extends SurfaceView {
 	private Bitmap buffer;
 
 	/**
+	 * If true, heuristics will be used while drawing to try to make sure lines
+	 * remain straight.
+	 */
+	private boolean mShouldDrawStraightLines = false;
+
+	/**
 	 * Options for what to do with the fog of war.
 	 *
 	 * @author Tim
@@ -537,5 +543,20 @@ public final class CombatView extends SurfaceView {
 	 */
 	public int getNewLineColor() {
 		return mNewLineColor;
+	}
+
+	/**
+	 * @param shouldDrawStraightLines Whether lines should be drawn straight.
+	 */
+	public void setShouldDrawStraightLines(
+			final boolean shouldDrawStraightLines) {
+		mShouldDrawStraightLines = shouldDrawStraightLines;
+	}
+
+	/**
+	 * @return Whether lines should be straightened while being drawn.
+	 */
+	public boolean shouldDrawStraightLines() {
+		return mShouldDrawStraightLines;
 	}
 }

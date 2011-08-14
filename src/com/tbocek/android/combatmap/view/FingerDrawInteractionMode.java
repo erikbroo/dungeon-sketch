@@ -66,9 +66,16 @@ public class FingerDrawInteractionMode extends CombatViewInteractionMode {
      */
     private void addLinePoint(final MotionEvent e) {
         // Need to transform to world space.
-        currentLine.addPoint(
-                view.getTransformer().screenSpaceToWorldSpace(
-                        new PointF(e.getX(), e.getY())));
+    	if (!view.shouldDrawStraightLines()) {
+	        currentLine.addPoint(
+	                view.getTransformer().screenSpaceToWorldSpace(
+	                        new PointF(e.getX(), e.getY())));
+    	} else {
+    		currentLine.setEndPoint(
+	                view.getTransformer().screenSpaceToWorldSpace(
+	                        new PointF(e.getX(), e.getY())));
+    	}
+
         view.refreshMap(); // Redraw the screen
         lastPointX = e.getX();
         lastPointY = e.getY();

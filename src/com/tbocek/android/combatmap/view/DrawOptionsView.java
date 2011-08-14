@@ -116,6 +116,8 @@ public final class DrawOptionsView extends DrawOptionsViewBase {
 
         mMaskButton = createAndAddMaskButton();
 
+        createAndAddLineModeToggle();
+
         //Create a seperator
         ImageView seperator = new ImageView(this.getContext());
         seperator.setLayoutParams(
@@ -131,6 +133,28 @@ public final class DrawOptionsView extends DrawOptionsViewBase {
 
 
     /**
+     * Creates and adds a button that toggles straight line drawing on and off.
+     */
+    private void createAndAddLineModeToggle() {
+    	TwoImageToggleButton toggle =
+    		new TwoImageToggleButton(
+    				this.getContext(), R.drawable.line_freehand,
+    				R.drawable.line_straight);
+    	toggle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View v) {
+				TwoImageToggleButton button = (TwoImageToggleButton) v;
+				button.setToggled(!button.isToggled());
+				onChangeDrawToolListener.onSetStraightLineMode(
+						button.isToggled());
+
+			}
+    	});
+    	layout.addView(toggle);
+	}
+
+
+	/**
      * Creates a button to activate the mask tool and adds it to the layout.
      * @return The button to activate the mask tool.
      */

@@ -91,6 +91,21 @@ public final class Line implements Serializable {
         invalidatePath();
     }
 
+    /**
+     * Sets the end point of the line.  This is used when a straight line is
+     * desired.
+     * @param p The point to set.
+     */
+	public void setEndPoint(final PointF p) {
+		if (points.size() > 1) {
+			points.remove(points.size() - 1);
+			shouldDraw.remove(shouldDraw.size() - 1);
+		}
+		points.add(p);
+		shouldDraw.add(true);
+		invalidatePath();
+	}
+
 	/**
 	 * Invalidates the path so that it is recreated on the next draw operation.
 	 */

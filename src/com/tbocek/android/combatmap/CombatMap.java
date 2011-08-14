@@ -174,6 +174,11 @@ public final class CombatMap extends Activity {
 		public void onChooseMaskTool() {
             mCombatView.setFogOfWarDrawMode();
 		}
+
+		@Override
+		public void onSetStraightLineMode(final boolean drawStraight) {
+			mCombatView.setShouldDrawStraightLines(drawStraight);
+		}
     };
 
     /**
