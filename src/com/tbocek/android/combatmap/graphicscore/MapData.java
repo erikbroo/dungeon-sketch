@@ -81,20 +81,29 @@ public final class MapData implements Serializable {
     public CoordinateTransformer transformer =
     	new CoordinateTransformer(0, 0, 64);
 
+    private LineCollection.CommandHistory backgroundCommandHistory =
+    		new LineCollection.CommandHistory();
+
+    private LineCollection.CommandHistory anntationCommandHistory =
+		    new LineCollection.CommandHistory();
+
     /**
      * Background lines.
      */
-    private LineCollection mBackgroundLines = new LineCollection();
+    private LineCollection mBackgroundLines =
+    		new LineCollection(backgroundCommandHistory);
 
     /**
-     * Lines that represent the fog of war
+     * Lines that represent the fog of war.
      */
-    private LineCollection mFogOfWar = new LineCollection();
+    private LineCollection mFogOfWar =
+    		new LineCollection(backgroundCommandHistory);
 
     /**
      * Annotation lines.
      */
-    private LineCollection mAnnotationLines = new LineCollection();
+    private LineCollection mAnnotationLines =
+    		new LineCollection(anntationCommandHistory);
 
     /**
      * Tokens that have been placed on the map.

@@ -19,7 +19,9 @@ import android.graphics.Canvas;
  * @author Tim Bocek
  */
 public final class LineCollection implements Serializable {
-    /**
+
+
+	/**
      * ID for serialization.
      */
     private static final long serialVersionUID = 3807015512261579274L;
@@ -30,16 +32,20 @@ public final class LineCollection implements Serializable {
     private List<Line> lines = new LinkedList<Line>();
 
     /**
-     * Operations on this line collection that are available to undo.
+     * Undo/Redo History.
      */
-    private transient Stack<Command> toUndo = new Stack<Command>();
+    private CommandHistory mCommandHistory;
 
     /**
-     * Operations on this line collection that are available to redo.
+     * Constructor allowing multiple line collections to share one undo/redo
+     * history.
+     * @param history The undo/redo history.
      */
-    private transient Stack<Command> toRedo = new Stack<Command>();
+    public LineCollection(CommandHistory history) {
+    	mCommandHistory = history;
+    }
 
-    /**
+	/**
      * Draws all lines on the given canvas.
      * @param canvas The canvas to draw on.
      */
@@ -81,7 +87,7 @@ public final class LineCollection implements Serializable {
         Line l = new Line(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
         c.addCreatedLine(l);
-        execute(c);
+        mCommandHistory.execute(c);
         return l;
     }
 
@@ -131,7 +137,7 @@ public final class LineCollection implements Serializable {
     			c.addDeletedLine(l);
     		}
     	}
-    	execute(c);
+    	mCommandHistory.execute(c);
     }
 
     /**
@@ -167,7 +173,7 @@ public final class LineCollection implements Serializable {
 	            c.addCreatedLines(optimizedLines);
         	}
         }
-        execute(c);
+        mCommandHistory.execute(c);
     }
 
     /**
@@ -188,68 +194,9 @@ public final class LineCollection implements Serializable {
         return r;
     }
 
-    /**
-     * Undo the last line operation.
-     */
-    public void undo() {
-    	if (canUndo()) {
-	    	Command c = toUndo.pop();
-	    	c.undo();
-	    	toRedo.push(c);
-    	}
-    }
 
-    /**
-     * Redo the last line operation.
-     */
-    public void redo() {
-    	if (canRedo()) {
-	    	Command c = toRedo.pop();
-	    	c.execute();
-	    	toUndo.push(c);
-    	}
-    }
 
-    /**
-     * @return True if the undo operation can be performed, false otherwise.
-     */
-    public boolean canUndo() {
-    	return !toUndo.isEmpty();
-    }
 
-    /**
-     * @return True if the redo operation can be performed, false otherwise.
-     */
-    public boolean canRedo() {
-    	return !toRedo.isEmpty();
-    }
-
-    /**
-     * Executes the given command.  This should not be called on commands to
-     * redo.
-     * @param command The command to execute.
-     */
-    private void execute(final Command command) {
-    	if (!command.isNoop()) {
-	    	command.execute();
-	    	toUndo.add(command);
-	    	toRedo.clear();
-    	}
-    }
-
-    /**
-     * Deserializes the object.  This uses the standard deserialization but
-     * must also create transient objects that manage undo and redo.
-     * @param inputStream Stream to deserialize from.
-     * @throws IOException On read error.
-     * @throws ClassNotFoundException On deserialization error.
-     */
-    private void readObject(final ObjectInputStream inputStream)
-    		throws IOException, ClassNotFoundException {
-    	inputStream.defaultReadObject();
-    	toUndo = new Stack<Command>();
-    	toRedo = new Stack<Command>();
-    }
 
     /**
      * This class represents a command that adds and deletes lines.
@@ -347,4 +294,86 @@ public final class LineCollection implements Serializable {
     		return mCreated.isEmpty() && mDeleted.isEmpty();
     	}
     }
+
+    public static class CommandHistory {
+		/**
+		 * Operations on this line collection that are available to undo.
+		 */
+		private Stack<Command> toUndo = new Stack<Command>();
+		/**
+		 * Operations on this line collection that are available to redo.
+		 */
+		private Stack<Command> toRedo = new Stack<Command>();
+
+	    /**
+	     * Undo the last line operation.
+	     */
+	    public void undo() {
+	    	if (canUndo()) {
+		    	Command c = toUndo.pop();
+		    	c.undo();
+		    	toRedo.push(c);
+	    	}
+	    }
+
+	    /**
+	     * Redo the last line operation.
+	     */
+	    public void redo() {
+	    	if (canRedo()) {
+		    	Command c = toRedo.pop();
+		    	c.execute();
+		    	toUndo.push(c);
+	    	}
+	    }
+
+	    /**
+	     * @return True if the undo operation can be performed, false otherwise.
+	     */
+	    public boolean canUndo() {
+	    	return !toUndo.isEmpty();
+	    }
+
+	    /**
+	     * @return True if the redo operation can be performed, false otherwise.
+	     */
+	    public boolean canRedo() {
+	    	return !toRedo.isEmpty();
+	    }
+
+	    /**
+	     * Executes the given command.  This should not be called on commands to
+	     * redo.
+	     * @param command The command to execute.
+	     */
+	    private void execute(final Command command) {
+	    	if (!command.isNoop()) {
+		    	command.execute();
+		    	toUndo.add(command);
+		    	toRedo.clear();
+	    	}
+	    }
+
+	    /**
+	     * Deserializes the object.  This uses the standard deserialization but
+	     * must also create transient objects that manage undo and redo.
+	     * @param inputStream Stream to deserialize from.
+	     * @throws IOException On read error.
+	     * @throws ClassNotFoundException On deserialization error.
+	     */
+	    private void readObject(final ObjectInputStream inputStream)
+	    		throws IOException, ClassNotFoundException {
+	    	inputStream.defaultReadObject();
+	    	toUndo = new Stack<Command>();
+	    	toRedo = new Stack<Command>();
+	    }
+	}
+
+	public void undo() {
+		mCommandHistory.undo();
+	}
+
+	public void redo() {
+		mCommandHistory.redo();
+	}
 }
