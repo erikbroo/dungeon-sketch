@@ -65,6 +65,8 @@ public class TokenButton extends ImageView {
         //Set up listener to see if a drag has started.
         gestureDetector =
         	new GestureDetector(this.getContext(), gestureListener);
+
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override

@@ -154,7 +154,7 @@ public final class TokenManager extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		tokenDatabase = TokenDatabase.getInstance(this);
+		tokenDatabase = TokenDatabase.getInstance(this.getApplicationContext());
 		tagListView.setTagList(tokenDatabase.getTags());
     	Debug.stopMethodTracing();
 	}

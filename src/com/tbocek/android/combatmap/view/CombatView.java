@@ -123,6 +123,20 @@ public final class CombatView extends SurfaceView {
 
 		this.setTokenManipulationMode();
 		this.setOnDragListener(mOnDrag);
+		// setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+	}
+
+	/**
+	 * When the surface is created, draw the combat map for the first time.
+	 * @param holder The SurfaceHolder whose surface has changed.
+	 * @param format The new PixelFormat of the surface.
+	 * @param width The new width of the surface.
+	 * @param height The new height of the surface.
+	 */
+	public void surfaceChanged(
+			final SurfaceHolder holder, final int format,
+			final int width, final int height) {
+		refreshMap();
 	}
 
 	/**

@@ -72,7 +72,8 @@ public final class TokenCreator extends Activity {
                 filename = saveToInternalImage(filename);
 
                 // Add this token to the token database
-                TokenDatabase tokenDatabase = TokenDatabase.getInstance(this);
+                TokenDatabase tokenDatabase = TokenDatabase.getInstance(
+                		this.getApplicationContext());
                 BaseToken t = new CustomBitmapToken(filename);
                 tokenDatabase.addTokenPrototype(t);
                 tokenDatabase.tagToken(t, t.getDefaultTags());

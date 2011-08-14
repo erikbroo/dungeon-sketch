@@ -113,6 +113,7 @@ public final class TokenCreatorView extends View {
         setFocusableInTouchMode(true);
         gestureDetector = new GestureDetector(getContext(), onGesture);
         scaleDetector = new ScaleGestureDetector(getContext(), onScaleGesture);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     /**

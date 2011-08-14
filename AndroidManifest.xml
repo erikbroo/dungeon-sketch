@@ -5,7 +5,7 @@
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="11" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:hardwareAccelerated="true" android:largeHeap="true">
         <activity android:name="com.tbocek.android.combatmap.CombatMap"
                   android:label="@string/app_name">
             <intent-filter>
@@ -16,10 +16,11 @@
 		<activity android:name="com.tbocek.android.combatmap.Settings"
 				  android:label="Settings"></activity>
 		<activity android:name="com.tbocek.android.combatmap.Load"
-				  android:label="Load"></activity>		
+				  android:label="Load"></activity>
 		<activity android:name="com.tbocek.android.combatmap.tokenmanager.TokenCreator"
-				  android:label="Token Creator"></activity>	
+				  android:label="Token Creator"
+				  android:hardwareAccelerated="false"></activity>
         <activity android:name="com.tbocek.android.combatmap.tokenmanager.TokenManager"
-				  android:label="Token Creator"></activity>					  
+				  android:label="Token Creator"></activity>
     </application>
 </manifest>

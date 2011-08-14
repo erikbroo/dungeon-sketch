@@ -306,7 +306,7 @@ public final class CombatMap extends Activity {
 
         mCombatView.refreshMap();
 
-        tokenDatabase = TokenDatabase.getInstance(this);
+        tokenDatabase = TokenDatabase.getInstance(this.getApplicationContext());
         mTokenSelector.setTokenDatabase(tokenDatabase);
         mTokenCategorySelector.setTagList(tokenDatabase.getTags());
 
