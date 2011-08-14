@@ -29,7 +29,7 @@ public final class TokenCreatorView extends View {
 	 * The maximum dimension to output for a square token.  If a token is too
 	 * big it will be scaled down to this when saving.
 	 */
-    private static final int MAX_TOKEN_SIZE = 300;
+    private static final int MAX_TOKEN_SIZE = 150;
 
     /**
      * Whether a circle has been drawn on the loaded token yet.
