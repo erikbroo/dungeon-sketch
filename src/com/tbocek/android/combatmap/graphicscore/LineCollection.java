@@ -106,6 +106,21 @@ public final class LineCollection implements Serializable {
     }
 
     /**
+     * Returns true if the given point is in a region defined by one of the
+     * lines, false otherwise.
+     * @param tappedPoint The point to test.
+     * @return Whether the point is in one of the line regions.
+     */
+	public boolean isPointInRegion(final PointF tappedPoint) {
+		for (Line l : lines) {
+    		if (l.contains(tappedPoint)) {
+    			return true;
+    		}
+    	}
+		return false;
+	}
+
+	/**
      * Deletes all regions under the tapped point.
      * @param tappedPoint The point that was tapped, in world space.
      */

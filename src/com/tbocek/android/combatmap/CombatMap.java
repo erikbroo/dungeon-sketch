@@ -27,7 +27,6 @@ import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
-import com.tbocek.android.combatmap.view.FogOfWarOptionsView;
 import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
@@ -53,11 +52,6 @@ public final class CombatMap extends Activity {
 	 * Identifier for the draw annotations mode.
 	 */
 	private static final int MODE_DRAW_ANNOTATIONS = 3;
-
-	/**
-	 * Identifier for the fog of war edit mode.
-	 */
-	private static final int MODE_FOG_OF_WAR = 4;
 
 	/**
 	 * Text size to use in the list of tags.
@@ -92,11 +86,6 @@ public final class CombatMap extends Activity {
      * The view that allows the user to select a drawing tool or color.
      */
     private DrawOptionsView mDrawOptionsView;
-
-    /**
-     * View that allows the user to select a tool to manipulate the fog of war.
-     */
-    private FogOfWarOptionsView mFogOfWarOptionsView;
 
     /**
      * The view that allows the user to select a token category to display in
@@ -177,6 +166,11 @@ public final class CombatMap extends Activity {
 		public void onChooseDeleteTool() {
 			mCombatView.setDeleteMode();
 		}
+
+		@Override
+		public void onChooseMaskTool() {
+            mCombatView.setFogOfWarDrawMode();
+		}
     };
 
     /**
@@ -236,11 +230,6 @@ public final class CombatMap extends Activity {
 
         mDrawOptionsView = new DrawOptionsView(this.getApplicationContext());
         mDrawOptionsView.setOnChangeDrawToolListener(mOnChangeDrawToolListener);
-
-        mFogOfWarOptionsView =
-        	new FogOfWarOptionsView(this.getApplicationContext());
-        mFogOfWarOptionsView.setOnChangeDrawToolListener(
-        		mOnChangeDrawToolListener);
 
         FrameLayout mainContentFrame =
             (FrameLayout) this.findViewById(R.id.mainContentFrame);
@@ -403,13 +392,6 @@ public final class CombatMap extends Activity {
     private MenuItem annotationLayerItem;
 
     /**
-     * The menu item that will cause the fog of war to be actively drawn.
-     * This is cached here so it can be disabled when this is the active menu
-     * item.
-     */
-    private MenuItem fogOfWarLayerItem;
-
-    /**
      * The menu item that will cause the combat tokens to be manipulated.
      * This is cached here so it can be disabled when this is the active menu
      * item.
@@ -422,7 +404,6 @@ public final class CombatMap extends Activity {
         inflater.inflate(R.menu.combat_map_menu, menu);
         backgroundLayerItem = menu.findItem(R.id.edit_background);
         annotationLayerItem = menu.findItem(R.id.edit_annotations);
-        fogOfWarLayerItem = menu.findItem(R.id.edit_fog_of_war);
         combatItem = menu.findItem(R.id.combat_on);
 
         // We defer loading the manipulation mode until now, so that the correct
@@ -443,7 +424,6 @@ public final class CombatMap extends Activity {
         backgroundLayerItem.setEnabled(modeItem != backgroundLayerItem);
         annotationLayerItem.setEnabled(modeItem != annotationLayerItem);
         combatItem.setEnabled(modeItem != combatItem);
-        fogOfWarLayerItem.setEnabled(modeItem != fogOfWarLayerItem);
     }
 
     @Override
@@ -459,9 +439,6 @@ public final class CombatMap extends Activity {
         case R.id.combat_on:
         	setManipulationMode(MODE_TOKENS);
             return true;
-        case R.id.edit_fog_of_war:
-        	setManipulationMode(MODE_FOG_OF_WAR);
-        	return true;
         case R.id.zoom_to_fit:
             mData.zoomToFit(mCombatView.getWidth(), mCombatView.getHeight());
             return true;
@@ -508,17 +485,7 @@ public final class CombatMap extends Activity {
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
-			return;
-		case MODE_FOG_OF_WAR:
-            mCombatView.setDrawMode();
-            mCombatView.useFogLayer();
-            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
-            mBottomControlFrame.removeAllViews();
-            mBottomControlFrame.addView(this.mFogOfWarOptionsView);
-            disableCurrentMode(this.fogOfWarLayerItem);
-            mPopupFrame.setVisibility(View.INVISIBLE);
-            setModePreference(manipulationMode);
-            mDrawOptionsView.setDefault();
+            mDrawOptionsView.setMaskToolVisibility(true);
 			return;
 		case MODE_DRAW_ANNOTATIONS:
             mCombatView.setDrawMode();
@@ -530,6 +497,7 @@ public final class CombatMap extends Activity {
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
+            mDrawOptionsView.setMaskToolVisibility(false);
 			return;
 		case MODE_TOKENS:
             mCombatView.setTokenManipulationMode();

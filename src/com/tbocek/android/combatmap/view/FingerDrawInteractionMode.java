@@ -13,7 +13,7 @@ import android.view.MotionEvent;
  * @author Tim
  *
  */
-public final class FingerDrawInteractionMode extends CombatViewInteractionMode {
+public class FingerDrawInteractionMode extends CombatViewInteractionMode {
 
     /**
      * Distance between successive points on a line in screen space.
@@ -89,9 +89,13 @@ public final class FingerDrawInteractionMode extends CombatViewInteractionMode {
 
     @Override
     public boolean onDown(final MotionEvent e) {
-        currentLine = view.createLine();
+        currentLine = createLine();
         lastPointX = e.getX();
         lastPointY = e.getY();
         return true;
+    }
+
+    protected Line createLine() {
+    	return view.createLine();
     }
 }

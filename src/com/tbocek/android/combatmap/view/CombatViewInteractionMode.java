@@ -121,5 +121,4 @@ public class CombatViewInteractionMode
       public boolean onSingleTapConfirmed(final MotionEvent arg0) {
           return true;
       }
-
 }

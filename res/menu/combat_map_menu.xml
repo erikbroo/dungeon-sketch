@@ -4,13 +4,6 @@
 		android:id="@+id/edit_background"
 		android:title="Background"
 		android:showAsAction="ifRoom|withText"/>
-
-    <item
-        android:id="@+id/edit_fog_of_war"
-        android:title="Fog of War"
-        android:showAsAction="ifRoom|withText">
-     </item>
-
 	<item
 		android:id="@+id/combat_on"
 		android:title="Combat"

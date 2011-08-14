@@ -89,6 +89,12 @@ public final class DrawOptionsView extends DrawOptionsViewBase {
     }
 
     /**
+     * The button used to select the mask control.  Needs to be stored because
+     * it needs to be conditionally hidden.
+     */
+    private View mMaskButton;
+
+    /**
      * Constructs a new DrawOptionsView.
      * @param context The context to construct in.
      */
@@ -98,15 +104,17 @@ public final class DrawOptionsView extends DrawOptionsViewBase {
         addView(layout);
 
         createAndAddPanButton();
-        createAndAddEraserButton();
         createAndAddUndoButton();
         createAndAddRedoButton();
+        createAndAddEraserButton();
 
         addStrokeWidthButton(.05f, R.drawable.pencil);
         addStrokeWidthButton(.1f, R.drawable.pen);
         addStrokeWidthButton(.5f, R.drawable.paintbrush);
         addStrokeWidthButton(2.0f, R.drawable.inktube);
         addStrokeWidthButton(Float.POSITIVE_INFINITY, R.drawable.freehand_shape);
+
+        mMaskButton = createAndAddMaskButton();
 
         //Create a seperator
         ImageView seperator = new ImageView(this.getContext());
@@ -123,6 +131,38 @@ public final class DrawOptionsView extends DrawOptionsViewBase {
 
 
     /**
+     * Creates a button to activate the mask tool and adds it to the layout.
+     * @return The button to activate the mask tool.
+     */
+    private View createAndAddMaskButton() {
+		final ImageToggleButton maskButton =
+				new ImageToggleButton(this.getContext());
+        maskButton.setImageResource(R.drawable.mask);
+        maskButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(final View arg0) {
+				onChangeDrawToolListener.onChooseMaskTool();
+                untoggleGroup(toolsGroup);
+                setGroupVisibility(colorGroup, View.GONE);
+                maskButton.setToggled(true);
+			}
+        });
+        layout.addView(maskButton);
+        toolsGroup.add(maskButton);
+        return maskButton;
+	}
+
+
+    /**
+     * Sets whether the mask tool should be visible.
+     * @param visible True if visible.
+     */
+    public void setMaskToolVisibility(final boolean visible) {
+    	mMaskButton.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+
+	/**
      * Adds a button that selects the given color as the current color.
      * @param color The color that this button will select.
      */

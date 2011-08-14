@@ -163,6 +163,13 @@ public final class CombatView extends SurfaceView {
 	}
 
 	/**
+	 * Sets the interaction mode to drawing fog of war regions.
+	 */
+	public void setFogOfWarDrawMode() {
+		setInteractionMode(new MaskDrawInteractionMode(this));
+	}
+
+	/**
 	 * Sets the interaction mode to erasing lines.
 	 */
 	public void setEraseMode() {
@@ -227,8 +234,7 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * Sets what to do with the fog of war layer.
 	 *
-	 * @param mode
-	 *            The fog of war mode to use.
+	 * @param mode The fog of war mode to use.
 	 */
 	public void setFogOfWarMode(final FogOfWarMode mode) {
 		mFogOfWarMode = mode;
@@ -337,6 +343,14 @@ public final class CombatView extends SurfaceView {
 	public Line createLine() {
 		return mActiveLines.createLine(this.mNewLineColor,
 				this.mNewLineStrokeWidth);
+	}
+
+	/**
+	 * Creates a new region in the fog of war.
+	 * @return The new region.
+	 */
+	public Line createFogOfWarRegion() {
+		return getData().getFogOfWar().createLine(Color.BLACK, 0);
 	}
 
 	/**

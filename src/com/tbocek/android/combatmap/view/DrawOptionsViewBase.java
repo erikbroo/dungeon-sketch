@@ -38,6 +38,11 @@ public class DrawOptionsViewBase extends HorizontalScrollView {
         void onChooseEraser();
 
         /**
+         * Fired when the mask took is selected.
+         */
+        void onChooseMaskTool();
+
+        /**
          * Fired when the delete region tool is selected.
          */
         void onChooseDeleteTool();
@@ -100,6 +105,9 @@ public class DrawOptionsViewBase extends HorizontalScrollView {
 
 		@Override
 		public void onClickRedo() { }
+
+		@Override
+		public void onChooseMaskTool() { }
     }
 
 
