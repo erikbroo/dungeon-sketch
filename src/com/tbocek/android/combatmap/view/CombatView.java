@@ -238,6 +238,7 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void setFogOfWarMode(final FogOfWarMode mode) {
 		mFogOfWarMode = mode;
+		refreshMap();
 	}
 
 	@Override
