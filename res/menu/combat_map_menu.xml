@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item
-		android:id="@+id/edit_background"
-		android:title="Background"
-		android:showAsAction="ifRoom|withText"/>
-	<item
-		android:id="@+id/combat_on"
-		android:title="Combat"
-		android:showAsAction="ifRoom|withText"/>
-	<item
-		android:id="@+id/edit_annotations"
-		android:title="Annotations"
-		android:showAsAction="ifRoom|withText"/>
-	<item
 		android:id="@+id/zoom_to_fit"
 		android:title="Fit"/>
 	<item

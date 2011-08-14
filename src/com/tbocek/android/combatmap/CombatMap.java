@@ -2,8 +2,11 @@ package com.tbocek.android.combatmap;
 
 import java.util.Collection;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -174,6 +177,37 @@ public final class CombatMap extends Activity {
     };
 
     /**
+     * Tab listener that switches to a certain interaction mode when the tab
+     * is selected.
+     * @author Tim
+     *
+     */
+    private class ManipulationModeTabListener implements ActionBar.TabListener {
+
+    	private int mMode;
+
+    	public ManipulationModeTabListener(int mode) {
+    		mMode = mode;
+    	}
+
+		@Override
+		public void onTabReselected(
+				final Tab arg0, final FragmentTransaction arg1) { }
+
+		@Override
+		public void onTabSelected(
+				final Tab arg0, final FragmentTransaction arg1) {
+			if (mData != null) {
+				setManipulationMode(mMode);
+			}
+		}
+
+		@Override
+		public void onTabUnselected(
+				final Tab arg0, final FragmentTransaction arg1) { }
+    }
+
+    /**
      * Listener that fires when a new token category is selected.
      */
     private TagListView.OnTagListActionListener onTagListActionListener =
@@ -269,8 +303,32 @@ public final class CombatMap extends Activity {
 			}
         });
 
+        // Set up the tabs
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        addActionBarTab(actionBar, "Background", MODE_DRAW_BACKGROUND);
+        addActionBarTab(actionBar, "Combat", MODE_TOKENS);
+        addActionBarTab(actionBar, "Annotations", MODE_DRAW_ANNOTATIONS);
+
         mCombatView.requestFocus();
     }
+
+    /**
+     * Adds a new tab to the action bar that launches the given interaction
+     * mode.
+     * @param actionBar Action bar to add to.
+     * @param description Text on the tab.
+     * @param manipulationMode Manipulation mode to launch.
+     */
+    private void addActionBarTab(
+    		final ActionBar actionBar, final String description,
+    		final int manipulationMode) {
+    	ActionBar.Tab tab = actionBar.newTab();
+    	tab.setText(description);
+    	tab.setTabListener(new ManipulationModeTabListener(manipulationMode));
+    	actionBar.addTab(tab);
+    }
+
 
     @Override
     public void onResume() {
@@ -377,34 +435,10 @@ public final class CombatMap extends Activity {
         editor.commit();
     }
 
-    /**
-     * The menu item that will cause the background to be actively drawn.
-     * This is cached here so it can be disabled when this is the active menu
-     * item.
-     */
-    private MenuItem backgroundLayerItem;
-
-    /**
-     * The menu item that will cause the annotations to be actively drawn.
-     * This is cached here so it can be disabled when this is the active menu
-     * item.
-     */
-    private MenuItem annotationLayerItem;
-
-    /**
-     * The menu item that will cause the combat tokens to be manipulated.
-     * This is cached here so it can be disabled when this is the active menu
-     * item.
-     */
-    private MenuItem combatItem;
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.combat_map_menu, menu);
-        backgroundLayerItem = menu.findItem(R.id.edit_background);
-        annotationLayerItem = menu.findItem(R.id.edit_annotations);
-        combatItem = menu.findItem(R.id.combat_on);
 
         // We defer loading the manipulation mode until now, so that the correct
         // item is disabled after the menu is loaded.
@@ -412,33 +446,10 @@ public final class CombatMap extends Activity {
         return true;
     }
 
-    /**
-     * If the selected menu item is a drawing mode, disable it.
-     * @param modeItem The menu item to check.
-     */
-    private void disableCurrentMode(final MenuItem modeItem) {
-    	if (modeItem == null) {
-    		return;
-    	}
-
-        backgroundLayerItem.setEnabled(modeItem != backgroundLayerItem);
-        annotationLayerItem.setEnabled(modeItem != annotationLayerItem);
-        combatItem.setEnabled(modeItem != combatItem);
-    }
-
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-        case R.id.edit_background:
-        	setManipulationMode(MODE_DRAW_BACKGROUND);
-            return true;
-        case R.id.edit_annotations:
-        	setManipulationMode(MODE_DRAW_ANNOTATIONS);
-            return true;
-        case R.id.combat_on:
-        	setManipulationMode(MODE_TOKENS);
-            return true;
         case R.id.zoom_to_fit:
             mData.zoomToFit(mCombatView.getWidth(), mCombatView.getHeight());
             return true;
@@ -455,7 +466,6 @@ public final class CombatMap extends Activity {
         case R.id.resize_grid:
             mCombatView.setResizeGridMode();
             mBottomControlFrame.removeAllViews();
-            disableCurrentMode(item);
             return true;
         case R.id.save:
             showDialog(DIALOG_ID_SAVE);
@@ -481,7 +491,6 @@ public final class CombatMap extends Activity {
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
-            disableCurrentMode(this.backgroundLayerItem);
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
@@ -493,7 +502,6 @@ public final class CombatMap extends Activity {
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
-            disableCurrentMode(this.annotationLayerItem);
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
@@ -504,7 +512,6 @@ public final class CombatMap extends Activity {
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(mTokenSelector);
-            disableCurrentMode(this.combatItem);
             setModePreference(manipulationMode);
 			return;
 		default:
