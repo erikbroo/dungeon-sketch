@@ -103,6 +103,10 @@ public final class Line implements Serializable {
 		}
 		points.add(p);
 		shouldDraw.add(true);
+
+		// Re-create the bounding rectangle every time this is done.
+		boundingRectangle = new BoundingRectangle();
+		boundingRectangle.updateBounds(points);
 		invalidatePath();
 	}
 
@@ -210,11 +214,40 @@ public final class Line implements Serializable {
      */
     public void erase(final PointF center, final float radius) {
         if (boundingRectangle.intersectsWithCircle(center, radius)) {
-            for (int i = 0; i < points.size(); ++i) {
-                if (Util.distance(center, points.get(i)) < radius) {
-                    shouldDraw.set(i, false);
-                }
-            }
+        	if (points.size() == 2) {
+        		// Special case - if we have only two points, this is probably
+        		// a large straight line and we want to erase the line if the
+        		// eraser intersects with it.  However, this is an expensive
+        		// test, so we don't want to do it for all line segments when
+        		// they are generally small enough for the eraser to enclose.
+        		// Formula from:
+        		// http://mathworld.wolfram.com/Circle-LineIntersection.html
+        		PointF p1 = this.points.get(0);
+        		PointF p2 = this.points.get(1);
+
+        		// Transform to standard coordinate system where circle is
+        		// centered at (0, 0)
+        		float x1 = p1.x - center.x;
+        		float y1 = p1.y - center.y;
+        		float x2 = p2.x - center.x;
+        		float y2 = p2.y - center.y;
+
+        		float dsquared = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+        		float det = x1 * y2 - x2 * y1;
+        		float discriminant = radius * radius * dsquared - det * det;
+
+        		// Intersection if the discriminant is non-negative
+        		if (discriminant >= 0) {
+        			shouldDraw.set(0, false);
+        			shouldDraw.set(1, false);
+        		}
+        	} else {
+	            for (int i = 0; i < points.size(); ++i) {
+	                if (Util.distance(center, points.get(i)) < radius) {
+	                    shouldDraw.set(i, false);
+	                }
+	            }
+        	}
         }
         invalidatePath();
     }

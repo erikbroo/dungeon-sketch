@@ -1,6 +1,8 @@
 package com.tbocek.android.combatmap.graphicscore;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents a recangle that bounds a number of drawable Dungeon Sketch
@@ -87,6 +89,16 @@ public final class BoundingRectangle implements Serializable {
         this.boundsYMin = Math.min(this.boundsYMin, p.y);
         this.boundsYMax = Math.max(this.boundsYMax, p.y);
     }
+
+    /**
+     * Updates the bounds for an entire collection of points.
+     * @param points The points to update with.
+     */
+	public void updateBounds(final Collection<PointF> points) {
+		for (PointF p : points) {
+			updateBounds(p);
+		}
+	}
 
     /**
      * Updates the bounds of the rectangle so that the given rectangle is fully
