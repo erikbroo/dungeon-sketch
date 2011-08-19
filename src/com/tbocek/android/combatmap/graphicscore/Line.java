@@ -5,51 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Region.Op;
 
 /**
  * Encapsulates a single vector-drawn line.
  * @author Tim
  *
  */
-public final class Line implements Serializable {
+public final class Line extends Shape implements Serializable {
 
     /**
      * ID for serialization.
      */
     private static final long serialVersionUID = -4935518208097034463L;
-
-    /**
-     * The paint object that will be used to draw this line.
-     */
-    private transient Paint paint;
-
-    /**
-     * Cached path that represents this line.
-     */
-    private transient Path mPath = null;
-
-    /**
-     * The color to draw this line with.
-     */
-    private int mColor = Color.BLACK;
-
-    /**
-     * The stroke width to draw this line with.  +Infinity will use a fill
-     * instead (to ensure that it draws beneath all lines).
-     */
-    private float mWidth = 2;
-
-    /**
-     * Cached rectangle that bounds all the points in this line.
-     * This could be computed on demand, but it is easy enough to update
-     * every time a point is added.
-     */
-    private BoundingRectangle boundingRectangle = new BoundingRectangle();
 
     /**
      * The points that comprise this line.
@@ -65,12 +33,6 @@ public final class Line implements Serializable {
     private List<Boolean> shouldDraw = new ArrayList<Boolean>();
 
     /**
-     * Paint object that is used when drawing fog of war regions for the fog
-     * of war editor.
-     */
-    private static Paint fogOfWarPaint = null;
-
-    /**
      * Constructor.
      * @param color Line color.
      * @param newLineStrokeWidth Line stroke width.
@@ -84,7 +46,8 @@ public final class Line implements Serializable {
      * Adds the given point to the line.
      * @param p The point to add.
      */
-    public void addPoint(final PointF p) {
+    @Override
+	public void addPoint(final PointF p) {
         points.add(p);
         shouldDraw.add(true);
         boundingRectangle.updateBounds(p);
@@ -96,6 +59,7 @@ public final class Line implements Serializable {
      * desired.
      * @param p The point to set.
      */
+	@Override
 	public void setEndPoint(final PointF p) {
 		if (points.size() > 1) {
 			points.remove(points.size() - 1);
@@ -111,100 +75,35 @@ public final class Line implements Serializable {
 	}
 
 	/**
-	 * Invalidates the path so that it is recreated on the next draw operation.
+	 * Creates a new Path object that draws this shape.
+	 * @return The created path;
 	 */
-	private void invalidatePath() {
-		this.mPath = null;
-	}
+	@Override
+	protected Path createPath() {
+		//Do not try to draw a line with too few points.
+		if (points.size() < 2) {
+			return null;
+		}
 
-    /**
-     * Draws the line on the given canvas.
-     * @param c Canvas to draw on.
-     */
-    public void draw(final Canvas c) {
-        ensurePaintCreated();
-        ensurePathCreated();
-        if (mPath != null) {
-        	c.drawPath(mPath, paint);
-        }
-    }
-
-    /**
-     * Draws this path specifically as a fog of war region.
-     * @param c Canvas to draw on.
-     */
-    public void drawFogOfWar(final Canvas c) {
-    	// Ensure the static fog of war pen is created.
-    	if (fogOfWarPaint == null) {
-    		fogOfWarPaint = new Paint();
-    		fogOfWarPaint.setColor(Color.RED);
-    		fogOfWarPaint.setAlpha(128);
-    		fogOfWarPaint.setStyle(Paint.Style.FILL);
-    	}
-
-    	ensurePathCreated();
-        if (mPath != null) {
-        	c.drawPath(mPath, fogOfWarPaint);
-        }
-    }
-
-    /**
-     * Clips out the region defined by this path on the fog of war.
-     * @param c Canvas to draw on.
-     */
-    public void clipFogOfWar(final Canvas c) {
-    	ensurePathCreated();
-    	if (mPath != null) {
-    		c.clipPath(mPath, Op.DIFFERENCE);
-    	}
-    }
-
-	/**
-	 * Creates the path if it is currently invalid.
-	 */
-	private void ensurePathCreated() {
-		if (mPath == null) {
-	        //Do not try to draw a line with too few points.
-	        if (points.size() < 2) {
-	        	return;
-	        }
-
-	        mPath = new Path();
-	        boolean penDown = false;
-	        for (int i = 0; i < points.size(); ++i) {
-	            if (shouldDraw.get(i).booleanValue()) {
-	            	PointF p1 = points.get(i);
-	            	if (penDown) {
-	            		mPath.lineTo(p1.x, p1.y);
-	            	} else {
-	            		mPath.moveTo(p1.x, p1.y);
-	            	}
-	            	penDown = true;
-	            } else {
-	            	penDown = false;
-	            }
-	        }
-        }
+		Path path = new Path();
+		boolean penDown = false;
+		for (int i = 0; i < points.size(); ++i) {
+		    if (shouldDraw.get(i).booleanValue()) {
+		    	PointF p1 = points.get(i);
+		    	if (penDown) {
+		    		path.lineTo(p1.x, p1.y);
+		    	} else {
+		    		path.moveTo(p1.x, p1.y);
+		    	}
+		    	penDown = true;
+		    } else {
+		    	penDown = false;
+		    }
+		}
+		return path;
 	}
 
 	/**
-	 * If there is no Paint object cached for this line, create one and set
-	 * the appropriate color and stroke width.
-	 */
-	private void ensurePaintCreated() {
-		if (paint == null) {
-	        paint = new Paint();
-	        paint.setColor(mColor);
-	        if (mWidth == Float.POSITIVE_INFINITY) {
-	        	paint.setStyle(Paint.Style.FILL);
-	        } else {
-		        paint.setStrokeWidth(mWidth);
-		        paint.setStyle(Paint.Style.STROKE);
-	        }
-        }
-	}
-
-    /**
      * Erases all points in the line that fall in the circle specified by
      * the given center and radius.  This does not delete the points, just
      * marks them as erased.  removeErasedPoints() needs to be called afterward
@@ -212,7 +111,8 @@ public final class Line implements Serializable {
      * @param center Center of the circle to erase.
      * @param radius Radius of the circle to erase.
      */
-    public void erase(final PointF center, final float radius) {
+    @Override
+	public void erase(final PointF center, final float radius) {
         if (boundingRectangle.intersectsWithCircle(center, radius)) {
         	if (points.size() == 2) {
         		// Special case - if we have only two points, this is probably
@@ -236,7 +136,8 @@ public final class Line implements Serializable {
         		float det = x1 * y2 - x2 * y1;
         		float discriminant = radius * radius * dsquared - det * det;
 
-        		// Intersection if the discriminant is non-negative
+        		// Intersection if the discriminant is non-negative.  In this
+        		// case we delete the entire line.
         		if (discriminant >= 0) {
         			shouldDraw.set(0, false);
         			shouldDraw.set(1, false);
@@ -259,7 +160,8 @@ public final class Line implements Serializable {
      * set to draw all points again.
      * @return A list of lines that results from removing erased points.
      */
-    public List<Line> removeErasedPoints() {
+    @Override
+	public List<Line> removeErasedPoints() {
         List<Line> optimizedLines = new ArrayList<Line>();
         Line l = new Line(mColor, mWidth);
         optimizedLines.add(l);
@@ -287,7 +189,8 @@ public final class Line implements Serializable {
      * @return True if an optimization pass is needed on this line (i.e. if it
      * was just erased).
      */
-    public boolean needsOptimization() {
+    @Override
+	public boolean needsOptimization() {
     	for (boolean b : shouldDraw) {
     		if (!b) {
     			return true;
@@ -297,27 +200,13 @@ public final class Line implements Serializable {
     }
 
     /**
-     * Gets the smallest rectangle needed to fully enclose the line.
-     * @return The bounding rectangle.
-     */
-    public BoundingRectangle getBoundingRectangle() {
-        return boundingRectangle;
-    }
-
-    /**
-     * @return This line's stroke width.
-     */
-    public float getStrokeWidth() {
-        return this.mWidth;
-    }
-
-    /**
      * Checks whether this point falls in the polygon created by closing this
      * path.
      * @param p The point to test
      * @return True if the polygon contains the point.
      */
-    public boolean contains(PointF p) {
+    @Override
+	public boolean contains(PointF p) {
     	// First, check whether the bounding rectangle contains the point so
     	// we can efficiently and quickly get rid of easy cases.
     	if (!this.boundingRectangle.contains(p)) {

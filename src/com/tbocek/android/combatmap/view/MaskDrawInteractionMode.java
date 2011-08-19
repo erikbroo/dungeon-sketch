@@ -6,8 +6,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.tbocek.android.combatmap.R;
-import com.tbocek.android.combatmap.graphicscore.Line;
 import com.tbocek.android.combatmap.graphicscore.PointF;
+import com.tbocek.android.combatmap.graphicscore.Shape;
 
 /**
  * Defines an interaction mode where the user draws on the mask layer.
@@ -26,7 +26,7 @@ public final class MaskDrawInteractionMode extends FingerDrawInteractionMode {
 	}
 
 	@Override
-    protected Line createLine() {
+    protected Shape createLine() {
     	return view.createFogOfWarRegion();
     }
 

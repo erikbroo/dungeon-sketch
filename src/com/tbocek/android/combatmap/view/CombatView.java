@@ -17,10 +17,10 @@ import android.view.View;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
-import com.tbocek.android.combatmap.graphicscore.Line;
 import com.tbocek.android.combatmap.graphicscore.LineCollection;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.graphicscore.PointF;
+import com.tbocek.android.combatmap.graphicscore.Shape;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
 
 /**
@@ -347,7 +347,7 @@ public final class CombatView extends SurfaceView {
 	 *
 	 * @return The new line.
 	 */
-	public Line createLine() {
+	public Shape createLine() {
 		return mActiveLines.createLine(this.mNewLineColor,
 				this.mNewLineStrokeWidth);
 	}
@@ -356,7 +356,7 @@ public final class CombatView extends SurfaceView {
 	 * Creates a new region in the fog of war.
 	 * @return The new region.
 	 */
-	public Line createFogOfWarRegion() {
+	public Shape createFogOfWarRegion() {
 		return getData().getFogOfWar().createLine(Color.BLACK, 0);
 	}
 

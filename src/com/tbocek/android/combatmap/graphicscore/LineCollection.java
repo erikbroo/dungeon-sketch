@@ -82,7 +82,7 @@ public final class LineCollection implements Serializable {
      * @param newLineStrokeWidth The new line's stroke width.
      * @return The new line.
      */
-    public Line createLine(
+    public Shape createLine(
             final int newLineColor, final float newLineStrokeWidth) {
         Line l = new Line(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
@@ -118,7 +118,7 @@ public final class LineCollection implements Serializable {
      * @return Whether the point is in one of the line regions.
      */
 	public boolean isPointInRegion(final PointF tappedPoint) {
-		for (Line l : lines) {
+		for (Shape l : lines) {
     		if (l.contains(tappedPoint)) {
     			return true;
     		}
@@ -188,7 +188,7 @@ public final class LineCollection implements Serializable {
      */
     public BoundingRectangle getBoundingRectangle() {
         BoundingRectangle r = new BoundingRectangle();
-        for (Line l : lines) {
+        for (Shape l : lines) {
             r.updateBounds(l.getBoundingRectangle());
         }
         return r;
@@ -250,7 +250,7 @@ public final class LineCollection implements Serializable {
     	public void undo() {
     		List<Line> newLines = new LinkedList<Line>();
     		for (Line l : mLineCollection.lines) {
-    			Line DEBUG_LINE = l;
+    			Shape DEBUG_LINE = l;
     			if (!mCreated.contains(l)) {
     				newLines.add(l);
     			}

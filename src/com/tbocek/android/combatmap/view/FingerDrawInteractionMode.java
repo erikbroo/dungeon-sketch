@@ -1,7 +1,7 @@
 package com.tbocek.android.combatmap.view;
 
-import com.tbocek.android.combatmap.graphicscore.Line;
 import com.tbocek.android.combatmap.graphicscore.PointF;
+import com.tbocek.android.combatmap.graphicscore.Shape;
 import com.tbocek.android.combatmap.graphicscore.Util;
 
 import android.view.MotionEvent;
@@ -34,7 +34,7 @@ public class FingerDrawInteractionMode extends CombatViewInteractionMode {
      * The line that the user is actively drawing.  New points will be added to
      * this line.
      */
-    private Line currentLine;
+    private Shape currentLine;
 
 
     /**
@@ -102,7 +102,7 @@ public class FingerDrawInteractionMode extends CombatViewInteractionMode {
         return true;
     }
 
-    protected Line createLine() {
+    protected Shape createLine() {
     	return view.createLine();
     }
 }
