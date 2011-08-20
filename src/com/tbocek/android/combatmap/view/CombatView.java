@@ -348,7 +348,7 @@ public final class CombatView extends SurfaceView {
 	 * @return The new line.
 	 */
 	public Shape createLine() {
-		return mActiveLines.createLine(this.mNewLineColor,
+		return mActiveLines.createFreehandLine(this.mNewLineColor,
 				this.mNewLineStrokeWidth);
 	}
 
@@ -357,7 +357,7 @@ public final class CombatView extends SurfaceView {
 	 * @return The new region.
 	 */
 	public Shape createFogOfWarRegion() {
-		return getData().getFogOfWar().createLine(Color.BLACK, 0);
+		return getData().getFogOfWar().createFreehandLine(Color.BLACK, 0);
 	}
 
 	/**

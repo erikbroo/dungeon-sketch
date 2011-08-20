@@ -25,7 +25,7 @@ public abstract class Shape implements Serializable {
 
 	public abstract boolean needsOptimization();
 
-	public abstract List<Line> removeErasedPoints();
+	public abstract List<Shape> removeErasedPoints();
 
 	public abstract void erase(final PointF center, final float radius);
 

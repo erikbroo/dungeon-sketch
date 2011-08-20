@@ -29,7 +29,7 @@ public final class LineCollection implements Serializable {
     /**
      * The internal list of lines.
      */
-    private List<Line> lines = new LinkedList<Line>();
+    private List<Shape> lines = new LinkedList<Shape>();
 
     /**
      * Undo/Redo History.
@@ -82,11 +82,11 @@ public final class LineCollection implements Serializable {
      * @param newLineStrokeWidth The new line's stroke width.
      * @return The new line.
      */
-    public Shape createLine(
+    public Shape createFreehandLine(
             final int newLineColor, final float newLineStrokeWidth) {
-        Line l = new Line(newLineColor, newLineStrokeWidth);
+        FreehandLine l = new FreehandLine(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
-        c.addCreatedLine(l);
+        c.addCreatedShape(l);
         mCommandHistory.execute(c);
         return l;
     }
@@ -96,13 +96,13 @@ public final class LineCollection implements Serializable {
      * sorted by line width.
      * @param line The line to add.
      */
-    private void insertLine(final Line line) {
+    private void insertLine(final Shape line) {
         if (lines.isEmpty()) {
             lines.add(line);
             return;
         }
 
-        ListIterator<Line> it = lines.listIterator();
+        ListIterator<Shape> it = lines.listIterator();
         while (it.hasNext()
                 && lines.get(it.nextIndex()).getStrokeWidth()
                     >= line.getStrokeWidth()) {
@@ -132,9 +132,9 @@ public final class LineCollection implements Serializable {
      */
     public void deleteRegionsUnderPoint(final PointF tappedPoint) {
     	Command c = new Command(this);
-    	for (Line l : lines) {
+    	for (Shape l : lines) {
     		if (l.contains(tappedPoint)) {
-    			c.addDeletedLine(l);
+    			c.addDeletedShape(l);
     		}
     	}
     	mCommandHistory.execute(c);
@@ -168,9 +168,9 @@ public final class LineCollection implements Serializable {
     	Command c = new Command(this);
         for (int i = 0; i < lines.size(); ++i) {
         	if (lines.get(i).needsOptimization()) {
-	            List<Line> optimizedLines = lines.get(i).removeErasedPoints();
-	            c.addDeletedLine(lines.get(i));
-	            c.addCreatedLines(optimizedLines);
+	            List<Shape> optimizedLines = lines.get(i).removeErasedPoints();
+	            c.addDeletedShape(lines.get(i));
+	            c.addCreatedShapes(optimizedLines);
         	}
         }
         mCommandHistory.execute(c);
@@ -194,10 +194,6 @@ public final class LineCollection implements Serializable {
         return r;
     }
 
-
-
-
-
     /**
      * This class represents a command that adds and deletes lines.
      * @author Tim Bocek
@@ -207,12 +203,12 @@ public final class LineCollection implements Serializable {
     	/**
     	 * Lines created in this operation.
     	 */
-    	private Collection<Line> mCreated = new ArrayList<Line>();
+    	private Collection<Shape> mCreated = new ArrayList<Shape>();
 
     	/**
     	 * Lines deleted in this operation.
     	 */
-    	private Collection<Line> mDeleted = new ArrayList<Line>();
+    	private Collection<Shape> mDeleted = new ArrayList<Shape>();
 
     	/**
     	 * Collection of lines to modify.
@@ -231,15 +227,15 @@ public final class LineCollection implements Serializable {
     	 * Executes the command on the LineCollection that this command mutates.
     	 */
     	public void execute() {
-    		List<Line> newLines = new LinkedList<Line>();
-    		for (Line l : mLineCollection.lines) {
+    		List<Shape> newLines = new LinkedList<Shape>();
+    		for (Shape l : mLineCollection.lines) {
     			if (!mDeleted.contains(l)) {
     				newLines.add(l);
     			}
     		}
     		mLineCollection.lines = newLines;
 
-    		for (Line l : mCreated) {
+    		for (Shape l : mCreated) {
     			mLineCollection.insertLine(l);
     		}
     	}
@@ -248,8 +244,8 @@ public final class LineCollection implements Serializable {
     	 * Undoes the command on the LineCollection that this command mutates.
     	 */
     	public void undo() {
-    		List<Line> newLines = new LinkedList<Line>();
-    		for (Line l : mLineCollection.lines) {
+    		List<Shape> newLines = new LinkedList<Shape>();
+    		for (Shape l : mLineCollection.lines) {
     			Shape DEBUG_LINE = l;
     			if (!mCreated.contains(l)) {
     				newLines.add(l);
@@ -257,7 +253,7 @@ public final class LineCollection implements Serializable {
     		}
     		mLineCollection.lines = newLines;
 
-    		for (Line l : mDeleted) {
+    		for (Shape l : mDeleted) {
     			mLineCollection.insertLine(l);
     		}
     	}
@@ -266,7 +262,7 @@ public final class LineCollection implements Serializable {
     	 * Adds a line to the list of lines created by this command.
     	 * @param l The line to add.
     	 */
-    	public void addCreatedLine(final Line l) {
+    	public void addCreatedShape(final Shape l) {
     		mCreated.add(l);
     	}
 
@@ -274,7 +270,7 @@ public final class LineCollection implements Serializable {
     	 * Adds several lines to the list of lines created by this command.
     	 * @param lc The lines to add.
     	 */
-    	public void addCreatedLines(final Collection<Line> lc) {
+    	public void addCreatedShapes(final Collection<Shape> lc) {
     		mCreated.addAll(lc);
     	}
 
@@ -282,7 +278,7 @@ public final class LineCollection implements Serializable {
     	 * Adds a line to the list of lines removed by this command.
     	 * @param l The line to remove.
     	 */
-    	public void addDeletedLine(final Line l) {
+    	public void addDeletedShape(final Shape l) {
     		mDeleted.add(l);
     	}
 

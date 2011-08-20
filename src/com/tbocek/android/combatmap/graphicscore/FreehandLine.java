@@ -12,7 +12,7 @@ import android.graphics.Path;
  * @author Tim
  *
  */
-public final class Line extends Shape implements Serializable {
+public final class FreehandLine extends Shape implements Serializable {
 
     /**
      * ID for serialization.
@@ -37,7 +37,7 @@ public final class Line extends Shape implements Serializable {
      * @param color Line color.
      * @param newLineStrokeWidth Line stroke width.
      */
-    public Line(final int color, final float newLineStrokeWidth) {
+    public FreehandLine(final int color, final float newLineStrokeWidth) {
         this.mColor = color;
         this.mWidth = newLineStrokeWidth;
     }
@@ -161,9 +161,9 @@ public final class Line extends Shape implements Serializable {
      * @return A list of lines that results from removing erased points.
      */
     @Override
-	public List<Line> removeErasedPoints() {
-        List<Line> optimizedLines = new ArrayList<Line>();
-        Line l = new Line(mColor, mWidth);
+	public List<Shape> removeErasedPoints() {
+        List<Shape> optimizedLines = new ArrayList<Shape>();
+        FreehandLine l = new FreehandLine(mColor, mWidth);
         optimizedLines.add(l);
         for (int i = 0; i < points.size(); ++i) {
             if (this.shouldDraw.get(i).booleanValue()) {
@@ -173,7 +173,7 @@ public final class Line extends Shape implements Serializable {
                 if (l.points.size() == 1) {
                     optimizedLines.remove(l);
                 }
-                l = new Line(mColor, mWidth);
+                l = new FreehandLine(mColor, mWidth);
                 optimizedLines.add(l);
             }
             this.shouldDraw.set(i, true);
