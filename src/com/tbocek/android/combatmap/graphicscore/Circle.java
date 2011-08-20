@@ -31,18 +31,19 @@ public class Circle extends Shape implements Serializable {
 
 	@Override
 	public boolean contains(PointF p) {
+		if (center == null) return false;
 		return Util.distance(p, center) < radius;
 	}
 
 	@Override
 	public boolean needsOptimization() {
-		return erased;
+		return erased || center == null;
 	}
 
 	@Override
 	public List<Shape> removeErasedPoints() {
 		List<Shape> shapes = new ArrayList<Shape>();
-		if (!erased) {
+		if (!erased && center != null) {
 			shapes.add(this);
 		}
 		erased = false;
