@@ -499,6 +499,12 @@ public final class DrawOptionsView extends HorizontalScrollView {
                 setGroupVisibility(colorGroup, View.VISIBLE);
                 setGroupVisibility(lineWidthGroup, View.VISIBLE);
                 button.setToggled(true);
+
+                // HACK: If we were in mask mode, make sure we are still in mask
+                // mode.
+                if (mMaskButton.isToggled()) {
+                	mMaskButton.performClick();
+                }
             }
         });
         layout.addView(button);
@@ -519,6 +525,12 @@ public final class DrawOptionsView extends HorizontalScrollView {
                 setGroupVisibility(colorGroup, View.VISIBLE);
                 setGroupVisibility(lineWidthGroup, View.VISIBLE);
                 button.setToggled(true);
+
+                // HACK: If we were in mask mode, make sure we are still in mask
+                // mode.
+                if (mMaskButton.isToggled()) {
+                	mMaskButton.performClick();
+                }
             }
         });
         layout.addView(button);
