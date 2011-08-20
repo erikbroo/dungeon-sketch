@@ -14,7 +14,7 @@ import android.view.MotionEvent;
  * @author Tim Bocek
  *
  */
-public final class EraserInteractionMode extends CombatViewInteractionMode {
+public final class EraserInteractionMode extends BaseDrawInteractionMode {
 	/**
 	 * Radius in screen space to erase out from the center of a touch event.
 	 */

@@ -10,7 +10,7 @@ import android.view.MotionEvent;
  *
  * @author Tim Bocek
  */
-public class ZoomPanInteractionMode extends CombatViewInteractionMode {
+public class ZoomPanInteractionMode extends BaseDrawInteractionMode {
     /**
      * Constructor.
      * @param view The CombatView that this interaction mode interacts with.
