@@ -319,6 +319,21 @@ public final class CombatMap extends Activity {
 			}
         });
 
+        // Attempt to load map data.  If we can't load map data, create a new
+        // map.
+        // TODO: Make sure this only happens once on startup, and de-dupe
+        SharedPreferences sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                    this.getApplicationContext());
+        String filename = sharedPreferences.getString("filename", null);
+        if (filename == null) {
+            MapData.clear();
+            mData = MapData.getInstance();
+            mCombatView.setData(mData);
+        } else {
+            loadMap(filename);
+        }
+
         // Set up the tabs
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -326,6 +341,7 @@ public final class CombatMap extends Activity {
         addActionBarTab(actionBar, "Combat", MODE_TOKENS);
         addActionBarTab(actionBar, "Annotations", MODE_DRAW_ANNOTATIONS);
 
+        mCombatView.refreshMap();
         mCombatView.requestFocus();
     }
 
