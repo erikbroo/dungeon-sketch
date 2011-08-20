@@ -40,6 +40,7 @@ public class Circle extends Shape {
 		if (!erased) {
 			shapes.add(this);
 		}
+		erased = false;
 		return shapes;
 	}
 

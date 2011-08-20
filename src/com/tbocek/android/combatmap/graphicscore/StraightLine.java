@@ -39,6 +39,7 @@ public class StraightLine extends Shape implements Serializable {
 		if (!erased) {
 			shapes.add(this);
 		}
+		erased = false;
 		return shapes;
 	}
 
