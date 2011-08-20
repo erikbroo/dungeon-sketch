@@ -1,11 +1,17 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Path;
 
-public class StraightLine extends Shape {
+public class StraightLine extends Shape implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7125928496175113220L;
 
 	private boolean erased = false;
 	private PointF start = null;
