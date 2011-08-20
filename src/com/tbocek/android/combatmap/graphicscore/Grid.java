@@ -44,7 +44,7 @@ public abstract class Grid implements Serializable {
     /**
      * Given a point, returns a the point nearest to that point that will draw
      * a circle of the given diameter snapped to the grid.
-     * @param currentLocation The candidate point.
+     * @param currentLocation The candidate point in grid space.
      * @param tokenDiameter Diameter of the token that will be drawn.
      * @return A point that is snapped to the grid.
      */

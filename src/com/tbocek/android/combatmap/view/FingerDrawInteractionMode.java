@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.view;
 
+import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
 import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.Shape;
 import com.tbocek.android.combatmap.graphicscore.Util;
@@ -65,14 +66,30 @@ public class FingerDrawInteractionMode extends CombatViewInteractionMode {
      * @param e The motion event containing the point to add.
      */
     private void addLinePoint(final MotionEvent e) {
-        // Need to transform to world space.
+        PointF p = getScreenSpacePoint(e);
+    	// Need to transform to world space.
 	    currentLine.addPoint(
-	            view.getTransformer().screenSpaceToWorldSpace(
-	                    new PointF(e.getX(), e.getY())));
+	            view.getTransformer().screenSpaceToWorldSpace(p));
 
         view.refreshMap(); // Redraw the screen
-        lastPointX = e.getX();
-        lastPointY = e.getY();
+        lastPointX = p.x;
+        lastPointY = p.y;
+    }
+
+    /**
+     * Gets the draw location in screen space.  Snaps to the grid if necessary.
+     * @param e The motion event to get the point from.
+     * @return The point in screen space.
+     */
+    private PointF getScreenSpacePoint(final MotionEvent e) {
+    	PointF p = new PointF(e.getX(), e.getY());
+    	if (view.shouldSnapToGrid()) {
+    		CoordinateTransformer transformer = view.getGridSpaceTransformer();
+    		p = transformer.worldSpaceToScreenSpace(
+    				view.getData().getGrid().getNearestSnapPoint(
+    						transformer.screenSpaceToWorldSpace(p), 0));
+    	}
+    	return p;
     }
 
     /**
@@ -91,8 +108,9 @@ public class FingerDrawInteractionMode extends CombatViewInteractionMode {
     @Override
     public boolean onDown(final MotionEvent e) {
         currentLine = createLine();
-        lastPointX = e.getX();
-        lastPointY = e.getY();
+        PointF p = getScreenSpacePoint(e);
+        lastPointX = p.x;
+        lastPointY = p.y;
         return true;
     }
 
