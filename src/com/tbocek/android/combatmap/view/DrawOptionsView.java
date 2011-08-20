@@ -91,7 +91,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
      * The button used to select the mask control.  Needs to be stored because
      * it needs to be conditionally hidden.
      */
-    private View mMaskButton;
+    private ImageToggleButton mMaskButton;
 
     /**
      * Constructs a new DrawOptionsView.
@@ -120,7 +120,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
         addStrokeWidthButton(.1f, R.drawable.pen);
         addStrokeWidthButton(.5f, R.drawable.paintbrush);
         addStrokeWidthButton(2.0f, R.drawable.inktube);
-        addStrokeWidthButton(Float.POSITIVE_INFINITY, R.drawable.freehand_shape);
+        createAndAddFillButton();
         mMaskButton = createAndAddMaskButton();
 
         createAndAddSeperator();
@@ -129,6 +129,19 @@ public final class DrawOptionsView extends HorizontalScrollView {
             addColorButton(color);
         }
     }
+
+
+	/**
+	 *
+	 */
+	protected void createAndAddFillButton() {
+        ImageToggleButton b = new ImageToggleButton(this.getContext());
+        b.setImageResource(R.drawable.freehand_shape);
+        b.setOnClickListener(new StrokeWidthListener(Float.POSITIVE_INFINITY));
+        layout.addView(b);
+        lineWidthGroup.add(b);
+        lineWidthRegionGroup.add(b);
+	}
 
 
 	/**
@@ -148,7 +161,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
      * Creates a button to activate the mask tool and adds it to the layout.
      * @return The button to activate the mask tool.
      */
-    private View createAndAddMaskButton() {
+    private ImageToggleButton createAndAddMaskButton() {
 		final ImageToggleButton maskButton =
 				new ImageToggleButton(this.getContext());
         maskButton.setImageResource(R.drawable.mask);
@@ -161,7 +174,6 @@ public final class DrawOptionsView extends HorizontalScrollView {
 			}
         });
         layout.addView(maskButton);
-        lineWidthGroup.add(maskButton);
         return maskButton;
 	}
 
@@ -172,6 +184,13 @@ public final class DrawOptionsView extends HorizontalScrollView {
      */
     public void setMaskToolVisibility(final boolean visible) {
     	mMaskButton.setVisibility(visible ? View.VISIBLE : View.GONE);
+    	if (visible) {
+            lineWidthGroup.add(mMaskButton);
+            lineWidthRegionGroup.add(mMaskButton);
+    	} else {
+            lineWidthGroup.remove(mMaskButton);
+            lineWidthRegionGroup.remove(mMaskButton);
+    	}
     }
 
 
@@ -346,6 +365,13 @@ public final class DrawOptionsView extends HorizontalScrollView {
     	new ArrayList<ImageToggleButton>();
 
     /**
+     * Line widths that do not make sense when using tools that don't support
+     * drawing a region (like straight lines).
+     */
+    protected List<ImageToggleButton> lineWidthRegionGroup =
+    	new ArrayList<ImageToggleButton>();
+
+    /**
      * Untoggles an entire list of ImageToggleButtons, so we can make sure that
      * only one button in the list is toggled at once.
      * @param group The list of ImageToggleButtons to modify.
@@ -452,6 +478,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
                 untoggleGroup(toolsGroup);
                 setGroupVisibility(colorGroup, View.VISIBLE);
                 setGroupVisibility(lineWidthGroup, View.VISIBLE);
+                setGroupVisibility(lineWidthRegionGroup, View.GONE);
                 button.setToggled(true);
             }
         });
