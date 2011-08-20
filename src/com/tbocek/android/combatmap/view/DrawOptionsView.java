@@ -84,6 +84,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
             onChangeDrawToolListener.onChooseStrokeWidth(mWidth);
             untoggleGroup(lineWidthGroup);
             ((ImageToggleButton) v).setToggled(true);
+            setGroupVisibility(colorGroup, View.VISIBLE);
         }
     }
 
@@ -171,6 +172,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
 				onChangeDrawToolListener.onChooseMaskTool();
                 untoggleGroup(lineWidthGroup);
                 maskButton.setToggled(true);
+                setGroupVisibility(colorGroup, View.GONE);
 			}
         });
         layout.addView(maskButton);
