@@ -107,7 +107,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
         createAndAddStraightLineButton();
         createAndAddFreehandLineButton();
         createAndAddCircleButton();
-        mMaskButton = createAndAddMaskButton();
+
 
         createAndAddSeperator();
 
@@ -121,6 +121,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
         addStrokeWidthButton(.5f, R.drawable.paintbrush);
         addStrokeWidthButton(2.0f, R.drawable.inktube);
         addStrokeWidthButton(Float.POSITIVE_INFINITY, R.drawable.freehand_shape);
+        mMaskButton = createAndAddMaskButton();
 
         createAndAddSeperator();
 
@@ -155,14 +156,12 @@ public final class DrawOptionsView extends HorizontalScrollView {
 			@Override
 			public void onClick(final View arg0) {
 				onChangeDrawToolListener.onChooseMaskTool();
-                untoggleGroup(toolsGroup);
-                setGroupVisibility(colorGroup, View.GONE);
-                setGroupVisibility(lineWidthGroup, View.GONE);
+                untoggleGroup(lineWidthGroup);
                 maskButton.setToggled(true);
 			}
         });
         layout.addView(maskButton);
-        toolsGroup.add(maskButton);
+        lineWidthGroup.add(maskButton);
         return maskButton;
 	}
 

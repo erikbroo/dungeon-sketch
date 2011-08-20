@@ -370,20 +370,23 @@ public final class CombatView extends SurfaceView {
 	 * @return The new line.
 	 */
 	public Shape createLine() {
+		return createLine(mActiveLines);
+	}
+
+	protected Shape createLine(LineCollection lines) {
 		switch(this.mNewLineStyle) {
 		case FREEHAND:
-			return mActiveLines.createFreehandLine(this.mNewLineColor,
+			return lines.createFreehandLine(this.mNewLineColor,
 					this.mNewLineStrokeWidth);
 		case STRAIGHT:
-			return mActiveLines.createStraightLine(this.mNewLineColor,
+			return lines.createStraightLine(this.mNewLineColor,
 					this.mNewLineStrokeWidth);
 		case CIRCLE:
-			return mActiveLines.createCircle(this.mNewLineColor,
+			return lines.createCircle(this.mNewLineColor,
 					this.mNewLineStrokeWidth);
 		default:
 			throw new IllegalArgumentException("Invalid new line type.");
 		}
-
 	}
 
 	/**
@@ -391,7 +394,7 @@ public final class CombatView extends SurfaceView {
 	 * @return The new region.
 	 */
 	public Shape createFogOfWarRegion() {
-		return getData().getFogOfWar().createFreehandLine(Color.BLACK, 0);
+		return createLine(getData().getFogOfWar());
 	}
 
 	/**
