@@ -1,11 +1,17 @@
 package com.tbocek.android.combatmap.graphicscore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Path;
 
-public class Circle extends Shape {
+public class Circle extends Shape implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 3662381313335509811L;
 
 	// In world space.
 	PointF center = null;
@@ -25,8 +31,7 @@ public class Circle extends Shape {
 
 	@Override
 	public boolean contains(PointF p) {
-		// TODO Auto-generated method stub
-		return false;
+		return Util.distance(p, center) < radius;
 	}
 
 	@Override
