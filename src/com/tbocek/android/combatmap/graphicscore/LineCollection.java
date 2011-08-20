@@ -107,6 +107,21 @@ public final class LineCollection implements Serializable {
 	}
 
     /**
+     * Factory method that creates a circle, adds it to the list of
+     * lines, and returns the newly created line.
+     * @param newLineColor The new line's color.
+     * @param newLineStrokeWidth The new line's stroke width.
+     * @return The new line.
+     */
+	public Shape createCircle(int newLineColor, float newLineStrokeWidth) {
+        Circle l = new Circle(newLineColor, newLineStrokeWidth);
+        Command c = new Command(this);
+        c.addCreatedShape(l);
+        mCommandHistory.execute(c);
+        return l;
+	}
+
+    /**
      * Inserts a new line into the list of lines, making sure that the lines are
      * sorted by line width.
      * @param line The line to add.

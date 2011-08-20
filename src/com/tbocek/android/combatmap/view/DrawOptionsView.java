@@ -106,6 +106,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
         createAndAddEraserButton();
         createAndAddStraightLineButton();
         createAndAddFreehandLineButton();
+        createAndAddCircleButton();
         mMaskButton = createAndAddMaskButton();
 
         createAndAddSeperator();
@@ -259,6 +260,8 @@ public final class DrawOptionsView extends HorizontalScrollView {
 		void onChooseFreeHandTool();
 
 		void onChooseStraightLineTool();
+
+		void onChooseCircleTool();
     }
 
     /**
@@ -299,6 +302,9 @@ public final class DrawOptionsView extends HorizontalScrollView {
 
 		@Override
 		public void onChooseStraightLineTool() { }
+
+		@Override
+		public void onChooseCircleTool() { }
     }
 
 
@@ -473,6 +479,27 @@ public final class DrawOptionsView extends HorizontalScrollView {
         toolsGroup.add(button);
         defaultView = button;
 	}
+
+
+	protected void createAndAddCircleButton() {
+		final ImageToggleButton button =
+			new ImageToggleButton(this.getContext());
+        button.setImageResource(R.drawable.circle);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                onChangeDrawToolListener.onChooseCircleTool();
+                untoggleGroup(toolsGroup);
+                setGroupVisibility(colorGroup, View.VISIBLE);
+                setGroupVisibility(lineWidthGroup, View.VISIBLE);
+                button.setToggled(true);
+            }
+        });
+        layout.addView(button);
+        toolsGroup.add(button);
+        defaultView = button;
+	}
+
 
     /**
      * Sets the visibility of a group of buttons.

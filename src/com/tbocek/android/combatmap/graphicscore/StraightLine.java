@@ -44,7 +44,8 @@ public class StraightLine extends Shape implements Serializable {
 
 	@Override
 	public void erase(PointF center, float radius) {
-		if (start == null || end == null) {
+		if (start == null || end == null
+				|| !boundingRectangle.intersectsWithCircle(center, radius)) {
 			return;
 		}
 		// Special case - if we have only two points, this is probably

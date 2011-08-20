@@ -183,6 +183,12 @@ public final class CombatMap extends Activity {
             mCombatView.setDrawMode();
 			mCombatView.setNewLineStyle(CombatView.NewLineStyle.STRAIGHT);
 		}
+
+		@Override
+		public void onChooseCircleTool() {
+			mCombatView.setDrawMode();
+			mCombatView.setNewLineStyle(CombatView.NewLineStyle.CIRCLE);
+		}
     };
 
     /**

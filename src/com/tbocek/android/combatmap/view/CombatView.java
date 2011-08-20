@@ -124,7 +124,12 @@ public final class CombatView extends SurfaceView {
 		/**
 		 * Draw straight lines.
 		 */
-		STRAIGHT
+		STRAIGHT,
+
+		/**
+		 * Draw a circle.
+		 */
+		CIRCLE
 	}
 
 	/**
@@ -371,6 +376,9 @@ public final class CombatView extends SurfaceView {
 					this.mNewLineStrokeWidth);
 		case STRAIGHT:
 			return mActiveLines.createStraightLine(this.mNewLineColor,
+					this.mNewLineStrokeWidth);
+		case CIRCLE:
+			return mActiveLines.createCircle(this.mNewLineColor,
 					this.mNewLineStrokeWidth);
 		default:
 			throw new IllegalArgumentException("Invalid new line type.");
