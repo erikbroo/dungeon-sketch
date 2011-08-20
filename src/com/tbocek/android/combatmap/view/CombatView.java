@@ -83,12 +83,6 @@ public final class CombatView extends SurfaceView {
 	private Bitmap buffer;
 
 	/**
-	 * If true, heuristics will be used while drawing to try to make sure lines
-	 * remain straight.
-	 */
-	private boolean mShouldDrawStraightLines = false;
-
-	/**
 	 * Options for what to do with the fog of war.
 	 *
 	 * @author Tim
@@ -115,6 +109,29 @@ public final class CombatView extends SurfaceView {
 	 * What to do with the fog of war when drawing.
 	 */
 	private FogOfWarMode mFogOfWarMode;
+
+	/**
+	 * The style that new lines should have.
+	 * @author Tim
+	 *
+	 */
+	public enum NewLineStyle {
+		/**
+		 * Draw freehand lines.
+		 */
+		FREEHAND,
+
+		/**
+		 * Draw straight lines.
+		 */
+		STRAIGHT
+	}
+
+	/**
+	 * The style that new lines should have.
+	 */
+	private NewLineStyle mNewLineStyle;
+
 
 	/**
 	 * Constructor.
@@ -348,8 +365,16 @@ public final class CombatView extends SurfaceView {
 	 * @return The new line.
 	 */
 	public Shape createLine() {
-		return mActiveLines.createFreehandLine(this.mNewLineColor,
-				this.mNewLineStrokeWidth);
+		switch(this.mNewLineStyle) {
+		case FREEHAND:
+			return mActiveLines.createFreehandLine(this.mNewLineColor,
+					this.mNewLineStrokeWidth);
+		case STRAIGHT:
+			return null;
+		default:
+			throw new IllegalArgumentException("Invalid new line type.");
+		}
+
 	}
 
 	/**
@@ -546,17 +571,16 @@ public final class CombatView extends SurfaceView {
 	}
 
 	/**
-	 * @param shouldDrawStraightLines Whether lines should be drawn straight.
+	 * @param newLineStyle the newLineStyle to set
 	 */
-	public void setShouldDrawStraightLines(
-			final boolean shouldDrawStraightLines) {
-		mShouldDrawStraightLines = shouldDrawStraightLines;
+	public void setNewLineStyle(NewLineStyle newLineStyle) {
+		mNewLineStyle = newLineStyle;
 	}
 
 	/**
-	 * @return Whether lines should be straightened while being drawn.
+	 * @return the newLineStyle
 	 */
-	public boolean shouldDrawStraightLines() {
-		return mShouldDrawStraightLines;
+	public NewLineStyle getNewLineStyle() {
+		return mNewLineStyle;
 	}
 }

@@ -31,8 +31,6 @@ public abstract class Shape implements Serializable {
 
 	protected abstract Path createPath();
 
-	public abstract void setEndPoint(final PointF p);
-
 	public abstract void addPoint(final PointF p);
 
 	/**

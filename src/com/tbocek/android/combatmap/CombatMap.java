@@ -177,7 +177,9 @@ public final class CombatMap extends Activity {
 
 		@Override
 		public void onSetStraightLineMode(final boolean drawStraight) {
-			mCombatView.setShouldDrawStraightLines(drawStraight);
+			mCombatView.setNewLineStyle(drawStraight
+					? CombatView.NewLineStyle.STRAIGHT
+					: CombatView.NewLineStyle.FREEHAND);
 		}
     };
 
