@@ -136,7 +136,6 @@ public final class CombatMap extends Activity {
 
         @Override
         public void onChooseColoredPen(final int color) {
-            mCombatView.setDrawMode();
             mCombatView.setNewLineColor(color);
         }
 
@@ -147,9 +146,7 @@ public final class CombatMap extends Activity {
 
         @Override
         public void onChooseStrokeWidth(final float width) {
-            mCombatView.setDrawMode();
             mCombatView.setNewLineStrokeWidth(width);
-
         }
 
 		@Override
@@ -176,10 +173,15 @@ public final class CombatMap extends Activity {
 		}
 
 		@Override
-		public void onSetStraightLineMode(final boolean drawStraight) {
-			mCombatView.setNewLineStyle(drawStraight
-					? CombatView.NewLineStyle.STRAIGHT
-					: CombatView.NewLineStyle.FREEHAND);
+		public void onChooseFreeHandTool() {
+            mCombatView.setDrawMode();
+			mCombatView.setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
+		}
+
+		@Override
+		public void onChooseStraightLineTool() {
+            mCombatView.setDrawMode();
+			mCombatView.setNewLineStyle(CombatView.NewLineStyle.STRAIGHT);
 		}
     };
 
