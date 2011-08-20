@@ -269,6 +269,14 @@ public final class CombatView extends SurfaceView {
 		refreshMap();
 	}
 
+	/**
+	 *
+	 * @return The fog of war mode.
+	 */
+	public FogOfWarMode getFogOfWarMode() {
+		return mFogOfWarMode;
+	}
+
 	@Override
 	public boolean onTouchEvent(final MotionEvent ev) {
 		this.gestureDetector.onTouchEvent(ev);
