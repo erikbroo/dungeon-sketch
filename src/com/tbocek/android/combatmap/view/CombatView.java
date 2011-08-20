@@ -130,7 +130,7 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * The style that new lines should have.
 	 */
-	private NewLineStyle mNewLineStyle;
+	private NewLineStyle mNewLineStyle = NewLineStyle.FREEHAND;
 
 
 	/**
@@ -370,7 +370,8 @@ public final class CombatView extends SurfaceView {
 			return mActiveLines.createFreehandLine(this.mNewLineColor,
 					this.mNewLineStrokeWidth);
 		case STRAIGHT:
-			return null;
+			return mActiveLines.createStraightLine(this.mNewLineColor,
+					this.mNewLineStrokeWidth);
 		default:
 			throw new IllegalArgumentException("Invalid new line type.");
 		}

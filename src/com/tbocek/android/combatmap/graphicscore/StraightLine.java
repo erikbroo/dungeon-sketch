@@ -11,6 +11,11 @@ public class StraightLine extends Shape {
 	private PointF start = null;
 	private PointF end = null;
 
+	public StraightLine(int color, float newLineStrokeWidth) {
+        this.mColor = color;
+        this.mWidth = newLineStrokeWidth;
+	}
+
 	@Override
 	public boolean contains(PointF p) {
 		// Cannot define a region.
@@ -33,6 +38,9 @@ public class StraightLine extends Shape {
 
 	@Override
 	public void erase(PointF center, float radius) {
+		if (start == null || end == null) {
+			return;
+		}
 		// Special case - if we have only two points, this is probably
 		// a large straight line and we want to erase the line if the
 		// eraser intersects with it.  However, this is an expensive
@@ -58,6 +66,7 @@ public class StraightLine extends Shape {
 		// case we delete the entire line.
 		if (discriminant >= 0) {
 			erased = true;
+			invalidatePath();
 		}
 	}
 

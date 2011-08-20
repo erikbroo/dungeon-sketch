@@ -76,8 +76,8 @@ public final class LineCollection implements Serializable {
     }
 
     /**
-     * Factory method that creates a line, adds it to the list of lines, and
-     * returns the newly created line.
+     * Factory method that creates a freehand line, adds it to the list of
+     * lines, and returns the newly created line.
      * @param newLineColor The new line's color.
      * @param newLineStrokeWidth The new line's stroke width.
      * @return The new line.
@@ -90,6 +90,21 @@ public final class LineCollection implements Serializable {
         mCommandHistory.execute(c);
         return l;
     }
+
+    /**
+     * Factory method that creates a straight line, adds it to the list of
+     * lines, and returns the newly created line.
+     * @param newLineColor The new line's color.
+     * @param newLineStrokeWidth The new line's stroke width.
+     * @return The new line.
+     */
+	public Shape createStraightLine(int newLineColor, float newLineStrokeWidth) {
+        StraightLine l = new StraightLine(newLineColor, newLineStrokeWidth);
+        Command c = new Command(this);
+        c.addCreatedShape(l);
+        mCommandHistory.execute(c);
+        return l;
+	}
 
     /**
      * Inserts a new line into the list of lines, making sure that the lines are
@@ -372,4 +387,5 @@ public final class LineCollection implements Serializable {
 	public void redo() {
 		mCommandHistory.redo();
 	}
+
 }
