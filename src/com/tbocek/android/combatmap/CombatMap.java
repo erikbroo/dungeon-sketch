@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -242,6 +243,8 @@ public final class CombatMap extends Activity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+    	DeveloperMode.strictMode();
+
         super.onCreate(savedInstanceState);
 
         BuiltInImageToken.registerResources(

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.tbocek.android.combatmap.DataManager;
+import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
@@ -48,6 +49,7 @@ public final class TokenCreator extends Activity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+    	DeveloperMode.strictMode();
         super.onCreate(savedInstanceState);
         view = new TokenCreatorView(this);
         setContentView(view);

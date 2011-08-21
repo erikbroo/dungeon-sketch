@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
@@ -115,6 +116,7 @@ public final class TokenManager extends Activity {
 
 	@Override
     public void onCreate(final Bundle savedInstanceState) {
+    	DeveloperMode.strictMode();
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.token_manager_layout);
