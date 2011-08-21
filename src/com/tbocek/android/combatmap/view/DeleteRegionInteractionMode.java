@@ -23,7 +23,7 @@ public final class DeleteRegionInteractionMode
 
     @Override
     public boolean onSingleTapUp(final MotionEvent ev) {
-    	PointF tap = view.getTransformer().screenSpaceToWorldSpace(
+    	PointF tap = view.getWorldSpaceTransformer().screenSpaceToWorldSpace(
     			ev.getX(), ev.getY());
     	view.getActiveLines().deleteRegionsUnderPoint(tap);
     	view.refreshMap();

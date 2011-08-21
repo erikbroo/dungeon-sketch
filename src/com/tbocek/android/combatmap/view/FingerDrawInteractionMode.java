@@ -69,7 +69,7 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
         PointF p = getScreenSpacePoint(e);
     	// Need to transform to world space.
 	    currentLine.addPoint(
-	            view.getTransformer().screenSpaceToWorldSpace(p));
+	            view.getWorldSpaceTransformer().screenSpaceToWorldSpace(p));
 
         view.refreshMap(); // Redraw the screen
         lastPointX = p.x;

@@ -53,9 +53,10 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
 
         // Erase
         view.getActiveLines().erase(
-        		view.getTransformer().screenSpaceToWorldSpace(
+        		view.getWorldSpaceTransformer().screenSpaceToWorldSpace(
         				this.lastErasedPoint),
-                view.getTransformer().screenSpaceToWorldSpace(ERASER_RADIUS));
+                view.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+                		ERASER_RADIUS));
 
         view.refreshMap();
         return true;

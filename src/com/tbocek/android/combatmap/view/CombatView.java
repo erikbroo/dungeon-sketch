@@ -367,7 +367,7 @@ public final class CombatView extends SurfaceView {
 	 *
 	 * @return The transformation object.
 	 */
-	public CoordinateTransformer getTransformer() {
+	public CoordinateTransformer getWorldSpaceTransformer() {
 		return this.getData().transformer;
 	}
 
@@ -408,15 +408,13 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * Places a token on the screen, at a location chosen by the view.
 	 *
-	 * @param t
-	 *            The token to place.
+	 * @param t The token to place.
 	 */
 	public void placeToken(final BaseToken t) {
 		PointF attemptedLocationScreenSpace = new PointF(this.getWidth() / 2,
 				this.getHeight() / 2);
 		// TODO: This smells really bad.
-		PointF attemptedLocationGridSpace = this.getData().getGrid()
-				.gridSpaceToScreenSpaceTransformer(this.getData().transformer)
+		PointF attemptedLocationGridSpace = this.getGridSpaceTransformer()
 				.screenSpaceToWorldSpace(attemptedLocationScreenSpace);
 
 		getData().getTokens().placeTokenNearby(t, attemptedLocationGridSpace,

@@ -21,8 +21,8 @@ public class BaseDrawInteractionMode extends CombatViewInteractionMode {
 
 	@Override
 	public void onLongPress(final MotionEvent ev) {
-		longPressPoint = view.getTransformer().screenSpaceToWorldSpace(
-				ev.getX(), ev.getY());
+		longPressPoint = view.getWorldSpaceTransformer()
+				.screenSpaceToWorldSpace(ev.getX(), ev.getY());
 	    if (view.getFogOfWarMode() == CombatView.FogOfWarMode.DRAW &&
 	    		view.getData().getFogOfWar().isPointInRegion(longPressPoint)) {
 	        view.showContextMenu();

@@ -38,7 +38,7 @@ public class CombatViewInteractionMode
 
       @Override
       public boolean onScale(final ScaleGestureDetector detector) {
-        view.getTransformer().zoom(
+        view.getWorldSpaceTransformer().zoom(
             detector.getScaleFactor(),
             new PointF(detector.getFocusX(), detector.getFocusY()));
         view.refreshMap();
