@@ -422,11 +422,7 @@ public final class CombatMap extends Activity {
             filename = "tmp";
         }
 
-        // Thread saveThread = new Thread(
-        //         new MapSaver(filename, this.getApplicationContext()));
-        // saveThread.setPriority(1);
-        // saveThread.start();
-        new MapSaver(filename, this.getApplicationContext(), false).run();
+        new MapSaver(filename, this.getApplicationContext()).run();
     }
 
     /**
@@ -595,7 +591,7 @@ public final class CombatMap extends Activity {
              return new TextPromptDialog(this,
                      new TextPromptDialog.OnTextConfirmedListener() {
                 public void onTextConfirmed(final String text) {
-                	new MapSaver(text, getApplicationContext(), false).run();
+                	new MapSaver(text, getApplicationContext()).run();
                 }
             }, "Save Map", "Save");
         default:
@@ -626,11 +622,6 @@ public final class CombatMap extends Activity {
         private Context mContext;
 
         /**
-         * Whether this process is running as a thread or not.
-         */
-        private boolean mRunAsThread;
-
-        /**
          * Amount to sleep before actually saving.  When running as a thread,
          * this stops the thread from blocking other, more important threads.
          */
@@ -646,32 +637,8 @@ public final class CombatMap extends Activity {
             this.mContext = context;
         }
 
-
-        /**
-         * Constructor.
-         * @param filename Filename to save to.
-         * @param context Context to use while saving.
-         * @param runAsThread Whether this process is running as a seperate
-         * 		thread.
-         */
-        public MapSaver(
-        		final String filename, final Context context,
-        		final boolean runAsThread) {
-            this(filename, context);
-            this.mRunAsThread = runAsThread;
-        }
-
         @Override
         public void run() {
-            // Force a sleep to allow the UI to remain responsive
-            if (this.mRunAsThread) {
-                try {
-                    Thread.sleep(SLEEP_TIME);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
             try {
                 DataManager dm = new DataManager(mContext);
                 dm.saveMapName(mFilename);
@@ -680,12 +647,20 @@ public final class CombatMap extends Activity {
                 MapData.clear();
                 SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(mContext);
+
                 // Persist the filename that we saved to so that we can load
                 // from that file again.
                 Editor editor = sharedPreferences.edit();
                 editor.putString("filename", null);
                 editor.commit();
-                // TODO: open a toast
+
+                // Log the error in a toast
+                e.printStackTrace();
+                Toast toast = Toast.makeText(mContext,
+                        "Could not save file.  Reason: " + e.toString(),
+                        Toast.LENGTH_LONG);
+                toast.show();
+
             }
         }
     }
