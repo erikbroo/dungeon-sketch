@@ -55,6 +55,14 @@ public final class TokenDatabase {
     private transient Map<String, BaseToken> tokenForId
             = new HashMap<String, BaseToken>();
 
+    /**
+     * Whether tags need to be pre-populated during the loading step.  By
+     * default we want this to be true (so that tokens added to the library
+     * get the right tags), but we want to be able to suppress it while batch
+     * loading tokens.
+     */
+    private transient boolean prePopulateTags = true;
+
 	/**
 	 * Always-present member at the top of the tag list that selects all tokens.
 	 */
@@ -226,7 +234,9 @@ public final class TokenDatabase {
      */
     public void addTokenPrototype(final BaseToken token) {
         tokenForId.put(token.getTokenId(), token);
-        tagToken(token, token.getDefaultTags());
+        if (this.prePopulateTags) {
+        	tagToken(token, token.getDefaultTags());
+        }
     }
 
     /**
@@ -260,13 +270,23 @@ public final class TokenDatabase {
      * @param dataManager The data manager to load tokens from.
      */
     public void populate(final DataManager dataManager) {
-        loadCustomImageTokens(dataManager);
+        this.prePopulateTags = !tagsLoaded();
+    	loadCustomImageTokens(dataManager);
         loadBuiltInImageTokens();
         loadColorTokens();
         loadLetterTokens();
+        this.prePopulateTags = false;
     }
 
     /**
+     * @return True if tags have already been loaded from the file, false if
+     * 		they need to be pre-populated.
+     */
+    private boolean tagsLoaded() {
+    	return this.tokensForTag.size() != 0;
+	}
+
+	/**
      * Searches for tokens that display images from the custom image directory
      * on the SD card and adds them to the database.
      * @param dataManager The data manager to use when searching for tokens.
