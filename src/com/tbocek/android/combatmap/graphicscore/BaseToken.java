@@ -253,4 +253,18 @@ public abstract class BaseToken implements Serializable {
     public boolean isBuiltIn() {
         return true;
     }
+
+    /**
+     * @return True if some expensive action (e.g. disk IO) is needed to load
+     * 		the token.  Should return false if no action is needed, or if the
+     * 		action is already taken.
+     */
+    public boolean needsLoad() {
+    	return false;
+    }
+
+    /**
+     * Takes any action needed to load the token.
+     */
+    public void load() { }
 }

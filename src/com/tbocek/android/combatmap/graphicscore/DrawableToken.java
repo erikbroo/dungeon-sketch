@@ -106,7 +106,16 @@ public abstract class DrawableToken extends BaseToken {
         if (drawableCache.containsKey(getTokenId())) {
             return drawableCache.get(getTokenId());
         }
+        return mDrawable;
+    }
 
+    @Override
+    public final boolean needsLoad() {
+    	return mDrawable == null;
+    }
+
+    @Override
+    public final void load() {
         if (mDrawable == null) {
             mDrawable = createDrawable();
         }
@@ -114,8 +123,6 @@ public abstract class DrawableToken extends BaseToken {
         if (mDrawable != null) {
             drawableCache.put(getTokenId(), mDrawable);
         }
-
-        return mDrawable;
     }
 
     /**

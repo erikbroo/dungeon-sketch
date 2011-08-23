@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.view;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import android.content.Context;
@@ -172,9 +173,12 @@ public final class TokenSelectorView extends LinearLayout {
      */
     private void setTokenList(final Collection<BaseToken> tokens) {
         tokenLayout.removeAllViews();
+        Collection<TokenButton> buttons = new ArrayList<TokenButton>();
         for (BaseToken token : tokens) {
-            tokenLayout.addView(createTokenView(token));
+        	TokenButton b = (TokenButton) createTokenView(token);
+            tokenLayout.addView(b);
+            buttons.add(b);
         }
-
+        new TokenLoadTask(buttons).execute();
     }
 }
