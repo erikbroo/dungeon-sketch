@@ -41,7 +41,7 @@ public class TokenLoadTask
 		tokenButtonMap = new HashMap<String, TokenButton>();
 		for (TokenButton b : tokenButtons) {
 			if (b.getClone().needsLoad()) {
-				b.setVisibility(View.GONE);
+				b.setVisibility(View.INVISIBLE);
 				tokenButtonMap.put(b.getTokenId(), b);
 			}
 		}

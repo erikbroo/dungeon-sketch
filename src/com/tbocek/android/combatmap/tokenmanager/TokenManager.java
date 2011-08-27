@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import android.app.Activity;
@@ -26,6 +27,8 @@ import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.view.TagListView;
+import com.tbocek.android.combatmap.view.TokenButton;
+import com.tbocek.android.combatmap.view.TokenLoadTask;
 import com.tbocek.android.combatmap.view.TokenViewFactory;
 
 /**
@@ -105,6 +108,7 @@ public final class TokenManager extends Activity {
 	private void setScrollViewTag(final String tag) {
 		mTokenViewFactory.getMultiSelectManager().selectNone();
 		scrollView.removeAllViews();
+		Collection<BaseToken> tokens = null;
 		if (tag == TokenDatabase.ALL) {
 			scrollView.addView(
 					getTokenButtonLayout(tokenDatabase.getAllTokens()));
@@ -187,9 +191,11 @@ public final class TokenManager extends Activity {
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.VERTICAL);
 		LinearLayout currentRow = null;
+		ArrayList<TokenButton> allButtons = new ArrayList<TokenButton>();
 		int i = 0;
 		for (BaseToken t : tokens) {
-			View b = mTokenViewFactory.getTokenView(t);
+			TokenButton b = (TokenButton) mTokenViewFactory.getTokenView(t);
+			allButtons.add(b);
 
 			// Remove all views from the parent, if there is one.
 			// This is safe because we are totally replacing the view contents
@@ -209,6 +215,7 @@ public final class TokenManager extends Activity {
 			currentRow.addView(b);
 			++i;
 		}
+		new TokenLoadTask(allButtons).execute();
 		return layout;
 	}
 

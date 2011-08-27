@@ -111,7 +111,7 @@ public abstract class DrawableToken extends BaseToken {
 
     @Override
     public final boolean needsLoad() {
-    	return mDrawable == null;
+    	return !drawableCache.containsKey(getTokenId());
     }
 
     @Override
