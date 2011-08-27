@@ -4,13 +4,23 @@
 <item>Whiteboard</item>
 <item>Graph Paper</item>
 <item>Grass</item>
+<item>Ice</item>
+<item>Forest</item>
 <item>Night</item>
+<item>Dungeon</item>
+<item>Hologram</item>
+<item>Console</item>
 </string-array>
 <string-array name="themeValues">
 <item>whiteboard</item>
 <item>graphpaper</item>
 <item>grass</item>
+<item>ice</item>
+<item>forest</item>
 <item>night</item>
+<item>dungeon</item>
+<item>hologram</item>
+<item>console</item>
 </string-array>
 <string-array name="gridNames">
 <item>Rectangular Grid</item>

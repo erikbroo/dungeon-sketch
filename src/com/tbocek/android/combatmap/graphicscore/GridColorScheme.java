@@ -35,11 +35,42 @@ public final class GridColorScheme implements Serializable{
     public static final GridColorScheme GRASS =
     	new GridColorScheme(Color.rgb(63, 172, 41), Color.rgb(11, 121, 34), false);
 
+
+    /**
+     * Light blue on white.
+     */
+    public static final GridColorScheme ICE =
+    	new GridColorScheme(Color.WHITE, Color.rgb(160, 160, 255), false);
+
+    /**
+     * Dark blue on dark green.
+     */
+    public static final GridColorScheme FOREST =
+    	new GridColorScheme(Color.rgb(0, 128, 0), Color.rgb(0, 0, 100), true);
+
     /**
      * Black on dark blue.
      */
     public static final GridColorScheme NIGHT =
-    	new GridColorScheme(Color.rgb(0, 0, 102), Color.rgb(83, 36, 0), true);
+    	new GridColorScheme(Color.rgb(0, 0, 102), Color.rgb(0, 0, 0), true);
+
+    /**
+     * Dark red on grey.
+     */
+    public static final GridColorScheme DUNGEON =
+    	new GridColorScheme(Color.rgb(64, 64, 64), Color.rgb(64, 0, 0), true);
+
+    /**
+     * Light blue on black.
+     */
+    public static final GridColorScheme HOLOGRAM =
+    	new GridColorScheme(Color.rgb(0, 0, 0), Color.rgb(41, 162, 255), true);
+
+    /**
+     * Green on black.
+     */
+    public static final GridColorScheme CONSOLE =
+    	new GridColorScheme(Color.rgb(0, 0, 0), Color.GREEN, true);
 
     /**
      * Given the name of a color scheme, returns the scheme represented by that
@@ -51,7 +82,12 @@ public final class GridColorScheme implements Serializable{
     public static GridColorScheme fromNamedScheme(final String name) {
         if (name.equals("graphpaper")) return GRAPH_PAPER;
         if (name.equals("grass")) return GRASS;
+        if (name.equals("ice")) return ICE;
+        if (name.equals("forest")) return FOREST;
         if (name.equals("night")) return NIGHT;
+        if (name.equals("dungeon")) return DUNGEON;
+        if (name.equals("hologram")) return HOLOGRAM;
+        if (name.equals("console")) return CONSOLE;
         return STANDARD;
     }
 
