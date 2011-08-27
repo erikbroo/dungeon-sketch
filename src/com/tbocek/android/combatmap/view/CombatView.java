@@ -310,7 +310,6 @@ public final class CombatView extends SurfaceView {
 	 *            The canvas to draw on.
 	 */
 	private void drawOnCanvas(final Canvas canvas) {
-		// White background
 		getData().getGrid().draw(canvas, getData().transformer);
 
 		canvas.save();
@@ -324,7 +323,8 @@ public final class CombatView extends SurfaceView {
 		}
 		canvas.restore();
 
-		getData().getTokens().drawAllTokens(canvas, getData().transformer);
+		getData().getTokens().drawAllTokens(canvas, getData().transformer,
+				getData().getGrid().isDark());
 
 		if (this.shouldDrawAnnotations) {
 			canvas.save();
@@ -352,7 +352,8 @@ public final class CombatView extends SurfaceView {
 		getData().getBackgroundLines().drawAllLines(canvas);
 		canvas.restore();
 
-		getData().getTokens().drawAllTokens(canvas, getData().transformer);
+		getData().getTokens().drawAllTokens(canvas, getData().transformer,
+				getData().getGrid().isDark());
 
 		canvas.save();
 		getData().transformer.setMatrix(canvas);

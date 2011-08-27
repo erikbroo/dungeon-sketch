@@ -46,6 +46,11 @@ public class TokenButton extends ImageView {
     };
 
     /**
+     * Whether tokens should be drawn as if on a dark background.
+     */
+	private boolean drawDark = false;
+
+    /**
      * Called when a drag and drop operation should start.
      */
     protected void onStartDrag() {
@@ -74,7 +79,7 @@ public class TokenButton extends ImageView {
         mPrototype.draw(c, (float) this.getWidth() / 2,
         		(float) this.getHeight() / 2,
         		getTokenRadius(),
-        		true);
+        		drawDark);
     }
 
 	/**
@@ -106,5 +111,18 @@ public class TokenButton extends ImageView {
         return super.onTouchEvent(ev);
     }
 
+	/**
+	 * @param drawDark Whether tokens are drawn on a dark background.
+	 */
+	public void setShouldDrawDark(boolean drawDark) {
+		this.drawDark = drawDark;
+	}
 
+
+	/**
+	 * @return Whether tokens are drawn on a dark background.
+	 */
+	public boolean shouldDrawDark() {
+		return drawDark;
+	}
 }

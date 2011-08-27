@@ -85,6 +85,13 @@ public abstract class Grid implements Serializable {
     }
 
     /**
+     * @return Whether the grid has a dark background.
+     */
+    public final boolean isDark() {
+    	return this.colorScheme.isDark();
+    }
+
+    /**
      * Draws the grid on the given canvas.
      * @param canvas The canvas to draw on.
      * @param transformer World space to screen space transformer (not grid to

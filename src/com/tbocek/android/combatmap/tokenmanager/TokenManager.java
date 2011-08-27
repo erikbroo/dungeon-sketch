@@ -195,6 +195,7 @@ public final class TokenManager extends Activity {
 		int i = 0;
 		for (BaseToken t : tokens) {
 			TokenButton b = (TokenButton) mTokenViewFactory.getTokenView(t);
+			b.setShouldDrawDark(true);
 			allButtons.add(b);
 
 			// Remove all views from the parent, if there is one.

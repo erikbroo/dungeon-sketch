@@ -410,6 +410,8 @@ public final class CombatMap extends Activity {
         mData.setGrid(Grid.createGrid(
                 gridType, colorScheme,
                 mData.getGrid().gridSpaceToWorldSpaceTransformer()));
+
+        this.mTokenSelector.setShouldDrawDark(mData.getGrid().isDark());
     }
 
     @Override

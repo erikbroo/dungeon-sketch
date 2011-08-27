@@ -21,25 +21,25 @@ public final class GridColorScheme implements Serializable{
      * Grey on white.
      */
     public static final GridColorScheme STANDARD =
-    	new GridColorScheme(Color.WHITE, Color.rgb(200, 200, 200));
+    	new GridColorScheme(Color.WHITE, Color.rgb(200, 200, 200), false);
 
     /**
      * Green on light yellow, a classic graph paper look.
      */
     public static final GridColorScheme GRAPH_PAPER =
-    	new GridColorScheme(Color.rgb(248, 255, 180), Color.rgb(195, 255, 114));
+    	new GridColorScheme(Color.rgb(248, 255, 180), Color.rgb(195, 255, 114), false);
 
     /**
      * Dark green on light green.
      */
     public static final GridColorScheme GRASS =
-    	new GridColorScheme(Color.rgb(63, 172, 41), Color.rgb(11, 121, 34));
+    	new GridColorScheme(Color.rgb(63, 172, 41), Color.rgb(11, 121, 34), false);
 
     /**
-     * Yellow on dark blue.
+     * Black on dark blue.
      */
     public static final GridColorScheme NIGHT =
-    	new GridColorScheme(Color.rgb(0, 0, 102), Color.rgb(83, 36, 0));
+    	new GridColorScheme(Color.rgb(0, 0, 102), Color.rgb(83, 36, 0), true);
 
     /**
      * Given the name of a color scheme, returns the scheme represented by that
@@ -66,13 +66,22 @@ public final class GridColorScheme implements Serializable{
     private int mLineColor;
 
     /**
+     * Whether the color scheme has a dark background.
+     */
+    private boolean mIsDark;
+
+    /**
      * Constructor.
      * @param backgroundColor The color to draw in the background.
      * @param lineColor The color to draw grid lines with.
+     * @param isDark Whether the grid should request that dark background
+     * 		versions of tokens be drawn.
      */
-    public GridColorScheme(final int backgroundColor, final int lineColor) {
+    public GridColorScheme(final int backgroundColor, final int lineColor,
+    		final boolean isDark) {
         this.mBackgroundColor = backgroundColor;
         this.mLineColor = lineColor;
+        this.mIsDark = isDark;
     }
 
     /**
@@ -87,5 +96,12 @@ public final class GridColorScheme implements Serializable{
      */
     int getLineColor() {
         return mLineColor;
+    }
+
+    /**
+     * @return Whether the grid has a dark background.
+     */
+    boolean isDark() {
+    	return mIsDark;
     }
 }

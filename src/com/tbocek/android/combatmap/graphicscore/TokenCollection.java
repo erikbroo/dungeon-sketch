@@ -153,13 +153,15 @@ public final class TokenCollection implements Serializable {
      * Draws all tokens.
      * @param canvas The canvas to draw on.
      * @param transformer Transformer from grid space to screen space.
+     * @param isDark Whether to draw as if on a dark background.
      */
     public void drawAllTokens(
-    		final Canvas canvas, final CoordinateTransformer transformer) {
+    		final Canvas canvas, final CoordinateTransformer transformer,
+    		boolean isDark) {
         for (int i = 0; i < tokens.size(); ++i) {
         	// TODO: Take advantage of knowing whether we have a dark
         	// background.
-            tokens.get(i).drawInPosition(canvas, transformer, false);
+            tokens.get(i).drawInPosition(canvas, transformer, isDark);
         }
 
     }

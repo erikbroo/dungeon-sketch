@@ -48,6 +48,11 @@ public final class TokenSelectorView extends LinearLayout {
     private TokenViewFactory mTokenViewFactory;
 
     /**
+     * Whether this control is being superimposed over a dark background.
+     */
+    private boolean drawDark = false;
+
+    /**
      * Constructor.
      * @param context The context to create this view in.
      */
@@ -178,7 +183,24 @@ public final class TokenSelectorView extends LinearLayout {
         	TokenButton b = (TokenButton) createTokenView(token);
             tokenLayout.addView(b);
             buttons.add(b);
+            b.setShouldDrawDark(drawDark);
         }
         new TokenLoadTask(buttons).execute();
     }
+
+
+	/**
+	 * @param drawDark Whether tokens are drawn on a dark background.
+	 */
+	public void setShouldDrawDark(boolean drawDark) {
+		this.drawDark = drawDark;
+	}
+
+
+	/**
+	 * @return Whether tokens are drawn on a dark background.
+	 */
+	public boolean shouldDrawDark() {
+		return drawDark;
+	}
 }
