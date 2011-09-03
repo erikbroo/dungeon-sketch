@@ -323,7 +323,7 @@ public final class CombatView extends SurfaceView {
 		}
 		canvas.restore();
 
-		getData().getTokens().drawAllTokens(canvas, getData().transformer,
+		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
 				getData().getGrid().isDark());
 
 		if (this.shouldDrawAnnotations) {
@@ -352,7 +352,7 @@ public final class CombatView extends SurfaceView {
 		getData().getBackgroundLines().drawAllLines(canvas);
 		canvas.restore();
 
-		getData().getTokens().drawAllTokens(canvas, getData().transformer,
+		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
 				getData().getGrid().isDark());
 
 		canvas.save();
