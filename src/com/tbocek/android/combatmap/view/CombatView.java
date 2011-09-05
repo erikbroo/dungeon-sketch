@@ -342,6 +342,9 @@ public final class CombatView extends SurfaceView {
 	 * @return A bitmap containing the preview image.
 	 */
 	public Bitmap getPreview() {
+		if (this.getWidth() == 0 || this.getHeight() == 0) {
+			return null;
+		}
 		Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(),
 				Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);

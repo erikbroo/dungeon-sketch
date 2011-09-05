@@ -3,9 +3,21 @@
 	<item
 		android:id="@+id/zoom_to_fit"
 		android:title="Fit"/>
+    <item
+        android:id="@+id/save"
+        android:title="Save"
+        android:icon="@drawable/document_save"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/load"
+        android:title="Load"
+        android:icon="@drawable/document_open"
+        android:showAsAction="ifRoom"/>
 	<item
 		android:id="@+id/clear_all_submenu"
-		android:title="Clear All">
+		android:title="New"
+		android:icon="@drawable/document_new"
+		android:showAsAction="ifRoom">
 		<menu>
 			<item
 				android:id="@+id/clear_all"
@@ -16,14 +28,6 @@
 		android:id="@+id/resize_grid"
 		android:title="Resize Grid"/>
 	<item
-		android:id="@+id/save"
-		android:title="Save"/>
-	<item
-		android:id="@+id/load"
-		android:title="Load"/>
-	<item
 		android:id="@+id/settings"
 		android:title="Settings"/>
-
-
 </menu>

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.StrictMode;
@@ -648,7 +649,10 @@ public final class CombatMap extends Activity {
                 DataManager dm = new DataManager(mContext);
                 if (MapData.getInstance().hasData()) {
 	                dm.saveMapName(mFilename);
-	                dm.savePreviewImage(mFilename, mCombatView.getPreview());
+	                Bitmap preview = mCombatView.getPreview();
+	                if (preview != null) {
+	                	dm.savePreviewImage(mFilename, preview);
+	                }
                 }
             } catch (Exception e) {
                 MapData.clear();
@@ -667,6 +671,10 @@ public final class CombatMap extends Activity {
                         "Could not save file.  Reason: " + e.toString(),
                         Toast.LENGTH_LONG);
                 toast.show();
+
+                if (DeveloperMode.DEVELOPER_MODE) {
+                	throw new RuntimeException(e);
+                }
 
             }
         }
