@@ -154,8 +154,8 @@ public final class MapData implements Serializable {
      */
     public boolean hasData() {
         return !mBackgroundLines.isEmpty()
-        	&& !mAnnotationLines.isEmpty()
-        	&& !getTokens().isEmpty();
+        	|| !mAnnotationLines.isEmpty()
+        	|| !getTokens().isEmpty();
     }
 
 	/**

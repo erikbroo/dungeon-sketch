@@ -646,8 +646,10 @@ public final class CombatMap extends Activity {
         public void run() {
             try {
                 DataManager dm = new DataManager(mContext);
-                dm.saveMapName(mFilename);
-                dm.savePreviewImage(mFilename, mCombatView.getPreview());
+                if (MapData.getInstance().hasData()) {
+	                dm.saveMapName(mFilename);
+	                dm.savePreviewImage(mFilename, mCombatView.getPreview());
+                }
             } catch (Exception e) {
                 MapData.clear();
                 SharedPreferences sharedPreferences =
