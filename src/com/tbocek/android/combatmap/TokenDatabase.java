@@ -302,9 +302,6 @@ public final class TokenDatabase {
      * Populates the token database with built-in image tokens.
      */
     private void loadBuiltInImageTokens() {
-        addBuiltin(R.drawable.dragongirl_dragontigernight);
-        addBuiltin(R.drawable.orc_libmed);
-        addBuiltin(R.drawable.orc2_libmed);
         addBuiltin(R.drawable.cheetah);
         addBuiltin(R.drawable.cougar);
         addBuiltin(R.drawable.cute_horses);
