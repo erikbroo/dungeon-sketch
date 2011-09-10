@@ -60,6 +60,7 @@ public class StraightLine extends Shape implements Serializable {
 			}
 		}
 		lineToggleXCoords = null;
+		invalidatePath();
 		return shapes;
 	}
 
