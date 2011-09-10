@@ -82,6 +82,28 @@ public final class CombatView extends SurfaceView {
 	 */
 	private Bitmap buffer;
 
+	boolean surfaceReady = false;
+
+	SurfaceHolder.Callback surfaceHolderCallback = new SurfaceHolder.Callback() {
+
+		@Override
+		public void surfaceDestroyed(SurfaceHolder arg0) {
+			surfaceReady = false;
+
+		}
+
+		@Override
+		public void surfaceCreated(SurfaceHolder arg0) {
+			surfaceReady = true;
+			refreshMap();
+		}
+
+		@Override
+		public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+			refreshMap();
+		}
+	};
+
 	/**
 	 * Options for what to do with the fog of war.
 	 *
@@ -151,20 +173,8 @@ public final class CombatView extends SurfaceView {
 
 		this.setTokenManipulationMode();
 		this.setOnDragListener(mOnDrag);
+		getHolder().addCallback(this.surfaceHolderCallback);
 		// setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-	}
-
-	/**
-	 * When the surface is created, draw the combat map for the first time.
-	 * @param holder The SurfaceHolder whose surface has changed.
-	 * @param format The new PixelFormat of the surface.
-	 * @param width The new width of the surface.
-	 * @param height The new height of the surface.
-	 */
-	public void surfaceChanged(
-			final SurfaceHolder holder, final int format,
-			final int width, final int height) {
-		refreshMap();
 	}
 
 	/**
@@ -295,6 +305,7 @@ public final class CombatView extends SurfaceView {
 	 * Redraws the contents of the map.
 	 */
 	public void refreshMap() {
+		if (!surfaceReady) return;
 		SurfaceHolder holder = getHolder();
 		Canvas canvas = holder.lockCanvas();
 		if (canvas != null) {
