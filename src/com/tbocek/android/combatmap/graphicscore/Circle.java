@@ -46,6 +46,7 @@ public class Circle extends Shape implements Serializable {
 		List<Shape> l = new ArrayList<Shape>();
 		l.add(lineForErasing);
 		lineForErasing = null;
+		invalidatePath();
 		return l;
 	}
 
