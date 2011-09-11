@@ -18,12 +18,13 @@ public class StraightLine extends Shape implements Serializable {
 	private PointF end = null;
 
 	private float slope = 0;
+	private float length = 0;
 
 	/**
 	 * X coordinates at which to toggle the line on and off, for erasing
 	 * purposes.
 	 */
-	List<Float> lineToggleXCoords = null;
+	List<Float> lineToggleParameterization = null;
 
 	public StraightLine(int color, float newLineStrokeWidth) {
         this.mColor = color;
@@ -38,28 +39,25 @@ public class StraightLine extends Shape implements Serializable {
 
 	@Override
 	public boolean needsOptimization() {
-		return lineToggleXCoords != null;
+		return lineToggleParameterization != null;
 	}
 
 	@Override
 	public List<Shape> removeErasedPoints() {
 		List<Shape> shapes = new ArrayList<Shape>();
 
-		if (start.x < end.x) {
-			for (int i = 0; i <= lineToggleXCoords.size(); i += 2) {
-				float startX = (i == 0) ? start.x : lineToggleXCoords.get(i-1);
-				float endX = (i == lineToggleXCoords.size()) ? end.x : lineToggleXCoords.get(i);
-
-				float startY = ycoord(startX);
-				float endY = ycoord(endX);
+		if (lineToggleParameterization.size() > 0) {
+			for (int i = 0; i < lineToggleParameterization.size(); i += 2) {
+				float startT = lineToggleParameterization.get(i);
+				float endT = lineToggleParameterization.get(i+1);
 
 				StraightLine l = new StraightLine(this.mColor, this.mWidth);
-				l.addPoint(new PointF(startX, startY));
-				l.addPoint(new PointF(endX, endY));
+				l.addPoint(parameterizationToPoint(startT));
+				l.addPoint(parameterizationToPoint(endT));
 				shapes.add(l);
 			}
 		}
-		lineToggleXCoords = null;
+		lineToggleParameterization = null;
 		invalidatePath();
 		return shapes;
 	}
@@ -97,16 +95,21 @@ public class StraightLine extends Shape implements Serializable {
 		// case we move on and do even more complicated stuff to erase part of
 		// the line.
 		if (discriminant > 0) {
-			// First, we need to make sure that the x coordinate of the start
-			// comes before the end, since this assumption will be used later.
-			canonicalizePointOrder();
-
+			float sign_dy = dy < 0 ? -1 : 1;
 			// Now, compute the x coordinates of the real intersection with the
 			// line, not the line segment.  Again, this is from Wolfram.
-			float intersect1X = (float) ((det * dy - dx * Math.sqrt(discriminant))/dsquared) + center.x;
-			float intersect2X = (float) ((det * dy + dx * Math.sqrt(discriminant))/dsquared) + center.x;
+			float intersect1X = (float) ((det * dy - sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
+			float intersect2X = (float) ((det * dy + sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
 
-			insertErasedSegment(intersect1X, intersect2X);
+			// TODO: Only compute these if the line is sufficiently vertical so
+			// as to need the Y coordinate to compute the parameterization.
+			float intersect1Y = (float) ((det * dx - Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
+			float intersect2Y = (float) ((det * dx + Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
+
+			float intersect1T = this.pointToParameterization(intersect1X, intersect1Y);
+			float intersect2T = this.pointToParameterization(intersect2X, intersect2Y);
+
+			insertErasedSegment(intersect1T, intersect2T);
 			invalidatePath();
 		}
 	}
@@ -124,77 +127,42 @@ public class StraightLine extends Shape implements Serializable {
 			segmentEnd = tmp;
 		}
 
-		if (lineToggleXCoords == null) {
-			 lineToggleXCoords = new ArrayList<Float>();
+		if (lineToggleParameterization == null) {
+			 lineToggleParameterization = new ArrayList<Float>();
+			 lineToggleParameterization.add(0f);
+			 lineToggleParameterization.add(1f);
 		}
 
 		// Location in the array before which to insert the first segment
-		int segmentStartInsertion = Collections.binarySearch(lineToggleXCoords, segmentStart);
+		int segmentStartInsertion = Collections.binarySearch(lineToggleParameterization, segmentStart);
 		if (segmentStartInsertion < 0) {
 			segmentStartInsertion = -segmentStartInsertion - 1;
 		}
-		boolean startInDrawnRegion = segmentStartInsertion % 2 == 0;
+		boolean startInDrawnRegion = segmentStartInsertion % 2 == 1;
 
 		// Location in the array before which to insert the last segment.
-		int segmentEndInsertion = -Collections.binarySearch(lineToggleXCoords, segmentEnd) - 1;
+		int segmentEndInsertion = -Collections.binarySearch(lineToggleParameterization, segmentEnd) - 1;
 		if (segmentEndInsertion < 0) {
 			segmentEndInsertion = -segmentEndInsertion - 1;
 		}
-		boolean endInDrawnRegion = segmentEndInsertion % 2 == 0;
+		boolean endInDrawnRegion = segmentEndInsertion % 2 == 1;
 
 		// Remove all segment starts or ends between the insertion points.
 		// If we were to run the binary search again, segmentStartInsertion should
 		// remain unchanged and segmentEndInsertion should be equal to segmentStartInsertion.
 		// Guard this by making sure we don't try to remove from the end of the list.
-		if (segmentStartInsertion != lineToggleXCoords.size()) {
+		if (segmentStartInsertion != lineToggleParameterization.size()) {
 			for (int i = 0; i < segmentEndInsertion - segmentStartInsertion; ++i) {
-				lineToggleXCoords.remove(segmentStartInsertion);
+				lineToggleParameterization.remove(segmentStartInsertion);
 			}
 		}
 
 		if (endInDrawnRegion) {
-			lineToggleXCoords.add(segmentStartInsertion, segmentEnd);
+			lineToggleParameterization.add(segmentStartInsertion, segmentEnd);
 		}
 
 		if (startInDrawnRegion) {
-			lineToggleXCoords.add(segmentStartInsertion, segmentStart);
-		}
-
-		// Special cases for erasing the ends of the line segment.
-		PointF newStart = this.start;
-		PointF newEnd = this.end;
-
-		if (segmentStart < start.x && segmentEnd > start.x) {
-			newStart = new PointF(segmentEnd, ycoord(segmentEnd));
-		}
-
-		if (segmentEnd > end.x && segmentStart < end.x) {
-			newEnd = new PointF(segmentStart, ycoord(segmentStart));
-		}
-		this.start = newStart;
-		this.end = newEnd;
-
-		this.removeOutOfBoundErasePoints();
-	}
-
-	private void removeOutOfBoundErasePoints() {
-		if (lineToggleXCoords != null) {
-			ArrayList<Float> newToggles = new ArrayList<Float>();
-			for (float f: lineToggleXCoords) {
-				if (f > start.x && f < end.x) {
-					newToggles.add(f);
-				}
-			}
-			lineToggleXCoords = newToggles;
-		}
-	}
-
-	private void canonicalizePointOrder() {
-		PointF temp;
-		if (start.x > end.x) {
-			temp = start;
-			start = end;
-			end = temp;
+			lineToggleParameterization.add(segmentStartInsertion, segmentStart);
 		}
 	}
 
@@ -205,37 +173,24 @@ public class StraightLine extends Shape implements Serializable {
 		}
 		Path path = new Path();
 
-
-		// Erasing has happened, follow erasing instructions.
-		path.moveTo(start.x, start.y);
-		boolean on = true;
-
-		if (this.lineToggleXCoords != null) {
-			for (float toggleX : lineToggleXCoords) {
-				float toggleY = ycoord(toggleX);
+		if (this.lineToggleParameterization != null) {
+			// Erasing has happened, follow erasing instructions.
+			boolean on = false;
+			for (float toggleT : lineToggleParameterization) {
+				PointF togglePoint = parameterizationToPoint(toggleT);
 				if (on) {
-					path.lineTo(toggleX, toggleY);
+					path.lineTo(togglePoint.x, togglePoint.y);
 				} else {
-					path.moveTo(toggleX, toggleY);
+					path.moveTo(togglePoint.x, togglePoint.y);
 				}
 				on = !on;
 			}
-		}
-
-		if (on) {
+		} else {
+			path.moveTo(start.x, start.y);
 			path.lineTo(end.x, end.y);
 		}
 
 		return path;
-	}
-
-	/**
-	 * Get the y coordinate for the given x coordinate for this line.
-	 * @param x
-	 * @return
-	 */
-	private float ycoord(float x) {
-		return slope * (x - start.x) + start.y;
 	}
 
 	@Override
@@ -248,8 +203,20 @@ public class StraightLine extends Shape implements Serializable {
 			boundingRectangle = new BoundingRectangle();
 			boundingRectangle.updateBounds(start);
 			boundingRectangle.updateBounds(end);
-			slope = (end.y - start.y) / (end.x - start.x);
 			invalidatePath();
 		}
+	}
+
+	private float pointToParameterization(float x, float y) {
+		if (end.y - start.y > end.x - start.x) {
+			return (y - start.y) / (end.y - start.y);
+		} else {
+			return (x - start.x) / (end.x - start.x);
+		}
+	}
+
+	private PointF parameterizationToPoint(float t) {
+		return new PointF(start.x + t * (end.x - start.x),
+				          start.y + t * (end.y - start.y));
 	}
 }
