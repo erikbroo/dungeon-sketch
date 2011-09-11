@@ -68,6 +68,9 @@ public class StraightLine extends Shape implements Serializable {
 				|| !boundingRectangle.intersectsWithCircle(center, radius)) {
 			return;
 		}
+
+		canonicalizePointOrder();
+
 		// Special case - if we have only two points, this is probably
 		// a large straight line and we want to erase the line if the
 		// eraser intersects with it.  However, this is an expensive
@@ -112,6 +115,16 @@ public class StraightLine extends Shape implements Serializable {
 			insertErasedSegment(intersect1T, intersect2T);
 			invalidatePath();
 		}
+	}
+
+	private void canonicalizePointOrder() {
+		if (end.x < start.x) {
+			PointF tmp;
+			tmp = start;
+			start = end;
+			end = tmp;
+		}
+
 	}
 
 	/**
@@ -168,7 +181,7 @@ public class StraightLine extends Shape implements Serializable {
 
 	@Override
 	protected Path createPath() {
-		if (start == null || end == null || start.x > end.x) {
+		if (start == null || end == null) {
 			return null;
 		}
 		Path path = new Path();
