@@ -76,41 +76,11 @@ public class StraightLine extends Shape implements Serializable {
 		// eraser intersects with it.  However, this is an expensive
 		// test, so we don't want to do it for all line segments when
 		// they are generally small enough for the eraser to enclose.
-		// Formula from:
-		// http://mathworld.wolfram.com/Circle-LineIntersection.html
-		PointF p1 = start;
-		PointF p2 = end;
+		Util.IntersectionPair intersection = Util.lineCircleIntersection(start, end, center, radius);
 
-		// Transform to standard coordinate system where circle is
-		// centered at (0, 0)
-		float x1 = p1.x - center.x;
-		float y1 = p1.y - center.y;
-		float x2 = p2.x - center.x;
-		float y2 = p2.y - center.y;
-
-		float dx = x2 - x1;
-		float dy = y2 - y1;
-		float dsquared = dx * dx + dy * dy;
-		float det = x1 * y2 - x2 * y1;
-		float discriminant = radius * radius * dsquared - det * det;
-
-		// Intersection if the discriminant is non-negative.  In this
-		// case we move on and do even more complicated stuff to erase part of
-		// the line.
-		if (discriminant > 0) {
-			float sign_dy = dy < 0 ? -1 : 1;
-			// Now, compute the x coordinates of the real intersection with the
-			// line, not the line segment.  Again, this is from Wolfram.
-			float intersect1X = (float) ((det * dy - sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
-			float intersect2X = (float) ((det * dy + sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
-
-			// TODO: Only compute these if the line is sufficiently vertical so
-			// as to need the Y coordinate to compute the parameterization.
-			float intersect1Y = (float) ((det * dx - Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
-			float intersect2Y = (float) ((det * dx + Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
-
-			float intersect1T = this.pointToParameterization(intersect1X, intersect1Y);
-			float intersect2T = this.pointToParameterization(intersect2X, intersect2Y);
+		if (intersection != null) {
+			float intersect1T = this.pointToParameterization(intersection.intersection1);
+			float intersect2T = this.pointToParameterization(intersection.intersection2);
 
 			insertErasedSegment(intersect1T, intersect2T);
 			invalidatePath();
@@ -124,7 +94,6 @@ public class StraightLine extends Shape implements Serializable {
 			start = end;
 			end = tmp;
 		}
-
 	}
 
 	/**
@@ -220,11 +189,11 @@ public class StraightLine extends Shape implements Serializable {
 		}
 	}
 
-	private float pointToParameterization(float x, float y) {
+	private float pointToParameterization(PointF p) {
 		if (Math.abs(end.y - start.y) > Math.abs(end.x - start.x)) {
-			return (y - start.y) / (end.y - start.y);
+			return (p.y - start.y) / (end.y - start.y);
 		} else {
-			return (x - start.x) / (end.x - start.x);
+			return (p.x - start.x) / (end.x - start.x);
 		}
 	}
 

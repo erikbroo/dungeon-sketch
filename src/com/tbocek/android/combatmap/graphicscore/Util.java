@@ -86,4 +86,64 @@ public final class Util {
 
         return palette;
     }
+
+    public static class IntersectionPair {
+
+    	public IntersectionPair(PointF i1, PointF i2) {
+    		intersection1 = i1;
+    		intersection2 = i2;
+    	}
+
+    	public PointF intersection1;
+    	public PointF intersection2;
+    }
+
+    public static IntersectionPair lineCircleIntersection(PointF p1, PointF p2, PointF center, float radius) {
+    	// First, make sure that the line segment is anywhere near the circle.
+    	if (center.x + radius < Math.min(p1.x, p2.x)
+            || center.x - radius > Math.max(p1.x, p2.x)
+            || center.y + radius < Math.min(p1.y, p2.y)
+            || center.y - radius > Math.max(p1.y, p2.y) )
+    	{
+    		return null;
+    	}
+
+		// Formula from:
+		// http://mathworld.wolfram.com/Circle-LineIntersection.html
+
+		// Transform to standard coordinate system where circle is
+		// centered at (0, 0)
+		float x1 = p1.x - center.x;
+		float y1 = p1.y - center.y;
+		float x2 = p2.x - center.x;
+		float y2 = p2.y - center.y;
+
+		float dx = x2 - x1;
+		float dy = y2 - y1;
+		float dsquared = dx * dx + dy * dy;
+		float det = x1 * y2 - x2 * y1;
+		float discriminant = radius * radius * dsquared - det * det;
+
+		// Intersection if the discriminant is non-negative.  In this
+		// case we move on and do even more complicated stuff to erase part of
+		// the line.
+		if (discriminant > 0) {
+			float sign_dy = dy < 0 ? -1 : 1;
+			// Now, compute the x coordinates of the real intersection with the
+			// line, not the line segment.  Again, this is from Wolfram.
+			float intersect1X = (float) ((det * dy - sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
+			float intersect2X = (float) ((det * dy + sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
+
+			// TODO: Only compute these if the line is sufficiently vertical so
+			// as to need the Y coordinate to compute the parameterization.
+			float intersect1Y = (float) ((det * dx - Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
+			float intersect2Y = (float) ((det * dx + Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
+
+			return new IntersectionPair(
+					new PointF(intersect1X, intersect1Y),
+					new PointF(intersect2X, intersect2Y));
+		} else {
+			return null;
+		}
+    }
 }

@@ -32,6 +32,8 @@ public final class FreehandLine extends Shape implements Serializable {
      */
     private List<Boolean> shouldDraw = new ArrayList<Boolean>();
 
+    private transient List<StraightLine> partiallyErasedLineSegments = new ArrayList<StraightLine>();
+
     /**
      * Constructor.
      * @param color Line color.
@@ -69,18 +71,23 @@ public final class FreehandLine extends Shape implements Serializable {
 		Path path = new Path();
 		boolean penDown = false;
 		for (int i = 0; i < points.size(); ++i) {
-		    if (shouldDraw.get(i).booleanValue()) {
-		    	PointF p1 = points.get(i);
-		    	if (penDown) {
-		    		path.lineTo(p1.x, p1.y);
-		    	} else {
-		    		path.moveTo(p1.x, p1.y);
-		    	}
-		    	penDown = true;
+		    PointF p1 = points.get(i);
+		    if (penDown) {
+		    	path.lineTo(p1.x, p1.y);
 		    } else {
-		    	penDown = false;
+		    	path.moveTo(p1.x, p1.y);
 		    }
+		    penDown = shouldDraw.get(i).booleanValue();
 		}
+
+		if (partiallyErasedLineSegments == null) {
+			partiallyErasedLineSegments = new ArrayList<StraightLine>();
+		}
+
+		for (StraightLine l : partiallyErasedLineSegments) {
+			path.addPath(l.createPath());
+		}
+
 		return path;
 	}
 
@@ -95,10 +102,29 @@ public final class FreehandLine extends Shape implements Serializable {
     @Override
 	public void erase(final PointF center, final float radius) {
         if (boundingRectangle.intersectsWithCircle(center, radius)) {
-	        for (int i = 0; i < points.size(); ++i) {
-	            if (Util.distance(center, points.get(i)) < radius) {
-	                shouldDraw.set(i, false);
-	            }
+    		if (partiallyErasedLineSegments == null) {
+    			partiallyErasedLineSegments = new ArrayList<StraightLine>();
+    		}
+
+        	for (StraightLine sl : partiallyErasedLineSegments) {
+        		sl.erase(center, radius);
+        	}
+
+	        for (int i = 0; i < points.size() - 1; ++i) {
+	        	if (shouldDraw.get(i)) {
+		        	PointF p1 = points.get(i);
+		        	PointF p2 = points.get(i+1);
+		        	Util.IntersectionPair intersection =
+		        		Util.lineCircleIntersection(p1, p2, center, radius);
+		        	if (intersection != null) {
+		        		shouldDraw.set(i, false);
+		        		StraightLine sl = new StraightLine(this.mColor, this.mWidth);
+		        		sl.addPoint(p1);
+		        		sl.addPoint(p2);
+		        		sl.erase(center, radius);
+		        		this.partiallyErasedLineSegments.add(sl);
+		        	}
+	        	}
 	        }
         }
         invalidatePath();
@@ -117,11 +143,10 @@ public final class FreehandLine extends Shape implements Serializable {
         FreehandLine l = new FreehandLine(mColor, mWidth);
         optimizedLines.add(l);
         for (int i = 0; i < points.size(); ++i) {
-            if (this.shouldDraw.get(i).booleanValue()) {
-                l.addPoint(points.get(i));
-            } else if (l.points.size() > 0) {
+        	l.addPoint(points.get(i));
+            if (!this.shouldDraw.get(i).booleanValue()) {
                 //Do not add a line with only one point in it, those are useless
-                if (l.points.size() == 1) {
+                if (l.points.size() <= 1) {
                     optimizedLines.remove(l);
                 }
                 l = new FreehandLine(mColor, mWidth);
@@ -129,6 +154,15 @@ public final class FreehandLine extends Shape implements Serializable {
             }
             this.shouldDraw.set(i, true);
         }
+
+        for (StraightLine sl : partiallyErasedLineSegments) {
+        	if (sl.needsOptimization()) {
+        		optimizedLines.addAll(sl.removeErasedPoints());
+        	} else {
+        		optimizedLines.add(sl);
+        	}
+        }
+        this.partiallyErasedLineSegments = new ArrayList<StraightLine>();
 
         // shouldDraw was reset, path is invalid
         invalidatePath();
