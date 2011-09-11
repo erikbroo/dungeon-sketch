@@ -221,7 +221,7 @@ public class StraightLine extends Shape implements Serializable {
 	}
 
 	private float pointToParameterization(float x, float y) {
-		if (end.y - start.y > end.x - start.x) {
+		if (Math.abs(end.y - start.y) > Math.abs(end.x - start.x)) {
 			return (y - start.y) / (end.y - start.y);
 		} else {
 			return (x - start.x) / (end.x - start.x);
