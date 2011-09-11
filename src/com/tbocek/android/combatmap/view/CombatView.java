@@ -334,15 +334,15 @@ public final class CombatView extends SurfaceView {
 		}
 		canvas.restore();
 
-		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
-				getData().getGrid().isDark());
-
 		if (this.shouldDrawAnnotations) {
 			canvas.save();
 			getData().transformer.setMatrix(canvas);
 			getData().getAnnotationLines().drawAllLines(canvas);
 			canvas.restore();
 		}
+
+		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
+				getData().getGrid().isDark());
 
 		this.mInteractionMode.draw(canvas);
 	}
@@ -364,15 +364,11 @@ public final class CombatView extends SurfaceView {
 		canvas.save();
 		getData().transformer.setMatrix(canvas);
 		getData().getBackgroundLines().drawAllLines(canvas);
+		getData().getAnnotationLines().drawAllLines(canvas);
 		canvas.restore();
 
 		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
 				getData().getGrid().isDark());
-
-		canvas.save();
-		getData().transformer.setMatrix(canvas);
-		getData().getAnnotationLines().drawAllLines(canvas);
-		canvas.restore();
 
 		return bitmap;
 	}
