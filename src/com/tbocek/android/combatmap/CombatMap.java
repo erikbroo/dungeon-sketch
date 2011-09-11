@@ -477,8 +477,17 @@ public final class CombatMap extends Activity {
         // We defer loading the manipulation mode until now, so that the correct
         // item is disabled after the menu is loaded.
         loadModePreference();
+
+        SharedPreferences sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                    this.getApplicationContext());
+
+        snapToGridMenuItem = menu.findItem(R.id.snap_to_grid);
+        snapToGridMenuItem.setChecked(sharedPreferences.getBoolean("snaptogrid", true));
         return true;
     }
+
+    MenuItem snapToGridMenuItem;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -501,6 +510,18 @@ public final class CombatMap extends Activity {
             mCombatView.setResizeGridMode();
             mBottomControlFrame.removeAllViews();
             return true;
+        case R.id.snap_to_grid:
+        	snapToGridMenuItem.setChecked(!snapToGridMenuItem.isChecked());
+            SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(
+                        this.getApplicationContext());
+            // Persist the filename that we saved to so that we can load from that
+            // file again.
+            Editor editor = sharedPreferences.edit();
+            editor.putBoolean("snaptogrid", snapToGridMenuItem.isChecked());
+            editor.commit();
+            mCombatView.setShouldSnapToGrid(snapToGridMenuItem.isChecked());
+        	return true;
         case R.id.save:
             showDialog(DIALOG_ID_SAVE);
             return true;

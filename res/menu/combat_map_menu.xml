@@ -28,6 +28,10 @@
 		android:id="@+id/resize_grid"
 		android:title="Resize Grid"/>
 	<item
+	   android:id="@+id/snap_to_grid"
+	   android:title="Snap to grid"
+	   android:checkable = "true"></item>
+	<item
 		android:id="@+id/settings"
 		android:title="Settings"/>
 </menu>
