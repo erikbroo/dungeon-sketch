@@ -321,14 +321,24 @@ public final class CombatView extends SurfaceView {
 	 *            The canvas to draw on.
 	 */
 	private void drawOnCanvas(final Canvas canvas) {
-		getData().getGrid().draw(canvas, getData().transformer);
+		getData().getGrid().drawBackground(canvas);
 
 		canvas.save();
 		getData().transformer.setMatrix(canvas);
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
 			getData().getFogOfWar().clipFogOfWar(canvas);
 		}
-		getData().getBackgroundLines().drawAllLines(canvas);
+		getData().getBackgroundLines().drawAllLinesBelowGrid(canvas);
+		canvas.restore();
+
+		getData().getGrid().drawGrid(canvas, getData().transformer);
+
+		canvas.save();
+		getData().transformer.setMatrix(canvas);
+		if (mFogOfWarMode == FogOfWarMode.CLIP) {
+			getData().getFogOfWar().clipFogOfWar(canvas);
+		}
+		getData().getBackgroundLines().drawAllLinesAboveGrid(canvas);
 		if (mFogOfWarMode == FogOfWarMode.DRAW) {
 			getData().getFogOfWar().drawFogOfWar(canvas);
 		}
