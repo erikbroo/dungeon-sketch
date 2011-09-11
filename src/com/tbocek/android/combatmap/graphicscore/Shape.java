@@ -152,4 +152,13 @@ public abstract class Shape implements Serializable {
 	    return this.mWidth;
 	}
 
+	/**
+	 * @return True if this should be drawn below the grid based on its size,
+	 * 		false otherwise.
+	 * @return
+	 */
+	public boolean shouldDrawBelowGrid() {
+		return this.mWidth > 1.0f;
+	}
+
 }

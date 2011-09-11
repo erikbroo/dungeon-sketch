@@ -49,7 +49,7 @@ public final class HexGrid extends Grid {
     }
 
     @Override
-    protected void drawGrid(final Canvas canvas,
+    public void drawGrid(final Canvas canvas,
             final CoordinateTransformer worldToScreenTransformer) {
         Paint paint = new Paint();
         paint.setColor(getLineColor());

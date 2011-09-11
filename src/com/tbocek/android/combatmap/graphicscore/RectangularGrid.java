@@ -41,7 +41,7 @@ public final class RectangularGrid extends Grid {
     private static final float MINOR_GRID_LINE_WIDTH = 3;
 
     @Override
-    protected void drawGrid(
+    public void drawGrid(
             final Canvas canvas,
             final CoordinateTransformer worldToScreenTransformer) {
         Paint paint = new Paint();

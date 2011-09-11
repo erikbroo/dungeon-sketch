@@ -55,6 +55,31 @@ public final class LineCollection implements Serializable {
         }
     }
 
+	/**
+     * Draws all lines on the given canvas that should be drawn below the grid.
+     * @param canvas The canvas to draw on.
+     */
+    public void drawAllLinesBelowGrid(final Canvas canvas) {
+        for (int i = 0; i < lines.size(); ++i) {
+        	if (lines.get(i).shouldDrawBelowGrid()) {
+        		lines.get(i).draw(canvas);
+        	}
+        }
+    }
+
+
+	/**
+     * Draws all lines on the given canvas that should be drawn above the grid.
+     * @param canvas The canvas to draw on.
+     */
+    public void drawAllLinesAboveGrid(final Canvas canvas) {
+        for (int i = 0; i < lines.size(); ++i) {
+        	if (!lines.get(i).shouldDrawBelowGrid()) {
+        		lines.get(i).draw(canvas);
+        	}
+        }
+    }
+
     /**
      * Draws all lines on the given canvas.
      * @param canvas The canvas to draw on.

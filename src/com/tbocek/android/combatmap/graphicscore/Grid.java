@@ -57,7 +57,7 @@ public abstract class Grid implements Serializable {
      * @param worldToScreenTransformer Transformation from world space to
      * 		screen space.
      */
-    protected abstract void drawGrid(
+    public abstract void drawGrid(
     		final Canvas canvas,
     		final CoordinateTransformer worldToScreenTransformer);
 
