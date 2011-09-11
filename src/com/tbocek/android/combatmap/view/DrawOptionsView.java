@@ -486,7 +486,6 @@ public final class DrawOptionsView extends HorizontalScrollView {
         });
         layout.addView(button);
         toolsGroup.add(button);
-        defaultView = button;
 	}
 
 	protected void createAndAddFreehandLineButton() {
@@ -511,7 +510,6 @@ public final class DrawOptionsView extends HorizontalScrollView {
         });
         layout.addView(button);
         toolsGroup.add(button);
-        defaultView = button;
 	}
 
 
@@ -537,7 +535,6 @@ public final class DrawOptionsView extends HorizontalScrollView {
         });
         layout.addView(button);
         toolsGroup.add(button);
-        defaultView = button;
 	}
 
 
