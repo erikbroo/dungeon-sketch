@@ -38,7 +38,7 @@ public final class RectangularGrid extends Grid {
     /**
      * Width to draw minor grid lines with.
      */
-    private static final float MINOR_GRID_LINE_WIDTH = 3;
+    private static final float MINOR_GRID_LINE_WIDTH = 1;
 
     @Override
     public void drawGrid(
@@ -102,7 +102,7 @@ public final class RectangularGrid extends Grid {
                         : MINOR_GRID_LINE_WIDTH);
                 shouldDrawCurrentLine = shouldDrawMajorLines;
             } else {
-                paint.setStrokeWidth(1);
+                paint.setStrokeWidth(MINOR_GRID_LINE_WIDTH);
                 shouldDrawCurrentLine = shouldDrawMinorLines;
             }
 
