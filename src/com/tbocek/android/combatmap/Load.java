@@ -13,9 +13,11 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.tbocek.android.combatmap.view.SaveFileButton;
 
@@ -66,16 +68,22 @@ public final class Load extends Activity {
     private void setup() {
         mSavedFiles = dataMgr.savedFiles();
 
-        List<View> fileViews = new ArrayList<View>();
-        for (String saveFile : mSavedFiles) {
-            SaveFileButton b = createSaveFileButton(saveFile);
-            fileViews.add(b);
-        }
+        if (mSavedFiles.size() > 0) {
+	        List<View> fileViews = new ArrayList<View>();
+	        for (String saveFile : mSavedFiles) {
+	            SaveFileButton b = createSaveFileButton(saveFile);
+	            fileViews.add(b);
+	        }
 
-        View layout = createLayout(fileViews);
-        ScrollView scroller = new ScrollView(this);
-        scroller.addView(layout);
-        this.setContentView(scroller);
+	        View layout = createLayout(fileViews);
+	        ScrollView scroller = new ScrollView(this);
+	        scroller.addView(layout);
+	        this.setContentView(scroller);
+        } else {
+        	RelativeLayout root = new RelativeLayout(this);
+        	this.getLayoutInflater().inflate(R.layout.no_files_layout, root);
+        	this.setContentView(root);
+        }
     }
 
     /**
