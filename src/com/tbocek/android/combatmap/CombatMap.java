@@ -419,6 +419,9 @@ public final class CombatMap extends Activity {
                 mData.getGrid().gridSpaceToWorldSpaceTransformer()));
 
         this.mTokenSelector.setShouldDrawDark(mData.getGrid().isDark());
+
+        this.setManipulationMode(sharedPreferences.getInt(
+        		"manipulationmode", MODE_DRAW_BACKGROUND));
     }
 
     @Override
@@ -427,6 +430,10 @@ public final class CombatMap extends Activity {
         SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
                     this.getApplicationContext());
+
+        Editor editor = sharedPreferences.edit();
+        editor.putInt("manipulationmode", this.mManipulationMode);
+        editor.commit();
 
         String filename = sharedPreferences.getString("filename", null);
         if (filename == null) {
@@ -545,6 +552,7 @@ public final class CombatMap extends Activity {
      * 		declared in this class.
      */
     private void setManipulationMode(final int manipulationMode) {
+		this.mManipulationMode = manipulationMode;
 		switch (manipulationMode) {
 		case MODE_DRAW_BACKGROUND:
             mCombatView.setDrawMode();
@@ -598,6 +606,11 @@ public final class CombatMap extends Activity {
 					+ Integer.toString(manipulationMode));
 		}
 	}
+
+    /**
+     * The last selected manipulation mode.
+     */
+    private int mManipulationMode = MODE_DRAW_BACKGROUND;
 
     /**
      * Sets the preference that will persist the active mode between sessions.
