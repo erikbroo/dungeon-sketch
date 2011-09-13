@@ -87,6 +87,9 @@ public final class MapData implements Serializable {
     private LineCollection.CommandHistory anntationCommandHistory =
 		    new LineCollection.CommandHistory();
 
+    private LineCollection.CommandHistory gmNotesCommandHistory =
+    		new LineCollection.CommandHistory();
+
     /**
      * Background lines.
      */
@@ -104,6 +107,12 @@ public final class MapData implements Serializable {
      */
     private LineCollection mAnnotationLines =
     		new LineCollection(anntationCommandHistory);
+
+    /**
+     * Notes for the GM that are not visible when combat is occurring.
+     */
+    private LineCollection mGmNoteLines =
+    	new LineCollection(gmNotesCommandHistory);
 
     /**
      * Tokens that have been placed on the map.
@@ -177,6 +186,13 @@ public final class MapData implements Serializable {
 	 */
 	public LineCollection getAnnotationLines() {
 		return mAnnotationLines;
+	}
+
+	/**
+	 * @return Private notes for the GM
+	 */
+	public LineCollection getGmNoteLines() {
+		return mGmNoteLines;
 	}
 
 	/**

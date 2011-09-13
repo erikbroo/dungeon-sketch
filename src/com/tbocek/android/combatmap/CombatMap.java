@@ -59,6 +59,11 @@ public final class CombatMap extends Activity {
 	private static final int MODE_DRAW_ANNOTATIONS = 3;
 
 	/**
+	 * Identifier for the draw GM notes mode.
+	 */
+	private static final int MODE_DRAW_GM_NOTES = 4;
+
+	/**
 	 * Text size to use in the list of tags.
 	 */
 	private static final int TAG_LIST_TEXT_SIZE = 20;
@@ -342,6 +347,7 @@ public final class CombatMap extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         addActionBarTab(actionBar, "Background", MODE_DRAW_BACKGROUND);
+        addActionBarTab(actionBar, "GM Notes", MODE_DRAW_GM_NOTES);
         addActionBarTab(actionBar, "Combat", MODE_TOKENS);
         addActionBarTab(actionBar, "Annotations", MODE_DRAW_ANNOTATIONS);
 
@@ -555,6 +561,17 @@ public final class CombatMap extends Activity {
             mCombatView.setDrawMode();
             mCombatView.useAnnotationLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
+            mBottomControlFrame.removeAllViews();
+            mBottomControlFrame.addView(this.mDrawOptionsView);
+            mPopupFrame.setVisibility(View.INVISIBLE);
+            setModePreference(manipulationMode);
+            mDrawOptionsView.setDefault();
+            mDrawOptionsView.setMaskToolVisibility(false);
+			return;
+		case MODE_DRAW_GM_NOTES:
+            mCombatView.setDrawMode();
+            mCombatView.useGmNotesLayer();
+            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.NOTHING);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
             mPopupFrame.setVisibility(View.INVISIBLE);

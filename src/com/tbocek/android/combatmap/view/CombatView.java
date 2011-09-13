@@ -78,6 +78,11 @@ public final class CombatView extends SurfaceView {
 	private boolean shouldDrawAnnotations = false;
 
 	/**
+	 * Whether to draw private GM notes.
+	 */
+	private boolean shouldDrawGmNotes = false;
+
+	/**
 	 * Buffer to draw on to.
 	 */
 	private Bitmap buffer;
@@ -191,6 +196,7 @@ public final class CombatView extends SurfaceView {
 	public void setTokenManipulationMode() {
 		setInteractionMode(new TokenManipulationInteractionMode(this));
 		shouldDrawAnnotations = true;
+		shouldDrawGmNotes = false;
 	}
 
 	/**
@@ -236,15 +242,7 @@ public final class CombatView extends SurfaceView {
 	public void useBackgroundLayer() {
 		mActiveLines = getData().getBackgroundLines();
 		shouldDrawAnnotations = false;
-	}
-
-	/**
-	 * Sets the fog of war layer as the active layer, so that any draw commands
-	 * will draw on the fog of war.
-	 */
-	public void useFogLayer() {
-		mActiveLines = getData().getFogOfWar();
-		shouldDrawAnnotations = false;
+		shouldDrawGmNotes = false;
 	}
 
 	/**
@@ -254,7 +252,19 @@ public final class CombatView extends SurfaceView {
 	public void useAnnotationLayer() {
 		mActiveLines = getData().getAnnotationLines();
 		shouldDrawAnnotations = true;
+		shouldDrawGmNotes = false;
 	}
+
+	/**
+	 * Sets the gm note layer as the active layer, so that any draw commands
+	 * will draw on the annotations.
+	 */
+	public void useGmNotesLayer() {
+		mActiveLines = getData().getGmNoteLines();
+		shouldDrawAnnotations = false;
+		shouldDrawGmNotes = true;
+	}
+
 
 	/**
 	 * Sets the interaction mode to the given listener.
@@ -344,12 +354,16 @@ public final class CombatView extends SurfaceView {
 		}
 		canvas.restore();
 
-		if (this.shouldDrawAnnotations) {
-			canvas.save();
-			getData().transformer.setMatrix(canvas);
-			getData().getAnnotationLines().drawAllLines(canvas);
-			canvas.restore();
+		canvas.save();
+		getData().transformer.setMatrix(canvas);
+		if (this.shouldDrawGmNotes) {
+			getData().getGmNoteLines().drawAllLines(canvas);
 		}
+		if (this.shouldDrawAnnotations) {
+
+			getData().getAnnotationLines().drawAllLines(canvas);
+		}
+		canvas.restore();
 
 		canvas.save();
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
