@@ -351,8 +351,15 @@ public final class CombatView extends SurfaceView {
 			canvas.restore();
 		}
 
+		canvas.save();
+		if (mFogOfWarMode == FogOfWarMode.CLIP) {
+			getData().transformer.setMatrix(canvas);
+			getData().getFogOfWar().clipFogOfWar(canvas);
+			getData().transformer.setInverseMatrix(canvas);
+		}
 		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
 				getData().getGrid().isDark());
+		canvas.restore();
 
 		this.mInteractionMode.draw(canvas);
 	}
