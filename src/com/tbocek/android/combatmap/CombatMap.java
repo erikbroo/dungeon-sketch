@@ -704,13 +704,11 @@ public final class CombatMap extends Activity {
         public void run() {
             try {
                 DataManager dm = new DataManager(mContext);
-                if (MapData.getInstance().hasData()) {
-	                dm.saveMapName(mFilename);
-	                Bitmap preview = mCombatView.getPreview();
-	                if (preview != null) {
-	                	dm.savePreviewImage(mFilename, preview);
-	                }
-                }
+	            dm.saveMapName(mFilename);
+	            Bitmap preview = mCombatView.getPreview();
+	            if (preview != null) {
+	            	dm.savePreviewImage(mFilename, preview);
+	            }
             } catch (Exception e) {
                 MapData.clear();
                 SharedPreferences sharedPreferences =
