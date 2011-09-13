@@ -183,6 +183,10 @@ public final class CoordinateTransformer implements Serializable {
     public void setMatrix(Canvas c) {
     	c.translate(mOriginX, mOriginY);
     	c.scale(mZoomLevel, mZoomLevel);
+    }
 
+    public void setInverseMatrix(Canvas c) {
+    	c.scale(1/mZoomLevel, 1/mZoomLevel);
+    	c.translate(-mOriginX, -mOriginY);
     }
 }
