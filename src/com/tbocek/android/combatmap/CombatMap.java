@@ -581,7 +581,13 @@ public final class CombatMap extends Activity {
 			return;
 		case MODE_TOKENS:
             mCombatView.setTokenManipulationMode();
-            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
+            SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(
+                        this.getApplicationContext());
+            mCombatView.setFogOfWarMode(
+            		sharedPreferences.getBoolean("fogofwar", true)
+            				? CombatView.FogOfWarMode.CLIP
+            				: CombatView.FogOfWarMode.NOTHING);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(mTokenSelector);
             setModePreference(manipulationMode);

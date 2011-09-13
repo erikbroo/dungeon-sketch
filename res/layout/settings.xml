@@ -15,4 +15,7 @@
 		android:key="gridtype"
 		android:entries="@array/gridNames"
 		android:entryValues="@array/gridValues"/>
+	<CheckBoxPreference
+	    android:title="Fog of War Enabled"
+	    android:key="fogofwar"/>
 </PreferenceScreen>
