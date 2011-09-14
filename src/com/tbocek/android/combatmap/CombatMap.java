@@ -1,6 +1,8 @@
 package com.tbocek.android.combatmap;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -356,6 +358,13 @@ public final class CombatMap extends Activity {
     }
 
     /**
+     * Reverse lookup so we know what tab to select when forced into an
+     * interaction mode.
+     */
+    private Map<Integer, ActionBar.Tab> manipulationModeTabs =
+    	new HashMap<Integer, ActionBar.Tab>();
+
+    /**
      * Adds a new tab to the action bar that launches the given interaction
      * mode.
      * @param actionBar Action bar to add to.
@@ -369,6 +378,7 @@ public final class CombatMap extends Activity {
     	tab.setText(description);
     	tab.setTabListener(new ManipulationModeTabListener(manipulationMode));
     	actionBar.addTab(tab);
+    	manipulationModeTabs.put(manipulationMode, tab);
     }
 
 
@@ -420,8 +430,8 @@ public final class CombatMap extends Activity {
 
         this.mTokenSelector.setShouldDrawDark(mData.getGrid().isDark());
 
-        this.setManipulationMode(sharedPreferences.getInt(
-        		"manipulationmode", MODE_DRAW_BACKGROUND));
+        manipulationModeTabs.get(sharedPreferences.getInt(
+        		"manipulationmode", MODE_DRAW_BACKGROUND)).select();
     }
 
     @Override
