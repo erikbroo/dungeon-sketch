@@ -432,7 +432,6 @@ public final class CombatMap extends Activity {
                     this.getApplicationContext());
 
         Editor editor = sharedPreferences.edit();
-        editor.putInt("manipulationmode", this.mManipulationMode);
         editor.commit();
 
         String filename = sharedPreferences.getString("filename", null);
@@ -552,7 +551,14 @@ public final class CombatMap extends Activity {
      * 		declared in this class.
      */
     private void setManipulationMode(final int manipulationMode) {
-		this.mManipulationMode = manipulationMode;
+        SharedPreferences sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(
+                    this.getApplicationContext());
+
+        Editor editor = sharedPreferences.edit();
+        editor.putInt("manipulationmode", manipulationMode);
+        editor.commit();
+
 		switch (manipulationMode) {
 		case MODE_DRAW_BACKGROUND:
             mCombatView.setDrawMode();
@@ -589,9 +595,6 @@ public final class CombatMap extends Activity {
 			return;
 		case MODE_TOKENS:
             mCombatView.setTokenManipulationMode();
-            SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(
-                        this.getApplicationContext());
             mCombatView.setFogOfWarMode(
             		sharedPreferences.getBoolean("fogofwar", true)
             				? CombatView.FogOfWarMode.CLIP
@@ -606,11 +609,6 @@ public final class CombatMap extends Activity {
 					+ Integer.toString(manipulationMode));
 		}
 	}
-
-    /**
-     * The last selected manipulation mode.
-     */
-    private int mManipulationMode = MODE_DRAW_BACKGROUND;
 
     /**
      * Sets the preference that will persist the active mode between sessions.
