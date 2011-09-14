@@ -6,6 +6,7 @@ import java.util.Map;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -52,9 +53,28 @@ public abstract class DrawableToken extends BaseToken {
             d.setColorFilter(cf);
             draw(c, x, y, radius, false);
             d.setColorFilter(null);
+        } else {
+        	drawPlaceholder(c, x, y, radius);
         }
 
     }
+
+	/**
+	 * Draws a placeholder where this token should be.  Used for when the
+	 * token hasn't loaded yet.
+	 * @param c Canvas
+	 * @param x center x
+	 * @param y center y
+	 * @param radius circle radius
+	 */
+	private void drawPlaceholder(final Canvas c, final float x, final float y,
+			final float radius) {
+		Paint p = new Paint();
+		p.setColor(Color.BLACK);
+		p.setStyle(Paint.Style.STROKE);
+		p.setStrokeWidth(2.0f);
+		c.drawCircle(x, y, radius, p);
+	}
 
     @Override
     public final void draw(
@@ -68,6 +88,8 @@ public abstract class DrawableToken extends BaseToken {
                                      (int) (x + radius), (int) (y + radius)));
             d.draw(c);
             c.restore();
+        } else {
+        	drawPlaceholder(c, x, y, radius);
         }
     }
 
