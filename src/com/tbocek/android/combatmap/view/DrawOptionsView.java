@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
  * @author Tim Bocek
  *
  */
-public final class DrawOptionsView extends HorizontalScrollView {
+public final class DrawOptionsView extends LinearLayout {
 
     /**
      * The width on each side of the buttons used to pick a new color.
@@ -94,16 +94,21 @@ public final class DrawOptionsView extends HorizontalScrollView {
      */
     private ImageToggleButton mMaskButton;
 
+    private HorizontalScrollView innerView;
+
     /**
      * Constructs a new DrawOptionsView.
      * @param context The context to construct in.
      */
     public DrawOptionsView(final Context context) {
         super(context);
-        layout = new LinearLayout(context);
-        addView(layout);
-
         createAndAddPanButton();
+
+        layout = new LinearLayout(context);
+        innerView = new HorizontalScrollView(context);
+        innerView.addView(layout);
+        addView(innerView);
+
         createAndAddEraserButton();
         createAndAddStraightLineButton();
         createAndAddFreehandLineButton();
@@ -464,7 +469,7 @@ public final class DrawOptionsView extends HorizontalScrollView {
                 panButton.setToggled(true);
             }
         });
-        layout.addView(panButton);
+        this.addView(panButton);
         toolsGroup.add(panButton);
         defaultView = panButton;
 	}
