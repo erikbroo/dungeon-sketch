@@ -352,6 +352,9 @@ public final class CombatMap extends Activity {
         addActionBarTab(actionBar, "GM Notes", MODE_DRAW_GM_NOTES);
         addActionBarTab(actionBar, "Combat", MODE_TOKENS);
         addActionBarTab(actionBar, "Annotations", MODE_DRAW_ANNOTATIONS);
+        // Clear the title on the action bar, since we want to leave more space
+        // for the tabs.
+        actionBar.setTitle("");
 
         mCombatView.refreshMap();
         mCombatView.requestFocus();
