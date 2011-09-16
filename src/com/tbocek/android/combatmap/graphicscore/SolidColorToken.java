@@ -64,15 +64,17 @@ public final class SolidColorToken extends BaseToken {
 
     @Override
     public void draw(final Canvas c, final float x, final float y,
-    		final float radius, final boolean darkBackground) {
+    		final float radius, final boolean darkBackground,
+    		final boolean isManipulatable) {
+    	// TODO: Respect whether the token is manipulatable.
         Paint p = new Paint();
         p.setColor(color);
         c.drawCircle(x, y, radius, p);
     }
 
     @Override
-    public void drawBloodied(final Canvas c, final float x, final float y, final float radius) {
-        draw(c, x, y, radius, false);
+    public void drawBloodied(final Canvas c, final float x, final float y, final float radius, final boolean isManipulatable) {
+        draw(c, x, y, radius, false, isManipulatable);
 
         Paint p = new Paint();
         // If token is already colored red, use a dark red border so it's visible

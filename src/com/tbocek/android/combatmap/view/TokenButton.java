@@ -79,7 +79,7 @@ public class TokenButton extends ImageView {
         mPrototype.draw(c, (float) this.getWidth() / 2,
         		(float) this.getHeight() / 2,
         		getTokenRadius(),
-        		drawDark);
+        		drawDark, true);
     }
 
 	/**

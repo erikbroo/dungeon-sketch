@@ -81,7 +81,7 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
 			}
 
 			int center = tokenDiameter / 2 + tokenOffset * (i - 1);
-			t.draw(canvas, center, center, tokenDiameter / 2, true);
+			t.draw(canvas, center, center, tokenDiameter / 2, true, true);
 			i--;
 		}
 	}

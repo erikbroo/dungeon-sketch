@@ -83,6 +83,11 @@ public final class CombatView extends SurfaceView {
 	private boolean shouldDrawGmNotes = false;
 
 	/**
+	 * Whether tokens should be drawn as manipulatable.
+	 */
+	private boolean areTokensManipulatable = true;
+
+	/**
 	 * Buffer to draw on to.
 	 */
 	private Bitmap buffer;
@@ -297,6 +302,14 @@ public final class CombatView extends SurfaceView {
 		return mFogOfWarMode;
 	}
 
+	/**
+	 * Sets whether tokens are manipulatable.
+	 * @param manip Value to set.
+	 */
+	public void setAreTokensManipulatable(boolean manip) {
+		areTokensManipulatable = manip;
+	}
+
 	@Override
 	public boolean onTouchEvent(final MotionEvent ev) {
 		this.gestureDetector.onTouchEvent(ev);
@@ -371,8 +384,9 @@ public final class CombatView extends SurfaceView {
 			getData().getFogOfWar().clipFogOfWar(canvas);
 			getData().transformer.setInverseMatrix(canvas);
 		}
+
 		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
-				getData().getGrid().isDark());
+				getData().getGrid().isDark(), areTokensManipulatable);
 		canvas.restore();
 
 		this.mInteractionMode.draw(canvas);
@@ -399,7 +413,7 @@ public final class CombatView extends SurfaceView {
 		canvas.restore();
 
 		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
-				getData().getGrid().isDark());
+				getData().getGrid().isDark(), true);
 
 		return bitmap;
 	}

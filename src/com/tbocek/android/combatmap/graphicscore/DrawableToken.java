@@ -6,6 +6,8 @@ import java.util.Map;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -45,13 +47,14 @@ public abstract class DrawableToken extends BaseToken {
 
     @Override
     public final void drawBloodied(
-    		final Canvas c, final float x, final float y, final float radius) {
+    		final Canvas c, final float x, final float y, final float radius,
+    		final boolean isManipulatable) {
         Drawable d = getDrawable();
         if (d != null) {
             ColorFilter cf =
             	new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.OVERLAY);
             d.setColorFilter(cf);
-            draw(c, x, y, radius, false);
+            draw(c, x, y, radius, false, isManipulatable);
             d.setColorFilter(null);
         } else {
         	drawPlaceholder(c, x, y, radius);
@@ -79,14 +82,25 @@ public abstract class DrawableToken extends BaseToken {
     @Override
     public final void draw(
     		final Canvas c, final float x, final float y, final  float radius,
-    		final boolean darkBackground) {
+    		final boolean darkBackground, final boolean isManipulatable) {
         Drawable d = getDrawable();
         if (d != null) {
             c.save(Canvas.CLIP_SAVE_FLAG);
             clipToCircle(c, x, y, radius);
             d.setBounds(new Rect((int) (x - radius), (int) (y - radius),
                                      (int) (x + radius), (int) (y + radius)));
+            if (!isManipulatable) {
+            	d.setColorFilter(new ColorMatrixColorFilter(new ColorMatrix(
+            			new float[] {.5f, 0,   0,  0,  0,
+            			             0,  .5f,  0,  0,  0,
+            			             0,  0,   .5f, 0,  0,
+            			             0,  0,    0,   1,  0}
+            	)));
+            }
             d.draw(c);
+            if (!isManipulatable) {
+            	d.setColorFilter(null);
+            }
             c.restore();
         } else {
         	drawPlaceholder(c, x, y, radius);
@@ -114,7 +128,7 @@ public abstract class DrawableToken extends BaseToken {
         Drawable d = getDrawable();
         if (d != null) {
             d.setAlpha(HALF_OPACITY);
-            draw(c, x, y, radius, false);
+            draw(c, x, y, radius, false, true);
             d.setAlpha(FULL_OPACITY);
         }
     }

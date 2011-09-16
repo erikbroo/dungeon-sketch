@@ -64,9 +64,10 @@ public abstract class BaseToken implements Serializable {
      * @param darkBackground Whether the token is drawn against a dark
      * 		background.  The token can try to make its self more visible in
      * 		this case.
+     * @param isManipulatable
      */
     public abstract void draw(Canvas c, float x, float y, float radius,
-    		final boolean darkBackground);
+    		final boolean darkBackground, boolean isManipulatable);
 
     /**
      * Draw a bloodied version of the token at the given coordinates and size.
@@ -75,9 +76,10 @@ public abstract class BaseToken implements Serializable {
      * @param x The x coordinate in screen space to draw the token at.
      * @param y The y coordinate in screen space to draw the token at.
      * @param radius The radius of the token in screen space.
+     * @param isManipulatable
      */
     public abstract void drawBloodied(Canvas c, float x, float y,
-            float radius);
+            float radius, boolean isManipulatable);
 
     /**
      * Draw a ghost version of the token at the given coordinates and size.
@@ -112,18 +114,20 @@ public abstract class BaseToken implements Serializable {
      * @param darkBackground Whether the token is drawn against a dark
      * 		background.  The token can try to make its self more visible in
      * 		this case.
+     * @param isManipulatable Whether the token can currently be manipulated.
      */
     public final void drawInPosition(
             final Canvas c, final CoordinateTransformer transformer,
-            final boolean darkBackground) {
+            final boolean darkBackground, boolean isManipulatable) {
         PointF center = transformer.worldSpaceToScreenSpace(getLocation());
         float radius = transformer.worldSpaceToScreenSpace(
                 this.getSize() * TOKEN_SIZE_TWEAK / 2);
 
         if (isBloodied()) {
-            drawBloodied(c, center.x, center.y, radius);
+            drawBloodied(c, center.x, center.y, radius, isManipulatable);
         } else {
-            draw(c, center.x, center.y, radius, darkBackground);
+            draw(c, center.x, center.y, radius, darkBackground,
+            		isManipulatable);
         }
     }
 
