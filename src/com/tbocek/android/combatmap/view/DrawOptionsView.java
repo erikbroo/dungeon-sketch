@@ -214,7 +214,7 @@ public final class DrawOptionsView extends LinearLayout {
             this.getContext().getResources().getDrawable(R.drawable.pencilbw);
         b.setImageDrawable(pencil);
         b.setColorFilter(
-                new PorterDuffColorFilter(color, PorterDuff.Mode.OVERLAY));
+                new PorterDuffColorFilter(color, PorterDuff.Mode.LIGHTEN));
         layout.addView(b);
         colorGroup.add(b);
     }

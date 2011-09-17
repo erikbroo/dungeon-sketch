@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -113,7 +114,10 @@ public final class TokenCreatorView extends View {
         setFocusableInTouchMode(true);
         gestureDetector = new GestureDetector(getContext(), onGesture);
         scaleDetector = new ScaleGestureDetector(getContext(), onScaleGesture);
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
     /**

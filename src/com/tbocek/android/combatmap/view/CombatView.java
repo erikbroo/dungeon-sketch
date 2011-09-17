@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
@@ -182,7 +183,34 @@ public final class CombatView extends SurfaceView {
 		setFocusableInTouchMode(true);
 
 		this.setTokenManipulationMode();
-		this.setOnDragListener(mOnDrag);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			mOnDrag = new View.OnDragListener() {
+				@Override
+				public boolean onDrag(final View view, final DragEvent event) {
+					Log.d("DRAG", Integer.toString(event.getAction()));
+					if (event.getAction() == DragEvent.ACTION_DROP) {
+						BaseToken toAdd = (BaseToken) event.getLocalState();
+						PointF location = getGridSpaceTransformer()
+								.screenSpaceToWorldSpace(
+										new PointF(event.getX(), event.getY()));
+						if (snapToGrid) {
+							location = getData().getGrid().getNearestSnapPoint(
+									location, toAdd.getSize());
+						}
+						toAdd.setLocation(location);
+						getData().getTokens().addToken(toAdd);
+						refreshMap();
+						return true;
+					} else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+						return true;
+					}
+					return false;
+				}
+			};
+			this.setOnDragListener(mOnDrag);
+		}
+
 		getHolder().addCallback(this.surfaceHolderCallback);
 		// setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 	}
@@ -521,29 +549,7 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * Drag and drop listener that allows the user to drop tokens onto the grid.
 	 */
-	private View.OnDragListener mOnDrag = new View.OnDragListener() {
-		@Override
-		public boolean onDrag(final View view, final DragEvent event) {
-			Log.d("DRAG", Integer.toString(event.getAction()));
-			if (event.getAction() == DragEvent.ACTION_DROP) {
-				BaseToken toAdd = (BaseToken) event.getLocalState();
-				PointF location = getGridSpaceTransformer()
-						.screenSpaceToWorldSpace(
-								new PointF(event.getX(), event.getY()));
-				if (snapToGrid) {
-					location = getData().getGrid().getNearestSnapPoint(
-							location, toAdd.getSize());
-				}
-				toAdd.setLocation(location);
-				getData().getTokens().addToken(toAdd);
-				refreshMap();
-				return true;
-			} else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-				return true;
-			}
-			return false;
-		}
-	};
+	private View.OnDragListener mOnDrag;
 
 	/**
 	 * Gets the currently active line collection.

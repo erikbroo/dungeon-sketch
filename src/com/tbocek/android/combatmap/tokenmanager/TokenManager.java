@@ -7,6 +7,7 @@ import java.util.Collection;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.view.ContextMenu;
@@ -133,11 +134,13 @@ public final class TokenManager extends Activity {
     	tagListView = new TagListView(this);
     	tagListView.setOnTagListActionListener(onTagListActionListener);
 
-    	trashButton = new TokenDeleteButton(this);
-    	this.registerForContextMenu(trashButton);
-    	((FrameLayout) this.findViewById(
-    			R.id.token_manager_delete_button_frame))
-    			.addView(trashButton);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	    	trashButton = new TokenDeleteButton(this);
+	    	this.registerForContextMenu(trashButton);
+	    	((FrameLayout) this.findViewById(
+	    			R.id.token_manager_delete_button_frame))
+	    			.addView(trashButton);
+        }
 
 
     	FrameLayout tagListFrame =

@@ -51,9 +51,12 @@ public abstract class DrawableToken extends BaseToken {
     		final boolean isManipulatable) {
         Drawable d = getDrawable();
         if (d != null) {
-            ColorFilter cf =
-            	new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.OVERLAY);
-            d.setColorFilter(cf);
+        	d.setColorFilter(new ColorMatrixColorFilter(new ColorMatrix(
+        			new float[] {1,  0,    0,   0,  0,
+        			             0,  .25f, 0,   0,  0,
+        			             0,  0,   .25f, 0,  0,
+        			             0,  0,    0,   1,  0}
+        	)));
             draw(c, x, y, radius, false, isManipulatable);
             d.setColorFilter(null);
         } else {

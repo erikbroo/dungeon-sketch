@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.StrictMode;
@@ -201,36 +202,16 @@ public final class CombatMap extends Activity {
 		}
     };
 
-    /**
-     * Tab listener that switches to a certain interaction mode when the tab
-     * is selected.
-     * @author Tim
-     *
-     */
-    private class ManipulationModeTabListener implements ActionBar.TabListener {
 
-    	private int mMode;
-
-    	public ManipulationModeTabListener(int mode) {
-    		mMode = mode;
-    	}
+    private TabManager.TabSelectedListener mTabSelectedListener = new TabManager.TabSelectedListener() {
 
 		@Override
-		public void onTabReselected(
-				final Tab arg0, final FragmentTransaction arg1) { }
-
-		@Override
-		public void onTabSelected(
-				final Tab arg0, final FragmentTransaction arg1) {
+		public void onTabSelected(int tab) {
 			if (mData != null) {
-				setManipulationMode(mMode);
+				setManipulationMode(tab);
 			}
 		}
-
-		@Override
-		public void onTabUnselected(
-				final Tab arg0, final FragmentTransaction arg1) { }
-    }
+	};
 
     /**
      * Listener that fires when a new token category is selected.
@@ -248,6 +229,9 @@ public final class CombatMap extends Activity {
 				mTokenSelector.setSelectedTag(newTag);
 			}
 		};
+
+
+	TabManager mTabManager = null;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -346,26 +330,28 @@ public final class CombatMap extends Activity {
         }
 
         // Set up the tabs
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        addActionBarTab(actionBar, "Background", MODE_DRAW_BACKGROUND);
-        addActionBarTab(actionBar, "GM Notes", MODE_DRAW_GM_NOTES);
-        addActionBarTab(actionBar, "Combat", MODE_TOKENS);
-        addActionBarTab(actionBar, "Annotations", MODE_DRAW_ANNOTATIONS);
-        // Clear the title on the action bar, since we want to leave more space
-        // for the tabs.
-        actionBar.setTitle("");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	ActionBar actionBar = getActionBar();
+        	mTabManager = new ActionBarTabManager(actionBar);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            // Clear the title on the action bar, since we want to leave more space
+            // for the tabs.
+            actionBar.setTitle("");
+        }
+
+        if (mTabManager != null) {
+        	mTabManager.addTab("Background", MODE_DRAW_BACKGROUND);
+            mTabManager.addTab("GM Notes", MODE_DRAW_GM_NOTES);
+            mTabManager.addTab("Combat", MODE_TOKENS);
+            mTabManager.addTab("Annotations", MODE_DRAW_ANNOTATIONS);
+            mTabManager.setTabSelectedListener(mTabSelectedListener);
+        }
+
 
         mCombatView.refreshMap();
         mCombatView.requestFocus();
     }
 
-    /**
-     * Reverse lookup so we know what tab to select when forced into an
-     * interaction mode.
-     */
-    private Map<Integer, ActionBar.Tab> manipulationModeTabs =
-    	new HashMap<Integer, ActionBar.Tab>();
 
     /**
      * Adds a new tab to the action bar that launches the given interaction
@@ -377,11 +363,7 @@ public final class CombatMap extends Activity {
     private void addActionBarTab(
     		final ActionBar actionBar, final String description,
     		final int manipulationMode) {
-    	ActionBar.Tab tab = actionBar.newTab();
-    	tab.setText(description);
-    	tab.setTabListener(new ManipulationModeTabListener(manipulationMode));
-    	actionBar.addTab(tab);
-    	manipulationModeTabs.put(manipulationMode, tab);
+
     }
 
 
@@ -433,8 +415,10 @@ public final class CombatMap extends Activity {
 
         this.mTokenSelector.setShouldDrawDark(mData.getGrid().isDark());
 
-        manipulationModeTabs.get(sharedPreferences.getInt(
-        		"manipulationmode", MODE_DRAW_BACKGROUND)).select();
+        if (mTabManager != null) {
+	        mTabManager.pickTab(sharedPreferences.getInt(
+	        		"manipulationmode", MODE_DRAW_BACKGROUND));
+        }
     }
 
     @Override

@@ -3,7 +3,7 @@
       package="com.tbocek.android.combatmap"
       android:versionCode="1"
       android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="11" />
+    <uses-sdk android:minSdkVersion="8" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:hardwareAccelerated="true" android:largeHeap="true">
         <activity android:name="com.tbocek.android.combatmap.CombatMap"

@@ -9,6 +9,7 @@ import com.tbocek.android.combatmap.graphicscore.BaseToken;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -149,7 +150,36 @@ public final class TagListView extends ScrollView {
                 }
             }
         });
-        v.setOnDragListener(mOnDrag);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	mOnDrag = new View.OnDragListener() {
+                @Override
+                public boolean onDrag(final View view, final DragEvent event) {
+                    Log.d("DRAG", Integer.toString(event.getAction()));
+                    TextView tv = (TextView) view;
+                    if (event.getAction() == DragEvent.ACTION_DROP) {
+                        Collection<BaseToken> toAdd =
+                        	(Collection<BaseToken>) event.getLocalState();
+                        if (onTagListAction != null) {
+                            onTagListAction.onDragTokensToTag(
+                            		toAdd, tv.getText().toString());
+                        }
+                        setTextViewColorToCorrectHighlight(tv);
+                        return true;
+                    } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+                        tv.setTextColor(DRAG_HIGHLIGHT_COLOR);
+                        return true;
+                    } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
+                        setTextViewColorToCorrectHighlight(tv);
+                        return true;
+                    } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                        return true;
+                    }
+                    return true;
+                }
+            };
+        	v.setOnDragListener(mOnDrag);
+        }
+
         return v;
     }
 
@@ -196,30 +226,5 @@ public final class TagListView extends ScrollView {
     /**
      * Listener that manages dragging a token onto a tag view.
      */
-    private View.OnDragListener mOnDrag = new View.OnDragListener() {
-        @Override
-        public boolean onDrag(final View view, final DragEvent event) {
-            Log.d("DRAG", Integer.toString(event.getAction()));
-            TextView tv = (TextView) view;
-            if (event.getAction() == DragEvent.ACTION_DROP) {
-                Collection<BaseToken> toAdd =
-                	(Collection<BaseToken>) event.getLocalState();
-                if (onTagListAction != null) {
-                    onTagListAction.onDragTokensToTag(
-                    		toAdd, tv.getText().toString());
-                }
-                setTextViewColorToCorrectHighlight(tv);
-                return true;
-            } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-                tv.setTextColor(DRAG_HIGHLIGHT_COLOR);
-                return true;
-            } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
-                setTextViewColorToCorrectHighlight(tv);
-                return true;
-            } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                return true;
-            }
-            return true;
-        }
-    };
+    private View.OnDragListener mOnDrag;
 }

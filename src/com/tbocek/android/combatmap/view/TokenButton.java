@@ -4,6 +4,7 @@ import com.tbocek.android.combatmap.graphicscore.BaseToken;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +42,8 @@ public class TokenButton extends ImageView {
     private SimpleOnGestureListener gestureListener =
     	new SimpleOnGestureListener() {
         public void onLongPress(final MotionEvent e) {
+        	if (android.os.Build.VERSION.SDK_INT
+        			>= android.os.Build.VERSION_CODES.HONEYCOMB)
         	TokenButton.this.onStartDrag();
         }
     };
@@ -71,7 +74,9 @@ public class TokenButton extends ImageView {
         gestureDetector =
         	new GestureDetector(this.getContext(), gestureListener);
 
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
     @Override
