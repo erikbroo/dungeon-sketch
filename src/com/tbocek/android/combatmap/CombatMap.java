@@ -25,7 +25,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.Toast;
 
 import com.tbocek.android.combatmap.graphicscore.BaseToken;
@@ -242,7 +245,25 @@ public final class CombatMap extends Activity {
         BuiltInImageToken.registerResources(
                 this.getApplicationContext().getResources());
 
-        setContentView(R.layout.combat_map_layout);
+
+
+        // Set up the tabs
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	ActionBar actionBar = getActionBar();
+        	mTabManager = new ActionBarTabManager(actionBar);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            // Clear the title on the action bar, since we want to leave more space
+            // for the tabs.
+            actionBar.setTitle("");
+            setContentView(R.layout.combat_map_layout);
+        } else {
+        	this.setContentView(R.layout.combat_map_tab_hosted_layout);
+        	View mainLayout = this.findViewById(R.id.combatMapMainLayout);
+        	TabHost tabHost = (TabHost) this.findViewById(R.id.combatMapTabHost);
+        	tabHost.setup();
+        	mTabManager = new TabHostTabManager(tabHost, mainLayout);
+        }
+
 
         mCombatView = new CombatView(this);
         this.registerForContextMenu(mCombatView);
@@ -329,16 +350,6 @@ public final class CombatMap extends Activity {
             loadMap(filename);
         }
 
-        // Set up the tabs
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-        	ActionBar actionBar = getActionBar();
-        	mTabManager = new ActionBarTabManager(actionBar);
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-            // Clear the title on the action bar, since we want to leave more space
-            // for the tabs.
-            actionBar.setTitle("");
-        }
-
         if (mTabManager != null) {
         	mTabManager.addTab("Background", MODE_DRAW_BACKGROUND);
             mTabManager.addTab("GM Notes", MODE_DRAW_GM_NOTES);
@@ -346,7 +357,6 @@ public final class CombatMap extends Activity {
             mTabManager.addTab("Annotations", MODE_DRAW_ANNOTATIONS);
             mTabManager.setTabSelectedListener(mTabSelectedListener);
         }
-
 
         mCombatView.refreshMap();
         mCombatView.requestFocus();
