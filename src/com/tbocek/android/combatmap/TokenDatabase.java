@@ -317,6 +317,8 @@ public final class TokenDatabase {
         addBuiltin(R.drawable.swan);
         addBuiltin(R.drawable.tiger1);
         addBuiltin(R.drawable.tiger2);
+        addBuiltin(R.drawable.perseus);
+        addBuiltin(R.drawable.gorgon);
     }
 
     /**
