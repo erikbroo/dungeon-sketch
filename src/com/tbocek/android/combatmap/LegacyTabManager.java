@@ -25,12 +25,10 @@ public class LegacyTabManager extends TabManager {
 		Button b = new Button(mContainer.getContext());
 		b.setText(text);
 		b.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
 				onTabSelected(mode);
 			}
-
 		});
 		mContainer.addView(b);
 	}
