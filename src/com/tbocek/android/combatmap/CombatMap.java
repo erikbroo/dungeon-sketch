@@ -257,11 +257,10 @@ public final class CombatMap extends Activity {
             actionBar.setTitle("");
             setContentView(R.layout.combat_map_layout);
         } else {
-        	this.setContentView(R.layout.combat_map_tab_hosted_layout);
-        	View mainLayout = this.findViewById(R.id.combatMapMainLayout);
-        	TabHost tabHost = (TabHost) this.findViewById(R.id.combatMapTabHost);
-        	tabHost.setup();
-        	mTabManager = new TabHostTabManager(tabHost, mainLayout);
+        	this.setContentView(R.layout.combat_map_layout);
+        	View legacyActionBar = this.findViewById(R.id.legacyActionBar);
+        	legacyActionBar.setVisibility(View.VISIBLE);
+        	mTabManager = new LegacyTabManager((LinearLayout)this.findViewById(R.id.legacyActionBarLayout));
         }
 
 
