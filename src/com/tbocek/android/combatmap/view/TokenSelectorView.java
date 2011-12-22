@@ -25,7 +25,7 @@ public final class TokenSelectorView extends LinearLayout {
 	/**
 	 * Dimensions of the square token views.
 	 */
-	private static final int TOKEN_VIEW_SIZE = 80;
+	private static final int TOKEN_VIEW_SIZE = 64;
 
 	/**
      * The inner layout that contains the tokens.
@@ -83,7 +83,8 @@ public final class TokenSelectorView extends LinearLayout {
         View b = this.mTokenViewFactory.getTokenView(prototype);
         b.setOnClickListener(onClickListener);
         b.setLayoutParams(new LinearLayout.LayoutParams(
-        		TOKEN_VIEW_SIZE, TOKEN_VIEW_SIZE));
+        		(int) (TOKEN_VIEW_SIZE * getResources().getDisplayMetrics().density),
+        		(int) (TOKEN_VIEW_SIZE * getResources().getDisplayMetrics().density)));
         return b;
     }
 
