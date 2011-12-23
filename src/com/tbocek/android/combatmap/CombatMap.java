@@ -249,13 +249,13 @@ public final class CombatMap extends Activity {
 
         // Set up the tabs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setContentView(R.layout.combat_map_layout);
         	ActionBar actionBar = getActionBar();
         	mTabManager = new ActionBarTabManager(actionBar);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             // Clear the title on the action bar, since we want to leave more space
             // for the tabs.
             actionBar.setTitle("");
-            setContentView(R.layout.combat_map_layout);
         } else {
         	this.setContentView(R.layout.combat_map_layout);
         	View legacyActionBar = this.findViewById(R.id.legacyActionBar);

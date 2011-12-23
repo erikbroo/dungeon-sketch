@@ -18,7 +18,7 @@ public class ActionBarTabManager extends TabManager {
     	new HashMap<Integer, ActionBar.Tab>();
 
 	public ActionBarTabManager(ActionBar actionBar) {
-		actionBar = actionBar;
+		this.actionBar = actionBar;
 	}
 
 	@Override
