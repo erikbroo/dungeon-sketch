@@ -209,7 +209,8 @@ public final class DrawOptionsView extends LinearLayout {
         ImageToggleButton b = new ImageToggleButton(this.getContext());
         b.setOnClickListener(new ColorListener(color));
         b.setLayoutParams(new LinearLayout.LayoutParams(
-                COLOR_BUTTON_SIZE, COLOR_BUTTON_SIZE));
+                (int) (COLOR_BUTTON_SIZE * getResources().getDisplayMetrics().density),
+                (int) (COLOR_BUTTON_SIZE * getResources().getDisplayMetrics().density)));
         Drawable pencil =
             this.getContext().getResources().getDrawable(R.drawable.pencilbw);
         b.setImageDrawable(pencil);
