@@ -178,11 +178,6 @@ public final class CombatMap extends Activity {
 		}
 
 		@Override
-		public void onChooseDeleteTool() {
-			mCombatView.setDeleteMode();
-		}
-
-		@Override
 		public void onChooseMaskTool() {
             mCombatView.setFogOfWarDrawMode();
 		}

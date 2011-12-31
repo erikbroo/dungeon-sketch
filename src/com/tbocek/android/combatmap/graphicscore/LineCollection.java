@@ -154,7 +154,7 @@ public final class LineCollection implements Serializable {
 		mCommandHistory.execute(c);
 		return t;
 	}
-
+	
     /**
      * Inserts a new line into the list of lines, making sure that the lines are
      * sorted by line width.
@@ -175,33 +175,31 @@ public final class LineCollection implements Serializable {
         it.add(line);
     }
 
-    /**
-     * Returns true if the given point is in a region defined by one of the
-     * lines, false otherwise.
-     * @param tappedPoint The point to test.
-     * @return Whether the point is in one of the line regions.
-     */
-	public boolean isPointInRegion(final PointF tappedPoint) {
-		for (Shape l : lines) {
-    		if (l.contains(tappedPoint)) {
-    			return true;
-    		}
-    	}
-		return false;
+    public Shape findShape(final PointF under, final Class<?> requestedClass) {
+    	for (Shape l : lines) {
+        	if ((requestedClass == null || l.getClass() == requestedClass) 
+        			&& l.contains(under)) {
+        		return l;
+        	}
+        }
+    	return null;
+    }
+    
+
+	public Shape findShape(PointF under) {
+		return findShape(under, null);
 	}
 
 	/**
      * Deletes all regions under the tapped point.
      * @param tappedPoint The point that was tapped, in world space.
      */
-    public void deleteRegionsUnderPoint(final PointF tappedPoint) {
-    	Command c = new Command(this);
-    	for (Shape l : lines) {
-    		if (l.contains(tappedPoint)) {
-    			c.addDeletedShape(l);
-    		}
+    public void deleteShape(Shape l) {
+    	if (lines.contains(l)) {
+    		Command c = new Command(this);
+    		c.addDeletedShape(l);
+    		mCommandHistory.execute(c);
     	}
-    	mCommandHistory.execute(c);
     }
 
     /**
@@ -436,5 +434,6 @@ public final class LineCollection implements Serializable {
 	public void redo() {
 		mCommandHistory.redo();
 	}
+
 
 }

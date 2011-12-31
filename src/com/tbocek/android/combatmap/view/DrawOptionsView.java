@@ -252,11 +252,6 @@ public final class DrawOptionsView extends LinearLayout {
         void onChooseMaskTool();
 
         /**
-         * Fired when the delete region tool is selected.
-         */
-        void onChooseDeleteTool();
-
-        /**
          * Fired when the color is changed.
          * @param color The new color.
          */
@@ -304,9 +299,6 @@ public final class DrawOptionsView extends LinearLayout {
     		implements OnChangeDrawToolListener {
         @Override
         public void onChooseEraser() { }
-
-        @Override
-        public void onChooseDeleteTool() { }
 
         @Override
         public void onChooseColoredPen(final int color) { }

@@ -270,13 +270,6 @@ public final class CombatView extends SurfaceView {
 	}
 
 	/**
-	 * Sets the interaction mode to deleting the tapped region.
-	 */
-	public void setDeleteMode() {
-		setInteractionMode(new DeleteRegionInteractionMode(this));
-	}
-
-	/**
 	 * Sets the background layer as the active layer, so that any draw commands
 	 * will draw on the background.
 	 */
