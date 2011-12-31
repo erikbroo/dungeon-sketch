@@ -326,6 +326,8 @@ public final class CombatView extends SurfaceView {
 		if (mInteractionMode != null) {
 			mInteractionMode.onStartMode();
 		}
+		
+		this.refreshMap();
 	}
 
 	/**

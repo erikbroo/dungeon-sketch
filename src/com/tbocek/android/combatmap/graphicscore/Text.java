@@ -88,9 +88,11 @@ public class Text extends Shape {
 	public void draw(final Canvas c) {
 		ensurePaintCreated();
 		this.paint.setTextSize(mSize);
-		this.paint.setStyle(Style.STROKE);
-		c.drawRect(this.boundingRectangle.toRectF(), paint);
-		this.paint.setStyle(Style.FILL);
+		if (Text.drawBoundingBoxes) {
+			this.paint.setStyle(Style.STROKE);
+			c.drawRect(this.boundingRectangle.toRectF(), paint);
+			this.paint.setStyle(Style.FILL);
+		}
 		c.drawText(mText, location.x, location.y, this.paint);
 	}
 
