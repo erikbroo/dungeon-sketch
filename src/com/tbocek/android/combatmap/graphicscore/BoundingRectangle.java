@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import android.graphics.RectF;
+
 /**
  * Represents a recangle that bounds a number of drawable Dungeon Sketch
  * objects.
@@ -138,4 +140,8 @@ public final class BoundingRectangle implements Serializable {
             && center.y + radius >= boundsYMin
             && center.y - radius <= boundsYMax;
     }
+
+	public RectF toRectF() {
+		return new RectF(boundsXMin, boundsYMin, boundsXMax, boundsYMax);
+	}
 }

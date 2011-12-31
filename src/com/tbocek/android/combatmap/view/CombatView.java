@@ -162,7 +162,12 @@ public final class CombatView extends SurfaceView {
 		/**
 		 * Draw a circle.
 		 */
-		CIRCLE
+		CIRCLE,
+
+		/**
+		 * Draw text.
+		 */
+		TEXT
 	}
 
 	/**
@@ -174,8 +179,7 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * Constructor.
 	 *
-	 * @param context
-	 *            The context to create this view in.\
+	 * @param context The context to create this view in.
 	 */
 	public CombatView(final Context context) {
 		super(context);
@@ -237,6 +241,10 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void setDrawMode() {
 		setInteractionMode(new FingerDrawInteractionMode(this));
+	}
+
+	public void setTextMode() {
+		setInteractionMode(new DrawTextInteractionMode(this));
 	}
 
 	/**
@@ -662,5 +670,28 @@ public final class CombatView extends SurfaceView {
 	 */
 	public NewLineStyle getNewLineStyle() {
 		return mNewLineStyle;
+	}
+
+	
+	
+	public interface NewTextEntryListener {
+		void requestNewTextEntry(PointF newTextLocationWorldSpace);
+	}
+	public NewTextEntryListener newTextEntryListener;
+	
+	public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
+		if (newTextEntryListener != null) {
+			newTextEntryListener.requestNewTextEntry(newTextLocationWorldSpace);
+		}
+	}
+	
+	public void createNewText(PointF newTextLocationWorldSpace, String text) {
+		//Compute the text size as being one grid cell large.
+		float textSize = getData().getGrid().gridSpaceToWorldSpaceTransformer()
+				   .worldSpaceToScreenSpace(1);
+		mActiveLines.createText(text, textSize,
+				mNewLineColor, Float.POSITIVE_INFINITY, 
+				newTextLocationWorldSpace, this.getWorldSpaceTransformer());
+		refreshMap();
 	}
 }

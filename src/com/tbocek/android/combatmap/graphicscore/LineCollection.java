@@ -145,6 +145,15 @@ public final class LineCollection implements Serializable {
         mCommandHistory.execute(c);
         return l;
 	}
+	
+
+	public Shape createText(String text, float size, int color, float strokeWidth, PointF location, CoordinateTransformer transform) {
+		Text t = new Text(text, size, color, strokeWidth, location, transform);
+		Command c = new Command(this);
+		c.addCreatedShape(t);
+		mCommandHistory.execute(c);
+		return t;
+	}
 
     /**
      * Inserts a new line into the list of lines, making sure that the lines are

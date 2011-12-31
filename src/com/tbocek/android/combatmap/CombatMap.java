@@ -35,6 +35,7 @@ import com.tbocek.android.combatmap.graphicscore.BaseToken;
 import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.Grid;
 import com.tbocek.android.combatmap.graphicscore.MapData;
+import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
@@ -203,6 +204,12 @@ public final class CombatMap extends Activity {
 			mCombatView.setDrawMode();
 			mCombatView.setNewLineStyle(CombatView.NewLineStyle.CIRCLE);
 		}
+
+		@Override
+		public void onChooseTextTool() {
+			mCombatView.setTextMode();
+
+		}
     };
 
 
@@ -232,6 +239,18 @@ public final class CombatMap extends Activity {
 				mTokenSelector.setSelectedTag(newTag);
 			}
 		};
+		
+	private CombatView.NewTextEntryListener onNewTextEntryListener = 
+		new CombatView.NewTextEntryListener() {
+
+			@Override
+			public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
+				mNewTextLocationWorldSpace = newTextLocationWorldSpace;
+				showDialog(DIALOG_ID_DRAW_TEXT);
+			}
+		
+	};
+	private PointF mNewTextLocationWorldSpace;
 
 
 	TabManager mTabManager = null;
@@ -266,6 +285,7 @@ public final class CombatMap extends Activity {
 
         mCombatView = new CombatView(this);
         this.registerForContextMenu(mCombatView);
+        mCombatView.newTextEntryListener = this.onNewTextEntryListener;
 
         mTokenSelector = new TokenSelectorView(this.getApplicationContext());
 
@@ -652,7 +672,9 @@ public final class CombatMap extends Activity {
     /**
      * Dialog ID to use for the save file dialog.
      */
-    private static final int DIALOG_ID_SAVE = 0;
+    public static final int DIALOG_ID_SAVE = 0;
+    
+    public static final int DIALOG_ID_DRAW_TEXT = 1;
 
 
     @Override
@@ -665,6 +687,13 @@ public final class CombatMap extends Activity {
                 	new MapSaver(text, getApplicationContext()).run();
                 }
             }, "Save Map", "Save");
+        case DIALOG_ID_DRAW_TEXT:
+            return new TextPromptDialog(this,
+                    new TextPromptDialog.OnTextConfirmedListener() {
+               public void onTextConfirmed(final String text) {
+               		mCombatView.createNewText(mNewTextLocationWorldSpace, text);
+               }
+           }, "Draw Text", "Draw");        	
         default:
         	return null;
         }

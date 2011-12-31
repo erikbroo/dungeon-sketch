@@ -113,6 +113,7 @@ public final class DrawOptionsView extends LinearLayout {
         createAndAddStraightLineButton();
         createAndAddFreehandLineButton();
         createAndAddCircleButton();
+        createAndAddTextButton();
 
 
         createAndAddSeperator();
@@ -288,6 +289,8 @@ public final class DrawOptionsView extends LinearLayout {
 		void onChooseStraightLineTool();
 
 		void onChooseCircleTool();
+
+		void onChooseTextTool();
     }
 
     /**
@@ -331,6 +334,9 @@ public final class DrawOptionsView extends LinearLayout {
 
 		@Override
 		public void onChooseCircleTool() { }
+
+		@Override
+		public void onChooseTextTool() { }
     }
 
 
@@ -543,6 +549,24 @@ public final class DrawOptionsView extends LinearLayout {
         toolsGroup.add(button);
 	}
 
+	protected void createAndAddTextButton() {
+		final ImageToggleButton button =
+			new ImageToggleButton(this.getContext());
+
+        button.setImageResource(R.drawable.draw_text);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                onChangeDrawToolListener.onChooseTextTool();
+                untoggleGroup(toolsGroup);
+                setGroupVisibility(colorGroup, View.VISIBLE);
+                setGroupVisibility(lineWidthGroup, View.VISIBLE);
+                button.setToggled(true);
+            }
+        });
+        layout.addView(button);
+        toolsGroup.add(button);
+	}
 
     /**
      * Sets the visibility of a group of buttons.

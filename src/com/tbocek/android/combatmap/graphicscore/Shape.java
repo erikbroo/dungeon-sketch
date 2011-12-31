@@ -19,7 +19,7 @@ public abstract class Shape implements Serializable {
 	/**
 	 * The paint object that will be used to draw this line.
 	 */
-	private transient Paint paint;
+	protected transient Paint paint;
 
 	public abstract boolean contains(PointF p);
 
@@ -124,7 +124,7 @@ public abstract class Shape implements Serializable {
 	 * If there is no Paint object cached for this line, create one and set
 	 * the appropriate color and stroke width.
 	 */
-	private void ensurePaintCreated() {
+	protected void ensurePaintCreated() {
 		if (paint == null) {
 	        paint = new Paint();
 	        paint.setColor(mColor);
