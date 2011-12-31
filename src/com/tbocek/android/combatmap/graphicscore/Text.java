@@ -17,6 +17,8 @@ public class Text extends Shape {
 	private PointF location;
 	
 	private boolean erased = false;
+	
+	public static boolean drawBoundingBoxes = false;
 
 	public Text(String text, float size, int color, float strokeWidth, PointF location, CoordinateTransformer transform) {
 		this.mText = text;
