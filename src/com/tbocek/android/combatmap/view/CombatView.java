@@ -314,10 +314,18 @@ public final class CombatView extends SurfaceView {
 	 *            The interaction mode to use.
 	 */
 	private void setInteractionMode(final CombatViewInteractionMode mode) {
+		if (mInteractionMode != null) {
+			mInteractionMode.onEndMode();
+		}
+		
 		gestureDetector = new GestureDetector(this.getContext(), mode);
 		gestureDetector.setOnDoubleTapListener(mode);
 		scaleDetector = new ScaleGestureDetector(this.getContext(), mode);
 		mInteractionMode = mode;
+		
+		if (mInteractionMode != null) {
+			mInteractionMode.onStartMode();
+		}
 	}
 
 	/**

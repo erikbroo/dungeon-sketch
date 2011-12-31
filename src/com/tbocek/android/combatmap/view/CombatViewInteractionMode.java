@@ -35,6 +35,14 @@ public class CombatViewInteractionMode
       public CombatViewInteractionMode(final CombatView view) {
           this.view = view;
       }
+      
+      public void onStartMode() {
+    	  
+      }
+      
+      public void onEndMode() {
+    	  
+      }
 
       @Override
       public boolean onScale(final ScaleGestureDetector detector) {
