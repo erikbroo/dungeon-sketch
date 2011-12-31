@@ -685,10 +685,10 @@ public final class CombatView extends SurfaceView {
 		}
 	}
 	
-	public void createNewText(PointF newTextLocationWorldSpace, String text) {
+	public void createNewText(PointF newTextLocationWorldSpace, String text, float size) {
 		//Compute the text size as being one grid cell large.
 		float textSize = getData().getGrid().gridSpaceToWorldSpaceTransformer()
-				   .worldSpaceToScreenSpace(1);
+				   .worldSpaceToScreenSpace(size);
 		mActiveLines.createText(text, textSize,
 				mNewLineColor, Float.POSITIVE_INFINITY, 
 				newTextLocationWorldSpace, this.getWorldSpaceTransformer());

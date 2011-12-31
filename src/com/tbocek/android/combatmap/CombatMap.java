@@ -688,12 +688,12 @@ public final class CombatMap extends Activity {
                 }
             }, "Save Map", "Save");
         case DIALOG_ID_DRAW_TEXT:
-            return new TextPromptDialog(this,
-                    new TextPromptDialog.OnTextConfirmedListener() {
-               public void onTextConfirmed(final String text) {
-               		mCombatView.createNewText(mNewTextLocationWorldSpace, text);
+            return new FontDialog(this,
+                    new FontDialog.OnTextConfirmedListener() {
+               public void onTextConfirmed(final String text, final float size) {
+               		mCombatView.createNewText(mNewTextLocationWorldSpace, text, size);
                }
-           }, "Draw Text", "Draw");        	
+           });        	
         default:
         	return null;
         }
