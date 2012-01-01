@@ -10,19 +10,19 @@ import android.graphics.Rect;
 
 public class Text extends Shape {
 
-	private String mText;
+	public String text;
 
-	private float mSize;
+	public float textSize;
 
-	private PointF location;
+	PointF location;
 	
 	private boolean erased = false;
 	
 	public static boolean drawBoundingBoxes = false;
 
-	public Text(String text, float size, int color, float strokeWidth, PointF location, CoordinateTransformer transform) {
-		this.mText = text;
-		this.mSize = size;
+	public Text(String newText, float size, int color, float strokeWidth, PointF location, CoordinateTransformer transform) {
+		this.text = newText;
+		this.textSize = size;
 		this.mColor = color;
 		this.mWidth = strokeWidth;
 		
@@ -32,10 +32,10 @@ public class Text extends Shape {
 		// To do this, we need to create the Paint object so we know the size
 		// of the text.
 		ensurePaintCreated();
-		this.paint.setTextSize(mSize);
+		this.paint.setTextSize(textSize);
 		
 		Rect bounds = new Rect();
-		paint.getTextBounds(mText, 0, mText.length(), bounds);
+		paint.getTextBounds(text, 0, text.length(), bounds);
 		this.boundingRectangle.updateBounds(location);
 		this.boundingRectangle.updateBounds(
 				new PointF(
@@ -48,8 +48,8 @@ public class Text extends Shape {
 	 * @param copyFrom
 	 */
 	public Text(Text copyFrom) {
-		mText = copyFrom.mText;
-		mSize = copyFrom.mSize;
+		text = copyFrom.text;
+		textSize = copyFrom.textSize;
 		this.mColor = copyFrom.mColor;
 		this.mWidth = copyFrom.mWidth;
 		this.boundingRectangle = new BoundingRectangle();
@@ -100,13 +100,13 @@ public class Text extends Shape {
 	@Override
 	public void draw(final Canvas c) {
 		ensurePaintCreated();
-		this.paint.setTextSize(mSize);
+		this.paint.setTextSize(textSize);
 		if (Text.drawBoundingBoxes) {
 			this.paint.setStyle(Style.STROKE);
 			c.drawRect(this.boundingRectangle.toRectF(), paint);
 			this.paint.setStyle(Style.FILL);
 		}
-		c.drawText(mText, location.x, location.y, this.paint);
+		c.drawText(text, location.x, location.y, this.paint);
 	}
 	
 	protected Shape getMovedShape(float deltaX, float deltaY) {

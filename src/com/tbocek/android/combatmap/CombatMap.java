@@ -241,18 +241,23 @@ public final class CombatMap extends Activity {
 
 			@Override
 			public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
+				mEditedTextObject = null;
 				mNewTextLocationWorldSpace = newTextLocationWorldSpace;
 				showDialog(DIALOG_ID_DRAW_TEXT);
 			}
 
 			@Override
 			public void requestEditTextObject(Text t) {
-				
+				mEditedTextObject = t;
+				showDialog(DIALOG_ID_DRAW_TEXT);
 			}
 		
 	};
 	private PointF mNewTextLocationWorldSpace;
-
+	
+	// The text object that the edit dialog is currently editing, or null if
+	// a new text object is being created.
+	private Text mEditedTextObject;
 
 	TabManager mTabManager = null;
 
@@ -689,12 +694,22 @@ public final class CombatMap extends Activity {
                 }
             }, "Save Map", "Save");
         case DIALOG_ID_DRAW_TEXT:
-            return new FontDialog(this,
+        	
+            FontDialog d = new FontDialog(this,
                     new FontDialog.OnTextConfirmedListener() {
                public void onTextConfirmed(final String text, final float size) {
-               		mCombatView.createNewText(mNewTextLocationWorldSpace, text, size);
+            	   if (mEditedTextObject == null) {
+               			mCombatView.createNewText(mNewTextLocationWorldSpace, text, size);
+            	   } else {
+            		   mCombatView.getActiveLines().editText(mEditedTextObject, text, size, mCombatView.getWorldSpaceTransformer());
+            		   mCombatView.refreshMap();
+            	   }
                }
-           });        	
+           });  
+            if (mEditedTextObject != null) {
+            	d.populateFields(mEditedTextObject.text, mEditedTextObject.textSize);
+            }
+            return d;
         default:
         	return null;
         }

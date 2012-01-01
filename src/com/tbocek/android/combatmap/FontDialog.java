@@ -93,4 +93,9 @@ public class FontDialog extends Dialog {
         nameText.setText("");
     }
 
+	public void populateFields(String text, float textSize) {
+		nameText.setText(text);
+		//TODO: Set the font size.
+	}
+
 }

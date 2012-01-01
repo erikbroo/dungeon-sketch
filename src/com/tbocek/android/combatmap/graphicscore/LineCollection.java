@@ -161,6 +161,16 @@ public final class LineCollection implements Serializable {
 		return t;
 	}
 	
+
+	public void editText(Text editedTextObject, String text, float size, CoordinateTransformer transformer) {
+		Text newText = new Text(text, size, editedTextObject.mColor, editedTextObject.mWidth, editedTextObject.location, transformer);
+		Command c = new Command(this);
+		c.addCreatedShape(newText);
+		c.addDeletedShape(editedTextObject);
+		mCommandHistory.execute(c);
+	}
+
+	
     /**
      * Inserts a new line into the list of lines, making sure that the lines are
      * sorted by line width.
