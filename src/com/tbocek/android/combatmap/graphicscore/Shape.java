@@ -169,7 +169,7 @@ public abstract class Shape implements Serializable {
 	public void clipFogOfWar(final Canvas c) {
 		ensurePathCreated();
 		if (mPath != null) {
-			c.clipPath(mPath, Op.DIFFERENCE);
+			c.clipPath(mPath, Op.UNION);
 		}
 	}
 

@@ -11,6 +11,8 @@ import java.util.ListIterator;
 import java.util.Stack;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.Region.Op;
 
 /**
  * Provides operations over an aggregate collection of lines.
@@ -101,9 +103,17 @@ public final class LineCollection implements Serializable {
      * @param canvas The canvas to draw on.
      */
     public void clipFogOfWar(final Canvas canvas) {
+    	Rect r = canvas.getClipBounds();
+    	
+    	// Remove the current clip.
+    	canvas.clipRect(r, Op.DIFFERENCE);
+    	
+    	// Union together the regions that are supposed to draw.
         for (int i = 0; i < lines.size(); ++i) {
             lines.get(i).clipFogOfWar(canvas);
         }
+        
+        canvas.clipRect(r, Op.INTERSECT);
     }
 
     /**
