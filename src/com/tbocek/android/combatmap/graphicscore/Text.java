@@ -42,11 +42,24 @@ public class Text extends Shape {
 						location.x + bounds.width(), 
 						location.y - bounds.height()));
 	}
+	
+	/**
+	 * Copy constructor.
+	 * @param copyFrom
+	 */
+	public Text(Text copyFrom) {
+		mText = copyFrom.mText;
+		mSize = copyFrom.mSize;
+		this.mColor = copyFrom.mColor;
+		this.mWidth = copyFrom.mWidth;
+		this.boundingRectangle = new BoundingRectangle();
+		this.boundingRectangle.updateBounds(copyFrom.boundingRectangle);
+		this.location = new PointF(copyFrom.location.x, copyFrom.location.y);
+	}
 
 	@Override
 	public boolean contains(PointF p) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.boundingRectangle.contains(p);
 	}
 
 	@Override
@@ -94,6 +107,16 @@ public class Text extends Shape {
 			this.paint.setStyle(Style.FILL);
 		}
 		c.drawText(mText, location.x, location.y, this.paint);
+	}
+	
+	protected Shape getMovedShape(float deltaX, float deltaY) {
+		Text t = new Text(this);
+		
+		t.location.x += deltaX;
+		t.location.y += deltaY;
+		t.boundingRectangle.move(deltaX, deltaY);
+		
+		return t;
 	}
 
 }

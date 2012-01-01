@@ -22,6 +22,7 @@ import com.tbocek.android.combatmap.graphicscore.LineCollection;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.Shape;
+import com.tbocek.android.combatmap.graphicscore.Text;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
 
 /**
@@ -356,7 +357,6 @@ public final class CombatView extends SurfaceView {
 
 		// If a finger was removed, optimize the lines by removing unused
 		// points.
-		// TODO(tim.bocek): Only do this if we are erasing.
 		if (ev.getAction() == MotionEvent.ACTION_UP) {
 			this.mInteractionMode.onUp(ev);
 		}
@@ -679,6 +679,8 @@ public final class CombatView extends SurfaceView {
 	
 	public interface NewTextEntryListener {
 		void requestNewTextEntry(PointF newTextLocationWorldSpace);
+
+		void requestEditTextObject(Text t);
 	}
 	public NewTextEntryListener newTextEntryListener;
 	
@@ -696,5 +698,9 @@ public final class CombatView extends SurfaceView {
 				mNewLineColor, Float.POSITIVE_INFINITY, 
 				newTextLocationWorldSpace, this.getWorldSpaceTransformer());
 		refreshMap();
+	}
+
+	public void requestEditTextObject(Text t) {
+		newTextEntryListener.requestEditTextObject(t);
 	}
 }

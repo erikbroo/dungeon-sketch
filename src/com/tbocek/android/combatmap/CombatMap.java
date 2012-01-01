@@ -36,6 +36,7 @@ import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
 import com.tbocek.android.combatmap.graphicscore.Grid;
 import com.tbocek.android.combatmap.graphicscore.MapData;
 import com.tbocek.android.combatmap.graphicscore.PointF;
+import com.tbocek.android.combatmap.graphicscore.Text;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
@@ -242,6 +243,11 @@ public final class CombatMap extends Activity {
 			public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
 				mNewTextLocationWorldSpace = newTextLocationWorldSpace;
 				showDialog(DIALOG_ID_DRAW_TEXT);
+			}
+
+			@Override
+			public void requestEditTextObject(Text t) {
+				
 			}
 		
 	};

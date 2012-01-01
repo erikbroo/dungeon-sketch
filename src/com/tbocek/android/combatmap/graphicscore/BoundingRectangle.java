@@ -144,4 +144,11 @@ public final class BoundingRectangle implements Serializable {
 	public RectF toRectF() {
 		return new RectF(boundsXMin, boundsYMin, boundsXMax, boundsYMax);
 	}
+
+	public void move(float deltaX, float deltaY) {
+		boundsXMin += deltaX;
+		boundsXMax += deltaX;
+		boundsYMin += deltaY;
+		boundsYMax += deltaY;
+	}
 }

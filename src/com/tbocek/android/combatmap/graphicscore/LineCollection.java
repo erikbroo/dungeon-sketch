@@ -51,7 +51,9 @@ public final class LineCollection implements Serializable {
      */
     public void drawAllLines(final Canvas canvas) {
         for (int i = 0; i < lines.size(); ++i) {
+        	lines.get(i).applyDrawOffsetToCanvas(canvas);
             lines.get(i).draw(canvas);
+            lines.get(i).revertDrawOffsetFromCanvas(canvas);
         }
     }
 
@@ -62,7 +64,9 @@ public final class LineCollection implements Serializable {
     public void drawAllLinesBelowGrid(final Canvas canvas) {
         for (int i = 0; i < lines.size(); ++i) {
         	if (lines.get(i).shouldDrawBelowGrid()) {
+        		lines.get(i).applyDrawOffsetToCanvas(canvas);
         		lines.get(i).draw(canvas);
+        		lines.get(i).revertDrawOffsetFromCanvas(canvas);
         	}
         }
     }
@@ -75,7 +79,9 @@ public final class LineCollection implements Serializable {
     public void drawAllLinesAboveGrid(final Canvas canvas) {
         for (int i = 0; i < lines.size(); ++i) {
         	if (!lines.get(i).shouldDrawBelowGrid()) {
+        		lines.get(i).applyDrawOffsetToCanvas(canvas);
         		lines.get(i).draw(canvas);
+        		lines.get(i).revertDrawOffsetFromCanvas(canvas);
         	}
         }
     }
@@ -233,6 +239,9 @@ public final class LineCollection implements Serializable {
 	            List<Shape> optimizedLines = lines.get(i).removeErasedPoints();
 	            c.addDeletedShape(lines.get(i));
 	            c.addCreatedShapes(optimizedLines);
+        	} else if (lines.get(i).hasOffset()) {
+        		c.addDeletedShape(lines.get(i));
+        		c.addCreatedShape(lines.get(i).commitDrawOffset());
         	}
         }
         mCommandHistory.execute(c);

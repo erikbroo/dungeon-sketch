@@ -32,6 +32,68 @@ public abstract class Shape implements Serializable {
 	protected abstract Path createPath();
 
 	public abstract void addPoint(final PointF p);
+	
+
+	private float drawOffsetDeltaX = Float.NaN;
+	private float drawOffsetDeltaY = Float.NaN;
+	
+	/**
+	 * Sets a temporary offset for drawing this shape.  This will cause the
+	 * shape to change the tranformation until the operation is committed, which
+	 * wipes the offset data and returns a copy of the shape that is permanently
+	 * modified with the new offset.
+	 * @param deltaX
+	 * @param deltaY
+	 */
+	public void setDrawOffset(float deltaX, float deltaY) {
+		drawOffsetDeltaX = deltaX;
+		drawOffsetDeltaY = deltaY;
+	}
+	
+	public void applyDrawOffsetToCanvas(Canvas c) {
+		if (hasOffset()) {
+			c.save();
+			c.translate(drawOffsetDeltaX, drawOffsetDeltaY);
+		}
+	}
+	
+	public void revertDrawOffsetFromCanvas(Canvas c) {
+		if (hasOffset()) {
+			c.restore();
+		}
+	}
+	
+	public boolean hasOffset() {
+		// NaN check.
+		return drawOffsetDeltaX == drawOffsetDeltaX;
+	}
+	
+	private void clearDrawOffset() {
+		drawOffsetDeltaX = Float.NaN;
+		drawOffsetDeltaY = Float.NaN;
+	}
+	
+	public Shape commitDrawOffset() {
+		//TODO: Roll this into the Commit operation.
+		if (drawOffsetDeltaX == Float.NaN) return null;
+		
+		Shape s = getMovedShape(drawOffsetDeltaX, drawOffsetDeltaY);
+		clearDrawOffset();
+		return s;
+	}
+	
+	/**
+	 * 
+	 * @param deltaX
+	 * @param deltaY
+	 * @return A *copy* of this shape that is moved by the given offset in
+	 * 		world space.
+	 */
+	protected Shape getMovedShape(float deltaX, float deltaY) {
+		//TODO: Implement this for each subclass, and make this abstract.
+		throw new RuntimeException(
+				"This shape does not support the move operation.");
+	}
 
 	/**
 	 * Cached path that represents this line.
@@ -160,5 +222,6 @@ public abstract class Shape implements Serializable {
 	public boolean shouldDrawBelowGrid() {
 		return this.mWidth > 1.0f;
 	}
+
 
 }
