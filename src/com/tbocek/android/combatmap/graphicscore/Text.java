@@ -118,5 +118,9 @@ public class Text extends Shape {
 		
 		return t;
 	}
+	
+	public boolean shouldDrawBelowGrid() {
+		return false;
+	}
 
 }
