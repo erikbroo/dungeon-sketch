@@ -68,8 +68,9 @@ public final class TokenSelectorView extends LinearLayout {
 
         groupSelector = (Button) findViewById(
         		R.id.token_category_selector_button);
+        groupSelector.setAlpha(1.0f);
         tokenManager = (Button) findViewById(R.id.token_manager_button);
-
+        tokenManager.setAlpha(1.0f);
         mTokenViewFactory = new TokenViewFactory(context);
     }
 

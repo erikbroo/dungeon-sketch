@@ -28,4 +28,12 @@
 	
 	<item android:id="@+id/token_context_size_five"></item>
 	<item android:id="@+id/token_context_size_six"></item>
+	
+	<item android:id="@+id/token_border_none"></item>
+	<item android:id="@+id/token_border_white"></item>
+	<item android:id="@+id/token_border_black"></item>
+	<item android:id="@+id/token_border_blue"></item>
+	<item android:id="@+id/token_border_red"></item>
+	<item android:id="@+id/token_border_green"></item>
+	<item android:id="@+id/token_border_yellow"></item>
 </menu>

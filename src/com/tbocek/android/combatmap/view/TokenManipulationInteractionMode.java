@@ -1,8 +1,10 @@
 package com.tbocek.android.combatmap.view;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SubMenu;
@@ -119,6 +121,7 @@ public final class TokenManipulationInteractionMode
         if (currentToken != null) {
             menu.add(Menu.NONE, R.id.token_context_delete_token,
             		 Menu.NONE, "Delete Token");
+            
             SubMenu sm = menu.addSubMenu("Change Size");
             sm.add(Menu.NONE, R.id.token_context_size_tenth, 1, "1/10");
             sm.add(Menu.NONE, R.id.token_context_size_quarter, 2, "1/4");
@@ -129,7 +132,15 @@ public final class TokenManipulationInteractionMode
             sm.add(Menu.NONE, R.id.token_context_size_four, 7, "4");
             sm.add(Menu.NONE, R.id.token_context_size_five, 8, "5");
             sm.add(Menu.NONE, R.id.token_context_size_six, 9, "6");
-
+            
+            sm = menu.addSubMenu("Border Color");
+            sm.add(Menu.NONE, R.id.token_border_none, 1, "No Border");
+            sm.add(Menu.NONE, R.id.token_border_white, 1, "White");
+            sm.add(Menu.NONE, R.id.token_border_black, 1, "Back");
+            sm.add(Menu.NONE, R.id.token_border_blue, 1, "Blue");
+            sm.add(Menu.NONE, R.id.token_border_red, 1, "Red");
+            sm.add(Menu.NONE, R.id.token_border_green, 1, "Green");
+            sm.add(Menu.NONE, R.id.token_border_yellow, 1, "Yellow");
         }
 
     }
@@ -167,6 +178,27 @@ public final class TokenManipulationInteractionMode
         case R.id.token_context_size_six:
             currentToken.setSize(6);
             return true;
+        case R.id.token_border_none:
+        	currentToken.clearCustomBorderColor();
+        	return true;
+        case R.id.token_border_white:
+        	currentToken.setCustomBorder(Color.WHITE);
+        	return true;
+        case R.id.token_border_black:
+        	currentToken.setCustomBorder(Color.BLACK);
+        	return true;
+        case R.id.token_border_blue:
+        	currentToken.setCustomBorder(Color.BLUE);
+        	return true;
+        case R.id.token_border_red:
+        	currentToken.setCustomBorder(Color.RED);
+        	return true;
+        case R.id.token_border_green:
+        	currentToken.setCustomBorder(Color.GREEN);
+        	return true;
+        case R.id.token_border_yellow:
+        	currentToken.setCustomBorder(Color.YELLOW);
+        	return true;
         default:
         	return false;
         }

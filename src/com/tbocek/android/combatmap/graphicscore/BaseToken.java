@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.Set;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 
 /**
  * Base class for token representing entities in combat.
@@ -37,7 +39,38 @@ public abstract class BaseToken implements Serializable {
      * Whether the token is bloodied.
      */
     private boolean mBloodied = false;
-
+    
+    /**
+     *
+     */
+    private transient Paint mCachedCustomBorderPaint = null;
+    protected boolean mHasCustomBorder = false;
+    private int mCustomBorderColor;
+    
+    public void setCustomBorder(int color) {
+    	mHasCustomBorder = true;
+    	mCustomBorderColor = color;
+    	mCachedCustomBorderPaint = null;
+    }
+    
+    
+    public void clearCustomBorderColor() {
+    	mHasCustomBorder = false;
+    	mCachedCustomBorderPaint = null;
+    }
+    
+    protected Paint getCustomBorderPaint() {
+    	if (mCachedCustomBorderPaint == null && mHasCustomBorder) {
+    		mCachedCustomBorderPaint = new Paint();
+    		mCachedCustomBorderPaint.setStrokeWidth(3);
+    		mCachedCustomBorderPaint.setColor(mCustomBorderColor);
+    		
+    		mCachedCustomBorderPaint.setStyle(Style.STROKE);
+    		
+    	}
+    	return mCachedCustomBorderPaint;
+    }
+    
     /**
      * Moves this token the given distance relative to its current location.
      * In grid space.
@@ -128,6 +161,10 @@ public abstract class BaseToken implements Serializable {
         } else {
             draw(c, center.x, center.y, radius, darkBackground,
             		isManipulatable);
+        }
+        
+        if (mHasCustomBorder) {
+        	 c.drawCircle(center.x, center.y, radius, getCustomBorderPaint());
         }
     }
 
