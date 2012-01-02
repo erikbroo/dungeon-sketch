@@ -73,7 +73,7 @@ public final class DataManager {
      */
     public void loadMapName(final String name)
             throws IOException, ClassNotFoundException {
-        FileInputStream s = mContext.openFileInput(name + MAP_EXTENSION);
+        FileInputStream s  = new FileInputStream(this.getSavedMapFile(name));
         MapData.loadFromStream(s);
         s.close();
     }
@@ -85,8 +85,7 @@ public final class DataManager {
      * @throws IOException On write error.
      */
     public void saveMapName(final String name) throws IOException {
-        FileOutputStream s = mContext.openFileOutput(
-                name + MAP_EXTENSION, Context.MODE_PRIVATE);
+        FileOutputStream s = new FileOutputStream(this.getSavedMapFile(name));
         MapData.saveToStream(s);
         s.close();
     }
@@ -96,7 +95,7 @@ public final class DataManager {
      * @return A list of available saved maps.
      */
     public List<String> savedFiles() {
-        String[] files = mContext.fileList();
+        String[] files = this.getSavedMapDir().list();
         ArrayList<String> mapFiles = new ArrayList<String>();
         for (String file : files) {
             if (!file.equals("tmp" + MAP_EXTENSION)
@@ -147,9 +146,28 @@ public final class DataManager {
      * @return File object representing the directory containing token images.
      */
     private File getTokenImageDir() {
-        File sdcard = Environment.getExternalStorageDirectory();
-        File dir = new File(sdcard, "DungeonSketch/Tokens");
+        File sdcard = mContext.getExternalFilesDir(null);
+        File dir = new File(sdcard, "tokens");
         return dir;
+    }
+    
+    /**
+     * @return File object representing the directory containing saved maps.
+     */
+    private File getSavedMapDir() {
+    	File sdcard = mContext.getExternalFilesDir(null);
+    	File dir = new File(sdcard, "maps");
+    	return dir;
+    }
+    
+    private File getSavedMapFile(String mapName) {
+    	File sdcard = getSavedMapDir();
+    	return new File(sdcard, mapName +  MAP_EXTENSION);
+    }
+    
+    private File getSavedMapPreviewImageFile(String mapName) {
+    	File sdcard = getSavedMapDir();
+    	return new File(sdcard, mapName +  PREVIEW_EXTENSION);
     }
 
     /**
@@ -158,6 +176,7 @@ public final class DataManager {
      */
     private void ensureExternalDirectoriesCreated() {
         getTokenImageDir().mkdirs();
+        getSavedMapDir().mkdirs();
     }
 
     /**
@@ -186,8 +205,7 @@ public final class DataManager {
      */
     public void savePreviewImage(final String name, final Bitmap preview)
             throws IOException {
-        FileOutputStream s = mContext.openFileOutput(
-                name + PREVIEW_EXTENSION, Context.MODE_PRIVATE);
+        FileOutputStream s = new FileOutputStream(this.getSavedMapPreviewImageFile(name));
         BufferedOutputStream buf = new BufferedOutputStream(s);
         preview.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION, buf);
         buf.close();
@@ -215,8 +233,7 @@ public final class DataManager {
      * @throws IOException On read error.
      */
     public Bitmap loadPreviewImage(final String saveFile) throws IOException {
-        FileInputStream s =
-            mContext.openFileInput(saveFile + PREVIEW_EXTENSION);
+        FileInputStream s = new FileInputStream(this.getSavedMapPreviewImageFile(saveFile));
         Bitmap b = BitmapFactory.decodeStream(s);
         s.close();
         return b;
@@ -227,8 +244,8 @@ public final class DataManager {
      * @param fileName Name of the save file without the extension to delete.
      */
     public void deleteSaveFile(final String fileName) {
-        mContext.deleteFile(fileName + MAP_EXTENSION);
-        mContext.deleteFile(fileName + PREVIEW_EXTENSION);
+    	getSavedMapFile(fileName).delete();
+    	getSavedMapPreviewImageFile(fileName).delete();
     }
 
     /**
