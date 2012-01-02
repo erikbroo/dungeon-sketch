@@ -388,7 +388,7 @@ public final class CombatView extends SurfaceView {
 		canvas.save();
 		getData().transformer.setMatrix(canvas);
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
-			getData().getFogOfWar().clipFogOfWar(canvas);
+			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
 		getData().getBackgroundLines().drawAllLinesBelowGrid(canvas);
 		canvas.restore();
@@ -398,19 +398,29 @@ public final class CombatView extends SurfaceView {
 		canvas.save();
 		getData().transformer.setMatrix(canvas);
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
-			getData().getFogOfWar().clipFogOfWar(canvas);
+			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
 		getData().getBackgroundLines().drawAllLinesAboveGrid(canvas);
 		if (mFogOfWarMode == FogOfWarMode.DRAW) {
-			getData().getFogOfWar().drawFogOfWar(canvas);
+			getData().getBackgroundFogOfWar().drawFogOfWar(canvas);
 		}
 		canvas.restore();
 
 		canvas.save();
 		getData().transformer.setMatrix(canvas);
-		if (this.shouldDrawGmNotes) {
-			getData().getGmNoteLines().drawAllLines(canvas);
+		
+		// Either draw all GM notes, or draw only the ones not covered by fog of war.
+		if (!this.shouldDrawGmNotes) {
+			canvas.save();
+			getData().getGmNotesFogOfWar().clipFogOfWar(canvas);
 		}
+		getData().getGmNoteLines().drawAllLines(canvas);
+		if (!this.shouldDrawGmNotes) {
+			canvas.restore();
+		} else {
+			getData().getGmNotesFogOfWar().drawFogOfWar(canvas);
+		}
+		
 		if (this.shouldDrawAnnotations) {
 
 			getData().getAnnotationLines().drawAllLines(canvas);
@@ -420,7 +430,7 @@ public final class CombatView extends SurfaceView {
 		canvas.save();
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
 			getData().transformer.setMatrix(canvas);
-			getData().getFogOfWar().clipFogOfWar(canvas);
+			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 			getData().transformer.setInverseMatrix(canvas);
 		}
 
@@ -497,7 +507,7 @@ public final class CombatView extends SurfaceView {
 	 * @return The new region.
 	 */
 	public Shape createFogOfWarRegion() {
-		return createLine(getData().getFogOfWar());
+		return createLine(getActiveFogOfWar());
 	}
 
 	/**
@@ -702,5 +712,19 @@ public final class CombatView extends SurfaceView {
 
 	public void requestEditTextObject(Text t) {
 		newTextEntryListener.requestEditTextObject(t);
+	}
+
+	public LineCollection getActiveFogOfWar() {
+		if (mActiveLines == getData().getBackgroundLines()) {
+			return getData().getBackgroundFogOfWar();
+		} else if (mActiveLines == getData().getGmNoteLines()) {
+			return getData().getGmNotesFogOfWar();
+		} else {
+			return null;
+		}
+	}
+
+	public boolean isAFogOfWarLayerVisible() {
+		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW || this.shouldDrawGmNotes;
 	}
 }

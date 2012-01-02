@@ -626,7 +626,7 @@ public final class CombatMap extends Activity {
             mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
-            mDrawOptionsView.setMaskToolVisibility(false);
+            mDrawOptionsView.setMaskToolVisibility(true);
 			return;
 		case MODE_TOKENS:
             mCombatView.setAreTokensManipulatable(true);
