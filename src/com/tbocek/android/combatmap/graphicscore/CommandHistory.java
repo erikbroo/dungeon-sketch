@@ -84,6 +84,15 @@ public class CommandHistory implements Serializable {
 	    	toRedo.clear();
     	}
     }
+    
+    /**
+     * Adds the given command to the command history without executing it.
+     * @param command The command to add.
+     */
+    public void addToCommandHistory(final Command command) {
+    	toUndo.add(command);
+    	toRedo.clear();
+    }
 
     /**
      * Deserializes the object.  This uses the standard deserialization but

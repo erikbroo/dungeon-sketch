@@ -22,7 +22,13 @@ public final class TokenCollection implements Serializable {
      * The tokens that have been added to the grid.
      */
     private List<BaseToken> tokens = new ArrayList<BaseToken>();
+    
+    private CommandHistory commandHistory;
 
+    public TokenCollection(CommandHistory history) {
+    	commandHistory = history;
+    }
+    
     /**
      * Given a point in screen space, returns the token under that point.
      * @param p The point in screen space.
@@ -49,7 +55,9 @@ public final class TokenCollection implements Serializable {
      * @param t The token to add.
      */
     public void addToken(final BaseToken t) {
-        tokens.add(t);
+    	Command c = new Command(this);
+    	c.addToken(t);
+        commandHistory.execute(c);
     }
 
     /**
@@ -64,7 +72,9 @@ public final class TokenCollection implements Serializable {
      * @param t The token to remove.
      */
     public void remove(final BaseToken t) {
-        tokens.remove(t);
+    	Command c = new Command(this);
+    	c.deleteToken(t);
+        commandHistory.execute(c);
     }
 
     /**
@@ -188,5 +198,66 @@ public final class TokenCollection implements Serializable {
     public boolean isEmpty() {
         return tokens.isEmpty();
     }
+    
+    
+    private transient Command buildingCommand;
+    
+    public void checkpointToken(BaseToken t) {
+    	if (buildingCommand == null) {
+    		buildingCommand = new Command(this);
+    	}
+    	buildingCommand.deleteToken(t.clone());
+    	buildingCommand.addToken(t);
+    }
+    
+    public void createCommandHistory() {
+    	commandHistory.addToCommandHistory(buildingCommand);
+    	buildingCommand = null;
+    }
+    
+	public void undo() {
+		commandHistory.undo();
+	}
 
+	public void redo() {
+		commandHistory.redo();
+	}
+    
+    private class Command implements CommandHistory.Command {
+    	public Command(TokenCollection c) {
+    		tokenCollection = c;
+    	}
+    	
+    	private TokenCollection tokenCollection;
+    	private List<BaseToken> tokensToDelete = new ArrayList<BaseToken>();
+    	private List<BaseToken> tokensToAdd = new ArrayList<BaseToken>();
+
+    	public void addToken(BaseToken t) {
+    		tokensToAdd.add(t);
+    	}
+    	
+    	public void deleteToken(BaseToken t) {
+			tokensToDelete.remove(t);
+    	}
+    	
+		@Override
+		public void execute() {
+			tokenCollection.tokens.addAll(tokensToAdd);
+			tokenCollection.tokens.removeAll(tokensToDelete);
+			
+		}
+
+		@Override
+		public void undo() {
+			tokenCollection.tokens.removeAll(tokensToAdd);
+			tokenCollection.tokens.addAll(tokensToDelete);
+			
+		}
+
+		@Override
+		public boolean isNoop() {
+			return tokensToAdd.isEmpty() && tokensToDelete.isEmpty();
+		}
+    	
+    }
 }

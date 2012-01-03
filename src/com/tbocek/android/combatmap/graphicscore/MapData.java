@@ -89,6 +89,9 @@ public final class MapData implements Serializable {
 
     private CommandHistory gmNotesCommandHistory =
     		new CommandHistory();
+    
+    private CommandHistory tokenCollectionCommandHistory = 
+    		new CommandHistory();
 
     /**
      * Background lines.
@@ -123,7 +126,8 @@ public final class MapData implements Serializable {
     /**
      * Tokens that have been placed on the map.
      */
-    private TokenCollection tokens = new TokenCollection();
+    private TokenCollection tokens =
+    		new TokenCollection(tokenCollectionCommandHistory);
 
     /**
      * The grid to draw.
