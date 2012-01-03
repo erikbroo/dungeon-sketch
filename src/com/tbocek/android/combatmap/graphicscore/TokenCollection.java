@@ -12,7 +12,7 @@ import android.graphics.Canvas;
  * @author Tim Bocek
  *
  */
-public final class TokenCollection implements Serializable {
+public final class TokenCollection implements Serializable, UndoRedoTarget {
 	/**
 	 * ID for serialization.
 	 */
@@ -237,7 +237,7 @@ public final class TokenCollection implements Serializable {
     	}
     	
     	public void deleteToken(BaseToken t) {
-			tokensToDelete.remove(t);
+			tokensToDelete.add(t);
     	}
     	
 		@Override

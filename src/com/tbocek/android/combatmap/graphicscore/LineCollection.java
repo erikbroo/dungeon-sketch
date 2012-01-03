@@ -20,7 +20,7 @@ import android.graphics.Region.Op;
  * a thick line can be used to paint an area bounded by a thin line.
  * @author Tim Bocek
  */
-public final class LineCollection implements Serializable {
+public final class LineCollection implements Serializable, UndoRedoTarget {
 
 
 	/**

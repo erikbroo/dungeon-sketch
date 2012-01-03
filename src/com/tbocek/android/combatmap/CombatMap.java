@@ -560,11 +560,11 @@ public final class CombatMap extends Activity {
             startActivity(new Intent(this, Load.class));
             return true;
         case R.id.menu_undo:
-        	mCombatView.getActiveLines().undo();
+        	mCombatView.getUndoRedoTarget().undo();
         	mCombatView.refreshMap();
         	return true;
         case R.id.menu_redo:
-        	mCombatView.getActiveLines().redo();
+        	mCombatView.getUndoRedoTarget().redo();
         	mCombatView.refreshMap();
         	return true;
         default:

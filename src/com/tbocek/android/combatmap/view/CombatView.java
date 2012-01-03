@@ -24,6 +24,7 @@ import com.tbocek.android.combatmap.graphicscore.PointF;
 import com.tbocek.android.combatmap.graphicscore.Shape;
 import com.tbocek.android.combatmap.graphicscore.Text;
 import com.tbocek.android.combatmap.graphicscore.TokenCollection;
+import com.tbocek.android.combatmap.graphicscore.UndoRedoTarget;
 
 /**
  * This view is the main canvas on which the map and combat tokens are drawn and
@@ -95,6 +96,8 @@ public final class CombatView extends SurfaceView {
 	private Bitmap buffer;
 
 	boolean surfaceReady = false;
+	
+	UndoRedoTarget undoRedoTarget;
 
 	SurfaceHolder.Callback surfaceHolderCallback = new SurfaceHolder.Callback() {
 
@@ -235,6 +238,8 @@ public final class CombatView extends SurfaceView {
 		setInteractionMode(new TokenManipulationInteractionMode(this));
 		shouldDrawAnnotations = true;
 		shouldDrawGmNotes = false;
+		if (mData != null)
+			undoRedoTarget = mData.getTokens();
 	}
 
 	/**
@@ -278,6 +283,7 @@ public final class CombatView extends SurfaceView {
 		mActiveLines = getData().getBackgroundLines();
 		shouldDrawAnnotations = false;
 		shouldDrawGmNotes = false;
+		undoRedoTarget = mActiveLines;
 	}
 
 	/**
@@ -288,6 +294,7 @@ public final class CombatView extends SurfaceView {
 		mActiveLines = getData().getAnnotationLines();
 		shouldDrawAnnotations = true;
 		shouldDrawGmNotes = false;
+		undoRedoTarget = mActiveLines;
 	}
 
 	/**
@@ -298,6 +305,7 @@ public final class CombatView extends SurfaceView {
 		mActiveLines = getData().getGmNoteLines();
 		shouldDrawAnnotations = false;
 		shouldDrawGmNotes = true;
+		undoRedoTarget = mActiveLines;
 	}
 
 
@@ -726,5 +734,9 @@ public final class CombatView extends SurfaceView {
 
 	public boolean isAFogOfWarLayerVisible() {
 		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW || this.shouldDrawGmNotes;
+	}
+	
+	public UndoRedoTarget getUndoRedoTarget() {
+		return undoRedoTarget;
 	}
 }
