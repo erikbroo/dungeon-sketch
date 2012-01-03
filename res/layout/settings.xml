@@ -18,4 +18,8 @@
 	<CheckBoxPreference
 	    android:title="Fog of War Enabled"
 	    android:key="fogofwar"/>
+	<Preference
+	    android:title="About Dungeon Sketch"
+	    android:key="about"/>
+	
 </PreferenceScreen>
