@@ -115,12 +115,6 @@ public final class DrawOptionsView extends LinearLayout {
         createAndAddCircleButton();
         createAndAddTextButton();
 
-
-        createAndAddSeperator();
-
-        createAndAddUndoButton();
-        createAndAddRedoButton();
-
         createAndAddSeperator();
 
         addStrokeWidthButton(.05f, R.drawable.pencil);
@@ -269,16 +263,6 @@ public final class DrawOptionsView extends LinearLayout {
          */
         void onChooseStrokeWidth(float width);
 
-        /**
-         * Fired when the undo button is clicked.
-         */
-        void onClickUndo();
-
-        /**
-         * Fired when the redo button is clicked.
-         */
-        void onClickRedo();
-
 		void onChooseFreeHandTool();
 
 		void onChooseStraightLineTool();
@@ -308,12 +292,6 @@ public final class DrawOptionsView extends LinearLayout {
 
         @Override
         public void onChooseStrokeWidth(final float width) { }
-
-		@Override
-		public void onClickUndo() { }
-
-		@Override
-		public void onClickRedo() { }
 
 		@Override
 		public void onChooseMaskTool() { }
@@ -398,37 +376,6 @@ public final class DrawOptionsView extends LinearLayout {
     	}
     }
     protected View defaultView;
-
-	/**
-	 * Creates the undo button and adds it to the view.
-	 */
-	protected void createAndAddUndoButton() {
-		ImageButton undoButton = new ImageButton(this.getContext());
-        undoButton.setImageResource(R.drawable.undo);
-        undoButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View arg0) {
-				onChangeDrawToolListener.onClickUndo();
-			}
-        });
-        layout.addView(undoButton);
-	}
-
-	/**
-	 * Creates the redo button and adds it to the view.
-	 */
-    protected void createAndAddRedoButton() {
-		ImageButton redoButton = new ImageButton(this.getContext());
-        redoButton.setImageResource(R.drawable.redo);
-        redoButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View arg0) {
-				onChangeDrawToolListener.onClickRedo();
-			}
-        });
-        layout.addView(redoButton);
-	}
-
 
 	/**
 	 * Creates the eraser button and adds it to the view.

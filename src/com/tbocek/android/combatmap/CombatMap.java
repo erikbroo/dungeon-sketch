@@ -166,19 +166,6 @@ public final class CombatMap extends Activity {
         }
 
 		@Override
-		public void onClickUndo() {
-			mCombatView.getActiveLines().undo();
-			mCombatView.refreshMap();
-
-		}
-
-		@Override
-		public void onClickRedo() {
-			mCombatView.getActiveLines().redo();
-			mCombatView.refreshMap();
-		}
-
-		@Override
 		public void onChooseMaskTool() {
             mCombatView.setFogOfWarDrawMode();
 		}
@@ -572,6 +559,14 @@ public final class CombatMap extends Activity {
         case R.id.load:
             startActivity(new Intent(this, Load.class));
             return true;
+        case R.id.menu_undo:
+        	mCombatView.getActiveLines().undo();
+        	mCombatView.refreshMap();
+        	return true;
+        case R.id.menu_redo:
+        	mCombatView.getActiveLines().redo();
+        	mCombatView.refreshMap();
+        	return true;
         default:
         	return false;
         }
