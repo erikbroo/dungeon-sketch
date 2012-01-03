@@ -81,14 +81,14 @@ public final class MapData implements Serializable {
     public CoordinateTransformer transformer =
     	new CoordinateTransformer(0, 0, 64);
 
-    private LineCollection.CommandHistory backgroundCommandHistory =
-    		new LineCollection.CommandHistory();
+    private CommandHistory backgroundCommandHistory =
+    		new CommandHistory();
 
-    private LineCollection.CommandHistory anntationCommandHistory =
-		    new LineCollection.CommandHistory();
+    private CommandHistory anntationCommandHistory =
+		    new CommandHistory();
 
-    private LineCollection.CommandHistory gmNotesCommandHistory =
-    		new LineCollection.CommandHistory();
+    private CommandHistory gmNotesCommandHistory =
+    		new CommandHistory();
 
     /**
      * Background lines.
