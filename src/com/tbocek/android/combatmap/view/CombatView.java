@@ -16,15 +16,23 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
-import com.tbocek.android.combatmap.graphicscore.CoordinateTransformer;
-import com.tbocek.android.combatmap.graphicscore.LineCollection;
-import com.tbocek.android.combatmap.graphicscore.MapData;
-import com.tbocek.android.combatmap.graphicscore.PointF;
-import com.tbocek.android.combatmap.graphicscore.Shape;
-import com.tbocek.android.combatmap.graphicscore.Text;
-import com.tbocek.android.combatmap.graphicscore.TokenCollection;
-import com.tbocek.android.combatmap.graphicscore.UndoRedoTarget;
+import com.tbocek.android.combatmap.model.LineCollection;
+import com.tbocek.android.combatmap.model.MapData;
+import com.tbocek.android.combatmap.model.TokenCollection;
+import com.tbocek.android.combatmap.model.UndoRedoTarget;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
+import com.tbocek.android.combatmap.model.primitives.PointF;
+import com.tbocek.android.combatmap.model.primitives.Shape;
+import com.tbocek.android.combatmap.model.primitives.Text;
+import com.tbocek.android.combatmap.view.interaction.CombatViewInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.DrawTextInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.EraserInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.FingerDrawInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.GridRepositioningInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.MaskDrawInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.TokenManipulationInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
 
 /**
  * This view is the main canvas on which the map and combat tokens are drawn and

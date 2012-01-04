@@ -2,7 +2,7 @@ package com.tbocek.android.combatmap.tokenmanager;
 
 import java.util.Collection;
 
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 import android.content.Context;
 import android.graphics.Canvas;

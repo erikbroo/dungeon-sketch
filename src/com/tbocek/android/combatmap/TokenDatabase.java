@@ -20,12 +20,12 @@ import java.util.Set;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
-import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
-import com.tbocek.android.combatmap.graphicscore.CustomBitmapToken;
-import com.tbocek.android.combatmap.graphicscore.LetterToken;
-import com.tbocek.android.combatmap.graphicscore.SolidColorToken;
-import com.tbocek.android.combatmap.graphicscore.Util;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
+import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
+import com.tbocek.android.combatmap.model.primitives.LetterToken;
+import com.tbocek.android.combatmap.model.primitives.SolidColorToken;
+import com.tbocek.android.combatmap.model.primitives.Util;
 
 
 /**

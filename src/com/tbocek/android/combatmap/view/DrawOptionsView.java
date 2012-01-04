@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tbocek.android.combatmap.R;
-import com.tbocek.android.combatmap.graphicscore.Util;
+import com.tbocek.android.combatmap.model.primitives.Util;
+
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;

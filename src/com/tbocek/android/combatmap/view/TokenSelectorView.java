@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TokenDatabase;
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 /**
  * Provides a horizontally scrolling list of tokens, allowing the user to

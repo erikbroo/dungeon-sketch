@@ -1,6 +1,6 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
-import com.tbocek.android.combatmap.graphicscore.PointF;
+import com.tbocek.android.combatmap.model.primitives.PointF;
 
 import android.content.Context;
 import android.graphics.Bitmap;

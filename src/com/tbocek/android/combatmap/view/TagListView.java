@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.tbocek.android.combatmap.TokenDatabase;
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 import android.content.Context;
 import android.graphics.Color;

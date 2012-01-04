@@ -31,12 +31,12 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.Toast;
 
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
-import com.tbocek.android.combatmap.graphicscore.BuiltInImageToken;
-import com.tbocek.android.combatmap.graphicscore.Grid;
-import com.tbocek.android.combatmap.graphicscore.MapData;
-import com.tbocek.android.combatmap.graphicscore.PointF;
-import com.tbocek.android.combatmap.graphicscore.Text;
+import com.tbocek.android.combatmap.model.Grid;
+import com.tbocek.android.combatmap.model.MapData;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
+import com.tbocek.android.combatmap.model.primitives.PointF;
+import com.tbocek.android.combatmap.model.primitives.Text;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;

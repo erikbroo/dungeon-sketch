@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.tbocek.android.combatmap.TokenDatabase;
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 import android.os.AsyncTask;
 import android.util.Log;

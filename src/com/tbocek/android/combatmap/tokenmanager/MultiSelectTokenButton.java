@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.view.View;
 
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenButton;
 

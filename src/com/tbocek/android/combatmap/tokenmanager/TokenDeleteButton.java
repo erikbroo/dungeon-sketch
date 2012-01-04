@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.tbocek.android.combatmap.R;
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 
 /**

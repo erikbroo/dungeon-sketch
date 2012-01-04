@@ -6,7 +6,7 @@ import java.util.Map;
 import android.content.Context;
 import android.view.View;
 
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 /**
  * Factory that creates and returns views for tokens, and employs a caching

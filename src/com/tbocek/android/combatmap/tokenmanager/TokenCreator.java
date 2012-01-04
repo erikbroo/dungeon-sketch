@@ -18,8 +18,8 @@ import com.tbocek.android.combatmap.DataManager;
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TokenDatabase;
-import com.tbocek.android.combatmap.graphicscore.BaseToken;
-import com.tbocek.android.combatmap.graphicscore.CustomBitmapToken;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
 
 /**
  * This activity allows the user to create a new token by importing an image
