@@ -97,5 +97,4 @@ public class FontDialog extends Dialog {
 		nameText.setText(text);
 		//TODO: Set the font size.
 	}
-
 }

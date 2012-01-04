@@ -53,7 +53,7 @@ public final class BuiltInImageToken extends DrawableToken {
 
     @Override
     public BaseToken clone() {
-        return new BuiltInImageToken(mResourceId);
+        return copyAttributes(new BuiltInImageToken(mResourceId));
     }
 
     @Override

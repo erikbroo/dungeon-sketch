@@ -86,7 +86,7 @@ public final class SolidColorToken extends BaseToken {
 
     @Override
     public BaseToken clone() {
-        return new SolidColorToken(color, sortOrder);
+        return copyAttributes(new SolidColorToken(color, sortOrder));
     }
 
     @Override

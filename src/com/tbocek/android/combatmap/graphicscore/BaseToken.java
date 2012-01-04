@@ -40,6 +40,9 @@ public abstract class BaseToken implements Serializable {
      */
     private boolean mBloodied = false;
     
+    private static int currentId = 0;
+    public int id;
+    
     /**
      *
      */
@@ -308,4 +311,13 @@ public abstract class BaseToken implements Serializable {
      * Takes any action needed to load the token.
      */
     public void load() { }
+    
+    public BaseToken copyAttributes(BaseToken clone) {
+    	clone.mBloodied = mBloodied;
+    	clone.mCustomBorderColor = mCustomBorderColor;
+    	clone.mHasCustomBorder = mHasCustomBorder;
+    	clone.mLocation = new PointF(mLocation.x, mLocation.y);
+    	clone.mSize = mSize;
+    	return clone;
+    }
 }

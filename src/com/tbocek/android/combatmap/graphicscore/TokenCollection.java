@@ -3,8 +3,10 @@ package com.tbocek.android.combatmap.graphicscore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 
 /**
@@ -13,6 +15,7 @@ import android.graphics.Canvas;
  *
  */
 public final class TokenCollection implements Serializable, UndoRedoTarget {
+	private static String TAG = "com.tbocek.android.combatmap.graphicscore.TokenCollection";
 	/**
 	 * ID for serialization.
 	 */
@@ -55,16 +58,9 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
      * @param t The token to add.
      */
     public void addToken(final BaseToken t) {
-    	Command c = new Command(this);
+    	AddOrDeleteTokenCommand c = new AddOrDeleteTokenCommand(this);
     	c.addToken(t);
         commandHistory.execute(c);
-    }
-
-    /**
-     * Removes all tokens from the collection.
-     */
-    public void clear() {
-        tokens.clear();
     }
 
     /**
@@ -72,7 +68,7 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
      * @param t The token to remove.
      */
     public void remove(final BaseToken t) {
-    	Command c = new Command(this);
+    	AddOrDeleteTokenCommand c = new AddOrDeleteTokenCommand(this);
     	c.deleteToken(t);
         commandHistory.execute(c);
     }
@@ -200,19 +196,19 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
     }
     
     
-    private transient Command buildingCommand;
+    private transient ModifyTokenCommand buildingCommand;
     
     public void checkpointToken(BaseToken t) {
-    	if (buildingCommand == null) {
-    		buildingCommand = new Command(this);
-    	}
-    	buildingCommand.deleteToken(t.clone());
-    	buildingCommand.addToken(t);
+    	buildingCommand = new ModifyTokenCommand(t);
+    	buildingCommand.checkpointBeforeState();
     }
     
     public void createCommandHistory() {
-    	commandHistory.addToCommandHistory(buildingCommand);
-    	buildingCommand = null;
+    	if (buildingCommand != null) {
+    		buildingCommand.checkpointAfterState();
+	    	commandHistory.addToCommandHistory(buildingCommand);
+	    	buildingCommand = null;
+    	}
     }
     
 	public void undo() {
@@ -222,13 +218,51 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
 	public void redo() {
 		commandHistory.redo();
 	}
+	
+	private class ModifyTokenCommand implements CommandHistory.Command {
+
+		private BaseToken tokenToModify;
+		private BaseToken beforeState;
+		private BaseToken afterState;
+		
+		public ModifyTokenCommand(BaseToken token) {
+			tokenToModify = token;
+		}
+		
+		public void checkpointBeforeState() {
+			beforeState = tokenToModify.clone();
+		}
+		
+		public void checkpointAfterState() {
+			afterState = tokenToModify.clone();
+		}
+		
+		@Override
+		public void execute() {
+			afterState.copyAttributes(tokenToModify);
+			
+		}
+
+		@Override
+		public void undo() {
+			beforeState.copyAttributes(tokenToModify);
+			
+		}
+
+		@Override
+		public boolean isNoop() {
+			return false;
+		}
+		
+	}
     
-    private class Command implements CommandHistory.Command {
-    	public Command(TokenCollection c) {
+    private class AddOrDeleteTokenCommand implements CommandHistory.Command {
+    	//TODO: Split this into two different classes.
+    	public AddOrDeleteTokenCommand(TokenCollection c) {
     		tokenCollection = c;
     	}
-    	
-    	private TokenCollection tokenCollection;
+
+		private TokenCollection tokenCollection;
     	private List<BaseToken> tokensToDelete = new ArrayList<BaseToken>();
     	private List<BaseToken> tokensToAdd = new ArrayList<BaseToken>();
 
@@ -240,18 +274,20 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
 			tokensToDelete.add(t);
     	}
     	
+    	public boolean hasToken(BaseToken t) {
+    		return tokensToAdd.contains(t) || tokensToDelete.contains(t);
+    	}
+    	
 		@Override
 		public void execute() {
 			tokenCollection.tokens.addAll(tokensToAdd);
 			tokenCollection.tokens.removeAll(tokensToDelete);
-			
 		}
 
 		@Override
 		public void undo() {
 			tokenCollection.tokens.removeAll(tokensToAdd);
 			tokenCollection.tokens.addAll(tokensToDelete);
-			
 		}
 
 		@Override

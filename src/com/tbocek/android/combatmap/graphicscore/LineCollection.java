@@ -22,7 +22,6 @@ import android.graphics.Region.Op;
  */
 public final class LineCollection implements Serializable, UndoRedoTarget {
 
-
 	/**
      * ID for serialization.
      */
@@ -389,6 +388,5 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	public void redo() {
 		mCommandHistory.redo();
 	}
-
 
 }

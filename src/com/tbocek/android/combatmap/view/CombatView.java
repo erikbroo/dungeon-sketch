@@ -537,16 +537,6 @@ public final class CombatView extends SurfaceView {
 	}
 
 	/**
-	 * Removes all data. TODO: still used?
-	 */
-	public void clearAll() {
-		this.getData().getBackgroundLines().clear();
-		this.getData().getAnnotationLines().clear();
-		this.getData().getTokens().clear();
-		refreshMap();
-	}
-
-	/**
 	 * Removes all erased points from the currently active set of lines.
 	 */
 	public void optimizeActiveLines() {
