@@ -77,13 +77,9 @@ public class TextPromptDialog extends Dialog {
             }
         });
     }
-
-    /**
-     * On resuming the activity, clears the text so that nothing is left over
-     * from the last time the dialog was opened.
-     */
-    protected final void onResume() {
-        nameText.setText("");
+    
+    public final void fillText(String text) {
+    	nameText.setText(text);
     }
 
 }

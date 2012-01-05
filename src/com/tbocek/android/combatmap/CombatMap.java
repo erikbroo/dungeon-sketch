@@ -711,6 +711,20 @@ public final class CombatMap extends Activity {
     @Override
     protected void onPrepareDialog(final int id, final Dialog dialog) {
     	 switch(id) {
+    	 case DIALOG_ID_SAVE:
+    		 SharedPreferences sharedPreferences =
+             	PreferenceManager.getDefaultSharedPreferences(
+             			this.getApplicationContext());
+
+    		 // Attempt to load map data.  If we can't load map data, create a new
+    		 // map.
+    		 String filename = sharedPreferences.getString("filename", "");
+    		 if (filename == "tmp") {
+    			 filename = "";
+    		 }
+    		 TextPromptDialog d = (TextPromptDialog)dialog;
+    		 d.fillText(filename);
+    		 break;
          case DIALOG_ID_DRAW_TEXT:
          	 FontDialog fd = (FontDialog) dialog;
              if (mEditedTextObject != null) {
@@ -718,6 +732,7 @@ public final class CombatMap extends Activity {
              } else {
             	fd.clearText();
              }
+             break;
          }
     }
 
