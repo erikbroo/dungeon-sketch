@@ -701,13 +701,24 @@ public final class CombatMap extends Activity {
             	   }
                }
            });  
-            if (mEditedTextObject != null) {
-            	d.populateFields(mEditedTextObject.text, mEditedTextObject.textSize);
-            }
+
             return d;
         default:
         	return null;
         }
+    }
+    
+    @Override
+    protected void onPrepareDialog(final int id, final Dialog dialog) {
+    	 switch(id) {
+         case DIALOG_ID_DRAW_TEXT:
+         	 FontDialog fd = (FontDialog) dialog;
+             if (mEditedTextObject != null) {
+             	fd.populateFields(mEditedTextObject.text, mEditedTextObject.textSize);
+             } else {
+            	fd.clearText();
+             }
+         }
     }
 
     @Override

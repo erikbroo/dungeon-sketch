@@ -85,16 +85,12 @@ public class FontDialog extends Dialog {
         });
     }
 
-	/**
-     * On resuming the activity, clears the text so that nothing is left over
-     * from the last time the dialog was opened.
-     */
-    protected final void onResume() {
-        nameText.setText("");
-    }
-
 	public void populateFields(String text, float textSize) {
 		nameText.setText(text);
 		//TODO: Set the font size.
+	}
+
+	public void clearText() {
+		nameText.setText("");
 	}
 }
