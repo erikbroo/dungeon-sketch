@@ -87,7 +87,15 @@ public class FontDialog extends Dialog {
 
 	public void populateFields(String text, float textSize) {
 		nameText.setText(text);
-		//TODO: Set the font size.
+		
+		// Iterate through the font size items, select the one that best fits
+		// the provided number
+		for (int i = 0; i < fontSize.getCount(); ++i) {
+			float parsedItem = Float.parseFloat(fontSize.getItemAtPosition(i).toString());
+			if (Math.abs(textSize - parsedItem) < .001) {
+				fontSize.setSelection(i);
+			}
+		}
 	}
 
 	public void clearText() {
