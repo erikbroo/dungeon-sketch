@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import android.content.Context;
@@ -78,10 +79,19 @@ public final class MultiSelectTokenButton extends TokenButton {
 
     @Override
     protected void onStartDrag() {
-    	// Add this token to the selection, so we are at least dragging it.
-    	this.mMultiSelect.addToken(this.getClone());
+       	// Add this token to the selection, so we are at least dragging it.
+/*    	this.mMultiSelect.addToken(this.getClone());
 
     	Collection<BaseToken> tokens = this.mMultiSelect.getSelectedTokens();
+        startDrag(
+        		null,
+        		new TokenStackDragShadow(tokens, (int) this.getTokenRadius()),
+        		tokens, 0);
+   */     
+    	ArrayList<BaseToken> tokens = new ArrayList<BaseToken>(this.mMultiSelect.getSelectedTokens());
+    	if (!this.selected){
+    		tokens.add(0, getClone());
+    	}
         startDrag(
         		null,
         		new TokenStackDragShadow(tokens, (int) this.getTokenRadius()),
