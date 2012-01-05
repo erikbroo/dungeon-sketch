@@ -470,6 +470,7 @@ public final class CombatMap extends Activity {
     public void loadMap(final String name) {
         try {
             new DataManager(getApplicationContext()).loadMapName(name);
+            setFilenamePreference(name);
         } catch (Exception e) {
             e.printStackTrace();
             Toast toast = Toast.makeText(this.getApplicationContext(),
@@ -685,6 +686,7 @@ public final class CombatMap extends Activity {
              return new TextPromptDialog(this,
                      new TextPromptDialog.OnTextConfirmedListener() {
                 public void onTextConfirmed(final String text) {
+                	setFilenamePreference(text);
                 	new MapSaver(text, getApplicationContext()).run();
                 }
             }, "Save Map", "Save");
