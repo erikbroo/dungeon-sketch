@@ -39,7 +39,7 @@ public class TokenViewFactory {
      * @param prototype Token prototype that will be used in the view.
      * @return The view for the given token.
      */
-    public final View getTokenView(final BaseToken prototype) {
+    public View getTokenView(final BaseToken prototype) {
         if (cachedViews.containsKey(prototype)) {
         	return cachedViews.get(prototype);
         }

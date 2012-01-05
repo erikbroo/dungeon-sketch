@@ -34,6 +34,13 @@ public final class MultiSelectTokenViewFactory extends TokenViewFactory {
 		b.refreshSelectedState();
 		return b;
 	}
+	
+	@Override
+	public TokenButton getTokenView(final BaseToken prototype) {
+		MultiSelectTokenButton mstb = (MultiSelectTokenButton)super.getTokenView(prototype);
+		mstb.refreshSelectedState();
+		return mstb;
+	}
 
 	/**
 	 *
