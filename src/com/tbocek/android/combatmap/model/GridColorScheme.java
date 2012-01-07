@@ -146,19 +146,19 @@ public final class GridColorScheme implements Serializable{
     }
     
     public void serialize(MapDataSerializer s) throws IOException {
-    	s.startArray();
+    	s.startObject();
     	s.serializeInt(this.mBackgroundColor);
     	s.serializeInt(this.mLineColor);
     	s.serializeBoolean(this.mIsDark);
-    	s.endArray();
+    	s.endObject();
     }
 
 	public static GridColorScheme deserialize(MapDataDeserializer s) throws IOException {
-		s.expectArrayStart();
+		s.expectObjectStart();
 		int bkg = s.readInt();
 		int line = s.readInt();
 		boolean dark = s.readBoolean();
-		s.expectArrayEnd();
+		s.expectObjectEnd();
 		return new GridColorScheme(bkg, line, dark);
 	}
 }

@@ -70,4 +70,12 @@ public class MapDataSerializer {
 	public void endArray() throws IOException {
 		writer.write("]\n");
 	}
+
+	public void startObject() throws IOException {
+		writer.write("{\n");
+	}
+	
+	public void endObject() throws IOException {
+		writer.write("}\n");
+	}
 }

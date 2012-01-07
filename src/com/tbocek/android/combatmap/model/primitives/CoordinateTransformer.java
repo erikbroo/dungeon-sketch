@@ -195,20 +195,20 @@ public final class CoordinateTransformer implements Serializable {
     }
     
     public void serialize(MapDataSerializer s) throws IOException {
-    	s.startArray();
+    	s.startObject();
     	s.serializeFloat(this.mOriginX);
     	s.serializeFloat(this.mOriginY);
     	s.serializeFloat(this.mZoomLevel);
-    	s.endArray();
+    	s.endObject();
     }
 
 	public static CoordinateTransformer deserialize(MapDataDeserializer s) throws IOException {
 		// TODO Auto-generated method stub
-		s.expectArrayStart();
+		s.expectObjectStart();
 		float x = s.readFloat();
 		float y = s.readFloat();
 		float zoom = s.readFloat();
-		s.expectArrayEnd();
+		s.expectObjectEnd();
 		return new CoordinateTransformer(x, y, zoom);
 	}
 }

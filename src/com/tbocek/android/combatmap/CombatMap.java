@@ -480,6 +480,8 @@ public final class CombatMap extends Activity {
 
             MapData.clear();
             setFilenamePreference(null);
+            //TODO: Disable when not debugging.
+            throw new RuntimeException(e);
         }
         mData = MapData.getInstance();
         mCombatView.setData(mData);

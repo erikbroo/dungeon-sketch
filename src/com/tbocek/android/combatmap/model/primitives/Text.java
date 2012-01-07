@@ -143,23 +143,23 @@ public class Text extends Shape {
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	
-    	s.startArray();
+    	s.startObject();
     	s.serializeString(this.text);
     	s.serializeFloat(this.textSize);
     	s.serializeFloat(this.location.x);
     	s.serializeFloat(this.location.y);
-    	s.endArray();
+    	s.endObject();
     }
 
 	@Override
 	protected void shapeSpecificDeserialize(MapDataDeserializer s) throws IOException {
-		s.expectArrayStart();
+		s.expectObjectStart();
 		this.text = s.readString();
 		this.textSize = s.readFloat();
 		location = new PointF();
 		this.location.x = s.readFloat();
 		this.location.y = s.readFloat();
-		s.expectArrayEnd();
+		s.expectObjectEnd();
 	}
 
 }

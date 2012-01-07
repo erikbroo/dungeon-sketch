@@ -95,10 +95,6 @@ public final class TokenDatabase {
             } catch (Exception e) {
                 instance = new TokenDatabase();
                 instance.populate(new DataManager(context));
-                Toast t = Toast.makeText(context,
-                        "Could not open the token database: " + e.toString(),
-                        Toast.LENGTH_LONG);
-                t.show();
             }
         }
         return instance;

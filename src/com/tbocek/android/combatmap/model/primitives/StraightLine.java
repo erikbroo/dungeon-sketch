@@ -212,24 +212,24 @@ public class StraightLine extends Shape implements Serializable {
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	
-    	s.startArray();
+    	s.startObject();
     	s.serializeFloat(start.x);
     	s.serializeFloat(start.y);
     	s.serializeFloat(end.x);
     	s.serializeFloat(end.y);
-    	s.endArray();
+    	s.endObject();
     }
 
 	@Override
 	protected void shapeSpecificDeserialize(MapDataDeserializer s)
 			throws IOException {
-		s.expectArrayStart();
+		s.expectObjectStart();
 		start = new PointF();
 		start.x = s.readFloat();
 		start.y = s.readFloat();
 		end = new PointF();
 		end.x = s.readFloat();
 		end.y = s.readFloat();
-		s.expectArrayEnd();
+		s.expectObjectEnd();
 	}
 }

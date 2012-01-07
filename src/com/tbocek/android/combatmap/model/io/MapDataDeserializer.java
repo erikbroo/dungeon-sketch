@@ -6,6 +6,8 @@ import java.io.Reader;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import android.util.Log;
+
 public class MapDataDeserializer {
 	public class SyncException extends IOException {
 		public SyncException(String string) {
@@ -19,7 +21,7 @@ public class MapDataDeserializer {
 	
 	private BufferedReader reader;
 	private int arrayLevel = 0;
-	private Queue<String> peekBuffer = new LinkedList<String>();
+	private LinkedList<String> peekBuffer = new LinkedList<String>();
 	
 	public String readString() throws IOException {
 		return nextToken();
@@ -37,13 +39,38 @@ public class MapDataDeserializer {
 		return nextToken().equals("0") ? false : true;
 	}
 	
-	public void expectArrayStart() {
-		// TODO: Implement synchronization logic, at least before map data
-		// format needs to be updated.
+	public int expectArrayStart() throws IOException {
+		String t = nextToken();
+		if (t.equals("[")) {
+			arrayLevel++;
+		} else {
+			throw new SyncException("Expected array start, got " + t);
+		}
+		// Return the array level at which this array will end.
+		return arrayLevel - 1;
 	}
 	
-	public void expectArrayEnd() {
-		
+	public void expectArrayEnd() throws IOException {
+		String t = nextToken();
+		if (t.equals("]")) {
+			arrayLevel--;
+		} else {
+			throw new SyncException("Expected array end, got " + t);
+		}
+	}
+	
+	public void expectObjectStart() throws IOException {
+		String t = nextToken();
+		if (!t.equals("{")) {
+			throw new SyncException("Expected object start, got " + t);
+		}
+	}
+	
+	public void expectObjectEnd() throws IOException {
+		String t = nextToken();
+		if (!t.equals("}")) {
+			throw new SyncException("Expected object end, got " + t);
+		}
 	}
 	
 	private String nextToken() throws IOException {
@@ -56,13 +83,10 @@ public class MapDataDeserializer {
 			}
 			
 			if (s == null) {
-				throw new SyncException("EOF Reached");
-			} else if (s.equals("[")) {
-				arrayLevel++;
-			} else if (s.equals("]")) {
-				arrayLevel--;
+				return null;
 			}
-		} while (s.equals("[") || s.equals("]") || s.equals(""));
+		} while (s.equals(""));
+		//Log.d("com.tbocek.android.combatmap.model.io.MapDataDeserializer", s);
 		return s;
 	}
 	
@@ -76,12 +100,14 @@ public class MapDataDeserializer {
 		String s;
 		do {
 			s = reader.readLine();
-		} while (s.equals(""));
-		peekBuffer.add(s);
+		} while (s != null && s.equals(""));
+		if (s != null)
+			peekBuffer.add(s);
 		return s;
 	}
 	
 	/**
+	 * @param terminateAtArrayLevel Array level at which to terminate the search.
 	 * @return The array level at which the next token will be read.
 	 * @throws IOException 
 	 */
@@ -90,16 +116,18 @@ public class MapDataDeserializer {
 		String s;
 		do {
 			s = peek();
-			if (s.equals("[")) {
-				l++;
-			} else  if (s.equals("]")){
+			if (s == null) {
+				break;
+			}
+			
+			if (s.equals("]")){
 				l--;
 			}
-		}while (s.equals("[") || s.equals("]"));
+		}while (s.equals("]"));
 		return l;
 	}
 
 	public boolean hasMoreArrayItems(int terminateAtArrayLevel) throws IOException {
-		return terminateAtArrayLevel == getNextArrayLevel();
+		return terminateAtArrayLevel < getNextArrayLevel();
 	}
 }

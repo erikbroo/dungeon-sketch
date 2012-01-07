@@ -248,8 +248,7 @@ public final class FreehandLine extends Shape implements Serializable {
 	@Override
 	protected void shapeSpecificDeserialize(MapDataDeserializer s)
 			throws IOException {
-		s.expectArrayStart();
-		int arrayLevel = s.getArrayLevel();
+		int arrayLevel = s.expectArrayStart();
 		while (s.hasMoreArrayItems(arrayLevel)) {
 			PointF p = new PointF();
 			p.x = s.readFloat();

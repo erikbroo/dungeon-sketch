@@ -231,20 +231,20 @@ public abstract class Shape implements Serializable {
 
 	protected void serializeBase(MapDataSerializer s, String shapeType) throws IOException {
 		s.serializeString(shapeType);
-		s.startArray();
+		s.startObject();
 		s.serializeInt(this.mColor);
 		s.serializeFloat(this.mWidth);
 		this.boundingRectangle.serialize(s);
-		s.endArray();
+		s.endObject();
 	}
 	
 	public static Shape deserialize(MapDataDeserializer s) throws IOException {
 		String shapeType = s.readString();
-		s.expectArrayStart();
+		s.expectObjectStart();
 		int color = s.readInt();
 		float width = s.readFloat();
 		BoundingRectangle r = BoundingRectangle.deserialize(s);
-		s.expectArrayEnd();
+		s.expectObjectEnd();
 		
 		Shape shape;
 		

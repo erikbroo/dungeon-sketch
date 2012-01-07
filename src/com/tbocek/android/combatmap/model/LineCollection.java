@@ -295,8 +295,7 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	
 
 	public void deserialize(MapDataDeserializer s) throws IOException {
-		s.expectArrayStart();
-		int arrayLevel = s.getArrayLevel();
+		int arrayLevel = s.expectArrayStart();
 		while (s.hasMoreArrayItems(arrayLevel)) {
 			this.lines.add(Shape.deserialize(s));
 		}

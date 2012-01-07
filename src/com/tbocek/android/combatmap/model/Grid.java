@@ -156,19 +156,19 @@ public abstract class Grid implements Serializable {
     }
     
     public void serialize(MapDataSerializer s) throws IOException {
-    	s.startArray();
+    	s.startObject();
     	s.serializeString(mType);
     	this.colorScheme.serialize(s);
     	this.mGridToWorldTransformer.serialize(s);
-    	s.endArray();
+    	s.endObject();
     }
     
     public static Grid deserialize(MapDataDeserializer s) throws IOException {
-    	s.expectArrayStart();
+    	s.expectObjectStart();
     	String type = s.readString();
     	GridColorScheme colorScheme = GridColorScheme.deserialize(s);
     	CoordinateTransformer transform = CoordinateTransformer.deserialize(s);
-    	s.expectArrayEnd();
+    	s.expectObjectEnd();
     	return createGrid(type, colorScheme, transform);
     }
 }

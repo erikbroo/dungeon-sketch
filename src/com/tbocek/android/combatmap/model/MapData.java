@@ -1,10 +1,14 @@
 package com.tbocek.android.combatmap.model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 
 import com.tbocek.android.combatmap.TokenDatabase;
@@ -64,11 +68,17 @@ public final class MapData implements Serializable {
      * @throws IOException On read error.
      * @throws ClassNotFoundException On deserialization error.
      */
-    public static void loadFromStream(final InputStream input)
+    public static void loadFromStream(final InputStream input, TokenDatabase tokens)
     		throws IOException, ClassNotFoundException {
-        ObjectInputStream objectIn = new ObjectInputStream(input);
-        instance = (MapData) objectIn.readObject();
-        objectIn.close();
+        InputStreamReader inReader = new InputStreamReader(input);
+        BufferedReader reader = new BufferedReader(inReader);
+        MapDataDeserializer s = new MapDataDeserializer(reader);
+        try {
+        	instance = MapData.deserialize(s, tokens);
+        } finally {
+	        reader.close();
+	        inReader.close();
+        }
     }
 
     /**
@@ -78,9 +88,15 @@ public final class MapData implements Serializable {
      */
     public static void saveToStream(final OutputStream output)
     		throws IOException {
-        ObjectOutputStream objectOut = new ObjectOutputStream(output);
-        objectOut.writeObject(instance);
-        objectOut.close();
+        OutputStreamWriter outWriter = new OutputStreamWriter(output);
+        BufferedWriter writer = new BufferedWriter(outWriter);
+        MapDataSerializer s = new MapDataSerializer(writer);
+        try {
+        	instance.serialize(s);
+        } finally {
+	        writer.close();
+	        outWriter.close();
+    	}
     }
 
     /**
@@ -244,6 +260,7 @@ public final class MapData implements Serializable {
 	public void serialize(MapDataSerializer s) throws IOException {
 		s.serializeInt(MAP_DATA_VERSION);
 		this.mGrid.serialize(s);
+		this.transformer.serialize(s);
 		this.tokens.serialize(s);
 		this.mBackgroundLines.serialize(s);
 		this.mBackgroundFogOfWar.serialize(s);
@@ -252,10 +269,12 @@ public final class MapData implements Serializable {
 		this.mAnnotationLines.serialize(s);
 	}
 	
-	public MapData deserialize(MapDataDeserializer s, TokenDatabase tokens) throws IOException {
+	public static MapData deserialize(MapDataDeserializer s, TokenDatabase tokens) throws IOException {
+		@SuppressWarnings("unused")
 		int mapDataVersion = s.readInt();
 		MapData data = new MapData();
 		data.mGrid = Grid.deserialize(s);
+		data.transformer = CoordinateTransformer.deserialize(s);
 		data.tokens.deserialize(s, tokens);
 		data.mBackgroundLines.deserialize(s);
 		data.mBackgroundFogOfWar.deserialize(s);

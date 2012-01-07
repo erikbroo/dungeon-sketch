@@ -239,8 +239,7 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
 	
 	public void deserialize(
 			MapDataDeserializer s, TokenDatabase tokenDatabase) throws IOException {
-		s.expectArrayStart();
-		int arrayLevel = s.getArrayLevel();
+		int arrayLevel = s.expectArrayStart();
 		while (s.hasMoreArrayItems(arrayLevel)) {
 			this.tokens.add(BaseToken.deserialize(s, tokenDatabase));
 		}

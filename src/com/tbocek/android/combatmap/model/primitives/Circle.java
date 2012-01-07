@@ -123,21 +123,21 @@ public class Circle extends Shape implements Serializable {
 	
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
-    	s.startArray();
+    	s.startObject();
     	s.serializeFloat(this.radius);
     	s.serializeFloat(this.center.x);
     	s.serializeFloat(this.center.y);
-    	s.endArray();
+    	s.endObject();
     }
 
 	@Override
 	protected void shapeSpecificDeserialize(MapDataDeserializer s)
 			throws IOException {
-		s.expectArrayStart();
+		s.expectObjectStart();
 		this.radius = s.readFloat();
 		center = new PointF();
 		this.center.x = s.readFloat();
 		this.center.y = s.readFloat();
-		s.expectArrayEnd();
+		s.expectObjectEnd();
 	}
 }

@@ -323,7 +323,7 @@ public abstract class BaseToken implements Serializable {
     }
     
     public void serialize(MapDataSerializer s) throws IOException {
-    	s.startArray();
+    	s.startObject();
     	s.serializeString(this.getTokenId());
     	s.serializeFloat(this.mSize);
     	s.serializeFloat(this.mLocation.x);
@@ -331,13 +331,13 @@ public abstract class BaseToken implements Serializable {
     	s.serializeBoolean(this.mHasCustomBorder);
     	s.serializeInt(this.mCustomBorderColor);
     	s.serializeBoolean(this.mBloodied);
-    	s.endArray();
+    	s.endObject();
     }
 
 
 	public static BaseToken deserialize(MapDataDeserializer s,
 			TokenDatabase tokenDatabase) throws IOException {
-		s.expectArrayStart();
+		s.expectObjectStart();
 		String tokenId = s.readString();
 		BaseToken t = tokenDatabase.createToken(tokenId);
 		t.mSize = s.readFloat();
@@ -346,7 +346,7 @@ public abstract class BaseToken implements Serializable {
 		t.mHasCustomBorder = s.readBoolean();
 		t.mCustomBorderColor = s.readInt();
 		t.mBloodied = s.readBoolean();
-		s.expectArrayEnd();
-		return null;
+		s.expectObjectEnd();
+		return t;
 	}
 }
