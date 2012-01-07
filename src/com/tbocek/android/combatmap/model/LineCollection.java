@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
 
-import com.tbocek.android.combatmap.MapDataDeserializer;
-import com.tbocek.android.combatmap.MapDataSerializer;
+import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
+import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.Circle;

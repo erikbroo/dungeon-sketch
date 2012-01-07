@@ -1,4 +1,4 @@
-package com.tbocek.android.combatmap;
+package com.tbocek.android.combatmap.model.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,11 +8,13 @@ import java.util.Queue;
 
 public class MapDataDeserializer {
 	public class SyncException extends IOException {
-
 		public SyncException(String string) {
 			super(string);
 		}
-		
+	}
+	
+	public MapDataDeserializer(BufferedReader reader) {
+		this.reader = reader;
 	}
 	
 	private BufferedReader reader;

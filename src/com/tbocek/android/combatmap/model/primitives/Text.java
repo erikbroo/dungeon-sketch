@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tbocek.android.combatmap.MapDataDeserializer;
-import com.tbocek.android.combatmap.MapDataSerializer;
+import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
+import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint.Style;

@@ -1,4 +1,4 @@
-package com.tbocek.android.combatmap;
+package com.tbocek.android.combatmap.model.io;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -38,6 +38,11 @@ import java.io.Writer;
  */
 public class MapDataSerializer {
 	private Writer writer;
+	
+	public MapDataSerializer(Writer writer) {
+		this.writer = writer;
+	}
+	
 	public void serializeString(String value) throws IOException {
 		boolean needsQuote = false;
 		writer.write(value);

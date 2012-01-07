@@ -3,8 +3,8 @@ package com.tbocek.android.combatmap.model;
 import java.io.IOException;
 import java.io.Serializable;
 
-import com.tbocek.android.combatmap.MapDataDeserializer;
-import com.tbocek.android.combatmap.MapDataSerializer;
+import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
+import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 
