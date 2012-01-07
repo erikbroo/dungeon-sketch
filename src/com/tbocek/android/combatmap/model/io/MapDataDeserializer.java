@@ -57,12 +57,12 @@ public class MapDataDeserializer {
 			
 			if (s == null) {
 				throw new SyncException("EOF Reached");
-			} else if (s == "[") {
+			} else if (s.equals("[")) {
 				arrayLevel++;
-			} else if (s == "]") {
+			} else if (s.equals("]")) {
 				arrayLevel--;
 			}
-		} while (s == "[" || s == "]" || s == "");
+		} while (s.equals("[") || s.equals("]") || s.equals(""));
 		return s;
 	}
 	
@@ -76,7 +76,7 @@ public class MapDataDeserializer {
 		String s;
 		do {
 			s = reader.readLine();
-		} while (s == "");
+		} while (s.equals(""));
 		peekBuffer.add(s);
 		return s;
 	}
@@ -90,12 +90,12 @@ public class MapDataDeserializer {
 		String s;
 		do {
 			s = peek();
-			if (s == "[") {
+			if (s.equals("[")) {
 				l++;
-			} else  if (s == "]"){
+			} else  if (s.equals("]")){
 				l--;
 			}
-		}while (s == "[" || s == "]");
+		}while (s.equals("[") || s.equals("]"));
 		return l;
 	}
 
