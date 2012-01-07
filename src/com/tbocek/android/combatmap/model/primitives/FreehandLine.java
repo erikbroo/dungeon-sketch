@@ -1,8 +1,12 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 
 
@@ -19,6 +23,8 @@ public final class FreehandLine extends Shape implements Serializable {
      * ID for serialization.
      */
     private static final long serialVersionUID = -4935518208097034463L;
+
+	public static final String SHAPE_TYPE = "fh";
 
     /**
      * The points that comprise this line.
@@ -228,4 +234,29 @@ public final class FreehandLine extends Shape implements Serializable {
     	}
     	return oddNodes;
     }
+    
+    public void serialize(MapDataSerializer s) throws IOException {
+    	serializeBase(s, SHAPE_TYPE);
+    	s.startArray();
+    	for (PointF p : this.points) {
+    		s.serializeFloat(p.x);
+    		s.serializeFloat(p.y);
+    	}
+    	s.endArray();
+    }
+
+	@Override
+	protected void shapeSpecificDeserialize(MapDataDeserializer s)
+			throws IOException {
+		s.expectArrayStart();
+		int arrayLevel = s.getArrayLevel();
+		while (s.hasMoreArrayItems(arrayLevel)) {
+			PointF p = new PointF();
+			p.x = s.readFloat();
+			p.y = s.readFloat();
+			this.points.add(p);
+			this.shouldDraw.add(true);
+		}
+		s.expectArrayEnd();
+	}
 }

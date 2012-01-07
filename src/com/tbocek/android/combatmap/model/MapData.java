@@ -7,6 +7,9 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
+import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 
@@ -22,6 +25,8 @@ public final class MapData implements Serializable {
      * ID for serialization.
      */
     private static final long serialVersionUID = -3121845340089752312L;
+
+	private static final int MAP_DATA_VERSION = 0;
 
     /**
      * Private constructor - singleton pattern.
@@ -234,5 +239,29 @@ public final class MapData implements Serializable {
 	 */
 	public Grid getGrid() {
 		return mGrid;
+	}
+	
+	public void serialize(MapDataSerializer s) throws IOException {
+		s.serializeInt(MAP_DATA_VERSION);
+		this.mGrid.serialize(s);
+		this.tokens.serialize(s);
+		this.mBackgroundLines.serialize(s);
+		this.mBackgroundFogOfWar.serialize(s);
+		this.mGmNoteLines.serialize(s);
+		this.mGmNotesFogOfWar.serialize(s);
+		this.mAnnotationLines.serialize(s);
+	}
+	
+	public MapData deserialize(MapDataDeserializer s, TokenDatabase tokens) throws IOException {
+		int mapDataVersion = s.readInt();
+		MapData data = new MapData();
+		data.mGrid = Grid.deserialize(s);
+		data.tokens.deserialize(s, tokens);
+		data.mBackgroundLines.deserialize(s);
+		data.mBackgroundFogOfWar.deserialize(s);
+		data.mGmNoteLines.deserialize(s);
+		data.mGmNotesFogOfWar.deserialize(s);
+		data.mAnnotationLines.deserialize(s);
+		return data;
 	}
 }

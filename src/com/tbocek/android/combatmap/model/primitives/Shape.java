@@ -1,7 +1,11 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -222,6 +226,47 @@ public abstract class Shape implements Serializable {
 	public boolean shouldDrawBelowGrid() {
 		return this.mWidth > 1.0f;
 	}
+
+	public abstract void serialize(MapDataSerializer s) throws IOException;
+
+	protected void serializeBase(MapDataSerializer s, String shapeType) throws IOException {
+		s.serializeString(shapeType);
+		s.startArray();
+		s.serializeInt(this.mColor);
+		s.serializeFloat(this.mWidth);
+		this.boundingRectangle.serialize(s);
+		s.endArray();
+	}
+	
+	public static Shape deserialize(MapDataDeserializer s) throws IOException {
+		String shapeType = s.readString();
+		s.expectArrayStart();
+		int color = s.readInt();
+		float width = s.readFloat();
+		BoundingRectangle r = BoundingRectangle.deserialize(s);
+		s.expectArrayEnd();
+		
+		Shape shape;
+		
+		if (shapeType == FreehandLine.SHAPE_TYPE) {
+			shape = new FreehandLine(color, width);
+		} else if (shapeType == StraightLine.SHAPE_TYPE) {
+			shape = new StraightLine(color, width);
+		} else if (shapeType == Circle.SHAPE_TYPE) {
+			shape = new Circle(color, width);
+		} else if (shapeType == Text.SHAPE_TYPE) {
+			shape = new Text(color, width);
+		} else {
+			throw new IOException("Unrecognized shape type: " + shapeType);
+		}
+		
+		shape.boundingRectangle = r;
+		shape.shapeSpecificDeserialize(s);
+		return shape;
+		
+	}
+
+	protected abstract void shapeSpecificDeserialize(MapDataDeserializer s) throws IOException;
 
 
 }

@@ -277,6 +277,10 @@ public final class TokenDatabase {
         loadLetterTokens();
         this.prePopulateTags = false;
     }
+    
+    public BaseToken createToken(String tokenId) {
+    	return this.tokenForId.get(tokenId).clone();
+    }
 
     /**
      * @return True if tags have already been loaded from the file, false if

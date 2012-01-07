@@ -1,7 +1,11 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint.Style;
@@ -9,6 +13,8 @@ import android.graphics.Path;
 import android.graphics.Rect;
 
 public class Text extends Shape {
+
+	public static final String SHAPE_TYPE = "txt";
 
 	public String text;
 
@@ -41,6 +47,17 @@ public class Text extends Shape {
 				new PointF(
 						location.x + bounds.width(), 
 						location.y - bounds.height()));
+	}
+	
+	/**
+	 * HACK: Ctor for deserialization ONLY!!!  The bounding rectangle in
+	 * particular MUST be manually set!!!
+	 * @param color
+	 * @param strokeWidth
+	 */
+	Text(int color, float strokeWidth) {
+		this.mColor = color;
+		this.mWidth = strokeWidth;
 	}
 	
 	/**
@@ -121,6 +138,28 @@ public class Text extends Shape {
 	
 	public boolean shouldDrawBelowGrid() {
 		return false;
+	}
+	
+    public void serialize(MapDataSerializer s) throws IOException {
+    	serializeBase(s, SHAPE_TYPE);
+    	
+    	s.startArray();
+    	s.serializeString(this.text);
+    	s.serializeFloat(this.textSize);
+    	s.serializeFloat(this.location.x);
+    	s.serializeFloat(this.location.y);
+    	s.endArray();
+    }
+
+	@Override
+	protected void shapeSpecificDeserialize(MapDataDeserializer s) throws IOException {
+		s.expectArrayStart();
+		this.text = s.readString();
+		this.textSize = s.readFloat();
+		location = new PointF();
+		this.location.x = s.readFloat();
+		this.location.y = s.readFloat();
+		s.expectArrayEnd();
 	}
 
 }

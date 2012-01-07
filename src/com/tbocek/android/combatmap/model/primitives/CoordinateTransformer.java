@@ -1,6 +1,10 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.IOException;
 import java.io.Serializable;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 import android.graphics.Canvas;
 
@@ -189,4 +193,22 @@ public final class CoordinateTransformer implements Serializable {
     	c.scale(1/mZoomLevel, 1/mZoomLevel);
     	c.translate(-mOriginX, -mOriginY);
     }
+    
+    public void serialize(MapDataSerializer s) throws IOException {
+    	s.startArray();
+    	s.serializeFloat(this.mOriginX);
+    	s.serializeFloat(this.mOriginY);
+    	s.serializeFloat(this.mZoomLevel);
+    	s.endArray();
+    }
+
+	public static CoordinateTransformer deserialize(MapDataDeserializer s) throws IOException {
+		// TODO Auto-generated method stub
+		s.expectArrayStart();
+		float x = s.readFloat();
+		float y = s.readFloat();
+		float zoom = s.readFloat();
+		s.expectArrayEnd();
+		return new CoordinateTransformer(x, y, zoom);
+	}
 }

@@ -1,6 +1,10 @@
 package com.tbocek.android.combatmap.model;
 
+import java.io.IOException;
 import java.io.Serializable;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 import android.graphics.Color;
 
@@ -140,4 +144,21 @@ public final class GridColorScheme implements Serializable{
     boolean isDark() {
     	return mIsDark;
     }
+    
+    public void serialize(MapDataSerializer s) throws IOException {
+    	s.startArray();
+    	s.serializeInt(this.mBackgroundColor);
+    	s.serializeInt(this.mLineColor);
+    	s.serializeBoolean(this.mIsDark);
+    	s.endArray();
+    }
+
+	public static GridColorScheme deserialize(MapDataDeserializer s) throws IOException {
+		s.expectArrayStart();
+		int bkg = s.readInt();
+		int line = s.readInt();
+		boolean dark = s.readBoolean();
+		s.expectArrayEnd();
+		return new GridColorScheme(bkg, line, dark);
+	}
 }

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
 
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.Circle;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
@@ -281,6 +284,24 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     public boolean isEmpty() {
         return lines.isEmpty();
     }
+    
+	public void serialize(MapDataSerializer s) throws IOException {
+		s.startArray();
+		for (Shape shape: this.lines) {
+			shape.serialize(s);
+		}
+		s.endArray();
+	}
+	
+
+	public void deserialize(MapDataDeserializer s) throws IOException {
+		s.expectArrayStart();
+		int arrayLevel = s.getArrayLevel();
+		while (s.hasMoreArrayItems(arrayLevel)) {
+			this.lines.add(Shape.deserialize(s));
+		}
+		s.expectArrayEnd();
+	}
 
     /**
      * @return The bounding rectangle that bounds all lines in the collection.

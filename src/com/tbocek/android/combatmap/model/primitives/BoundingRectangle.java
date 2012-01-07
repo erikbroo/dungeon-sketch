@@ -1,8 +1,12 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 import android.graphics.RectF;
 
@@ -150,5 +154,21 @@ public final class BoundingRectangle implements Serializable {
 		boundsXMax += deltaX;
 		boundsYMin += deltaY;
 		boundsYMax += deltaY;
+	}
+	
+	public void serialize(MapDataSerializer s) throws IOException {
+		s.serializeFloat(boundsXMin);
+		s.serializeFloat(boundsXMax);
+		s.serializeFloat(boundsYMin);
+		s.serializeFloat(boundsYMax);
+	}
+	
+	public static BoundingRectangle deserialize(MapDataDeserializer s) throws IOException {
+		BoundingRectangle r = new BoundingRectangle();
+		r.boundsXMin = s.readFloat();
+		r.boundsXMax = s.readFloat();
+		r.boundsYMin = s.readFloat();
+		r.boundsYMax = s.readFloat();
+		return r;
 	}
 }

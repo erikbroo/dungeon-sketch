@@ -1,10 +1,14 @@
 package com.tbocek.android.combatmap.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
+import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
@@ -225,6 +229,24 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
 		commandHistory.redo();
 	}
 	
+	public void serialize(MapDataSerializer s) throws IOException {
+		s.startArray();
+		for (BaseToken t : this.tokens) {
+			t.serialize(s);
+		}
+		s.endArray();
+	}
+	
+	public void deserialize(
+			MapDataDeserializer s, TokenDatabase tokenDatabase) throws IOException {
+		s.expectArrayStart();
+		int arrayLevel = s.getArrayLevel();
+		while (s.hasMoreArrayItems(arrayLevel)) {
+			this.tokens.add(BaseToken.deserialize(s, tokenDatabase));
+		}
+		s.expectArrayEnd();
+	}
+	
 	private class ModifyTokenCommand implements CommandHistory.Command {
 
 		private BaseToken tokenToModify;
@@ -301,5 +323,7 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
 			return tokensToAdd.isEmpty() && tokensToDelete.isEmpty();
 		}
     	
+
     }
+
 }

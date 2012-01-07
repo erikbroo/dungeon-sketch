@@ -1,7 +1,10 @@
 package com.tbocek.android.combatmap.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 
@@ -36,6 +39,19 @@ public abstract class Grid implements Serializable {
     		: new RectangularGrid();
     	g.colorScheme = GridColorScheme.fromNamedScheme(colorScheme);
         g.mGridToWorldTransformer = transformer;
+        g.mType = gridStyle;
+        return g;
+    }
+    
+    public static Grid createGrid(
+    		final String gridStyle, final GridColorScheme colorScheme,
+    		final CoordinateTransformer transformer) {
+        Grid g = gridStyle.equals("hex")
+    		? new HexGrid()
+    		: new RectangularGrid();
+    	g.colorScheme = colorScheme;
+        g.mGridToWorldTransformer = transformer;
+        g.mType = gridStyle;
         return g;
     }
 
@@ -43,6 +59,11 @@ public abstract class Grid implements Serializable {
      * The color scheme to use when drawing this grid.
      */
     private GridColorScheme colorScheme = GridColorScheme.GRAPH_PAPER;
+    
+    /**
+     * Saved string that lead to this style of grid, for serialization.
+     */
+    private String mType;
 
     /**
      * Given a point, returns a the point nearest to that point that will draw
@@ -133,5 +154,21 @@ public abstract class Grid implements Serializable {
     public final CoordinateTransformer gridSpaceToWorldSpaceTransformer() {
         return mGridToWorldTransformer;
     }
-
+    
+    public void serialize(MapDataSerializer s) throws IOException {
+    	s.startArray();
+    	s.serializeString(mType);
+    	this.colorScheme.serialize(s);
+    	this.mGridToWorldTransformer.serialize(s);
+    	s.endArray();
+    }
+    
+    public static Grid deserialize(MapDataDeserializer s) throws IOException {
+    	s.expectArrayStart();
+    	String type = s.readString();
+    	GridColorScheme colorScheme = GridColorScheme.deserialize(s);
+    	CoordinateTransformer transform = CoordinateTransformer.deserialize(s);
+    	s.expectArrayEnd();
+    	return createGrid(type, colorScheme, transform);
+    }
 }

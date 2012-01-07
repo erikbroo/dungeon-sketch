@@ -1,8 +1,12 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 
 import android.graphics.Path;
@@ -13,6 +17,8 @@ public class Circle extends Shape implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 3662381313335509811L;
+
+	public static final String SHAPE_TYPE = "cr";
 
 	// In world space.
 	PointF center = null;
@@ -114,5 +120,24 @@ public class Circle extends Shape implements Serializable {
 					new PointF(center.x + radius, center.y + radius));
 		}
 	}
+	
+    public void serialize(MapDataSerializer s) throws IOException {
+    	serializeBase(s, SHAPE_TYPE);
+    	s.startArray();
+    	s.serializeFloat(this.radius);
+    	s.serializeFloat(this.center.x);
+    	s.serializeFloat(this.center.y);
+    	s.endArray();
+    }
 
+	@Override
+	protected void shapeSpecificDeserialize(MapDataDeserializer s)
+			throws IOException {
+		s.expectArrayStart();
+		this.radius = s.readFloat();
+		center = new PointF();
+		this.center.x = s.readFloat();
+		this.center.y = s.readFloat();
+		s.expectArrayEnd();
+	}
 }

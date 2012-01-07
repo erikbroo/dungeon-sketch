@@ -1,9 +1,13 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
 
 import android.graphics.Path;
 
@@ -13,6 +17,8 @@ public class StraightLine extends Shape implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -7125928496175113220L;
+
+	public static final String SHAPE_TYPE = "sl";
 
 	private PointF start = null;
 	private PointF end = null;
@@ -200,5 +206,30 @@ public class StraightLine extends Shape implements Serializable {
 	private PointF parameterizationToPoint(float t) {
 		return new PointF(start.x + t * (end.x - start.x),
 				          start.y + t * (end.y - start.y));
+	}
+	
+	
+    public void serialize(MapDataSerializer s) throws IOException {
+    	serializeBase(s, SHAPE_TYPE);
+    	
+    	s.startArray();
+    	s.serializeFloat(start.x);
+    	s.serializeFloat(start.y);
+    	s.serializeFloat(end.x);
+    	s.serializeFloat(end.y);
+    	s.endArray();
+    }
+
+	@Override
+	protected void shapeSpecificDeserialize(MapDataDeserializer s)
+			throws IOException {
+		s.expectArrayStart();
+		start = new PointF();
+		start.x = s.readFloat();
+		start.y = s.readFloat();
+		end = new PointF();
+		end.x = s.readFloat();
+		end.y = s.readFloat();
+		s.expectArrayEnd();
 	}
 }

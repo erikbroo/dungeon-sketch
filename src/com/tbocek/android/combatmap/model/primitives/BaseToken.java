@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.tbocek.android.combatmap.MapDataDeserializer;
+import com.tbocek.android.combatmap.MapDataSerializer;
+import com.tbocek.android.combatmap.TokenDatabase;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -39,9 +43,6 @@ public abstract class BaseToken implements Serializable {
      * Whether the token is bloodied.
      */
     private boolean mBloodied = false;
-    
-    private static int currentId = 0;
-    public int id;
     
     /**
      *
@@ -320,4 +321,32 @@ public abstract class BaseToken implements Serializable {
     	clone.mSize = mSize;
     	return clone;
     }
+    
+    public void serialize(MapDataSerializer s) throws IOException {
+    	s.startArray();
+    	s.serializeString(this.getTokenId());
+    	s.serializeFloat(this.mSize);
+    	s.serializeFloat(this.mLocation.x);
+    	s.serializeFloat(this.mLocation.y);
+    	s.serializeBoolean(this.mHasCustomBorder);
+    	s.serializeInt(this.mCustomBorderColor);
+    	s.serializeBoolean(this.mBloodied);
+    	s.endArray();
+    }
+
+
+	public static BaseToken deserialize(MapDataDeserializer s,
+			TokenDatabase tokenDatabase) throws IOException {
+		s.expectArrayStart();
+		String tokenId = s.readString();
+		BaseToken t = tokenDatabase.createToken(tokenId);
+		t.mSize = s.readFloat();
+		t.mLocation.x = s.readFloat();
+		t.mLocation.y = s.readFloat();
+		t.mHasCustomBorder = s.readBoolean();
+		t.mCustomBorderColor = s.readInt();
+		t.mBloodied = s.readBoolean();
+		s.expectArrayEnd();
+		return null;
+	}
 }
