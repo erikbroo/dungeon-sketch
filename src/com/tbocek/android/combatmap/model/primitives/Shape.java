@@ -248,13 +248,13 @@ public abstract class Shape implements Serializable {
 		
 		Shape shape;
 		
-		if (shapeType == FreehandLine.SHAPE_TYPE) {
+		if (shapeType.equals(FreehandLine.SHAPE_TYPE)) {
 			shape = new FreehandLine(color, width);
-		} else if (shapeType == StraightLine.SHAPE_TYPE) {
+		} else if (shapeType.equals(StraightLine.SHAPE_TYPE)) {
 			shape = new StraightLine(color, width);
-		} else if (shapeType == Circle.SHAPE_TYPE) {
+		} else if (shapeType.equals(Circle.SHAPE_TYPE)) {
 			shape = new Circle(color, width);
-		} else if (shapeType == Text.SHAPE_TYPE) {
+		} else if (shapeType.equals(Text.SHAPE_TYPE)) {
 			shape = new Text(color, width);
 		} else {
 			throw new IOException("Unrecognized shape type: " + shapeType);
