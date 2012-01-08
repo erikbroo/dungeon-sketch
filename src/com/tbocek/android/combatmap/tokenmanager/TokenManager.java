@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TextPromptDialog;
@@ -239,6 +240,11 @@ public final class TokenManager extends Activity {
     	case R.id.token_manager_new_tag:
     		showDialog(DIALOG_ID_NEW_TAG);
     		return true;
+        case android.R.id.home:
+            // app icon in action bar clicked; go home
+            Intent intent = new Intent(this, CombatMap.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
     	default:
     		return false;
     	}

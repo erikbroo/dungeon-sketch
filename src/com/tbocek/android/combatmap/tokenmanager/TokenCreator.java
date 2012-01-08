@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DataManager;
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
@@ -98,6 +99,12 @@ public final class TokenCreator extends Activity {
                 		Toast.LENGTH_LONG);
                 toast.show();
             }
+            return true;
+        case android.R.id.home:
+            // app icon in action bar clicked; go home
+            Intent intent = new Intent(this, CombatMap.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             return true;
         default:
         	return false;
