@@ -62,12 +62,12 @@ public final class Util {
      */
     public static List<Integer> getStandardColorPalette() {
         List<Integer> palette = new ArrayList<Integer>();
-
-        palette.add(Color.WHITE);
-        palette.add(Color.LTGRAY);
-        palette.add(Color.GRAY);
-        palette.add(Color.DKGRAY);
+        
         palette.add(Color.BLACK);
+        palette.add(Color.DKGRAY);
+        palette.add(Color.GRAY);
+        palette.add(Color.LTGRAY);
+        palette.add(Color.WHITE);
 
         for (int h = 0; h < HUE_DEGREES; h += HUE_INCREMENT) {
             float [] hsv = {h, 1, 1};
