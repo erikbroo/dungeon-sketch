@@ -41,4 +41,9 @@ public class ToggleButtonGroup {
             b.setToggled(false);
         }
 	}
+
+	public void forceDefault() {
+		untoggle();
+		defaultMember.performClick();
+	}
 }

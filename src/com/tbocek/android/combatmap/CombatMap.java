@@ -593,7 +593,6 @@ public final class CombatMap extends Activity {
 		switch (manipulationMode) {
 		case MODE_DRAW_BACKGROUND:
             mCombatView.setAreTokensManipulatable(false);
-            mCombatView.setDrawMode();
             mCombatView.useBackgroundLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
             mBottomControlFrame.removeAllViews();
@@ -605,7 +604,6 @@ public final class CombatMap extends Activity {
 			return;
 		case MODE_DRAW_ANNOTATIONS:
             mCombatView.setAreTokensManipulatable(false);
-            mCombatView.setDrawMode();
             mCombatView.useAnnotationLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
             mBottomControlFrame.removeAllViews();
@@ -617,7 +615,6 @@ public final class CombatMap extends Activity {
 			return;
 		case MODE_DRAW_GM_NOTES:
             mCombatView.setAreTokensManipulatable(false);
-            mCombatView.setDrawMode();
             mCombatView.useGmNotesLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.NOTHING);
             mBottomControlFrame.removeAllViews();

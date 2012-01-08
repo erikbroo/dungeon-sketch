@@ -191,6 +191,10 @@ public final class DrawOptionsView extends LinearLayout {
     	if (visible) {
             toolsGroup.add(mMaskButton);
     	} else {
+    		// If mask tool was selected, we need to de-select it.
+    		if (mMaskButton.isToggled()) {
+    			toolsGroup.forceDefault();
+    		}
     		toolsGroup.remove(mMaskButton);
     	}
     }
