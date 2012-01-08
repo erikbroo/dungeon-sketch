@@ -356,11 +356,8 @@ public final class DrawOptionsView extends LinearLayout {
      */
     public void setDefault() {
         // Start out with the pan button selected.
-    	if (defaultView != null) {
-    		defaultView.performClick();
-    	}
+    	toolsGroup.maybeSelectDefault();
     }
-    protected View defaultView;
 
 	/**
 	 * Creates the eraser button and adds it to the view.
@@ -402,7 +399,6 @@ public final class DrawOptionsView extends LinearLayout {
         });
         this.addView(panButton);
         toolsGroup.add(panButton);
-        defaultView = panButton;
 	}
 
 	protected void createAndAddStraightLineButton() {
@@ -417,6 +413,8 @@ public final class DrawOptionsView extends LinearLayout {
                 colorGroup.setGroupVisibility(View.VISIBLE);
                 lineWidthGroup.setGroupVisibility(View.VISIBLE);
                 lineWidthRegionGroup.setGroupVisibility(View.GONE);
+                lineWidthGroup.maybeSelectDefault();
+                colorGroup.maybeSelectDefault();
                 button.setToggled(true);
             }
         });
@@ -436,12 +434,8 @@ public final class DrawOptionsView extends LinearLayout {
                 colorGroup.setGroupVisibility(View.VISIBLE);
                 lineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
-
-                // HACK: If we were in mask mode, make sure we are still in mask
-                // mode.
-                if (mMaskButton.isToggled()) {
-                	mMaskButton.performClick();
-                }
+                lineWidthGroup.maybeSelectDefault();
+                colorGroup.maybeSelectDefault();
             }
         });
         layout.addView(button);
@@ -461,12 +455,8 @@ public final class DrawOptionsView extends LinearLayout {
                 colorGroup.setGroupVisibility(View.VISIBLE);
                 lineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
-
-                // HACK: If we were in mask mode, make sure we are still in mask
-                // mode.
-                if (mMaskButton.isToggled()) {
-                	mMaskButton.performClick();
-                }
+                lineWidthGroup.maybeSelectDefault();
+                colorGroup.maybeSelectDefault();
             }
         });
         layout.addView(button);
@@ -486,6 +476,8 @@ public final class DrawOptionsView extends LinearLayout {
                 colorGroup.setGroupVisibility(View.VISIBLE);
                 lineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
+                lineWidthGroup.maybeSelectDefault();
+                colorGroup.maybeSelectDefault();
             }
         });
         layout.addView(button);
