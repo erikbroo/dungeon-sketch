@@ -199,7 +199,9 @@ public final class Load extends Activity {
                 v = (View) v.getParent();
             }
             contextMenuTrigger = (SaveFileButton) v;
-            getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
+            if (menu.size() == 0) {
+            	getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
+            }
         }
     };
 
