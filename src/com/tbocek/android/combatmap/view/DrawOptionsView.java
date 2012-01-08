@@ -54,7 +54,7 @@ public final class DrawOptionsView extends LinearLayout {
         @Override
         public void onClick(final View v) {
             onChangeDrawToolListener.onChooseColoredPen(mColor);
-            untoggleGroup(colorGroup);
+            colorGroup.untoggle();
             ((ImageToggleButton) v).setToggled(true);
         }
     }
@@ -83,9 +83,9 @@ public final class DrawOptionsView extends LinearLayout {
         @Override
         public void onClick(final View v) {
             onChangeDrawToolListener.onChooseStrokeWidth(mWidth);
-            untoggleGroup(lineWidthGroup);
+            lineWidthGroup.untoggle();
             ((ImageToggleButton) v).setToggled(true);
-            setGroupVisibility(colorGroup, View.VISIBLE);
+            colorGroup.setGroupVisibility(View.VISIBLE);
         }
     }
 
@@ -171,10 +171,10 @@ public final class DrawOptionsView extends LinearLayout {
 			@Override
 			public void onClick(final View arg0) {
 				onChangeDrawToolListener.onChooseMaskTool();
-                untoggleGroup(toolsGroup);
+                toolsGroup.untoggle();
                 maskButton.setToggled(true);
-                setGroupVisibility(colorGroup, View.GONE);
-                setGroupVisibility(lineWidthGroup, View.GONE);
+                colorGroup.setGroupVisibility(View.GONE);
+                lineWidthGroup.setGroupVisibility(View.GONE);
 			}
         });
         layout.addView(maskButton);
@@ -335,36 +335,21 @@ public final class DrawOptionsView extends LinearLayout {
      * A list of all buttons that select a drawing tool, so that they can be
      * modified as a group.
      */
-    protected List<ImageToggleButton> toolsGroup =
-        new ArrayList<ImageToggleButton>();
+    protected ToggleButtonGroup toolsGroup =  new ToggleButtonGroup();
 
     /**
      * A list of all buttons that select a color, so that they can be modified
      * as a group.
      */
-    protected List<ImageToggleButton> colorGroup =
-        new ArrayList<ImageToggleButton>();
+    protected ToggleButtonGroup colorGroup = new ToggleButtonGroup();
 
-    protected List<ImageToggleButton> lineWidthGroup =
-    	new ArrayList<ImageToggleButton>();
+    protected ToggleButtonGroup lineWidthGroup = new ToggleButtonGroup();
 
     /**
      * Line widths that do not make sense when using tools that don't support
      * drawing a region (like straight lines).
      */
-    protected List<ImageToggleButton> lineWidthRegionGroup =
-    	new ArrayList<ImageToggleButton>();
-
-    /**
-     * Untoggles an entire list of ImageToggleButtons, so we can make sure that
-     * only one button in the list is toggled at once.
-     * @param group The list of ImageToggleButtons to modify.
-     */
-    protected void untoggleGroup(final List<ImageToggleButton> group) {
-        for (ImageToggleButton b : group) {
-            b.setToggled(false);
-        }
-    }
+    protected ToggleButtonGroup lineWidthRegionGroup = new ToggleButtonGroup();
 
     /**
      * Automatically loads the default tool.
@@ -388,9 +373,9 @@ public final class DrawOptionsView extends LinearLayout {
             @Override
             public void onClick(final View v) {
                 onChangeDrawToolListener.onChooseEraser();
-                untoggleGroup(toolsGroup);
-                setGroupVisibility(colorGroup, View.GONE);
-                setGroupVisibility(lineWidthGroup, View.GONE);
+                toolsGroup.untoggle();
+                colorGroup.setGroupVisibility(View.GONE);
+                lineWidthGroup.setGroupVisibility(View.GONE);
                 eraserButton.setToggled(true);
             }
         });
@@ -409,9 +394,9 @@ public final class DrawOptionsView extends LinearLayout {
             @Override
             public void onClick(final View v) {
                 onChangeDrawToolListener.onChoosePanTool();
-                untoggleGroup(toolsGroup);
-                setGroupVisibility(colorGroup, View.GONE);
-                setGroupVisibility(lineWidthGroup, View.GONE);
+                toolsGroup.untoggle();
+                colorGroup.setGroupVisibility(View.GONE);
+                lineWidthGroup.setGroupVisibility(View.GONE);
                 panButton.setToggled(true);
             }
         });
@@ -428,10 +413,10 @@ public final class DrawOptionsView extends LinearLayout {
             @Override
             public void onClick(final View v) {
                 onChangeDrawToolListener.onChooseStraightLineTool();
-                untoggleGroup(toolsGroup);
-                setGroupVisibility(colorGroup, View.VISIBLE);
-                setGroupVisibility(lineWidthGroup, View.VISIBLE);
-                setGroupVisibility(lineWidthRegionGroup, View.GONE);
+                toolsGroup.untoggle();
+                colorGroup.setGroupVisibility(View.VISIBLE);
+                lineWidthGroup.setGroupVisibility(View.VISIBLE);
+                lineWidthRegionGroup.setGroupVisibility(View.GONE);
                 button.setToggled(true);
             }
         });
@@ -447,9 +432,9 @@ public final class DrawOptionsView extends LinearLayout {
             @Override
             public void onClick(final View v) {
                 onChangeDrawToolListener.onChooseFreeHandTool();
-                untoggleGroup(toolsGroup);
-                setGroupVisibility(colorGroup, View.VISIBLE);
-                setGroupVisibility(lineWidthGroup, View.VISIBLE);
+                toolsGroup.untoggle();
+                colorGroup.setGroupVisibility(View.VISIBLE);
+                lineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
 
                 // HACK: If we were in mask mode, make sure we are still in mask
@@ -472,9 +457,9 @@ public final class DrawOptionsView extends LinearLayout {
             @Override
             public void onClick(final View v) {
                 onChangeDrawToolListener.onChooseCircleTool();
-                untoggleGroup(toolsGroup);
-                setGroupVisibility(colorGroup, View.VISIBLE);
-                setGroupVisibility(lineWidthGroup, View.VISIBLE);
+                toolsGroup.untoggle();
+                colorGroup.setGroupVisibility(View.VISIBLE);
+                lineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
 
                 // HACK: If we were in mask mode, make sure we are still in mask
@@ -497,25 +482,13 @@ public final class DrawOptionsView extends LinearLayout {
             @Override
             public void onClick(final View v) {
                 onChangeDrawToolListener.onChooseTextTool();
-                untoggleGroup(toolsGroup);
-                setGroupVisibility(colorGroup, View.VISIBLE);
-                setGroupVisibility(lineWidthGroup, View.VISIBLE);
+                toolsGroup.untoggle();
+                colorGroup.setGroupVisibility(View.VISIBLE);
+                lineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
             }
         });
         layout.addView(button);
         toolsGroup.add(button);
 	}
-
-    /**
-     * Sets the visibility of a group of buttons.
-     * @param group The list of views to modify.
-     * @param visibility Visibility to pass to each view's setVisibility method.
-     */
-    protected void setGroupVisibility(final List<ImageToggleButton> group,
-            final int visibility) {
-        for (ImageToggleButton b : group) {
-            b.setVisibility(visibility);
-        }
-    }
 }
