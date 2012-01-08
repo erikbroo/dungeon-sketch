@@ -115,6 +115,7 @@ public final class DrawOptionsView extends LinearLayout {
         createAndAddFreehandLineButton();
         createAndAddCircleButton();
         createAndAddTextButton();
+        mMaskButton = createAndAddMaskButton();
 
         createAndAddSeperator();
 
@@ -123,7 +124,6 @@ public final class DrawOptionsView extends LinearLayout {
         addStrokeWidthButton(.5f, R.drawable.paintbrush);
         addStrokeWidthButton(2.0f, R.drawable.inktube);
         createAndAddFillButton();
-        mMaskButton = createAndAddMaskButton();
 
         createAndAddSeperator();
 
@@ -171,9 +171,10 @@ public final class DrawOptionsView extends LinearLayout {
 			@Override
 			public void onClick(final View arg0) {
 				onChangeDrawToolListener.onChooseMaskTool();
-                untoggleGroup(lineWidthGroup);
+                untoggleGroup(toolsGroup);
                 maskButton.setToggled(true);
                 setGroupVisibility(colorGroup, View.GONE);
+                setGroupVisibility(lineWidthGroup, View.GONE);
 			}
         });
         layout.addView(maskButton);
@@ -188,11 +189,9 @@ public final class DrawOptionsView extends LinearLayout {
     public void setMaskToolVisibility(final boolean visible) {
     	mMaskButton.setVisibility(visible ? View.VISIBLE : View.GONE);
     	if (visible) {
-            lineWidthGroup.add(mMaskButton);
-            lineWidthRegionGroup.add(mMaskButton);
+            toolsGroup.add(mMaskButton);
     	} else {
-            lineWidthGroup.remove(mMaskButton);
-            lineWidthRegionGroup.remove(mMaskButton);
+    		toolsGroup.remove(mMaskButton);
     	}
     }
 

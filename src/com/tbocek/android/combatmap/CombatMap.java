@@ -168,6 +168,7 @@ public final class CombatMap extends Activity {
 		@Override
 		public void onChooseMaskTool() {
             mCombatView.setFogOfWarDrawMode();
+            mCombatView.setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
 		}
 
 		@Override
