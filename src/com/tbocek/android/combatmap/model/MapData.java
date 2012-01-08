@@ -128,12 +128,6 @@ public final class MapData implements Serializable {
      */
     private LineCollection mBackgroundFogOfWar =
     		new LineCollection(backgroundCommandHistory);
-    
-    /**
-     * Lines that represent the fog of war.
-     */
-    private LineCollection mGmNotesFogOfWar =
-    		new LineCollection(backgroundCommandHistory);
 
     /**
      * Annotation lines.
@@ -146,6 +140,12 @@ public final class MapData implements Serializable {
      */
     private LineCollection mGmNoteLines =
     	new LineCollection(gmNotesCommandHistory);
+    
+    /**
+     * Lines that represent the fog of war.
+     */
+    private LineCollection mGmNotesFogOfWar =
+    		new LineCollection(gmNotesCommandHistory);
 
     /**
      * Tokens that have been placed on the map.
