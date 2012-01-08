@@ -7,4 +7,29 @@
             res="dragongirl_dragontigernight"
             url="http://www.flickr.com/photos/24267755@N04/5607624261/"/>
     </artist>
+    <artist
+        name="Sir Edwin Henry Landseer"
+        copyright="Available in the public domain">
+        <token res="cheetah"/>
+        <token res="cougar"/>
+        <token res="cute_horses"/>
+        <token res="dog"/>
+        <token res="dogs"/>
+        <token res="douchy_guy"/>
+        <token res="fox"/>
+        <token res="lamb"/>
+        <token res="lion"/>
+        <token res="pig"/>
+        <token res="rad_stag"/>
+        <token res="stag2"/>
+        <token res="swan"/>
+        <token res="tiger1"/>
+        <token res="tiger2"/>
+    </artist>
+    <artist
+        name="Walter Crane"
+        copyright="Available in the public domain">
+        <token res="gorgon"/>
+        <token res="perseus"/>
+    </artist>
 </art_credits>
