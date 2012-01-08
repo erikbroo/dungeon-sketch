@@ -478,7 +478,7 @@ public final class DrawOptionsView extends LinearLayout {
                 onChangeDrawToolListener.onChooseTextTool();
                 toolsGroup.untoggle();
                 colorGroup.setGroupVisibility(View.VISIBLE);
-                lineWidthGroup.setGroupVisibility(View.VISIBLE);
+                lineWidthGroup.setGroupVisibility(View.GONE);
                 button.setToggled(true);
                 lineWidthGroup.maybeSelectDefault();
                 colorGroup.maybeSelectDefault();
