@@ -18,22 +18,23 @@ import com.tbocek.android.combatmap.view.ArtCreditsView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
-public class ArtCredits extends Dialog {
+public class ArtCredits extends Activity {
 
 	private ArtCreditsView creditsView;
-	public ArtCredits(Context context) {
-		super(context);
-        
-        this.setTitle("Art Credits");
+	
+	@Override
+	protected void onCreate (Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
         this.setContentView(R.layout.art_credits);
         FrameLayout frame = (FrameLayout)this.findViewById(R.id.art_credits_frame);
-        creditsView = new ArtCreditsView(this.getContext());
-        
-        
+        creditsView = new ArtCreditsView(this);
         
         try {
-        	InputStream is = context.getResources().openRawResource(R.raw.art_credits);
+        	InputStream is = getResources().openRawResource(R.raw.art_credits);
         	SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
@@ -51,7 +52,6 @@ public class ArtCredits extends Dialog {
 		}
         
         frame.addView(creditsView);
-        
 	}
 	
 	private class ArtCreditHandler extends DefaultHandler {
@@ -65,7 +65,7 @@ public class ArtCredits extends Dialog {
 				creditsView.addArtist(
 						currentArtist, atts.getValue("copyright"), atts.getValue("url"));
 			} else if (localName.equalsIgnoreCase("token")) {
-				int id = getContext().getResources().getIdentifier(
+				int id = getResources().getIdentifier(
 						atts.getValue("res"), 
 						"drawable", 
 						"com.tbocek.android.combatmap");
@@ -73,5 +73,19 @@ public class ArtCredits extends Dialog {
 			}
 		} 
 	}
+	
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Intent intent = new Intent(this, CombatMap.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

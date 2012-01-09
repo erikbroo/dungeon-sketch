@@ -40,7 +40,7 @@ public final class Settings extends PreferenceActivity {
 
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					showDialog(DIALOG_ID_ART_CREDITS);
+					startActivity(new Intent(Settings.this, ArtCredits.class));
 					return true;
 				}
         		
@@ -52,8 +52,6 @@ public final class Settings extends PreferenceActivity {
     	switch(id) {
     	case DIALOG_ID_ABOUT:
     		return new AboutDialog(this);
-    	case DIALOG_ID_ART_CREDITS:
-    		return new ArtCredits(this);
     	default:
     		return null;
     	}
