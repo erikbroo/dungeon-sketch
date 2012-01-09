@@ -8,6 +8,14 @@
             url="http://www.flickr.com/photos/24267755@N04/5607624261/"/>
     </artist>
     <artist
+        name="Mary-Beth Jeffrey"
+        copyright="Copyright © 2011 Mary-Beth Jeffrey"
+        url="http://cumuluscastle.deviantart.com/">
+        <token
+            res="oaken_man"
+            url="http://cumuluscastle.deviantart.com/#/d4ldgxi"/>
+    </artist>
+    <artist
         name="Sir Edwin Henry Landseer"
         copyright="Available in the public domain">
         <token res="cheetah"/>
