@@ -67,8 +67,7 @@ public class ArtCreditsView extends LinearLayout {
 
 	public void addArtCredit(String name, int resource) {
 		TokenButton b = new TokenButton(this.getContext(), new BuiltInImageToken(resource));
-		ImageView v = new ImageView(this.getContext());
-		v.setImageResource(resource);
+		b.allowDrag = false;
 		b.setLayoutParams(new LinearLayout.LayoutParams(
 				(int)(getResources().getDisplayMetrics().density * 128), 
 				(int)(getResources().getDisplayMetrics().density * 128)));

@@ -34,6 +34,8 @@ public class TokenButton extends ImageView {
      * A gesture detector used to detect long presses for drag and drop start.
      */
     private GestureDetector gestureDetector;
+    
+    public boolean allowDrag = true;
 
     /**
      * A gesture listener used to start a drag and drop when a long press
@@ -42,9 +44,9 @@ public class TokenButton extends ImageView {
     private SimpleOnGestureListener gestureListener =
     	new SimpleOnGestureListener() {
         public void onLongPress(final MotionEvent e) {
-        	if (android.os.Build.VERSION.SDK_INT
+        	if (allowDrag && android.os.Build.VERSION.SDK_INT
         			>= android.os.Build.VERSION_CODES.HONEYCOMB)
-        	TokenButton.this.onStartDrag();
+        		TokenButton.this.onStartDrag();
         }
     };
 
