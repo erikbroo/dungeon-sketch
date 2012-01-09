@@ -16,6 +16,23 @@
             url="http://cumuluscastle.deviantart.com/#/d4ldgxi"/>
     </artist>
     <artist
+        name="Scott O'Brien"
+        copyright="Illustrated by Scott O'Brien, All rights reserved"
+        url="http://scooter782.deviantart.com/">
+        <token
+            res="goren"
+            url="http://scooter782.deviantart.com/art/Goren-278352944"/>
+        <token
+            res="veranesse"
+            url="http://scooter782.deviantart.com/#/d4lq17j"/>
+        <token
+            res="vampire_soldier"
+            url="http://scooter782.deviantart.com/#/d4kprxt"/>
+        <token
+            res="flagron"
+            url="http://scooter782.deviantart.com/art/Flagron-274621434"/>
+    </artist>
+    <artist
         name="Sir Edwin Henry Landseer"
         copyright="Available in the public domain">
         <token res="cheetah"/>
