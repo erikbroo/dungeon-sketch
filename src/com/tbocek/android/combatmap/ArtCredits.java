@@ -26,9 +26,10 @@ public class ArtCredits extends Dialog {
 		super(context);
         
         this.setTitle("Art Credits");
-        
+        this.setContentView(R.layout.art_credits);
+        FrameLayout frame = (FrameLayout)this.findViewById(R.id.art_credits_frame);
         creditsView = new ArtCreditsView(this.getContext());
-        this.setContentView(creditsView);
+        
         
         
         try {
@@ -48,6 +49,8 @@ public class ArtCredits extends Dialog {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+        
+        frame.addView(creditsView);
         
 	}
 	

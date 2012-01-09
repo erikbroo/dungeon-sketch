@@ -24,6 +24,8 @@ public class ArtCreditsView extends LinearLayout {
 	}
 	
 	public void addArtist(String name, String licenseText, String url) {
+		
+		
 		// Add the artist name
 		TextView nameView = new TextView(getContext());
 		nameView.setText(name);
@@ -51,6 +53,14 @@ public class ArtCreditsView extends LinearLayout {
 		scroller.addView(tokenView);
 		this.addView(scroller);
 		mTokenViewsForArtist.put(name, tokenView);
+		
+		// Add some vertical padding
+		ImageView seperator = new ImageView(this.getContext());
+        seperator.setLayoutParams(
+                new LinearLayout.LayoutParams(
+                		LinearLayout.LayoutParams.MATCH_PARENT,
+                        (int)(getResources().getDisplayMetrics().density * 32)));
+        this.addView(seperator);
 	}
 	
 	private Map<String, ViewGroup> mTokenViewsForArtist = Maps.newHashMap();
@@ -60,8 +70,8 @@ public class ArtCreditsView extends LinearLayout {
 		ImageView v = new ImageView(this.getContext());
 		v.setImageResource(resource);
 		b.setLayoutParams(new LinearLayout.LayoutParams(
-				(int)(getResources().getDisplayMetrics().density * 64), 
-				(int)(getResources().getDisplayMetrics().density * 64)));
+				(int)(getResources().getDisplayMetrics().density * 128), 
+				(int)(getResources().getDisplayMetrics().density * 128)));
 		mTokenViewsForArtist.get(name).addView(b);
 	}
 	
