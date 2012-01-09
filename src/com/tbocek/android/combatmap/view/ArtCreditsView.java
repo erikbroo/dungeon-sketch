@@ -3,6 +3,7 @@ package com.tbocek.android.combatmap.view;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 
 import android.content.Context;
 import android.view.ViewGroup;
@@ -55,12 +56,13 @@ public class ArtCreditsView extends LinearLayout {
 	private Map<String, ViewGroup> mTokenViewsForArtist = Maps.newHashMap();
 
 	public void addArtCredit(String name, int resource) {
+		TokenButton b = new TokenButton(this.getContext(), new BuiltInImageToken(resource));
 		ImageView v = new ImageView(this.getContext());
 		v.setImageResource(resource);
-		v.setLayoutParams(new LinearLayout.LayoutParams(
+		b.setLayoutParams(new LinearLayout.LayoutParams(
 				(int)(getResources().getDisplayMetrics().density * 64), 
 				(int)(getResources().getDisplayMetrics().density * 64)));
-		mTokenViewsForArtist.get(name).addView(v);
+		mTokenViewsForArtist.get(name).addView(b);
 	}
 	
 }
