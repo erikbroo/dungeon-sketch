@@ -1,10 +1,12 @@
 package com.tbocek.android.combatmap;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 /**
  * Preferences activity for Dungeon Sketch.
@@ -55,5 +57,19 @@ public final class Settings extends PreferenceActivity {
     	default:
     		return null;
     	}
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Intent intent = new Intent(this, CombatMap.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

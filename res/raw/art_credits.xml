@@ -1,12 +1,5 @@
 <art_credits>
-    <artist 
-        name="dragontigerknight"
-        url="http://www.flickr.com/photos/24267755@N04/"
-        copyright="Lisenced under CC BY 2.0">
-        <token 
-            res="dragongirl_dragontigernight"
-            url="http://www.flickr.com/photos/24267755@N04/5607624261/"/>
-    </artist>
+
     <artist
         name="Mary-Beth Jeffrey"
         copyright="Copyright © 2011 Mary-Beth Jeffrey"
@@ -31,6 +24,14 @@
         <token
             res="flagron"
             url="http://scooter782.deviantart.com/art/Flagron-274621434"/>
+    </artist>
+        <artist 
+        name="dragontigerknight"
+        url="http://www.flickr.com/photos/24267755@N04/"
+        copyright="Lisenced under CC BY 2.0">
+        <token 
+            res="dragongirl_dragontigernight"
+            url="http://www.flickr.com/photos/24267755@N04/5607624261/"/>
     </artist>
     <artist
         name="Sir Edwin Henry Landseer"
