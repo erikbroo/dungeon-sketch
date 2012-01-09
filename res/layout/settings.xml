@@ -21,5 +21,7 @@
 	<Preference
 	    android:title="About Dungeon Sketch"
 	    android:key="about"/>
-	
+	   <Preference
+        android:title="Art Credits"
+        android:key="artcredits"/>
 </PreferenceScreen>

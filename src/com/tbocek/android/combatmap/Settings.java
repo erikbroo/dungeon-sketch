@@ -13,7 +13,7 @@ import android.preference.PreferenceActivity;
  */
 public final class Settings extends PreferenceActivity {
 	public static final int DIALOG_ID_ABOUT = 0;
-	
+	public static final int DIALOG_ID_ART_CREDITS = 1;
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +31,18 @@ public final class Settings extends PreferenceActivity {
 				}
         		
         	});
+        
+        Preference artCreditPref = (Preference) findPreference("artcredits");
+        artCreditPref.setOnPreferenceClickListener(
+        	new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					showDialog(DIALOG_ID_ART_CREDITS);
+					return true;
+				}
+        		
+        	});
     }
     
     @Override
@@ -38,6 +50,8 @@ public final class Settings extends PreferenceActivity {
     	switch(id) {
     	case DIALOG_ID_ABOUT:
     		return new AboutDialog(this);
+    	case DIALOG_ID_ART_CREDITS:
+    		return new ArtCredits(this);
     	default:
     		return null;
     	}
