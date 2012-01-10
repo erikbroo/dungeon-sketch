@@ -217,8 +217,8 @@ public final class Load extends Activity {
 
           // If we deleted the currently open file, set us up to create a new
           // file when we return to the main activity.
-          if (contextMenuTrigger.getFileName()
-                  == sharedPreferences.getString("filename", null)) {
+          if (contextMenuTrigger.getFileName().equals(
+        		  sharedPreferences.getString("filename", null))) {
               setFilenamePreference(null);
           }
 

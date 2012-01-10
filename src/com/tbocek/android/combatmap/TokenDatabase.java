@@ -28,7 +28,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
@@ -202,7 +201,7 @@ public final class TokenDatabase {
      * @return The tokens associated with the requested tag.
      */
     public List<BaseToken> getTokensForTag(final String tag) {
-    	if (tag == ALL) {
+    	if (tag.equals(ALL)) {
     		return this.getAllTokens();
     	}
     	Set<String> tokenIds = this.tokensForTag.get(tag);

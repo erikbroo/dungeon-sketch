@@ -111,7 +111,7 @@ public final class TokenManager extends Activity {
 		mTokenViewFactory.getMultiSelectManager().selectNone();
 		scrollView.removeAllViews();
 		Collection<BaseToken> tokens = null;
-		if (tag == TokenDatabase.ALL) {
+		if (tag.equals(TokenDatabase.ALL)) {
 			scrollView.addView(
 					getTokenButtonLayout(tokenDatabase.getAllTokens()));
 		} else {
@@ -294,7 +294,7 @@ public final class TokenManager extends Activity {
 	      				deleteText);
       		}
 
-      		if (this.tagListView.getTag() != TokenDatabase.ALL) {
+      		if (!this.tagListView.getTag().equals(TokenDatabase.ALL)) {
       			String removeText = "Remove '" + tagListView.getTag() + "' Tag";
 
       			if (tokens.size() > 1) {

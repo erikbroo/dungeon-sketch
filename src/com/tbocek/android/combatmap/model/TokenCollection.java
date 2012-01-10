@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
@@ -16,7 +15,6 @@ import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Util;
 
 import android.graphics.Canvas;
-import android.util.Log;
 
 
 /**
@@ -25,7 +23,6 @@ import android.util.Log;
  *
  */
 public final class TokenCollection implements Serializable, UndoRedoTarget {
-	private static String TAG = "com.tbocek.android.combatmap.graphicscore.TokenCollection";
 	/**
 	 * ID for serialization.
 	 */

@@ -1,8 +1,5 @@
 package com.tbocek.android.combatmap.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.Util;
 
@@ -12,7 +9,6 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 

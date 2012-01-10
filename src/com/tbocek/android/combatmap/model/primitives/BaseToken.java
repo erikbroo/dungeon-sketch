@@ -269,7 +269,7 @@ public abstract class BaseToken implements Serializable {
     public final boolean equals(final Object other) {
         if (this == other) { return true; }
         if (!(other instanceof BaseToken)) { return false; }
-        return ((BaseToken) other).getTokenId() == getTokenId();
+        return ((BaseToken) other).getTokenId().equals(getTokenId());
     }
 
     @Override

@@ -2,14 +2,9 @@ package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
-public class CommandHistory implements Serializable {
+public class CommandHistory {
     public interface Command {
     	/**
     	 * Executes the command on the LineCollection that this command mutates.

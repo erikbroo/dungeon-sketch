@@ -1,14 +1,10 @@
 package com.tbocek.android.combatmap;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +13,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,8 +22,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.Toast;
 
 import com.tbocek.android.combatmap.model.Grid;
@@ -374,21 +367,7 @@ public final class CombatMap extends Activity {
         mCombatView.refreshMap();
         mCombatView.requestFocus();
     }
-
-
-    /**
-     * Adds a new tab to the action bar that launches the given interaction
-     * mode.
-     * @param actionBar Action bar to add to.
-     * @param description Text on the tab.
-     * @param manipulationMode Manipulation mode to launch.
-     */
-    private void addActionBarTab(
-    		final ActionBar actionBar, final String description,
-    		final int manipulationMode) {
-
-    }
-
+    
 
     @Override
     public void onResume() {
@@ -721,7 +700,7 @@ public final class CombatMap extends Activity {
     		 // Attempt to load map data.  If we can't load map data, create a new
     		 // map.
     		 String filename = sharedPreferences.getString("filename", "");
-    		 if (filename == "tmp") {
+    		 if (filename.equals("tmp")) {
     			 filename = "";
     		 }
     		 TextPromptDialog d = (TextPromptDialog)dialog;
@@ -759,12 +738,6 @@ public final class CombatMap extends Activity {
          * Context to use while saving.
          */
         private Context mContext;
-
-        /**
-         * Amount to sleep before actually saving.  When running as a thread,
-         * this stops the thread from blocking other, more important threads.
-         */
-        private static final int SLEEP_TIME = 1000;
 
         /**
          * Constructor.

@@ -98,11 +98,6 @@ public final class CombatView extends SurfaceView {
 	 */
 	private boolean areTokensManipulatable = true;
 
-	/**
-	 * Buffer to draw on to.
-	 */
-	private Bitmap buffer;
-
 	boolean surfaceReady = false;
 	
 	UndoRedoTarget undoRedoTarget;

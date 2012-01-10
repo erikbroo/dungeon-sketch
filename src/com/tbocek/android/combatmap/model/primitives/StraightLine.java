@@ -23,9 +23,6 @@ public class StraightLine extends Shape implements Serializable {
 	private PointF start = null;
 	private PointF end = null;
 
-	private float slope = 0;
-	private float length = 0;
-
 	/**
 	 * X coordinates at which to toggle the line on and off, for erasing
 	 * purposes.

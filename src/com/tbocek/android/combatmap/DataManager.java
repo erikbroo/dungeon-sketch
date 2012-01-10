@@ -13,7 +13,6 @@ import com.tbocek.android.combatmap.model.MapData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.util.Log;
 
 /**

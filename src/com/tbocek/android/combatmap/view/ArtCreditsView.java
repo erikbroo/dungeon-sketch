@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.util.Linkify;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;

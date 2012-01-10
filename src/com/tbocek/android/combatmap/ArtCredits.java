@@ -2,7 +2,6 @@ package com.tbocek.android.combatmap;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.jar.Attributes;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -13,15 +12,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.tbocek.android.combatmap.view.ArtCreditsView;
-
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+
+import com.tbocek.android.combatmap.view.ArtCreditsView;
 public class ArtCredits extends Activity {
 
 	private ArtCreditsView creditsView;
