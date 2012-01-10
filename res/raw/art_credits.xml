@@ -24,6 +24,8 @@
         <token
             res="flagron"
             url="http://scooter782.deviantart.com/art/Flagron-274621434"/>
+        <token res="kragger"/>
+        <token res="vogcore"/>
     </artist>
     <artist
         name="Storn A. Cook"

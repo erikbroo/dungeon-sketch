@@ -302,6 +302,7 @@ public final class TokenDatabase {
      * Populates the token database with built-in image tokens.
      */
     private void loadBuiltInImageTokens() {
+    	//TODO: Read these from the art credits XML file.
         addBuiltin(R.drawable.cheetah);
         addBuiltin(R.drawable.cougar);
         addBuiltin(R.drawable.cute_horses);
@@ -399,6 +400,8 @@ public final class TokenDatabase {
         addBuiltin(R.drawable.vesten);
         addBuiltin(R.drawable.void_walker);
         addBuiltin(R.drawable.zanth);
+        addBuiltin(R.drawable.kragger);
+        addBuiltin(R.drawable.vogcore);
 
     }
 
