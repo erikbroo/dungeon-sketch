@@ -624,7 +624,6 @@ public final class CombatView extends SurfaceView {
 		boolean useBackgroundLines = (mData == null)
 				|| this.mActiveLines == mData.getBackgroundLines();
 		mData = data;
-		//TODO: Account for GM Lines
 		this.mActiveLines = useBackgroundLines ? mData.getBackgroundLines()
 				: mData.getAnnotationLines();
 		refreshMap();

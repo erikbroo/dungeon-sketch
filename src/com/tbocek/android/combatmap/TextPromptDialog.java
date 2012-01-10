@@ -34,12 +34,12 @@ public class TextPromptDialog extends Dialog {
     /**
      * Text entry field.
      */
-    private TextView nameText;
+    private TextView mNameText;
 
     /**
      * Button that the user clicks to confirm the text entered.
      */
-    private Button confirmButton;
+    private Button mConfirmButton;
 
     /**
      * Listener that is called when the user clicks the confirm button.
@@ -62,24 +62,28 @@ public class TextPromptDialog extends Dialog {
         this.setTitle(title);
         this.mListener = listener;
 
-        confirmButton = (Button) this.findViewById(R.id.button_save);
-        confirmButton.setText(confirmText);
-        nameText = (TextView) this.findViewById(R.id.save_file_name);
-        nameText.requestFocus();
-        nameText.setText("");
+        mConfirmButton = (Button) this.findViewById(R.id.button_save);
+        mConfirmButton.setText(confirmText);
+        mNameText = (TextView) this.findViewById(R.id.save_file_name);
+        mNameText.requestFocus();
+        mNameText.setText("");
 
-        confirmButton.setOnClickListener(new View.OnClickListener() {
+        mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                String name = nameText.getText().toString();
+                String name = mNameText.getText().toString();
                 dismiss();
                 TextPromptDialog.this.mListener.onTextConfirmed(name);
             }
         });
     }
     
+    /**
+     * Sets the text currently filled in the dialog.
+     * @param text The new text.
+     */
     public final void fillText(String text) {
-    	nameText.setText(text);
+    	mNameText.setText(text);
     }
 
 }

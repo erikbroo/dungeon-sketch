@@ -1,21 +1,27 @@
 package com.tbocek.android.combatmap;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 /**
- * A tab manager that adds tabs as buttons to a layout.
+ * A tab manager that adds tabs as buttons to a layout.  Meant to support
+ * pre-Honeycomb layouts.
  * @author Tim
  *
  */
 public class LegacyTabManager extends TabManager {
 
-	ViewGroup mContainer;
+	/**
+	 * The ViewGroup that contains the buttons that will be used for tabs.
+	 */
+	private ViewGroup mContainer;
 
+	/**
+	 * Constructor.
+	 * @param container The ViewGroup that contains the buttons that will be 
+	 * 		used for tabs.
+	 */
 	public LegacyTabManager(ViewGroup container) {
 		mContainer = container;
 	}

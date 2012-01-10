@@ -19,9 +19,19 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.tbocek.android.combatmap.view.ArtCreditsView;
+
+/**
+ * Activity that loads and displays art credits for each built-in token.
+ * @author Tim
+ *
+ */
 public class ArtCredits extends Activity {
 
-	private ArtCreditsView creditsView;
+	/**
+	 * View to display art credit info; credit data will be dynamically added
+	 * here.
+	 */
+	private ArtCreditsView mCreditsView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +39,7 @@ public class ArtCredits extends Activity {
         this.setContentView(R.layout.art_credits);
         FrameLayout frame = (FrameLayout) this.findViewById(
         		R.id.art_credits_frame);
-        creditsView = new ArtCreditsView(this);
+        mCreditsView = new ArtCreditsView(this);
         
         try {
         	InputStream is = getResources().openRawResource(R.raw.art_credits);
@@ -49,20 +59,30 @@ public class ArtCredits extends Activity {
 			e.printStackTrace();
 		}
         
-        frame.addView(creditsView);
+        frame.addView(mCreditsView);
 	}
 	
+	/**
+	 * SAX handler that parses the art credit file and sets up the credits
+	 * view.
+	 * @author Tim
+	 *
+	 */
 	private class ArtCreditHandler extends DefaultHandler {
-		private String currentArtist;
+		
+		/**
+		 * Name of the artist currently being parsed.
+		 */
+		private String mCurrentArtist;
 		
 		@Override
 		public void startElement(
 				String namespaceURI, String localName, String qName, 
 		        org.xml.sax.Attributes atts) throws SAXException {
 			if (localName.equalsIgnoreCase("artist")) {
-				currentArtist = atts.getValue("name");
-				creditsView.addArtist(
-						currentArtist,
+				mCurrentArtist = atts.getValue("name");
+				mCreditsView.addArtist(
+						mCurrentArtist,
 						atts.getValue("copyright"),
 						atts.getValue("url"));
 			} else if (localName.equalsIgnoreCase("token")) {
@@ -70,7 +90,7 @@ public class ArtCredits extends Activity {
 						atts.getValue("res"), 
 						"drawable", 
 						"com.tbocek.android.combatmap");
-				creditsView.addArtCredit(currentArtist, id);
+				mCreditsView.addArtCredit(mCurrentArtist, id);
 			}
 		} 
 	}

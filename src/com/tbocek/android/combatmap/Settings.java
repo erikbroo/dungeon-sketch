@@ -14,8 +14,12 @@ import android.view.MenuItem;
  *
  */
 public final class Settings extends PreferenceActivity {
+	
+	/**
+	 * ID for the about dialog.
+	 */
 	public static final int DIALOG_ID_ABOUT = 0;
-	public static final int DIALOG_ID_ART_CREDITS = 1;
+	
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

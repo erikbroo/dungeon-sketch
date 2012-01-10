@@ -112,12 +112,12 @@ public final class CombatMap extends Activity {
     /**
      * Database of available combat tokens.
      */
-    private TokenDatabase tokenDatabase;
+    private TokenDatabase mTokenDatabase;
 
     /**
      * Whether the control tray on the bottom of the screen is expanded.
      */
-    private boolean isControlTrayExpanded = true;
+    private boolean mIsControlTrayExpanded = true;
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -190,8 +190,12 @@ public final class CombatMap extends Activity {
     };
 
 
-    private TabManager.TabSelectedListener mTabSelectedListener = new TabManager.TabSelectedListener() {
-
+    /**
+     * Callback that loads the correct interaction mode when a new tab is
+     * selected.
+     */
+    private TabManager.TabSelectedListener mTabSelectedListener =
+    		new TabManager.TabSelectedListener() {
 		@Override
 		public void onTabSelected(int tab) {
 			if (mData != null) {
@@ -203,7 +207,7 @@ public final class CombatMap extends Activity {
     /**
      * Listener that fires when a new token category is selected.
      */
-    private TagListView.OnTagListActionListener onTagListActionListener =
+    private TagListView.OnTagListActionListener mOnTagListActionListener =
     	new TagListView.OnTagListActionListener() {
 
 			@Override
@@ -217,8 +221,14 @@ public final class CombatMap extends Activity {
 			}
 		};
 		
-	private CombatView.NewTextEntryListener onNewTextEntryListener = 
-		new CombatView.NewTextEntryListener() {
+
+		/**
+		 * Callback to listen for text edit/creation requests and load the
+		 * required dialog, since dialogs need to be managed at the activity
+		 * level.
+		 */
+		private CombatView.NewTextEntryListener mOnNewTextEntryListener = 
+				new CombatView.NewTextEntryListener() {
 
 			@Override
 			public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
@@ -234,13 +244,23 @@ public final class CombatMap extends Activity {
 			}
 		
 	};
-	private PointF mNewTextLocationWorldSpace;
 	
-	// The text object that the edit dialog is currently editing, or null if
-	// a new text object is being created.
+	/**
+	 * Location at which to place text, in world space, should the new text
+	 * dialog be accepted.
+	 */
+	private PointF mNewTextLocationWorldSpace;
+
+	/**
+	 * The text object that the edit dialog is currently editing, or null if
+	 * a new text object is being created.
+	 */
 	private Text mEditedTextObject;
 
-	TabManager mTabManager;
+	/**
+	 * Object to manage which mode is changed to when a new tab is selected.
+	 */
+	private TabManager mTabManager;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -259,20 +279,22 @@ public final class CombatMap extends Activity {
         	ActionBar actionBar = getActionBar();
         	mTabManager = new ActionBarTabManager(actionBar);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-            // Clear the title on the action bar, since we want to leave more space
-            // for the tabs.
+            // Clear the title on the action bar, since we want to leave more 
+            // space for the tabs.
             actionBar.setTitle("");
         } else {
         	this.setContentView(R.layout.combat_map_layout);
         	View legacyActionBar = this.findViewById(R.id.legacyActionBar);
         	legacyActionBar.setVisibility(View.VISIBLE);
-        	mTabManager = new LegacyTabManager((LinearLayout)this.findViewById(R.id.legacyActionBarLayout));
+        	mTabManager = new LegacyTabManager(
+        			(LinearLayout) this.findViewById(
+        					R.id.legacyActionBarLayout));
         }
 
 
         mCombatView = new CombatView(this);
         this.registerForContextMenu(mCombatView);
-        mCombatView.newTextEntryListener = this.onNewTextEntryListener;
+        mCombatView.newTextEntryListener = this.mOnNewTextEntryListener;
 
         mTokenSelector = new TokenSelectorView(this.getApplicationContext());
 
@@ -315,7 +337,7 @@ public final class CombatMap extends Activity {
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT));
         mTokenCategorySelector.setOnTagListActionListener(
-        		onTagListActionListener);
+        		mOnTagListActionListener);
         mTokenCategorySelector.setTextSize(TAG_LIST_TEXT_SIZE);
 
         mPopupFrame.addView(mTokenCategorySelector);
@@ -328,8 +350,8 @@ public final class CombatMap extends Activity {
         collapseButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View arg0) {
-				isControlTrayExpanded = !isControlTrayExpanded;
-				if (isControlTrayExpanded) {
+				mIsControlTrayExpanded = !mIsControlTrayExpanded;
+				if (mIsControlTrayExpanded) {
 					mBottomControlFrame.getLayoutParams().height =
 						RelativeLayout.LayoutParams.WRAP_CONTENT;
 					collapseButton.setText("v  v  v  v  v  v  v  v  v  v");
@@ -343,7 +365,6 @@ public final class CombatMap extends Activity {
 
         // Attempt to load map data.  If we can't load map data, create a new
         // map.
-        // TODO: Make sure this only happens once on startup, and de-dupe
         SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
                     this.getApplicationContext());
@@ -392,9 +413,10 @@ public final class CombatMap extends Activity {
 
         mCombatView.refreshMap();
 
-        tokenDatabase = TokenDatabase.getInstance(this.getApplicationContext());
-        mTokenSelector.setTokenDatabase(tokenDatabase);
-        mTokenCategorySelector.setTagList(tokenDatabase.getTags());
+        mTokenDatabase = TokenDatabase.getInstance(
+        		this.getApplicationContext());
+        mTokenSelector.setTokenDatabase(mTokenDatabase);
+        mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
 
     }
 
@@ -496,12 +518,17 @@ public final class CombatMap extends Activity {
             PreferenceManager.getDefaultSharedPreferences(
                     this.getApplicationContext());
 
-        snapToGridMenuItem = menu.findItem(R.id.snap_to_grid);
-        snapToGridMenuItem.setChecked(sharedPreferences.getBoolean("snaptogrid", true));
+        mSnapToGridMenuItem = menu.findItem(R.id.snap_to_grid);
+        mSnapToGridMenuItem.setChecked(
+        		sharedPreferences.getBoolean("snaptogrid", true));
         return true;
     }
 
-    MenuItem snapToGridMenuItem;
+    /**
+     * The menu item that controls whether drawing/tokens snap to the grid.
+     * Saved because we need to listen for these events.
+     */
+    private MenuItem mSnapToGridMenuItem;
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -525,16 +552,16 @@ public final class CombatMap extends Activity {
             mBottomControlFrame.removeAllViews();
             return true;
         case R.id.snap_to_grid:
-        	snapToGridMenuItem.setChecked(!snapToGridMenuItem.isChecked());
+        	mSnapToGridMenuItem.setChecked(!mSnapToGridMenuItem.isChecked());
             SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(
                         this.getApplicationContext());
-            // Persist the filename that we saved to so that we can load from that
-            // file again.
+            // Persist the filename that we saved to so that we can load from 
+            // that file again.
             Editor editor = sharedPreferences.edit();
-            editor.putBoolean("snaptogrid", snapToGridMenuItem.isChecked());
+            editor.putBoolean("snaptogrid", mSnapToGridMenuItem.isChecked());
             editor.commit();
-            mCombatView.setShouldSnapToGrid(snapToGridMenuItem.isChecked());
+            mCombatView.setShouldSnapToGrid(mSnapToGridMenuItem.isChecked());
         	return true;
         case R.id.save:
             showDialog(DIALOG_ID_SAVE);
@@ -655,6 +682,9 @@ public final class CombatMap extends Activity {
      */
     public static final int DIALOG_ID_SAVE = 0;
     
+    /**
+     * Dialog ID to use for the draw text dialog.
+     */
     public static final int DIALOG_ID_DRAW_TEXT = 1;
 
 
@@ -673,11 +703,15 @@ public final class CombatMap extends Activity {
         	
             FontDialog d = new FontDialog(this,
                     new FontDialog.OnTextConfirmedListener() {
-               public void onTextConfirmed(final String text, final float size) {
+               public void onTextConfirmed(
+            		   final String text, final float size) {
             	   if (mEditedTextObject == null) {
-               			mCombatView.createNewText(mNewTextLocationWorldSpace, text, size);
+               			mCombatView.createNewText(
+               					mNewTextLocationWorldSpace, text, size);
             	   } else {
-            		   mCombatView.getActiveLines().editText(mEditedTextObject, text, size, mCombatView.getWorldSpaceTransformer());
+            		   mCombatView.getActiveLines().editText(
+            				   mEditedTextObject, text, size, 
+            				   mCombatView.getWorldSpaceTransformer());
             		   mCombatView.refreshMap();
             	   }
                }
@@ -691,25 +725,26 @@ public final class CombatMap extends Activity {
     
     @Override
     protected void onPrepareDialog(final int id, final Dialog dialog) {
-    	 switch(id) {
+    	switch(id) {
     	 case DIALOG_ID_SAVE:
     		 SharedPreferences sharedPreferences =
              	PreferenceManager.getDefaultSharedPreferences(
              			this.getApplicationContext());
 
-    		 // Attempt to load map data.  If we can't load map data, create a new
-    		 // map.
+    		 // Attempt to load map data.  If we can't load map data, create a 
+    		 // new map.
     		 String filename = sharedPreferences.getString("filename", "");
     		 if (filename.equals("tmp")) {
     			 filename = "";
     		 }
-    		 TextPromptDialog d = (TextPromptDialog)dialog;
+    		 TextPromptDialog d = (TextPromptDialog) dialog;
     		 d.fillText(filename);
     		 break;
          case DIALOG_ID_DRAW_TEXT:
          	 FontDialog fd = (FontDialog) dialog;
              if (mEditedTextObject != null) {
-             	fd.populateFields(mEditedTextObject.text, mEditedTextObject.textSize);
+             	fd.populateFields(
+             			mEditedTextObject.text, mEditedTextObject.textSize);
              } else {
             	fd.clearText();
              }

@@ -7,16 +7,30 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 
+/**
+ * Tab manager implementation that uses tabs natively shown in Honeycomb and
+ * later's action bar.
+ * @author Tim
+ *
+ */
 public class ActionBarTabManager extends TabManager {
+	
+	/**
+	 * Action bar that provides the tabs.
+	 */
 	private ActionBar mActionBar;
 
     /**
      * Reverse lookup so we know what tab to select when forced into an
      * interaction mode.
      */
-    private Map<Integer, ActionBar.Tab> manipulationModeTabs =
+    private Map<Integer, ActionBar.Tab> mManipulationModeTabs =
     	new HashMap<Integer, ActionBar.Tab>();
 
+    /**
+     * Constructor.
+     * @param actionBar The action bar that will provide the tabs.
+     */
 	public ActionBarTabManager(ActionBar actionBar) {
 		this.mActionBar = actionBar;
 	}
@@ -28,8 +42,7 @@ public class ActionBarTabManager extends TabManager {
     	tab.setTabListener(new ActionBar.TabListener() {
 			@Override
 			public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
-				// TODO Auto-generated method stub
-
+				
 			}
 
 			@Override
@@ -44,12 +57,12 @@ public class ActionBarTabManager extends TabManager {
 			}
     	});
     	mActionBar.addTab(tab);
-    	manipulationModeTabs.put(mode, tab);
+    	mManipulationModeTabs.put(mode, tab);
 	}
 
 	@Override
 	public void pickTab(int mode) {
-        manipulationModeTabs.get(mode).select();
+        mManipulationModeTabs.get(mode).select();
 	}
 
 }

@@ -48,20 +48,20 @@ public final class TokenDatabase {
      * Mapping from a string representing a token ID to a set of tags that that
      * token has.
      */
-    private Map<String, Set<String>> tokensForTag
+    private Map<String, Set<String>> mTokensForTag
             = new HashMap<String, Set<String>>();
 
     /**
      * Mapping from a string representing a tag to a set of token IDs that have
      * that tag.
      */
-    private Map<String, Set<String>> tagsForToken
+    private Map<String, Set<String>> mTagsForToken
             = new HashMap<String, Set<String>>();
 
     /**
      * Mapping from a Token ID to an instantiated token object that has that ID.
      */
-    private transient Map<String, BaseToken> tokenForId
+    private transient Map<String, BaseToken> mTokenForId
             = new HashMap<String, BaseToken>();
 
     /**
@@ -70,7 +70,7 @@ public final class TokenDatabase {
      * get the right tags), but we want to be able to suppress it while batch
      * loading tokens.
      */
-    private transient boolean prePopulateTags = true;
+    private transient boolean mPrePopulateTags = true;
 
 	/**
 	 * Always-present member at the top of the tag list that selects all tokens.
@@ -114,7 +114,7 @@ public final class TokenDatabase {
      * @param tag The tag to add.
      */
     public void addEmptyTag(final String tag) {
-        tokensForTag.put(tag, new HashSet<String>());
+        mTokensForTag.put(tag, new HashSet<String>());
     }
 
     /**
@@ -124,16 +124,16 @@ public final class TokenDatabase {
      */
     public void tagToken(final String tokenId, final Collection<String> tags) {
         for (String tag : tags) {
-            if (!tokensForTag.containsKey(tag)) {
-                tokensForTag.put(tag, new HashSet<String>());
+            if (!mTokensForTag.containsKey(tag)) {
+                mTokensForTag.put(tag, new HashSet<String>());
             }
-            tokensForTag.get(tag).add(tokenId);
+            mTokensForTag.get(tag).add(tokenId);
         }
 
-        if (!tagsForToken.containsKey(tokenId)) {
-            tagsForToken.put(tokenId, new HashSet<String>());
+        if (!mTagsForToken.containsKey(tokenId)) {
+            mTagsForToken.put(tokenId, new HashSet<String>());
         }
-        tagsForToken.get(tokenId).addAll(tags);
+        mTagsForToken.get(tokenId).addAll(tags);
     }
 
     /**
@@ -163,7 +163,7 @@ public final class TokenDatabase {
      * @return The sorted tags.
      */
     public Collection<String> getTags() {
-        ArrayList<String> l = new ArrayList<String>(tokensForTag.keySet());
+        ArrayList<String> l = new ArrayList<String>(mTokensForTag.keySet());
         Collections.sort(l, new Comparator<String>() {
             @Override
             public int compare(final String s1, final String s2) {
@@ -178,7 +178,7 @@ public final class TokenDatabase {
      * @return The tokens.
      */
     public List<BaseToken> getAllTokens() {
-    	return tokenIdsToTokens(tokenForId.keySet());
+    	return tokenIdsToTokens(mTokenForId.keySet());
     }
 
     /**
@@ -190,7 +190,7 @@ public final class TokenDatabase {
     public List<BaseToken> tokensForTags(final Collection<String> tags) {
         Set<String> tokenIds = new HashSet<String>();
         for (String tag : tags) {
-            tokenIds.addAll(this.tokensForTag.get(tag));
+            tokenIds.addAll(this.mTokensForTag.get(tag));
         }
         return tokenIdsToTokens(tokenIds);
     }
@@ -204,7 +204,7 @@ public final class TokenDatabase {
     	if (tag.equals(ALL)) {
     		return this.getAllTokens();
     	}
-    	Set<String> tokenIds = this.tokensForTag.get(tag);
+    	Set<String> tokenIds = this.mTokensForTag.get(tag);
     	return tokenIdsToTokens(tokenIds);
     }
 
@@ -226,8 +226,8 @@ public final class TokenDatabase {
             // No worries if the token doesn't exist - by design the database
             // could include tokens that don't exist anymore since it connects a
         	// loaded token id to stored information about that ID.
-            if (tokenForId.containsKey(tokenId)) {
-                tokens.add(tokenForId.get(tokenId));
+            if (mTokenForId.containsKey(tokenId)) {
+                tokens.add(mTokenForId.get(tokenId));
             }
         }
         return tokens;
@@ -238,8 +238,8 @@ public final class TokenDatabase {
      * @param token The token to add and tag.
      */
     public void addTokenPrototype(final BaseToken token) {
-        tokenForId.put(token.getTokenId(), token);
-        if (this.prePopulateTags) {
+        mTokenForId.put(token.getTokenId(), token);
+        if (this.mPrePopulateTags) {
         	tagToken(token, token.getDefaultTags());
         }
     }
@@ -251,8 +251,8 @@ public final class TokenDatabase {
      * @param tag The tag to remove.
      */
     public void removeTagFromToken(final String tokenId, final String tag) {
-        this.tagsForToken.get(tokenId).remove(tag);
-        this.tokensForTag.get(tag).remove(tokenId);
+        this.mTagsForToken.get(tokenId).remove(tag);
+        this.mTokensForTag.get(tag).remove(tokenId);
 
     }
 
@@ -262,11 +262,11 @@ public final class TokenDatabase {
      * @param token The token to remove.
      */
     public void removeToken(final BaseToken token) {
-        for (String tag : tagsForToken.get(token.getTokenId())) {
-            tokensForTag.get(tag).remove(token.getTokenId());
+        for (String tag : mTagsForToken.get(token.getTokenId())) {
+            mTokensForTag.get(tag).remove(token.getTokenId());
         }
-        tagsForToken.remove(token.getTokenId());
-        tokenForId.remove(token.getTokenId());
+        mTagsForToken.remove(token.getTokenId());
+        mTokenForId.remove(token.getTokenId());
     }
 
     /**
@@ -275,16 +275,21 @@ public final class TokenDatabase {
      * @param context 
      */
     public void populate(Context context) {
-        this.prePopulateTags = !tagsLoaded();
+        this.mPrePopulateTags = !tagsLoaded();
     	loadCustomImageTokens(new DataManager(context));
         loadBuiltInImageTokens(context);
         loadColorTokens();
         loadLetterTokens();
-        this.prePopulateTags = false;
+        this.mPrePopulateTags = false;
     }
     
+    /**
+     * Creates a new token given the given token ID.
+     * @param tokenId TokenID to create a token for.
+     * @return A new token cloned from the prototype for that Token ID.
+     */
     public BaseToken createToken(String tokenId) {
-    	return this.tokenForId.get(tokenId).clone();
+    	return this.mTokenForId.get(tokenId).clone();
     }
 
     /**
@@ -292,7 +297,7 @@ public final class TokenDatabase {
      * 		they need to be pre-populated.
      */
     private boolean tagsLoaded() {
-    	return this.tokensForTag.size() != 0;
+    	return this.mTokensForTag.size() != 0;
 	}
 
 	/**
@@ -308,12 +313,14 @@ public final class TokenDatabase {
     }
 
     /**
-     * Populates the token database with built-in image tokens.
-     * @param context 
+     * Populates the token database with built-in image tokens by loading the
+     * list of token resource names from the art credits.
+     * @param context Context to load resources from.
      */
     private void loadBuiltInImageTokens(Context context) {
         try {
-        	InputStream is = context.getResources().openRawResource(R.raw.art_credits);
+        	InputStream is = context.getResources().openRawResource(
+        			R.raw.art_credits);
         	SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
@@ -331,17 +338,32 @@ public final class TokenDatabase {
 		}
     }
     
+    /**
+     * SAX handler to load the resources that represent built-in tokens from the
+     * art credits file.
+     * @author Tim
+     *
+     */
     private class ArtCreditHandler extends DefaultHandler {
-		private Context context;
+    	/**
+    	 * Application context to load resources from.
+    	 */
+		private Context mContext;
+		
+		/**
+		 * Constructor.
+		 * @param context Application context to load resources from.
+		 */
 		public ArtCreditHandler(Context context) {
-			this.context=context;
+			this.mContext = context;
 		}
 		
 		@Override
-		public void startElement(String namespaceURI, String localName, String qName, 
-		            org.xml.sax.Attributes atts) throws SAXException {
+		public void startElement(
+				String namespaceURI, String localName, String qName, 
+		        org.xml.sax.Attributes atts) throws SAXException {
 			if (localName.equalsIgnoreCase("token")) {
-				int id = context.getResources().getIdentifier(
+				int id = mContext.getResources().getIdentifier(
 						atts.getValue("res"), 
 						"drawable", 
 						"com.tbocek.android.combatmap");
@@ -422,10 +444,10 @@ public final class TokenDatabase {
      * @throws IOException on write error.
      */
     private void save(final BufferedWriter output) throws IOException {
-        for (String tokenName : this.tagsForToken.keySet()) {
+        for (String tokenName : this.mTagsForToken.keySet()) {
             output.write(tokenName);
             output.write(FILE_DELIMITER);
-            for (String tag : this.tagsForToken.get(tokenName)) {
+            for (String tag : this.mTagsForToken.get(tokenName)) {
                 output.write(tag);
                 output.write(FILE_DELIMITER);
             }

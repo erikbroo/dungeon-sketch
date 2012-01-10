@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.tbocek.android.combatmap.view.SaveFileButton;
 
@@ -36,7 +35,7 @@ public final class Load extends Activity {
     /**
      * Data manager to facilitate save file enumeration and loading.
      */
-    private DataManager dataMgr;
+    private DataManager mDataMgr;
 
     /**
      * Width of a file button.
@@ -57,7 +56,7 @@ public final class Load extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dataMgr = new DataManager(this.getApplicationContext());
+        mDataMgr = new DataManager(this.getApplicationContext());
 
         setup();
     }
@@ -67,7 +66,7 @@ public final class Load extends Activity {
      * files.
      */
     private void setup() {
-        mSavedFiles = dataMgr.savedFiles();
+        mSavedFiles = mDataMgr.savedFiles();
 
         if (mSavedFiles.size() > 0) {
 	        List<View> fileViews = new ArrayList<View>();
@@ -120,9 +119,9 @@ public final class Load extends Activity {
         SaveFileButton b = new SaveFileButton(this);
         b.setFileName(saveFile);
         try {
-            b.setPreviewImage(dataMgr.loadPreviewImage(saveFile));
+            b.setPreviewImage(mDataMgr.loadPreviewImage(saveFile));
         } catch (IOException e) {
-            //no-op
+        	e.printStackTrace();
         }
         b.setPadding(
                 FILE_VIEW_PADDING, FILE_VIEW_PADDING, FILE_VIEW_PADDING,
@@ -131,7 +130,7 @@ public final class Load extends Activity {
         b.setMinimumHeight(FILE_VIEW_HEIGHT);
         b.setOnClickListener(new SaveFileButtonClickListener(saveFile));
         registerForContextMenu(b);
-        b.setOnCreateContextMenuListener(contextMenuListener);
+        b.setOnCreateContextMenuListener(mContextMenuListener);
         return b;
     }
 
@@ -185,12 +184,12 @@ public final class Load extends Activity {
      * The save file button that last triggered a context menu open.  Used to
      * determine which file to delete if a delete operation is selected.
      */
-    private SaveFileButton contextMenuTrigger = null;
+    private SaveFileButton mContextMenuTrigger;
 
     /**
      * Listener that creates a menu to delete the given save file.
      */
-    private View.OnCreateContextMenuListener contextMenuListener =
+    private View.OnCreateContextMenuListener mContextMenuListener =
         new View.OnCreateContextMenuListener() {
         @Override
         public void onCreateContextMenu(final ContextMenu menu,
@@ -199,7 +198,7 @@ public final class Load extends Activity {
             while (!(v instanceof SaveFileButton)) {
                 v = (View) v.getParent();
             }
-            contextMenuTrigger = (SaveFileButton) v;
+            mContextMenuTrigger = (SaveFileButton) v;
             if (menu.size() == 0) {
             	getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
             }
@@ -210,14 +209,14 @@ public final class Load extends Activity {
     public boolean onContextItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
       case R.id.delete_save_file:
-          dataMgr.deleteSaveFile(contextMenuTrigger.getFileName());
+          mDataMgr.deleteSaveFile(mContextMenuTrigger.getFileName());
           SharedPreferences sharedPreferences =
               PreferenceManager.getDefaultSharedPreferences(
                       this.getApplicationContext());
 
           // If we deleted the currently open file, set us up to create a new
           // file when we return to the main activity.
-          if (contextMenuTrigger.getFileName().equals(
+          if (mContextMenuTrigger.getFileName().equals(
         		  sharedPreferences.getString("filename", null))) {
               setFilenamePreference(null);
           }
