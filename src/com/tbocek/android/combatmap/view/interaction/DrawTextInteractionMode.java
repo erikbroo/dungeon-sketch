@@ -6,10 +6,18 @@ import com.tbocek.android.combatmap.model.primitives.Text;
 import com.tbocek.android.combatmap.view.CombatView;
 
 import android.view.MotionEvent;
-import android.view.View;
 
+/**
+ * Interaction mode for drawing and manipulating text objects.
+ * @author Tim
+ *
+ */
 public class DrawTextInteractionMode extends BaseDrawInteractionMode {
 	
+	/**
+	 * Constructor.
+	 * @param view The view to manipulate.
+	 */
 	public DrawTextInteractionMode(CombatView view) {
 		super(view);
 	}
@@ -18,8 +26,9 @@ public class DrawTextInteractionMode extends BaseDrawInteractionMode {
     public boolean onSingleTapConfirmed(final MotionEvent e) {
     	PointF p = new PointF(e.getX(), e.getY());
     	
-    	getView().requestNewTextEntry( 
-    			getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(p));
+    	getView().requestNewTextEntry(
+    			getView().getWorldSpaceTransformer()
+    					.screenSpaceToWorldSpace(p));
     	
         return true;
     }
@@ -44,8 +53,10 @@ public class DrawTextInteractionMode extends BaseDrawInteractionMode {
     	Shape t = getView().getActiveLines().findShape(p, Text.class);
     	if (t != null) {
     		t.setDrawOffset(
-    			getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(arg1.getX() - arg0.getX()),
-    			getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(arg1.getY() - arg0.getY()));
+    			getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
+    					arg1.getX() - arg0.getX()),
+    			getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
+    					arg1.getY() - arg0.getY()));
     		getView().refreshMap();
     		return true;
     	} else {
@@ -53,6 +64,7 @@ public class DrawTextInteractionMode extends BaseDrawInteractionMode {
     	}
     }
     
+    @Override
     public void onUp(final MotionEvent event) {
     	getView().getActiveLines().optimize();
     	getView().refreshMap();

@@ -25,18 +25,18 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     /**
      * The last x coordinate at which a point was added to the current line.
      */
-    private float lastPointX;
+    private float mLastPointX;
 
     /**
      * The last y coordinate at which a point was added to the current line.
      */
-    private float lastPointY;
+    private float mLastPointY;
 
     /**
      * The line that the user is actively drawing.  New points will be added to
      * this line.
      */
-    private Shape currentLine;
+    private Shape mCurrentLine;
 
 
 	/**
@@ -52,7 +52,7 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     public boolean onScroll(
             final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
-        if (currentLine == null) {
+        if (mCurrentLine == null) {
             return true;
         }
 
@@ -69,12 +69,13 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     private void addLinePoint(final MotionEvent e) {
         PointF p = getScreenSpacePoint(e);
     	// Need to transform to world space.
-	    currentLine.addPoint(
-	            getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(p));
+	    mCurrentLine.addPoint(
+	            getView().getWorldSpaceTransformer()
+	            		.screenSpaceToWorldSpace(p));
 
         getView().refreshMap(); // Redraw the screen
-        lastPointX = p.x;
-        lastPointY = p.y;
+        mLastPointX = p.x;
+        mLastPointY = p.y;
     }
 
     /**
@@ -85,7 +86,8 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     private PointF getScreenSpacePoint(final MotionEvent e) {
     	PointF p = new PointF(e.getX(), e.getY());
     	if (getView().shouldSnapToGrid()) {
-    		CoordinateTransformer transformer = getView().getGridSpaceTransformer();
+    		CoordinateTransformer transformer
+    				= getView().getGridSpaceTransformer();
     		p = transformer.worldSpaceToScreenSpace(
     				getView().getData().getGrid().getNearestSnapPoint(
     						transformer.screenSpaceToWorldSpace(p), 0));
@@ -102,19 +104,23 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
      */
     private boolean shouldAddPoint(
             final float newPointX, final float newPointY) {
-        return Util.distance(lastPointX, lastPointY, newPointX, newPointY)
+        return Util.distance(mLastPointX, mLastPointY, newPointX, newPointY)
                 > POINT_RATE_LIMIT;
     }
 
     @Override
     public boolean onDown(final MotionEvent e) {
-        currentLine = createLine();
+        mCurrentLine = createLine();
         PointF p = getScreenSpacePoint(e);
-        lastPointX = p.x;
-        lastPointY = p.y;
+        mLastPointX = p.x;
+        mLastPointY = p.y;
         return true;
     }
 
+    /**
+     * Creates a line in the data tied to the manipulated view, and returns it.
+     * @return The created line.
+     */
     protected Shape createLine() {
     	return getView().createLine();
     }

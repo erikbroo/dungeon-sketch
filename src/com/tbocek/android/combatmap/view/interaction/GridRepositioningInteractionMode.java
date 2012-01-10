@@ -27,11 +27,12 @@ public final class GridRepositioningInteractionMode
     public boolean onScroll(
     		final MotionEvent e1, final MotionEvent e2,
     		final float distanceX, final float distanceY) {
-        getView().getData().getGrid().gridSpaceToWorldSpaceTransformer().moveOrigin(
-                -getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
-                		distanceX),
-                -getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
-                		distanceY));
+    	float deltaX = -getView().getWorldSpaceTransformer()
+    			.screenSpaceToWorldSpace(distanceX);
+    	float deltaY = -getView().getWorldSpaceTransformer()
+    			.screenSpaceToWorldSpace(distanceY);
+    	getView().getData().getGrid().gridSpaceToWorldSpaceTransformer()
+    			.moveOrigin(deltaX, deltaY);
         getView().refreshMap();
         return true;
     }

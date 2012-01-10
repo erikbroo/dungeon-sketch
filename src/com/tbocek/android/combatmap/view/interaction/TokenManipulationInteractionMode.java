@@ -61,7 +61,8 @@ public final class TokenManipulationInteractionMode
     		final float distanceX, final float distanceY) {
         if (mCurrentToken != null) {
         	mMoved = true;
-            CoordinateTransformer transformer = getView().getGridSpaceTransformer();
+            CoordinateTransformer transformer 
+            		= getView().getGridSpaceTransformer();
             PointF currentPointScreenSpace = new PointF(e2.getX(), e2.getY());
             if (getView().shouldSnapToGrid()) {
                 // Get the nearest snap point in screen space
@@ -97,7 +98,8 @@ public final class TokenManipulationInteractionMode
     public boolean onDown(final MotionEvent e) {
         mCurrentToken = getView().getTokens().getTokenUnderPoint(
         		new PointF(
-        				e.getX(), e.getY()), getView().getGridSpaceTransformer());
+        				e.getX(), e.getY()), 
+        				getView().getGridSpaceTransformer());
 
         if (mCurrentToken != null) {
         	mMoved = false;

@@ -29,13 +29,13 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
     /**
      * True if currently actively erasing.
      */
-    private boolean erasing;
+    private boolean mIsErasing;
 
     /**
      * The last point that was erased.  Used so that we can draw a circle there
      * in the draw pass.
      */
-    private PointF lastErasedPoint;
+    private PointF mLastErasedPoint;
 
     /**
      * Constructor.
@@ -49,13 +49,13 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
     		final float distanceX, final float distanceY) {
         // Set up to draw erase indicator
-        this.erasing = true;
-        this.lastErasedPoint = new PointF(e2.getX(), e2.getY());
+        this.mIsErasing = true;
+        this.mLastErasedPoint = new PointF(e2.getX(), e2.getY());
 
         // Erase
         getView().getActiveLines().erase(
         		getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
-        				this.lastErasedPoint),
+        				this.mLastErasedPoint),
                 getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
                 		ERASER_RADIUS));
 
@@ -65,7 +65,7 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
 
     @Override
     public void onUp(final MotionEvent event) {
-        this.erasing = false;
+        this.mIsErasing = false;
         this.getView().optimizeActiveLines();
         getView().refreshMap();
     }
@@ -76,9 +76,9 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
         //Draw a light grey circle showing the erase diameter.
         p.setColor(ERASER_COLOR);
 
-        if (erasing) {
+        if (mIsErasing) {
             c.drawCircle(
-            		lastErasedPoint.x, lastErasedPoint.y, ERASER_RADIUS, p);
+            		mLastErasedPoint.x, mLastErasedPoint.y, ERASER_RADIUS, p);
         }
     }
 
