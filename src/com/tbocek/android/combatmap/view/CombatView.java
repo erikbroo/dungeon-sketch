@@ -45,12 +45,12 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * Detector object to detect regular gestures.
 	 */
-	private GestureDetector gestureDetector;
+	private GestureDetector mGestureDetector;
 
 	/**
 	 * Detector object to detect pinch zoom.
 	 */
-	private ScaleGestureDetector scaleDetector;
+	private ScaleGestureDetector mScaleDetector;
 
 	/**
 	 * Interaction mode, defining how the view should currently respond to user
@@ -81,43 +81,50 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * Whether tokens being moved should snap to the grid.
 	 */
-	private boolean snapToGrid = true;
+	private boolean mSnapToGrid;
 
 	/**
 	 * Whether to draw the annotation layer.
 	 */
-	private boolean shouldDrawAnnotations = false;
+	private boolean mShouldDrawAnnotations;
 
 	/**
 	 * Whether to draw private GM notes.
 	 */
-	private boolean shouldDrawGmNotes = false;
+	private boolean mShouldDrawGmNotes;
 
 	/**
 	 * Whether tokens should be drawn as manipulatable.
 	 */
-	private boolean areTokensManipulatable = true;
+	private boolean mAreTokensManipulatable = true;
 
-	private boolean surfaceReady = false;
+	/**
+	 * Whether the surface is ready to draw.
+	 */
+	private boolean mSurfaceReady = false;
 	
-	private UndoRedoTarget undoRedoTarget;
+	/**
+	 * The current map data object that undo/redo actions will affect.
+	 */
+	private UndoRedoTarget mUndoRedoTarget;
 
 	private SurfaceHolder.Callback surfaceHolderCallback 
 			= new SurfaceHolder.Callback() {
 		@Override
 		public void surfaceDestroyed(SurfaceHolder arg0) {
-			surfaceReady = false;
+			mSurfaceReady = false;
 
 		}
 
 		@Override
 		public void surfaceCreated(SurfaceHolder arg0) {
-			surfaceReady = true;
+			mSurfaceReady = true;
 			refreshMap();
 		}
 
 		@Override
-		public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+		public void surfaceChanged(
+				SurfaceHolder arg0, int arg1, int arg2, int arg3) {
 			refreshMap();
 		}
 	};
@@ -205,7 +212,7 @@ public final class CombatView extends SurfaceView {
 						PointF location = getGridSpaceTransformer()
 								.screenSpaceToWorldSpace(
 										new PointF(event.getX(), event.getY()));
-						if (snapToGrid) {
+						if (mSnapToGrid) {
 							location = getData().getGrid().getNearestSnapPoint(
 									location, toAdd.getSize());
 						}
@@ -239,10 +246,10 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void setTokenManipulationMode() {
 		setInteractionMode(new TokenManipulationInteractionMode(this));
-		shouldDrawAnnotations = true;
-		shouldDrawGmNotes = false;
+		mShouldDrawAnnotations = true;
+		mShouldDrawGmNotes = false;
 		if (mData != null) {
-			undoRedoTarget = mData.getTokens();
+			mUndoRedoTarget = mData.getTokens();
 		}
 	}
 
@@ -285,9 +292,9 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void useBackgroundLayer() {
 		mActiveLines = getData().getBackgroundLines();
-		shouldDrawAnnotations = false;
-		shouldDrawGmNotes = false;
-		undoRedoTarget = mActiveLines;
+		mShouldDrawAnnotations = false;
+		mShouldDrawGmNotes = false;
+		mUndoRedoTarget = mActiveLines;
 	}
 
 	/**
@@ -296,9 +303,9 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void useAnnotationLayer() {
 		mActiveLines = getData().getAnnotationLines();
-		shouldDrawAnnotations = true;
-		shouldDrawGmNotes = false;
-		undoRedoTarget = mActiveLines;
+		mShouldDrawAnnotations = true;
+		mShouldDrawGmNotes = false;
+		mUndoRedoTarget = mActiveLines;
 	}
 
 	/**
@@ -307,9 +314,9 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void useGmNotesLayer() {
 		mActiveLines = getData().getGmNoteLines();
-		shouldDrawAnnotations = false;
-		shouldDrawGmNotes = true;
-		undoRedoTarget = mActiveLines;
+		mShouldDrawAnnotations = false;
+		mShouldDrawGmNotes = true;
+		mUndoRedoTarget = mActiveLines;
 	}
 
 
@@ -324,9 +331,9 @@ public final class CombatView extends SurfaceView {
 			mInteractionMode.onEndMode();
 		}
 		
-		gestureDetector = new GestureDetector(this.getContext(), mode);
-		gestureDetector.setOnDoubleTapListener(mode);
-		scaleDetector = new ScaleGestureDetector(this.getContext(), mode);
+		mGestureDetector = new GestureDetector(this.getContext(), mode);
+		mGestureDetector.setOnDoubleTapListener(mode);
+		mScaleDetector = new ScaleGestureDetector(this.getContext(), mode);
 		mInteractionMode = mode;
 		
 		if (mInteractionMode != null) {
@@ -359,13 +366,13 @@ public final class CombatView extends SurfaceView {
 	 * @param manip Value to set.
 	 */
 	public void setAreTokensManipulatable(boolean manip) {
-		areTokensManipulatable = manip;
+		mAreTokensManipulatable = manip;
 	}
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent ev) {
-		this.gestureDetector.onTouchEvent(ev);
-		this.scaleDetector.onTouchEvent(ev);
+		this.mGestureDetector.onTouchEvent(ev);
+		this.mScaleDetector.onTouchEvent(ev);
 
 		// If a finger was removed, optimize the lines by removing unused
 		// points.
@@ -379,7 +386,7 @@ public final class CombatView extends SurfaceView {
 	 * Redraws the contents of the map.
 	 */
 	public void refreshMap() {
-		if (!surfaceReady) {
+		if (!mSurfaceReady) {
 			return;
 		}
 		SurfaceHolder holder = getHolder();
@@ -423,19 +430,20 @@ public final class CombatView extends SurfaceView {
 		canvas.save();
 		getData().transformer.setMatrix(canvas);
 		
-		// Either draw all GM notes, or draw only the ones not covered by fog of war.
-		if (!this.shouldDrawGmNotes) {
+		// Either draw all GM notes, or draw only the ones not covered by 
+		// fog of war.
+		if (!this.mShouldDrawGmNotes) {
 			canvas.save();
 			getData().getGmNotesFogOfWar().clipFogOfWar(canvas);
 		}
 		getData().getGmNoteLines().drawAllLines(canvas);
-		if (!this.shouldDrawGmNotes) {
+		if (!this.mShouldDrawGmNotes) {
 			canvas.restore();
 		} else {
 			getData().getGmNotesFogOfWar().drawFogOfWar(canvas);
 		}
 		
-		if (this.shouldDrawAnnotations) {
+		if (this.mShouldDrawAnnotations) {
 
 			getData().getAnnotationLines().drawAllLines(canvas);
 		}
@@ -449,7 +457,7 @@ public final class CombatView extends SurfaceView {
 		}
 
 		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
-				getData().getGrid().isDark(), areTokensManipulatable);
+				getData().getGrid().isDark(), mAreTokensManipulatable);
 		canvas.restore();
 
 		this.mInteractionMode.draw(canvas);
@@ -532,9 +540,9 @@ public final class CombatView extends SurfaceView {
 	public void placeToken(final BaseToken t) {
 		PointF attemptedLocationScreenSpace = new PointF(this.getWidth() / 2,
 				this.getHeight() / 2);
-		// TODO: This smells really bad.
-		PointF attemptedLocationGridSpace = this.getGridSpaceTransformer()
-				.screenSpaceToWorldSpace(attemptedLocationScreenSpace);
+		PointF attemptedLocationGridSpace =
+				this.getGridSpaceTransformer().screenSpaceToWorldSpace(
+						attemptedLocationScreenSpace);
 
 		getData().getTokens().placeTokenNearby(t, attemptedLocationGridSpace,
 				getData().getGrid());
@@ -616,6 +624,7 @@ public final class CombatView extends SurfaceView {
 		boolean useBackgroundLines = (mData == null)
 				|| this.mActiveLines == mData.getBackgroundLines();
 		mData = data;
+		//TODO: Account for GM Lines
 		this.mActiveLines = useBackgroundLines ? mData.getBackgroundLines()
 				: mData.getAnnotationLines();
 		refreshMap();
@@ -635,14 +644,14 @@ public final class CombatView extends SurfaceView {
 	 *            the shouldSnapToGrid to set
 	 */
 	public void setShouldSnapToGrid(final boolean shouldSnapToGrid) {
-		this.snapToGrid = shouldSnapToGrid;
+		this.mSnapToGrid = shouldSnapToGrid;
 	}
 
 	/**
 	 * @return the shouldSnapToGrid
 	 */
 	public boolean shouldSnapToGrid() {
-		return snapToGrid;
+		return mSnapToGrid;
 	}
 
 	/**
@@ -729,10 +738,10 @@ public final class CombatView extends SurfaceView {
 	}
 
 	public boolean isAFogOfWarLayerVisible() {
-		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW || this.shouldDrawGmNotes;
+		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW || this.mShouldDrawGmNotes;
 	}
 	
 	public UndoRedoTarget getUndoRedoTarget() {
-		return undoRedoTarget;
+		return mUndoRedoTarget;
 	}
 }

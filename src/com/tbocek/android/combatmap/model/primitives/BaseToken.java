@@ -45,10 +45,12 @@ public abstract class BaseToken implements Serializable {
     private boolean mBloodied = false;
     
     /**
-     *
+     * 
      */
     private transient Paint mCachedCustomBorderPaint = null;
-    protected boolean mHasCustomBorder = false;
+    
+    private boolean mHasCustomBorder = false;
+    
     private int mCustomBorderColor;
     
     public void setCustomBorder(int color) {
