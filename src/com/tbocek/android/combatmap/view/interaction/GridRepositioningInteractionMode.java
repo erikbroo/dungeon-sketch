@@ -27,23 +27,23 @@ public final class GridRepositioningInteractionMode
     public boolean onScroll(
     		final MotionEvent e1, final MotionEvent e2,
     		final float distanceX, final float distanceY) {
-        mView.getData().getGrid().gridSpaceToWorldSpaceTransformer().moveOrigin(
-                -mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+        getView().getData().getGrid().gridSpaceToWorldSpaceTransformer().moveOrigin(
+                -getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
                 		distanceX),
-                -mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+                -getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
                 		distanceY));
-        mView.refreshMap();
+        getView().refreshMap();
         return true;
     }
 
     @Override
     public boolean onScale(final ScaleGestureDetector detector) {
         PointF invariantPointWorldSpace =
-        	mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+        	getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
         			detector.getFocusX(), detector.getFocusY());
-        mView.getData().getGrid().gridSpaceToWorldSpaceTransformer().zoom(
+        getView().getData().getGrid().gridSpaceToWorldSpaceTransformer().zoom(
         		detector.getScaleFactor(), invariantPointWorldSpace);
-        mView.refreshMap();
+        getView().refreshMap();
         return true;
     }
 

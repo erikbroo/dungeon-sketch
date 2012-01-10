@@ -9,25 +9,36 @@ import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.view.CombatView;
 
+/**
+ * Base class for drawing interaction modes that implements some common behavior
+ * that should always happen when drawing.
+ * @author Tim
+ *
+ */
 public class BaseDrawInteractionMode extends CombatViewInteractionMode {
 
 	/**
 	 * The point in world space that was long-pressed to open the menu.
 	 */
-	private PointF longPressPoint;
+	private PointF mLongPressPoint;
 
+	/**
+	 * Constructor.
+	 * @param view The CombatView to manipulate.
+	 */
 	public BaseDrawInteractionMode(CombatView view) {
 		super(view);
 	}
 
 	@Override
 	public void onLongPress(final MotionEvent ev) {
-		longPressPoint = mView.getWorldSpaceTransformer()
+		mLongPressPoint = getView().getWorldSpaceTransformer()
 				.screenSpaceToWorldSpace(ev.getX(), ev.getY());
-	    if (mView.isAFogOfWarLayerVisible() 
-	    		&& mView.getActiveFogOfWar() != null 
-	    		&& mView.getActiveFogOfWar().findShape(longPressPoint) != null) {
-	        mView.showContextMenu();
+	    if (getView().isAFogOfWarLayerVisible() 
+	    		&& getView().getActiveFogOfWar() != null 
+	    		&& getView().getActiveFogOfWar().findShape(mLongPressPoint) 
+	    				!= null) {
+	        getView().showContextMenu();
 	    }
 	}
 
@@ -48,9 +59,9 @@ public class BaseDrawInteractionMode extends CombatViewInteractionMode {
 	 */
 	public boolean onContextItemSelected(final MenuItem item) {
 	      if (item.getItemId() == R.id.fog_context_delete 
-	    		  && mView.getActiveFogOfWar() != null) {
-	    	  mView.getActiveFogOfWar().deleteShape(
-	    			  mView.getActiveFogOfWar().findShape(longPressPoint));
+	    		  && getView().getActiveFogOfWar() != null) {
+	    	  getView().getActiveFogOfWar().deleteShape(
+	    			  getView().getActiveFogOfWar().findShape(mLongPressPoint));
 	    	  return true;
 	      }
 	      return false;

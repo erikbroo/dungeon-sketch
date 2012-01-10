@@ -108,7 +108,7 @@ public final class CombatView extends SurfaceView {
 	 */
 	private UndoRedoTarget mUndoRedoTarget;
 
-	private SurfaceHolder.Callback surfaceHolderCallback 
+	private SurfaceHolder.Callback mSurfaceHolderCallback 
 			= new SurfaceHolder.Callback() {
 		@Override
 		public void surfaceDestroyed(SurfaceHolder arg0) {
@@ -220,7 +220,8 @@ public final class CombatView extends SurfaceView {
 						getData().getTokens().addToken(toAdd);
 						refreshMap();
 						return true;
-					} else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+					} else if (event.getAction() 
+							== DragEvent.ACTION_DRAG_STARTED) {
 						return true;
 					}
 					return false;
@@ -229,7 +230,7 @@ public final class CombatView extends SurfaceView {
 			this.setOnDragListener(mOnDrag);
 		}
 
-		getHolder().addCallback(this.surfaceHolderCallback);
+		getHolder().addCallback(this.mSurfaceHolderCallback);
 		// setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 	}
 
@@ -704,15 +705,17 @@ public final class CombatView extends SurfaceView {
 
 		void requestEditTextObject(Text t);
 	}
-	public NewTextEntryListener newTextEntryListener;
+	
+	private NewTextEntryListener mNewTextEntryListener;
 	
 	public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
-		if (newTextEntryListener != null) {
-			newTextEntryListener.requestNewTextEntry(newTextLocationWorldSpace);
+		if (mNewTextEntryListener != null) {
+			mNewTextEntryListener.requestNewTextEntry(newTextLocationWorldSpace);
 		}
 	}
 	
-	public void createNewText(PointF newTextLocationWorldSpace, String text, float size) {
+	public void createNewText(
+			PointF newTextLocationWorldSpace, String text, float size) {
 		//Compute the text size as being one grid cell large.
 		float textSize = getData().getGrid().gridSpaceToWorldSpaceTransformer()
 				   .worldSpaceToScreenSpace(size);
@@ -723,7 +726,7 @@ public final class CombatView extends SurfaceView {
 	}
 
 	public void requestEditTextObject(Text t) {
-		newTextEntryListener.requestEditTextObject(t);
+		mNewTextEntryListener.requestEditTextObject(t);
 	}
 
 	public LineCollection getActiveFogOfWar() {
@@ -737,10 +740,20 @@ public final class CombatView extends SurfaceView {
 	}
 
 	public boolean isAFogOfWarLayerVisible() {
-		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW || this.mShouldDrawGmNotes;
+		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW 
+				|| this.mShouldDrawGmNotes;
 	}
 	
 	public UndoRedoTarget getUndoRedoTarget() {
 		return mUndoRedoTarget;
+	}
+	
+	/**
+	 * Sets the listener for requests to change or create text objects.
+	 * @param newTextEntryListener The listener to use.
+	 */
+	public void setNewTextEntryListener(
+			NewTextEntryListener newTextEntryListener) {
+		this.mNewTextEntryListener = newTextEntryListener;
 	}
 }

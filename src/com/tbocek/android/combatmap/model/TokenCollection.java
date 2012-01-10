@@ -263,13 +263,13 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
 		
 		@Override
 		public void execute() {
-			afterState.copyAttributes(tokenToModify);
+			afterState.copyAttributesTo(tokenToModify);
 			
 		}
 
 		@Override
 		public void undo() {
-			beforeState.copyAttributes(tokenToModify);
+			beforeState.copyAttributesTo(tokenToModify);
 			
 		}
 

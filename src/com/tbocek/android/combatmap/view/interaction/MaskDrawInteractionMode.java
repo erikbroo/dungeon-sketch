@@ -22,6 +22,6 @@ public final class MaskDrawInteractionMode extends FingerDrawInteractionMode {
 
 	@Override
     protected Shape createLine() {
-    	return mView.createFogOfWarRegion();
+    	return getView().createFogOfWarRegion();
     }
 }

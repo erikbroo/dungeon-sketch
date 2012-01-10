@@ -4,7 +4,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Stack;
 
+/**
+ * Implements a queue of commands, and an interface to move through the queue
+ * using undo and redo operations.
+ * @author Tim
+ *
+ */
 public class CommandHistory {
+	/**
+	 * Interface defining the operations that commands should support.
+	 * @author Tim
+	 *
+	 */
     public interface Command {
     	/**
     	 * Executes the command on the LineCollection that this command mutates.
@@ -14,7 +25,7 @@ public class CommandHistory {
     	/**
     	 * Undoes the command on the LineCollection that this command mutates.
     	 */
-    	public void undo();
+    	void undo();
 
     	/**
     	 * @return True if the command is a no-op, false if it modifies lines.
@@ -25,20 +36,20 @@ public class CommandHistory {
 	/**
 	 * Operations on this line collection that are available to undo.
 	 */
-	private transient Stack<Command> toUndo = new Stack<Command>();
+	private transient Stack<Command> mUndo = new Stack<Command>();
 	/**
 	 * Operations on this line collection that are available to redo.
 	 */
-	private transient Stack<Command> toRedo = new Stack<Command>();
+	private transient Stack<Command> mRedo = new Stack<Command>();
 
     /**
      * Undo the last line operation.
      */
     public void undo() {
     	if (canUndo()) {
-	    	Command c = toUndo.pop();
+	    	Command c = mUndo.pop();
 	    	c.undo();
-	    	toRedo.push(c);
+	    	mRedo.push(c);
     	}
     }
 
@@ -47,9 +58,9 @@ public class CommandHistory {
      */
     public void redo() {
     	if (canRedo()) {
-	    	Command c = toRedo.pop();
+	    	Command c = mRedo.pop();
 	    	c.execute();
-	    	toUndo.push(c);
+	    	mUndo.push(c);
     	}
     }
 
@@ -57,14 +68,14 @@ public class CommandHistory {
      * @return True if the undo operation can be performed, false otherwise.
      */
     public boolean canUndo() {
-    	return !toUndo.isEmpty();
+    	return !mUndo.isEmpty();
     }
 
     /**
      * @return True if the redo operation can be performed, false otherwise.
      */
     public boolean canRedo() {
-    	return !toRedo.isEmpty();
+    	return !mRedo.isEmpty();
     }
 
     /**
@@ -75,8 +86,8 @@ public class CommandHistory {
     public void execute(final Command command) {
     	if (!command.isNoop()) {
 	    	command.execute();
-	    	toUndo.add(command);
-	    	toRedo.clear();
+	    	mUndo.add(command);
+	    	mRedo.clear();
     	}
     }
     
@@ -85,8 +96,8 @@ public class CommandHistory {
      * @param command The command to add.
      */
     public void addToCommandHistory(final Command command) {
-    	toUndo.add(command);
-    	toRedo.clear();
+    	mUndo.add(command);
+    	mRedo.clear();
     }
 
     /**
@@ -99,7 +110,7 @@ public class CommandHistory {
     private void readObject(final ObjectInputStream inputStream)
     		throws IOException, ClassNotFoundException {
     	inputStream.defaultReadObject();
-    	toUndo = new Stack<Command>();
-    	toRedo = new Stack<Command>();
+    	mUndo = new Stack<Command>();
+    	mRedo = new Stack<Command>();
     }
 }

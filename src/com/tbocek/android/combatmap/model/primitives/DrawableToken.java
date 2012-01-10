@@ -37,6 +37,15 @@ public abstract class DrawableToken extends BaseToken {
      * Alpha value that will draw at half opacity.
      */
     private static final int HALF_OPACITY = 128;
+    
+    private static float[] BLOODIED_COLOR_MATRIX = 
+    		new float[] {1,  0,    0,   0,  0,
+                         0,  .25f, 0,   0,  0,
+                         0,  0,   .25f, 0,  0,
+                         0,  0,    0,   1,  0};
+    
+    private static ColorMatrixColorFilter BLOODIED_FILTER = 
+    		new ColorMatrixColorFilter(new ColorMatrix(BLOODIED_COLOR_MATRIX));
 
     /**
      * Map between token ID and the the drawable that has been loaded for that
@@ -52,10 +61,7 @@ public abstract class DrawableToken extends BaseToken {
         Drawable d = getDrawable();
         if (d != null) {
         	d.setColorFilter(new ColorMatrixColorFilter(new ColorMatrix(
-        			new float[] {1,  0,    0,   0,  0,
-        			             0,  .25f, 0,   0,  0,
-        			             0,  0,   .25f, 0,  0,
-        			             0,  0,    0,   1,  0}
+        			
         	)));
             draw(c, x, y, radius, false, isManipulatable);
             d.setColorFilter(null);
@@ -93,12 +99,7 @@ public abstract class DrawableToken extends BaseToken {
             d.setBounds(new Rect((int) (x - radius), (int) (y - radius),
                                      (int) (x + radius), (int) (y + radius)));
             if (!isManipulatable) {
-            	d.setColorFilter(new ColorMatrixColorFilter(new ColorMatrix(
-            			new float[] {.5f, 0,   0,  0,  0,
-            			             0,  .5f,  0,  0,  0,
-            			             0,  0,   .5f, 0,  0,
-            			             0,  0,    0,   1,  0}
-            	)));
+            	d.setColorFilter(BLOODIED_FILTER);
             }
             d.draw(c);
             if (!isManipulatable) {

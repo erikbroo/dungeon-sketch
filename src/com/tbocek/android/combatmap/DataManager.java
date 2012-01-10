@@ -204,7 +204,8 @@ public final class DataManager {
      */
     public void savePreviewImage(final String name, final Bitmap preview)
             throws IOException {
-        FileOutputStream s = new FileOutputStream(this.getSavedMapPreviewImageFile(name));
+        FileOutputStream s = new FileOutputStream(
+        		this.getSavedMapPreviewImageFile(name));
         BufferedOutputStream buf = new BufferedOutputStream(s);
         preview.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION, buf);
         buf.close();
@@ -232,7 +233,8 @@ public final class DataManager {
      * @throws IOException On read error.
      */
     public Bitmap loadPreviewImage(final String saveFile) throws IOException {
-        FileInputStream s = new FileInputStream(this.getSavedMapPreviewImageFile(saveFile));
+        FileInputStream s = new FileInputStream(
+        		this.getSavedMapPreviewImageFile(saveFile));
         Bitmap b = BitmapFactory.decodeStream(s);
         s.close();
         return b;

@@ -67,7 +67,7 @@ public final class CustomBitmapToken extends DrawableToken {
 
     @Override
     public BaseToken clone() {
-        return copyAttributes(new CustomBitmapToken(mFilename));
+        return copyAttributesTo(new CustomBitmapToken(mFilename));
     }
 
     @Override

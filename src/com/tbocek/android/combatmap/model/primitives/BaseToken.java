@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Set;
 
 import com.tbocek.android.combatmap.TokenDatabase;
@@ -17,17 +16,18 @@ import android.graphics.Paint.Style;
  * @author Tim Bocek
  *
  */
-public abstract class BaseToken implements Serializable {
-    /**
-     * The class's ID for serialization.
-     */
-    private static final long serialVersionUID = 9080531944602251588L;
+public abstract class BaseToken  {
 
     /**
      * Tweak to the token's size so that it doesn't totally inscribe a grid
      * square.
      */
     private static final float TOKEN_SIZE_TWEAK = 0.9f;
+    
+    /**
+     * Stroke width to use for the custom token border if one is specified.
+     */
+    private static final float CUSTOM_BORDER_STROKE_WIDTH = 3;
 
     /**
      * The token's location in grid space.
@@ -45,30 +45,48 @@ public abstract class BaseToken implements Serializable {
     private boolean mBloodied = false;
     
     /**
-     * 
+     * Cached paint object for the custom token border.
      */
     private transient Paint mCachedCustomBorderPaint = null;
     
+    /**
+     * Whether this token instance has been given a custom border.
+     */
     private boolean mHasCustomBorder = false;
     
+    /**
+     * The color of the custom border if one is being used.
+     */
     private int mCustomBorderColor;
     
+    /**
+     * Sets a custom border color for the token.
+     * @param color Color of the custom border.
+     */
     public void setCustomBorder(int color) {
     	mHasCustomBorder = true;
     	mCustomBorderColor = color;
     	mCachedCustomBorderPaint = null;
     }
     
-    
+    /**
+     * Clears the custom border from the token.
+     */
     public void clearCustomBorderColor() {
     	mHasCustomBorder = false;
     	mCachedCustomBorderPaint = null;
     }
     
+    /**
+     * Returns a paint object for the custom border, or null if no custom border
+     * is requested for this token.  Will create the paint object if not valid,
+     * or returns a cached paint object.
+     * @return The paint object.
+     */
     protected Paint getCustomBorderPaint() {
     	if (mCachedCustomBorderPaint == null && mHasCustomBorder) {
     		mCachedCustomBorderPaint = new Paint();
-    		mCachedCustomBorderPaint.setStrokeWidth(3);
+    		mCachedCustomBorderPaint.setStrokeWidth(CUSTOM_BORDER_STROKE_WIDTH);
     		mCachedCustomBorderPaint.setColor(mCustomBorderColor);
     		
     		mCachedCustomBorderPaint.setStyle(Style.STROKE);
@@ -103,7 +121,7 @@ public abstract class BaseToken implements Serializable {
      * @param darkBackground Whether the token is drawn against a dark
      * 		background.  The token can try to make its self more visible in
      * 		this case.
-     * @param isManipulatable
+     * @param isManipulatable Whether the token can currently be manipulated.
      */
     public abstract void draw(Canvas c, float x, float y, float radius,
     		final boolean darkBackground, boolean isManipulatable);
@@ -115,7 +133,7 @@ public abstract class BaseToken implements Serializable {
      * @param x The x coordinate in screen space to draw the token at.
      * @param y The y coordinate in screen space to draw the token at.
      * @param radius The radius of the token in screen space.
-     * @param isManipulatable
+     * @param isManipulatable Whether the token can currently be manipulated.
      */
     public abstract void drawBloodied(Canvas c, float x, float y,
             float radius, boolean isManipulatable);
@@ -242,7 +260,7 @@ public abstract class BaseToken implements Serializable {
      * relatively expensive operations, is needed frequently, and never changes
      * throughout the object's lifetime, it can be cached here.
      */
-    private String cachedTokenId;
+    private String mCachedTokenId;
 
     /**
      * Gets a unique identifier incorporating the token's type and a further
@@ -250,13 +268,13 @@ public abstract class BaseToken implements Serializable {
      * @return The token ID.
      */
     public final String getTokenId() {
-        if (cachedTokenId == null) {
+        if (mCachedTokenId == null) {
             CONCAT_BUFFER.setLength(0);
             CONCAT_BUFFER.append(this.getClass().getName());
             CONCAT_BUFFER.append(getTokenClassSpecificId());
-            cachedTokenId = CONCAT_BUFFER.toString();
+            mCachedTokenId = CONCAT_BUFFER.toString();
         }
-        return cachedTokenId;
+        return mCachedTokenId;
     }
 
     /**
@@ -315,7 +333,12 @@ public abstract class BaseToken implements Serializable {
      */
     public void load() { }
     
-    public BaseToken copyAttributes(BaseToken clone) {
+    /**
+     * Copy attributes from this token to the given token.
+     * @param clone Token to copy attributes into.
+     * @return The token that was copied into.
+     */
+    public BaseToken copyAttributesTo(BaseToken clone) {
     	clone.mBloodied = mBloodied;
     	clone.mCustomBorderColor = mCustomBorderColor;
     	clone.mHasCustomBorder = mHasCustomBorder;
@@ -324,6 +347,11 @@ public abstract class BaseToken implements Serializable {
     	return clone;
     }
     
+    /**
+     * Saves this token to the given serialization stream.
+     * @param s The serialization object to save to.
+     * @throws IOException On serialization error.
+     */
     public void serialize(MapDataSerializer s) throws IOException {
     	s.startObject();
     	s.serializeString(this.getTokenId());
@@ -336,7 +364,13 @@ public abstract class BaseToken implements Serializable {
     	s.endObject();
     }
 
-
+    /**
+     * Creates and loads a token from the given deserialization stream.
+     * @param s Deserialization object.
+     * @param tokenDatabase Token database for token creation.
+     * @return The newly created token.
+     * @throws IOException On deserialization error.
+     */
 	public static BaseToken deserialize(MapDataDeserializer s,
 			TokenDatabase tokenDatabase) throws IOException {
 		s.expectObjectStart();

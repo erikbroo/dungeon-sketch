@@ -294,7 +294,7 @@ public final class CombatMap extends Activity {
 
         mCombatView = new CombatView(this);
         this.registerForContextMenu(mCombatView);
-        mCombatView.newTextEntryListener = this.mOnNewTextEntryListener;
+        mCombatView.setNewTextEntryListener(this.mOnNewTextEntryListener);
 
         mTokenSelector = new TokenSelectorView(this.getApplicationContext());
 
@@ -482,8 +482,10 @@ public final class CombatMap extends Activity {
 
             MapData.clear();
             setFilenamePreference(null);
-            //TODO: Disable when not debugging.
-            throw new RuntimeException(e);
+            
+            if (DeveloperMode.DEVELOPER_MODE) { 
+            	throw new RuntimeException(e);
+            }
         }
         mData = MapData.getInstance();
         mCombatView.setData(mData);

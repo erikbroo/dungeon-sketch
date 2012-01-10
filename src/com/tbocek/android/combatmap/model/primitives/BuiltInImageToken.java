@@ -14,11 +14,6 @@ import android.graphics.drawable.Drawable;
 public final class BuiltInImageToken extends DrawableToken {
 
     /**
-     * The ID for serialization.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
      * HACK: The resources.  This must be set prior to creating
      * BuildInImageTokens.
      */
@@ -53,7 +48,7 @@ public final class BuiltInImageToken extends DrawableToken {
 
     @Override
     public BaseToken clone() {
-        return copyAttributes(new BuiltInImageToken(mResourceId));
+        return copyAttributesTo(new BuiltInImageToken(mResourceId));
     }
 
     @Override

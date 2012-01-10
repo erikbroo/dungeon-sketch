@@ -28,7 +28,27 @@ public final class DrawOptionsView extends LinearLayout {
      * The width of the space that seperates tools and colors.
      */
     private static final int SEPERATOR_WIDTH = 32;
-
+    
+    /**
+     * Stroke width to use for the pencil tool.
+     */
+    private static final float PENCIL_STROKE_WIDTH = 0.05f;
+    
+    /**
+     * Stroke width to use for the pen tool.
+     */
+    private static final float PEN_STROKE_WIDTH = 0.1f;
+    
+    /**
+     * Stroke width to use for the paintbrush tool.
+     */
+    private static final float PAINTBRUSH_STROKE_WIDTH = 0.5f;
+    
+    /**
+     * Stroke width to use for the ink tube tool.
+     */
+    private static final float INKTUBE_STROKE_WIDTH = 2.0f;
+    
     /**
      * OnClickListener for when a button representing a color is clicked.
      * @author Tim Bocek
@@ -49,8 +69,8 @@ public final class DrawOptionsView extends LinearLayout {
 
         @Override
         public void onClick(final View v) {
-            onChangeDrawToolListener.onChooseColoredPen(mColor);
-            colorGroup.untoggle();
+            mOnChangeDrawToolListener.onChooseColoredPen(mColor);
+            mColorGroup.untoggle();
             ((ImageToggleButton) v).setToggled(true);
         }
     }
@@ -78,10 +98,10 @@ public final class DrawOptionsView extends LinearLayout {
 
         @Override
         public void onClick(final View v) {
-            onChangeDrawToolListener.onChooseStrokeWidth(mWidth);
-            lineWidthGroup.untoggle();
+            mOnChangeDrawToolListener.onChooseStrokeWidth(mWidth);
+            mLineWidthGroup.untoggle();
             ((ImageToggleButton) v).setToggled(true);
-            colorGroup.setGroupVisibility(View.VISIBLE);
+            mColorGroup.setGroupVisibility(View.VISIBLE);
         }
     }
 
@@ -91,7 +111,12 @@ public final class DrawOptionsView extends LinearLayout {
      */
     private ImageToggleButton mMaskButton;
 
-    private HorizontalScrollView innerView;
+    /**
+     * View that contains controls that should be scrolled (this is not all
+     * controls because we want the pan control to "stick" and be always
+     * visible).
+     */
+    private HorizontalScrollView mInnerView;
 
     /**
      * Constructs a new DrawOptionsView.
@@ -101,10 +126,10 @@ public final class DrawOptionsView extends LinearLayout {
         super(context);
         createAndAddPanButton();
 
-        layout = new LinearLayout(context);
-        innerView = new HorizontalScrollView(context);
-        innerView.addView(layout);
-        addView(innerView);
+        mLayout = new LinearLayout(context);
+        mInnerView = new HorizontalScrollView(context);
+        mInnerView.addView(mLayout);
+        addView(mInnerView);
 
         createAndAddEraserButton();
         createAndAddStraightLineButton();
@@ -115,10 +140,10 @@ public final class DrawOptionsView extends LinearLayout {
 
         createAndAddSeperator();
 
-        addStrokeWidthButton(.05f, R.drawable.pencil);
-        addStrokeWidthButton(.1f, R.drawable.pen);
-        addStrokeWidthButton(.5f, R.drawable.paintbrush);
-        addStrokeWidthButton(2.0f, R.drawable.inktube);
+        addStrokeWidthButton(PENCIL_STROKE_WIDTH, R.drawable.pencil);
+        addStrokeWidthButton(PEN_STROKE_WIDTH, R.drawable.pen);
+        addStrokeWidthButton(PAINTBRUSH_STROKE_WIDTH, R.drawable.paintbrush);
+        addStrokeWidthButton(INKTUBE_STROKE_WIDTH, R.drawable.inktube);
         createAndAddFillButton();
 
         createAndAddSeperator();
@@ -136,9 +161,9 @@ public final class DrawOptionsView extends LinearLayout {
         ImageToggleButton b = new ImageToggleButton(this.getContext());
         b.setImageResource(R.drawable.freehand_shape);
         b.setOnClickListener(new StrokeWidthListener(Float.POSITIVE_INFINITY));
-        layout.addView(b);
-        lineWidthGroup.add(b);
-        lineWidthRegionGroup.add(b);
+        mLayout.addView(b);
+        mLineWidthGroup.add(b);
+        mLineWidthRegionGroup.add(b);
 	}
 
 
@@ -151,7 +176,7 @@ public final class DrawOptionsView extends LinearLayout {
                 new LinearLayout.LayoutParams(
                         SEPERATOR_WIDTH,
                         LinearLayout.LayoutParams.MATCH_PARENT));
-        layout.addView(seperator);
+        mLayout.addView(seperator);
 	}
 
 
@@ -166,14 +191,14 @@ public final class DrawOptionsView extends LinearLayout {
         maskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View arg0) {
-				onChangeDrawToolListener.onChooseMaskTool();
-                toolsGroup.untoggle();
+				mOnChangeDrawToolListener.onChooseMaskTool();
+                mToolsGroup.untoggle();
                 maskButton.setToggled(true);
-                colorGroup.setGroupVisibility(View.GONE);
-                lineWidthGroup.setGroupVisibility(View.GONE);
+                mColorGroup.setGroupVisibility(View.GONE);
+                mLineWidthGroup.setGroupVisibility(View.GONE);
 			}
         });
-        layout.addView(maskButton);
+        mLayout.addView(maskButton);
         return maskButton;
 	}
 
@@ -185,13 +210,13 @@ public final class DrawOptionsView extends LinearLayout {
     public void setMaskToolVisibility(final boolean visible) {
     	mMaskButton.setVisibility(visible ? View.VISIBLE : View.GONE);
     	if (visible) {
-            toolsGroup.add(mMaskButton);
+            mToolsGroup.add(mMaskButton);
     	} else {
     		// If mask tool was selected, we need to de-select it.
     		if (mMaskButton.isToggled()) {
-    			toolsGroup.forceDefault();
+    			mToolsGroup.forceDefault();
     		}
-    		toolsGroup.remove(mMaskButton);
+    		mToolsGroup.remove(mMaskButton);
     	}
     }
 
@@ -204,15 +229,17 @@ public final class DrawOptionsView extends LinearLayout {
         ImageToggleButton b = new ImageToggleButton(this.getContext());
         b.setOnClickListener(new ColorListener(color));
         b.setLayoutParams(new LinearLayout.LayoutParams(
-                (int) (COLOR_BUTTON_SIZE * getResources().getDisplayMetrics().density),
-                (int) (COLOR_BUTTON_SIZE * getResources().getDisplayMetrics().density)));
+                (int) (COLOR_BUTTON_SIZE 
+                		* getResources().getDisplayMetrics().density),
+                (int) (COLOR_BUTTON_SIZE 
+                		* getResources().getDisplayMetrics().density)));
         Drawable pencil =
             this.getContext().getResources().getDrawable(R.drawable.pencilbw);
         b.setImageDrawable(pencil);
         b.setColorFilter(
                 new PorterDuffColorFilter(color, PorterDuff.Mode.LIGHTEN));
-        layout.addView(b);
-        colorGroup.add(b);
+        mLayout.addView(b);
+        mColorGroup.add(b);
     }
 
     /**
@@ -225,8 +252,8 @@ public final class DrawOptionsView extends LinearLayout {
         ImageToggleButton b = new ImageToggleButton(this.getContext());
         b.setImageResource(resourceId);
         b.setOnClickListener(new StrokeWidthListener(f));
-        layout.addView(b);
-        lineWidthGroup.add(b);
+        mLayout.addView(b);
+        mLineWidthGroup.add(b);
     }
 
 
@@ -263,12 +290,24 @@ public final class DrawOptionsView extends LinearLayout {
          */
         void onChooseStrokeWidth(float width);
 
+        /**
+         * Called when the freehand draw tool is chosen.
+         */
 		void onChooseFreeHandTool();
 
+		/**
+		 * Called when the straight line draw tool is chosen.
+		 */
 		void onChooseStraightLineTool();
 
+		/**
+		 * Called when the circle draw tool is chosen.
+		 */
 		void onChooseCircleTool();
 
+		/**
+		 * Called when the text draw tool is chosen.
+		 */
 		void onChooseTextTool();
     }
 
@@ -314,7 +353,7 @@ public final class DrawOptionsView extends LinearLayout {
      * The listener that is called when something about the current draw tool
      * changes.
      */
-    protected OnChangeDrawToolListener onChangeDrawToolListener =
+    private OnChangeDrawToolListener mOnChangeDrawToolListener =
         new NullChangeDrawToolListener();
 
     /**
@@ -323,40 +362,44 @@ public final class DrawOptionsView extends LinearLayout {
      */
     public void setOnChangeDrawToolListener(
             final OnChangeDrawToolListener listener) {
-        this.onChangeDrawToolListener = listener;
+        this.mOnChangeDrawToolListener = listener;
     }
 
     /**
      * The layout that will hold drawing buttons.
      */
-    protected LinearLayout layout;
+    private LinearLayout mLayout;
 
     /**
      * A list of all buttons that select a drawing tool, so that they can be
      * modified as a group.
      */
-    protected ToggleButtonGroup toolsGroup =  new ToggleButtonGroup();
+    private ToggleButtonGroup mToolsGroup =  new ToggleButtonGroup();
 
     /**
      * A list of all buttons that select a color, so that they can be modified
      * as a group.
      */
-    protected ToggleButtonGroup colorGroup = new ToggleButtonGroup();
+    private ToggleButtonGroup mColorGroup = new ToggleButtonGroup();
 
-    protected ToggleButtonGroup lineWidthGroup = new ToggleButtonGroup();
+    /**
+     * List of all buttons that select line widths, so that they can be modified
+     * as a group.
+     */
+    private ToggleButtonGroup mLineWidthGroup = new ToggleButtonGroup();
 
     /**
      * Line widths that do not make sense when using tools that don't support
      * drawing a region (like straight lines).
      */
-    protected ToggleButtonGroup lineWidthRegionGroup = new ToggleButtonGroup();
+    private ToggleButtonGroup mLineWidthRegionGroup = new ToggleButtonGroup();
 
     /**
      * Automatically loads the default tool.
      */
     public void setDefault() {
         // Start out with the pan button selected.
-    	toolsGroup.maybeSelectDefault();
+    	mToolsGroup.maybeSelectDefault();
     }
 
 	/**
@@ -369,15 +412,15 @@ public final class DrawOptionsView extends LinearLayout {
         eraserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                onChangeDrawToolListener.onChooseEraser();
-                toolsGroup.untoggle();
-                colorGroup.setGroupVisibility(View.GONE);
-                lineWidthGroup.setGroupVisibility(View.GONE);
+                mOnChangeDrawToolListener.onChooseEraser();
+                mToolsGroup.untoggle();
+                mColorGroup.setGroupVisibility(View.GONE);
+                mLineWidthGroup.setGroupVisibility(View.GONE);
                 eraserButton.setToggled(true);
             }
         });
-        layout.addView(eraserButton);
-        toolsGroup.add(eraserButton);
+        mLayout.addView(eraserButton);
+        mToolsGroup.add(eraserButton);
 	}
 
 	/**
@@ -390,17 +433,21 @@ public final class DrawOptionsView extends LinearLayout {
         panButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                onChangeDrawToolListener.onChoosePanTool();
-                toolsGroup.untoggle();
-                colorGroup.setGroupVisibility(View.GONE);
-                lineWidthGroup.setGroupVisibility(View.GONE);
+                mOnChangeDrawToolListener.onChoosePanTool();
+                mToolsGroup.untoggle();
+                mColorGroup.setGroupVisibility(View.GONE);
+                mLineWidthGroup.setGroupVisibility(View.GONE);
                 panButton.setToggled(true);
             }
         });
         this.addView(panButton);
-        toolsGroup.add(panButton);
+        mToolsGroup.add(panButton);
 	}
 
+	/**
+	 * Creates a button to switch to straight line drawing and adds it to the
+	 * view.
+	 */
 	protected void createAndAddStraightLineButton() {
 		final ImageToggleButton button =
 			new ImageToggleButton(this.getContext());
@@ -408,20 +455,23 @@ public final class DrawOptionsView extends LinearLayout {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                onChangeDrawToolListener.onChooseStraightLineTool();
-                toolsGroup.untoggle();
-                colorGroup.setGroupVisibility(View.VISIBLE);
-                lineWidthGroup.setGroupVisibility(View.VISIBLE);
-                lineWidthRegionGroup.setGroupVisibility(View.GONE);
-                lineWidthGroup.maybeSelectDefault();
-                colorGroup.maybeSelectDefault();
+                mOnChangeDrawToolListener.onChooseStraightLineTool();
+                mToolsGroup.untoggle();
+                mColorGroup.setGroupVisibility(View.VISIBLE);
+                mLineWidthGroup.setGroupVisibility(View.VISIBLE);
+                mLineWidthRegionGroup.setGroupVisibility(View.GONE);
+                mLineWidthGroup.maybeSelectDefault();
+                mColorGroup.maybeSelectDefault();
                 button.setToggled(true);
             }
         });
-        layout.addView(button);
-        toolsGroup.add(button);
+        mLayout.addView(button);
+        mToolsGroup.add(button);
 	}
 
+	/**
+	 * Creates a button to switch to freehand drawing and adds it to the view.
+	 */
 	protected void createAndAddFreehandLineButton() {
 		final ImageToggleButton button =
 			new ImageToggleButton(this.getContext());
@@ -429,20 +479,22 @@ public final class DrawOptionsView extends LinearLayout {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                onChangeDrawToolListener.onChooseFreeHandTool();
-                toolsGroup.untoggle();
-                colorGroup.setGroupVisibility(View.VISIBLE);
-                lineWidthGroup.setGroupVisibility(View.VISIBLE);
+                mOnChangeDrawToolListener.onChooseFreeHandTool();
+                mToolsGroup.untoggle();
+                mColorGroup.setGroupVisibility(View.VISIBLE);
+                mLineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
-                lineWidthGroup.maybeSelectDefault();
-                colorGroup.maybeSelectDefault();
+                mLineWidthGroup.maybeSelectDefault();
+                mColorGroup.maybeSelectDefault();
             }
         });
-        layout.addView(button);
-        toolsGroup.add(button);
+        mLayout.addView(button);
+        mToolsGroup.add(button);
 	}
 
-
+	/**
+	 * Creates a button to switch to draw circle mode and adds it to the view.
+	 */
 	protected void createAndAddCircleButton() {
 		final ImageToggleButton button =
 			new ImageToggleButton(this.getContext());
@@ -450,19 +502,22 @@ public final class DrawOptionsView extends LinearLayout {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                onChangeDrawToolListener.onChooseCircleTool();
-                toolsGroup.untoggle();
-                colorGroup.setGroupVisibility(View.VISIBLE);
-                lineWidthGroup.setGroupVisibility(View.VISIBLE);
+                mOnChangeDrawToolListener.onChooseCircleTool();
+                mToolsGroup.untoggle();
+                mColorGroup.setGroupVisibility(View.VISIBLE);
+                mLineWidthGroup.setGroupVisibility(View.VISIBLE);
                 button.setToggled(true);
-                lineWidthGroup.maybeSelectDefault();
-                colorGroup.maybeSelectDefault();
+                mLineWidthGroup.maybeSelectDefault();
+                mColorGroup.maybeSelectDefault();
             }
         });
-        layout.addView(button);
-        toolsGroup.add(button);
+        mLayout.addView(button);
+        mToolsGroup.add(button);
 	}
 
+	/**
+	 * Creates a button to switch to draw text tool and adds it to the view.
+	 */
 	protected void createAndAddTextButton() {
 		final ImageToggleButton button =
 			new ImageToggleButton(this.getContext());
@@ -471,16 +526,16 @@ public final class DrawOptionsView extends LinearLayout {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                onChangeDrawToolListener.onChooseTextTool();
-                toolsGroup.untoggle();
-                colorGroup.setGroupVisibility(View.VISIBLE);
-                lineWidthGroup.setGroupVisibility(View.GONE);
+                mOnChangeDrawToolListener.onChooseTextTool();
+                mToolsGroup.untoggle();
+                mColorGroup.setGroupVisibility(View.VISIBLE);
+                mLineWidthGroup.setGroupVisibility(View.GONE);
                 button.setToggled(true);
-                lineWidthGroup.maybeSelectDefault();
-                colorGroup.maybeSelectDefault();
+                mLineWidthGroup.maybeSelectDefault();
+                mColorGroup.maybeSelectDefault();
             }
         });
-        layout.addView(button);
-        toolsGroup.add(button);
+        mLayout.addView(button);
+        mToolsGroup.add(button);
 	}
 }

@@ -43,7 +43,7 @@ public final class LetterToken extends BaseToken {
 
     @Override
     public BaseToken clone() {
-        return copyAttributes(new LetterToken(mLetter));
+        return copyAttributesTo(new LetterToken(mLetter));
     }
 
     @Override
