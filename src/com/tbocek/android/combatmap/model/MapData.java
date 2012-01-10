@@ -194,25 +194,6 @@ public final class MapData {
     }
 
     /**
-     * Changes the world to screen transformation so that the entire map
-     * fits on the screen.
-     * TODO: this doesn't work right.
-     * @param widthPixels Width of the screen.
-     * @param heightPixels Height of the screen.
-     */
-    public void zoomToFit(final int widthPixels, final int heightPixels) {
-        BoundingRectangle r = getBoundingRectangle();
-
-        float scaleFactorX = widthPixels / r.getWidth();
-        float scaleFactorY = heightPixels / r.getHeight();
-        //Find the optimal scale factor, and add a border.
-        float scaleFactor = Math.min(scaleFactorX, scaleFactorY) / 1.01f;
-
-        this.mTransformer.setZoom(scaleFactor);
-        this.mTransformer.setOriginInWorldSpace(r.getXMin(), r.getYMin());
-    }
-
-    /**
      * @return Whether anything has been placed on the map.
      */
     public boolean hasData() {

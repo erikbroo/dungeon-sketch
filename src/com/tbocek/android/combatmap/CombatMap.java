@@ -536,9 +536,6 @@ public final class CombatMap extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-        case R.id.zoom_to_fit:
-            mData.zoomToFit(mCombatView.getWidth(), mCombatView.getHeight());
-            return true;
         case R.id.clear_all:
             MapData.clear();
             setFilenamePreference(null);
