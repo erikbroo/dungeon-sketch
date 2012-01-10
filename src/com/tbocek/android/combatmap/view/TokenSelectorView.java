@@ -25,7 +25,7 @@ public final class TokenSelectorView extends LinearLayout {
 	/**
 	 * Dimensions of the square token views.
 	 */
-	private static final int TOKEN_VIEW_SIZE = 64;
+	private static final int TOKEN_VIEW_SIZE = 80;
 
 	/**
      * The inner layout that contains the tokens.
