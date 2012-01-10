@@ -121,6 +121,10 @@ public class Circle extends Shape implements Serializable {
 		}
 	}
 	
+	public boolean shouldSerialize() {
+		return this.radius == this.radius && this.center != null;
+	}
+	
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	s.startObject();

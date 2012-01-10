@@ -227,15 +227,21 @@ public abstract class Shape implements Serializable {
 		return this.mWidth > 1.0f;
 	}
 
+	public boolean shouldSerialize() {
+		return true;
+	}
+	
 	public abstract void serialize(MapDataSerializer s) throws IOException;
 
 	protected void serializeBase(MapDataSerializer s, String shapeType) throws IOException {
-		s.serializeString(shapeType);
-		s.startObject();
-		s.serializeInt(this.mColor);
-		s.serializeFloat(this.mWidth);
-		this.boundingRectangle.serialize(s);
-		s.endObject();
+		if (shouldSerialize()) {
+			s.serializeString(shapeType);
+			s.startObject();
+			s.serializeInt(this.mColor);
+			s.serializeFloat(this.mWidth);
+			this.boundingRectangle.serialize(s);
+			s.endObject();
+		}
 	}
 	
 	public static Shape deserialize(MapDataDeserializer s) throws IOException {
