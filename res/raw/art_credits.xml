@@ -24,8 +24,31 @@
         <token
             res="flagron"
             url="http://scooter782.deviantart.com/art/Flagron-274621434"/>
-        <token res="kragger"/>
-        <token res="vogcore"/>
+        <token 
+            res="kragger"
+            url="http://scooter782.deviantart.com/gallery/#/d4ji2uu"/>
+        <token 
+            res="vogcore"
+            url="http://scooter782.deviantart.com/#/d4lq24l"/>
+        <token
+            res="becar"
+            url="http://scooter782.deviantart.com/gallery/#/d4ji2jl"/>
+    </artist>
+    <artist
+        name="Zhack-Isfaction"
+        copyright="All rights reserved"
+        url="http://zhack-isfaction.deviantart.com/">
+        <token
+            res="battlemage"
+            url="http://zhack-isfaction.deviantart.com/#/d4lme8b"/>
+        <token 
+            res="wolfman"
+            url="http://zhack-isfaction.deviantart.com/gallery/#/d48eeab"/>
+        <token res="blade_dancer"/>
+        <token
+            res="suspicious"
+            url="http://zhack-isfaction.deviantart.com/gallery/?offset=24#/d46qyvk"/>
+        
     </artist>
     <artist
         name="Storn A. Cook"
