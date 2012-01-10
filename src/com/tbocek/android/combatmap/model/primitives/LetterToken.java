@@ -18,14 +18,15 @@ import android.graphics.Paint.Style;
 public final class LetterToken extends BaseToken {
 
 	/**
-	 * The ID for serialization.
-	 */
-	private static final long serialVersionUID = -8395100608110965181L;
-
-	/**
 	 * The stroke width to use when drawing this token.
 	 */
 	private static final int STROKE_WIDTH = 3;
+	
+	/**
+	 * Color to use when a token is both non-manipulatable and bloodied.
+	 */
+	private static final int NON_MANIPULATABLE_BLOODIED_COLOR 
+			= Color.rgb(255, 128, 128);
 
 	/**
      * The letter to draw in the circle.  While this could be anything, it
@@ -50,7 +51,9 @@ public final class LetterToken extends BaseToken {
     public void drawBloodied(final Canvas c, final float x, final float y,
     		final float radius, final boolean isManipulatable) {
         Paint p = new Paint();
-        p.setColor(isManipulatable ? Color.RED : Color.rgb(255, 128, 128));
+        p.setColor(isManipulatable
+        		? Color.RED 
+        		: NON_MANIPULATABLE_BLOODIED_COLOR);
         draw(c, x, y, radius, p);
     }
 
