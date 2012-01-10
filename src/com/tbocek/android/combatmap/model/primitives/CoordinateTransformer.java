@@ -184,16 +184,31 @@ public final class CoordinateTransformer implements Serializable {
 
     }
 
+    /**
+     * Uses this coordinate transform object to modify the given canvas's
+     * draw transformation matrix.
+     * @param c The canvas to modify
+     */
     public void setMatrix(Canvas c) {
     	c.translate(mOriginX, mOriginY);
     	c.scale(mZoomLevel, mZoomLevel);
     }
 
+    /**
+     * Uses an inverse of this coordinate transform object to modify the given
+     * canvas's draw transformation matrix.
+     * @param c The canvas to modify
+     */
     public void setInverseMatrix(Canvas c) {
     	c.scale(1 / mZoomLevel, 1 / mZoomLevel);
     	c.translate(-mOriginX, -mOriginY);
     }
     
+    /**
+     * Saves this coordinate transform to the given stream.
+     * @param s The serialization stream to save to.
+     * @throws IOException On serialization error.
+     */
     public void serialize(MapDataSerializer s) throws IOException {
     	s.startObject();
     	s.serializeFloat(this.mOriginX);
@@ -202,8 +217,14 @@ public final class CoordinateTransformer implements Serializable {
     	s.endObject();
     }
 
-	public static CoordinateTransformer deserialize(MapDataDeserializer s) throws IOException {
-		// TODO Auto-generated method stub
+    /**
+     * Creates and loads a coordinate transform object from the given stream.
+     * @param s Stream to load from.
+     * @return The loaded CoordinateTransformer object.
+     * @throws IOException On deserialization error.
+     */
+	public static CoordinateTransformer deserialize(MapDataDeserializer s)
+			throws IOException {
 		s.expectObjectStart();
 		float x = s.readFloat();
 		float y = s.readFloat();

@@ -87,24 +87,66 @@ public final class Util {
         return palette;
     }
 
+    /**
+     * Class that contains a pair of intersections that results from a
+     * line/circle intersection calculation.  Not guaranteed to be in a
+     * particular order.
+     * @author Tim
+     *
+     */
     public static class IntersectionPair {
 
+    	/**
+    	 * Constructor.
+    	 * @param i1 First intersection.
+    	 * @param i2 Second intersection.
+    	 */
     	public IntersectionPair(PointF i1, PointF i2) {
-    		intersection1 = i1;
-    		intersection2 = i2;
+    		mIntersection1 = i1;
+    		mIntersection2 = i2;
     	}
 
-    	public PointF intersection1;
-    	public PointF intersection2;
+    	/**
+		 * @return The first intersection.
+		 */
+		public PointF getIntersection1() {
+			return mIntersection1;
+		}
+
+		/**
+		 * @return The second intersection.
+		 */
+		public PointF getIntersection2() {
+			return mIntersection2;
+		}
+
+		/**
+    	 * The first intersection.
+    	 */
+    	private PointF mIntersection1;
+    	
+    	/**
+    	 * The second intersection.
+    	 */
+    	private PointF mIntersection2;
     }
 
-    public static IntersectionPair lineCircleIntersection(PointF p1, PointF p2, PointF center, float radius) {
+    /**
+     * Computes the intersection between a line segment and a circle, and 
+     * returns the result as an IntersectionPair.
+     * @param p1 First endpoint of the line segment.
+     * @param p2 Second endpoint of the line segment.
+     * @param center Center of the circle.
+     * @param radius Radius of the circle.
+     * @return IntersectionPair with the intersections.
+     */
+    public static IntersectionPair lineCircleIntersection(
+    		PointF p1, PointF p2, PointF center, float radius) {
     	// First, make sure that the line segment is anywhere near the circle.
     	if (center.x + radius < Math.min(p1.x, p2.x)
             || center.x - radius > Math.max(p1.x, p2.x)
             || center.y + radius < Math.min(p1.y, p2.y)
-            || center.y - radius > Math.max(p1.y, p2.y) )
-    	{
+            || center.y - radius > Math.max(p1.y, p2.y)) {
     		return null;
     	}
 
@@ -128,16 +170,24 @@ public final class Util {
 		// case we move on and do even more complicated stuff to erase part of
 		// the line.
 		if (discriminant > 0) {
-			float sign_dy = dy < 0 ? -1 : 1;
+			float signDy = dy < 0 ? -1 : 1;
 			// Now, compute the x coordinates of the real intersection with the
 			// line, not the line segment.  Again, this is from Wolfram.
-			float intersect1X = (float) ((det * dy - sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
-			float intersect2X = (float) ((det * dy + sign_dy * dx * Math.sqrt(discriminant))/dsquared) + center.x;
+			float intersect1X = (float) (
+					(det * dy - signDy * dx * Math.sqrt(discriminant)) 
+							/ dsquared) + center.x;
+			float intersect2X = (float) (
+					(det * dy + signDy * dx * Math.sqrt(discriminant)) 
+							/ dsquared) + center.x;
 
 			// TODO: Only compute these if the line is sufficiently vertical so
 			// as to need the Y coordinate to compute the parameterization.
-			float intersect1Y = (float) ((det * dx - Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
-			float intersect2Y = (float) ((det * dx + Math.abs(dy) * Math.sqrt(discriminant))/dsquared) + center.y;
+			float intersect1Y = (float) (
+					(det * dx - Math.abs(dy) * Math.sqrt(discriminant)) 
+							/ dsquared) + center.y;
+			float intersect2Y = (float) (
+					(det * dx + Math.abs(dy) * Math.sqrt(discriminant)) 
+							/ dsquared) + center.y;
 
 			return new IntersectionPair(
 					new PointF(intersect1X, intersect1Y),

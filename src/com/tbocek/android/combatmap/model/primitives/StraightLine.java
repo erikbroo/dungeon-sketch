@@ -13,6 +13,9 @@ import android.graphics.Path;
 
 public class StraightLine extends Shape {
 
+	/**
+	 * Short character string that is the type of the shape.
+	 */
 	public static final String SHAPE_TYPE = "sl";
 
 	private PointF start;
@@ -63,7 +66,7 @@ public class StraightLine extends Shape {
 	@Override
 	public void erase(PointF center, float radius) {
 		if (start == null || end == null
-				|| !boundingRectangle.intersectsWithCircle(center, radius)) {
+				|| !mBoundingRectangle.intersectsWithCircle(center, radius)) {
 			return;
 		}
 
@@ -77,8 +80,8 @@ public class StraightLine extends Shape {
 		Util.IntersectionPair intersection = Util.lineCircleIntersection(start, end, center, radius);
 
 		if (intersection != null) {
-			float intersect1T = this.pointToParameterization(intersection.intersection1);
-			float intersect2T = this.pointToParameterization(intersection.intersection2);
+			float intersect1T = this.pointToParameterization(intersection.getIntersection1());
+			float intersect2T = this.pointToParameterization(intersection.getIntersection2());
 
 			insertErasedSegment(intersect1T, intersect2T);
 			invalidatePath();
@@ -180,9 +183,9 @@ public class StraightLine extends Shape {
 		} else {
 			end = p;
 			// Re-create the bounding rectangle every time this is done.
-			boundingRectangle = new BoundingRectangle();
-			boundingRectangle.updateBounds(start);
-			boundingRectangle.updateBounds(end);
+			mBoundingRectangle = new BoundingRectangle();
+			mBoundingRectangle.updateBounds(start);
+			mBoundingRectangle.updateBounds(end);
 			invalidatePath();
 		}
 	}

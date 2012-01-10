@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +18,9 @@ import android.graphics.Path;
  */
 public final class FreehandLine extends Shape {
 
+	/**
+	 * Short character string that is the type of the shape.
+	 */
 	public static final String SHAPE_TYPE = "fh";
 
     /**
@@ -54,7 +56,7 @@ public final class FreehandLine extends Shape {
 	public void addPoint(final PointF p) {
         points.add(p);
         shouldDraw.add(true);
-        boundingRectangle.updateBounds(p);
+        mBoundingRectangle.updateBounds(p);
         invalidatePath();
     }
 
@@ -103,7 +105,7 @@ public final class FreehandLine extends Shape {
      */
     @Override
 	public void erase(final PointF center, final float radius) {
-        if (boundingRectangle.intersectsWithCircle(center, radius)) {
+        if (mBoundingRectangle.intersectsWithCircle(center, radius)) {
     		if (partiallyErasedLineSegments == null) {
     			partiallyErasedLineSegments = new ArrayList<StraightLine>();
     		}
@@ -196,7 +198,7 @@ public final class FreehandLine extends Shape {
 	public boolean contains(PointF p) {
     	// First, check whether the bounding rectangle contains the point so
     	// we can efficiently and quickly get rid of easy cases.
-    	if (!this.boundingRectangle.contains(p)) {
+    	if (!this.mBoundingRectangle.contains(p)) {
     		return false;
     	}
 

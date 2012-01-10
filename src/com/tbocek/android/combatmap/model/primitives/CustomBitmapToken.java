@@ -18,11 +18,6 @@ import android.graphics.drawable.Drawable;
 public final class CustomBitmapToken extends DrawableToken {
 
 	/**
-	 * ID for serialization.
-	 */
-	private static final long serialVersionUID = -340285997484717749L;
-
-	/**
 	 * The data manager that is used to load custom images.
 	 */
     private static transient DataManager dataManager = null;

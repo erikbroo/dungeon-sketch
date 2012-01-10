@@ -37,19 +37,27 @@ public abstract class Grid implements Serializable {
         Grid g = gridStyle.equals("hex")
     		? new HexGrid()
     		: new RectangularGrid();
-    	g.colorScheme = GridColorScheme.fromNamedScheme(colorScheme);
+    	g.mColorScheme = GridColorScheme.fromNamedScheme(colorScheme);
         g.mGridToWorldTransformer = transformer;
         g.mType = gridStyle;
         return g;
     }
     
+    /**
+     * Factory method that creates a grid with the given parameters.
+     * @param gridStyle The style of the grid, either "hex" or "rectangular".
+     * @param colorScheme The GridColorScheme object to use.
+     * @param transformer A grid space to world space transformation to use
+     *		in this grid.
+     * @return The created grid.
+     */
     public static Grid createGrid(
     		final String gridStyle, final GridColorScheme colorScheme,
     		final CoordinateTransformer transformer) {
         Grid g = gridStyle.equals("hex")
     		? new HexGrid()
     		: new RectangularGrid();
-    	g.colorScheme = colorScheme;
+    	g.mColorScheme = colorScheme;
         g.mGridToWorldTransformer = transformer;
         g.mType = gridStyle;
         return g;
@@ -58,7 +66,7 @@ public abstract class Grid implements Serializable {
     /**
      * The color scheme to use when drawing this grid.
      */
-    private GridColorScheme colorScheme = GridColorScheme.GRAPH_PAPER;
+    private GridColorScheme mColorScheme = GridColorScheme.GRAPH_PAPER;
     
     /**
      * Saved string that lead to this style of grid, for serialization.
@@ -97,7 +105,7 @@ public abstract class Grid implements Serializable {
      * @return The color to use when drawing grid lines.
      */
     protected final int getLineColor() {
-    	return this.colorScheme.getLineColor();
+    	return this.mColorScheme.getLineColor();
     }
 
     /**
@@ -105,14 +113,14 @@ public abstract class Grid implements Serializable {
      * @return
      */
     protected final int getBackgroundColor() {
-    	return this.colorScheme.getBackgroundColor();
+    	return this.mColorScheme.getBackgroundColor();
     }
 
     /**
      * @return Whether the grid has a dark background.
      */
     public final boolean isDark() {
-    	return this.colorScheme.isDark();
+    	return this.mColorScheme.isDark();
     }
 
     /**
@@ -155,14 +163,25 @@ public abstract class Grid implements Serializable {
         return mGridToWorldTransformer;
     }
     
+    /**
+     * Writes this Grid object to the given serialization stream.
+     * @param s Stream to write to.
+     * @throws IOException On serialization error.
+     */
     public void serialize(MapDataSerializer s) throws IOException {
     	s.startObject();
     	s.serializeString(mType);
-    	this.colorScheme.serialize(s);
+    	this.mColorScheme.serialize(s);
     	this.mGridToWorldTransformer.serialize(s);
     	s.endObject();
     }
     
+    /**
+     * Loads and returns a Grid object from the given deserialization stream.
+     * @param s Stream to read from.
+     * @return The loaded token object.
+     * @throws IOException On deserialization error.
+     */
     public static Grid deserialize(MapDataDeserializer s) throws IOException {
     	s.expectObjectStart();
     	String type = s.readString();

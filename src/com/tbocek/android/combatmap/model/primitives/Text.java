@@ -14,6 +14,9 @@ import android.graphics.Rect;
 
 public class Text extends Shape {
 
+	/**
+	 * Short character string that is the type of the shape.
+	 */
 	public static final String SHAPE_TYPE = "txt";
 
 	public String text;
@@ -38,12 +41,12 @@ public class Text extends Shape {
 		// To do this, we need to create the Paint object so we know the size
 		// of the text.
 		ensurePaintCreated();
-		this.paint.setTextSize(textSize);
+		this.mPaint.setTextSize(textSize);
 		
 		Rect bounds = new Rect();
-		paint.getTextBounds(text, 0, text.length(), bounds);
-		this.boundingRectangle.updateBounds(location);
-		this.boundingRectangle.updateBounds(
+		mPaint.getTextBounds(text, 0, text.length(), bounds);
+		this.mBoundingRectangle.updateBounds(location);
+		this.mBoundingRectangle.updateBounds(
 				new PointF(
 						location.x + bounds.width(), 
 						location.y - bounds.height()));
@@ -69,14 +72,14 @@ public class Text extends Shape {
 		textSize = copyFrom.textSize;
 		this.mColor = copyFrom.mColor;
 		this.mWidth = copyFrom.mWidth;
-		this.boundingRectangle = new BoundingRectangle();
-		this.boundingRectangle.updateBounds(copyFrom.boundingRectangle);
+		this.mBoundingRectangle = new BoundingRectangle();
+		this.mBoundingRectangle.updateBounds(copyFrom.mBoundingRectangle);
 		this.location = new PointF(copyFrom.location.x, copyFrom.location.y);
 	}
 
 	@Override
 	public boolean contains(PointF p) {
-		return this.boundingRectangle.contains(p);
+		return this.mBoundingRectangle.contains(p);
 	}
 
 	@Override
@@ -98,7 +101,7 @@ public class Text extends Shape {
 
 	@Override
 	public void erase(PointF center, float radius) {
-		if (this.boundingRectangle.intersectsWithCircle(center, radius)) {
+		if (this.mBoundingRectangle.intersectsWithCircle(center, radius)) {
 			erased = true;
 		}
 	}
@@ -117,13 +120,13 @@ public class Text extends Shape {
 	@Override
 	public void draw(final Canvas c) {
 		ensurePaintCreated();
-		this.paint.setTextSize(textSize);
+		this.mPaint.setTextSize(textSize);
 		if (Text.drawBoundingBoxes) {
-			this.paint.setStyle(Style.STROKE);
-			c.drawRect(this.boundingRectangle.toRectF(), paint);
-			this.paint.setStyle(Style.FILL);
+			this.mPaint.setStyle(Style.STROKE);
+			c.drawRect(this.mBoundingRectangle.toRectF(), mPaint);
+			this.mPaint.setStyle(Style.FILL);
 		}
-		c.drawText(text, location.x, location.y, this.paint);
+		c.drawText(text, location.x, location.y, this.mPaint);
 	}
 	
 	protected Shape getMovedShape(float deltaX, float deltaY) {
@@ -131,7 +134,7 @@ public class Text extends Shape {
 		
 		t.location.x += deltaX;
 		t.location.y += deltaY;
-		t.boundingRectangle.move(deltaX, deltaY);
+		t.mBoundingRectangle.move(deltaX, deltaY);
 		
 		return t;
 	}

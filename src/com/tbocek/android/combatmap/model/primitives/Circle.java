@@ -90,7 +90,7 @@ public class Circle extends Shape {
 			return;
 		}
 
-		if (!boundingRectangle.intersectsWithCircle(center, radius)) {
+		if (!mBoundingRectangle.intersectsWithCircle(center, radius)) {
 			return;
 		}
 
@@ -144,10 +144,10 @@ public class Circle extends Shape {
 			mCenter = new PointF(
 					(p.x + mStartPoint.x) / 2, (p.y + mStartPoint.y) / 2);
 			invalidatePath();
-			boundingRectangle = new BoundingRectangle();
-			boundingRectangle.updateBounds(
+			mBoundingRectangle = new BoundingRectangle();
+			mBoundingRectangle.updateBounds(
 					new PointF(mCenter.x - mRadius, mCenter.y - mRadius));
-			boundingRectangle.updateBounds(
+			mBoundingRectangle.updateBounds(
 					new PointF(mCenter.x + mRadius, mCenter.y + mRadius));
 		}
 	}
