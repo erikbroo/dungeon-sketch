@@ -66,7 +66,7 @@ public final class CombatView extends SurfaceView {
 	/**
 	 * The stroke width to use when creating a new line.
 	 */
-	private float mNewLineStrokeWidth = .2f;
+	private float mNewLineStrokeWidth;
 
 	/**
 	 * The current map.
@@ -98,12 +98,12 @@ public final class CombatView extends SurfaceView {
 	 */
 	private boolean areTokensManipulatable = true;
 
-	boolean surfaceReady = false;
+	private boolean surfaceReady = false;
 	
-	UndoRedoTarget undoRedoTarget;
+	private UndoRedoTarget undoRedoTarget;
 
-	SurfaceHolder.Callback surfaceHolderCallback = new SurfaceHolder.Callback() {
-
+	private SurfaceHolder.Callback surfaceHolderCallback 
+			= new SurfaceHolder.Callback() {
 		@Override
 		public void surfaceDestroyed(SurfaceHolder arg0) {
 			surfaceReady = false;
@@ -241,8 +241,9 @@ public final class CombatView extends SurfaceView {
 		setInteractionMode(new TokenManipulationInteractionMode(this));
 		shouldDrawAnnotations = true;
 		shouldDrawGmNotes = false;
-		if (mData != null)
+		if (mData != null) {
 			undoRedoTarget = mData.getTokens();
+		}
 	}
 
 	/**
@@ -378,7 +379,9 @@ public final class CombatView extends SurfaceView {
 	 * Redraws the contents of the map.
 	 */
 	public void refreshMap() {
-		if (!surfaceReady) return;
+		if (!surfaceReady) {
+			return;
+		}
 		SurfaceHolder holder = getHolder();
 		Canvas canvas = holder.lockCanvas();
 		if (canvas != null) {

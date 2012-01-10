@@ -93,7 +93,7 @@ public final class SolidColorToken extends BaseToken {
     protected String getTokenClassSpecificId() {
     	SORT_ORDER_FORMAT.setDecimalSeparatorAlwaysShown(false);
         return SORT_ORDER_FORMAT.format(sortOrder)
-        		+ "_" + Integer.toString(color);
+        		+ '_' + Integer.toString(color);
     }
 
     @Override

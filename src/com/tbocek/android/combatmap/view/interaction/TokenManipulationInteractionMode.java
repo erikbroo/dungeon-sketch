@@ -40,7 +40,7 @@ public final class TokenManipulationInteractionMode
     /**
      * The token currently being dragged around.
      */
-    private BaseToken currentToken = null;
+    private BaseToken currentToken;
 
     /**
      * The original location of the token being dragged around.
@@ -50,21 +50,21 @@ public final class TokenManipulationInteractionMode
     /**
      * Whether the use is currently dragging a token.
      */
-    private boolean down = false;
+    private boolean down;
     
-    private boolean moved = false;
+    private boolean moved;
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
     		final float distanceX, final float distanceY) {
         if (currentToken != null) {
         	moved = true;
-            CoordinateTransformer transformer = view.getGridSpaceTransformer();
+            CoordinateTransformer transformer = mView.getGridSpaceTransformer();
             PointF currentPointScreenSpace = new PointF(e2.getX(), e2.getY());
-            if (view.shouldSnapToGrid()) {
+            if (mView.shouldSnapToGrid()) {
                 // Get the nearest snap point in screen space
                 PointF nearestSnapPointWorldSpace =
-                	view.getData().getGrid().getNearestSnapPoint(
+                	mView.getData().getGrid().getNearestSnapPoint(
                         transformer.screenSpaceToWorldSpace(
                                 currentPointScreenSpace),
                         currentToken.getSize());
@@ -87,19 +87,19 @@ public final class TokenManipulationInteractionMode
         } else {
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
-        view.refreshMap();
+        mView.refreshMap();
         return true;
     }
     
     @Override
     public boolean onDown(final MotionEvent e) {
-        currentToken = view.getTokens().getTokenUnderPoint(
-        		new PointF(e.getX(), e.getY()), view.getGridSpaceTransformer());
+        currentToken = mView.getTokens().getTokenUnderPoint(
+        		new PointF(e.getX(), e.getY()), mView.getGridSpaceTransformer());
 
         if (currentToken != null) {
         	moved = false;
             originalLocation = currentToken.getLocation();
-            view.getTokens().checkpointToken(currentToken);
+            mView.getTokens().checkpointToken(currentToken);
         }
 
         down = true;
@@ -109,18 +109,18 @@ public final class TokenManipulationInteractionMode
     @Override
     public boolean onDoubleTap(final MotionEvent e) {
         if (currentToken != null) {
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setBloodied(!currentToken.isBloodied());
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
         }
-        view.refreshMap();
+        mView.refreshMap();
         return true;
     }
 
     @Override
     public void onLongPress(final MotionEvent e) {
         if (currentToken != null) {
-            view.showContextMenu();
+            mView.showContextMenu();
         }
     }
 
@@ -157,87 +157,87 @@ public final class TokenManipulationInteractionMode
     public boolean onContextItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         case R.id.token_context_delete_token:
-            view.getTokens().remove(currentToken);
+            mView.getTokens().remove(currentToken);
             return true;
         case R.id.token_context_size_tenth:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(.1f);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_quarter:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(.25f);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_half:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(.5f);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_one:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(1);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_two:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(2);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_three:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(3);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_four:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(4);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_five:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(5);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_six:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
             currentToken.setSize(6);
-            view.getTokens().createCommandHistory();
+            mView.getTokens().createCommandHistory();
             return true;
         case R.id.token_border_none:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
         	currentToken.clearCustomBorderColor();
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         	return true;
         case R.id.token_border_white:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
         	currentToken.setCustomBorder(Color.WHITE);
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         	return true;
         case R.id.token_border_black:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
         	currentToken.setCustomBorder(Color.BLACK);
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         	return true;
         case R.id.token_border_blue:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
         	currentToken.setCustomBorder(Color.BLUE);
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         	return true;
         case R.id.token_border_red:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
         	currentToken.setCustomBorder(Color.RED);
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         	return true;
         case R.id.token_border_green:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
         	currentToken.setCustomBorder(Color.GREEN);
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         	return true;
         case R.id.token_border_yellow:
-        	view.getTokens().checkpointToken(currentToken);
+        	mView.getTokens().checkpointToken(currentToken);
         	currentToken.setCustomBorder(Color.YELLOW);
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         	return true;
         default:
         	return false;
@@ -247,9 +247,9 @@ public final class TokenManipulationInteractionMode
     @Override
     public void onUp(final MotionEvent ev) {
         down = false;
-        view.refreshMap();
+        mView.refreshMap();
         if (moved) {
-        	view.getTokens().createCommandHistory();
+        	mView.getTokens().createCommandHistory();
         }
     }
 
@@ -257,7 +257,7 @@ public final class TokenManipulationInteractionMode
     public void draw(final Canvas c) {
         if (currentToken != null && down) {
             currentToken.drawGhost(
-            		c, view.getGridSpaceTransformer(), originalLocation);
+            		c, mView.getGridSpaceTransformer(), originalLocation);
         }
     }
 }

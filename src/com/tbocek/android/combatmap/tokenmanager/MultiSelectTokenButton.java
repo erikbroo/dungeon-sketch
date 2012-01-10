@@ -24,7 +24,7 @@ public final class MultiSelectTokenButton extends TokenButton {
 	/**
 	 * Whether this token is currently selected.
 	 */
-    private boolean selected = false;
+    private boolean selected;
 
     /**
      * The manager that tracks which tokens are selected across a group of

@@ -11,23 +11,18 @@ import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 import android.graphics.Path;
 
-public class StraightLine extends Shape implements Serializable {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -7125928496175113220L;
+public class StraightLine extends Shape {
 
 	public static final String SHAPE_TYPE = "sl";
 
-	private PointF start = null;
-	private PointF end = null;
+	private PointF start;
+	private PointF end;
 
 	/**
 	 * X coordinates at which to toggle the line on and off, for erasing
 	 * purposes.
 	 */
-	List<Float> lineToggleParameterization = null;
+	List<Float> lineToggleParameterization;
 
 	public StraightLine(int color, float newLineStrokeWidth) {
         this.mColor = color;

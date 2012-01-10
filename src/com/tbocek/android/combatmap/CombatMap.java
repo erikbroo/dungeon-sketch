@@ -240,7 +240,7 @@ public final class CombatMap extends Activity {
 	// a new text object is being created.
 	private Text mEditedTextObject;
 
-	TabManager mTabManager = null;
+	TabManager mTabManager;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {

@@ -10,7 +10,7 @@ public abstract class TabManager {
 	public abstract void addTab(String text, int mode);
 	public abstract void pickTab(int mode);
 
-	private TabSelectedListener mTabSelectedListener = null;
+	private TabSelectedListener mTabSelectedListener;
 
 	public void setTabSelectedListener(TabSelectedListener listener) {
 		mTabSelectedListener = listener;

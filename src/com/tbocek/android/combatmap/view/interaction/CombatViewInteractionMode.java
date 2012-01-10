@@ -27,14 +27,14 @@ public class CombatViewInteractionMode
     /**
      * The CombatView that this interaction mode manipulates.
      */
-    protected CombatView view;
+    protected CombatView mView;
 
     /**
      * Constructor.
      * @param view The CombatView that this interaction mode manipulates.
      */
       public CombatViewInteractionMode(final CombatView view) {
-          this.view = view;
+          this.mView = view;
       }
       
       public void onStartMode() {
@@ -47,10 +47,10 @@ public class CombatViewInteractionMode
 
       @Override
       public boolean onScale(final ScaleGestureDetector detector) {
-        view.getWorldSpaceTransformer().zoom(
+        mView.getWorldSpaceTransformer().zoom(
             detector.getScaleFactor(),
             new PointF(detector.getFocusX(), detector.getFocusY()));
-        view.refreshMap();
+        mView.refreshMap();
         return true;
       }
 

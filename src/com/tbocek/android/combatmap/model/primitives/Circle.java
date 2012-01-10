@@ -42,13 +42,13 @@ public class Circle extends Shape {
 	 * A point on the edge of the circle, where the user first placed his
 	 * finger.
 	 */
-	private PointF startPoint;
+	private PointF mStartPoint;
 
 	/**
 	 * When the user starts erasing a circle, it is converted into a freehand
 	 * line for easier erasing.
 	 */
-	private FreehandLine lineForErasing;
+	private FreehandLine mLineForErasing;
 
 	/**
 	 * Constructor from line properties.  Center and radius to be set later.
@@ -70,22 +70,22 @@ public class Circle extends Shape {
 
 	@Override
 	public boolean needsOptimization() {
-		return lineForErasing != null;
+		return mLineForErasing != null;
 	}
 
 	@Override
 	public List<Shape> removeErasedPoints() {
 		List<Shape> l = new ArrayList<Shape>();
-		l.add(lineForErasing);
-		lineForErasing = null;
+		l.add(mLineForErasing);
+		mLineForErasing = null;
 		invalidatePath();
 		return l;
 	}
 
 	@Override
 	public void erase(PointF center, float radius) {
-		if (lineForErasing != null) {
-			lineForErasing.erase(center, radius);
+		if (mLineForErasing != null) {
+			mLineForErasing.erase(center, radius);
 			invalidatePath();
 			return;
 		}
@@ -99,7 +99,7 @@ public class Circle extends Shape {
 		if (d <= radius + this.mRadius 
 				&& d >= Math.abs(radius - this.mRadius)) {
 			createLineForErasing();
-			lineForErasing.erase(center, radius);
+			mLineForErasing.erase(center, radius);
 			invalidatePath();
 		}
 	}
@@ -109,10 +109,10 @@ public class Circle extends Shape {
 	 * that we can then erase segments of the freehand line.
 	 */
 	private void createLineForErasing() {
-		lineForErasing = new FreehandLine(this.mColor, this.mWidth);
+		mLineForErasing = new FreehandLine(this.mColor, this.mWidth);
 		for (float rad = 0; rad < 2 * Math.PI; 
 				rad += 2 * Math.PI / FREEHAND_LINE_CONVERSION_SEGMENTS) {
-			lineForErasing.addPoint(new PointF(
+			mLineForErasing.addPoint(new PointF(
 					mCenter.x + mRadius * (float) Math.cos(rad),
 					mCenter.y + mRadius * (float) Math.sin(rad)));
 		}
@@ -124,8 +124,8 @@ public class Circle extends Shape {
 			return null;
 		}
 
-		if (lineForErasing != null) {
-			return lineForErasing.createPath();
+		if (mLineForErasing != null) {
+			return mLineForErasing.createPath();
 		} else {
 			Path p = new Path();
 			p.addCircle(mCenter.x, mCenter.y, mRadius, Path.Direction.CW);
@@ -135,14 +135,14 @@ public class Circle extends Shape {
 
 	@Override
 	public void addPoint(PointF p) {
-		if (startPoint == null) {
-			startPoint = p;
+		if (mStartPoint == null) {
+			mStartPoint = p;
 		} else {
 			// Create a circle where the line from startPoint to P is a
 			// diameter.
-			mRadius = Util.distance(startPoint, p) / 2;
+			mRadius = Util.distance(mStartPoint, p) / 2;
 			mCenter = new PointF(
-					(p.x + startPoint.x) / 2, (p.y + startPoint.y) / 2);
+					(p.x + mStartPoint.x) / 2, (p.y + mStartPoint.y) / 2);
 			invalidatePath();
 			boundingRectangle = new BoundingRectangle();
 			boundingRectangle.updateBounds(

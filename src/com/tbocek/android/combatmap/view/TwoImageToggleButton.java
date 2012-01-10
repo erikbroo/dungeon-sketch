@@ -23,7 +23,7 @@ public final class TwoImageToggleButton extends ImageButton {
     /**
      * Whether to draw the button toggled.
      */
-    private boolean mToggled = false;
+    private boolean mToggled;
 
     /**
      * Constructor.

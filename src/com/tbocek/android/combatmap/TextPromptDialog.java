@@ -71,7 +71,7 @@ public class TextPromptDialog extends Dialog {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                String name = (String) nameText.getText().toString();
+                String name = nameText.getText().toString();
                 dismiss();
                 TextPromptDialog.this.mListener.onTextConfirmed(name);
             }

@@ -35,7 +35,7 @@ public final class TokenCreatorView extends View {
     /**
      * Whether a circle has been drawn on the loaded token yet.
      */
-    private boolean hasCircle = false;
+    private boolean hasCircle;
 
     // All of the following in screen space
 
@@ -43,23 +43,23 @@ public final class TokenCreatorView extends View {
      * X coordinate of the center of the circle drawn on the candidate image,
      * in screen space.
      */
-    private float circleCenterX = 0;
+    private float circleCenterX;
 
     /**
      * Y coordinate of the center of the circle drawn on the candidate image,
      * in screen space.
      */
-    private float circleCenterY = 0;
+    private float circleCenterY;
 
     /**
      * Radius of the circle drawn on the candidate image, in screen space.
      */
-    private float circleRadius = 0;
+    private float circleRadius;
 
     /**
      * The current image that is being cropped.
      */
-    private Drawable currentImage = null;
+    private Drawable currentImage;
 
     /**
      * Detector that will allow the user to move the candidate circle.

@@ -17,12 +17,7 @@ import android.graphics.Path;
  * @author Tim
  *
  */
-public final class FreehandLine extends Shape implements Serializable {
-
-    /**
-     * ID for serialization.
-     */
-    private static final long serialVersionUID = -4935518208097034463L;
+public final class FreehandLine extends Shape {
 
 	public static final String SHAPE_TYPE = "fh";
 

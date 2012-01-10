@@ -20,18 +20,18 @@ public class MapDataDeserializer {
 	}
 	
 	private BufferedReader reader;
-	private int arrayLevel = 0;
+	private int arrayLevel;
 	private LinkedList<String> peekBuffer = new LinkedList<String>();
 	
 	public String readString() throws IOException {
 		return nextToken();
 	}
 	
-	public int readInt() throws NumberFormatException, IOException {
+	public int readInt() throws IOException {
 		return Integer.parseInt(nextToken());
 	}
 	
-	public float readFloat() throws NumberFormatException, IOException {
+	public float readFloat() throws IOException {
 		return Float.parseFloat(nextToken());
 	}
 	

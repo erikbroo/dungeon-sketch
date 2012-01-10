@@ -22,7 +22,7 @@ public final class Settings extends PreferenceActivity {
         addPreferencesFromResource(R.layout.settings);
         
         // Hook up the about preference
-        Preference dialogPref = (Preference) findPreference("about");
+        Preference dialogPref = findPreference("about");
         dialogPref.setOnPreferenceClickListener(
         	new OnPreferenceClickListener() {
 
@@ -34,7 +34,7 @@ public final class Settings extends PreferenceActivity {
         		
         	});
         
-        Preference artCreditPref = (Preference) findPreference("artcredits");
+        Preference artCreditPref = findPreference("artcredits");
         artCreditPref.setOnPreferenceClickListener(
         	new OnPreferenceClickListener() {
 

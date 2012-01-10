@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ToggleButtonGroup {
 	private List<ImageToggleButton> members = new ArrayList<ImageToggleButton>();
-	private ImageToggleButton defaultMember = null;
+	private ImageToggleButton defaultMember;
 	
 	public void add(ImageToggleButton toAdd) {
 		members.add(toAdd);

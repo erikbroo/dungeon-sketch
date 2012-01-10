@@ -18,20 +18,20 @@ public class DrawTextInteractionMode extends BaseDrawInteractionMode {
     public boolean onSingleTapConfirmed(final MotionEvent e) {
     	PointF p = new PointF(e.getX(), e.getY());
     	
-    	view.requestNewTextEntry( 
-    			view.getWorldSpaceTransformer().screenSpaceToWorldSpace(p));
+    	mView.requestNewTextEntry( 
+    			mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(p));
     	
         return true;
     }
 	
     @Override
     public void onLongPress(final MotionEvent e) {
-    	PointF p = view.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+    	PointF p = mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(
     			new PointF(e.getX(), e.getY()));
     	
-    	Shape t = view.getActiveLines().findShape(p, Text.class);
+    	Shape t = mView.getActiveLines().findShape(p, Text.class);
     	if (t != null) {
-    		view.requestEditTextObject((Text) t);
+    		mView.requestEditTextObject((Text) t);
     	}
     }
 
@@ -39,14 +39,14 @@ public class DrawTextInteractionMode extends BaseDrawInteractionMode {
     @Override
     public boolean onScroll(final MotionEvent arg0, final MotionEvent arg1,
   		  final float arg2, final float arg3) {
-    	PointF p = view.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+    	PointF p = mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(
     			new PointF(arg0.getX(), arg0.getY()));
-    	Shape t = view.getActiveLines().findShape(p, Text.class);
+    	Shape t = mView.getActiveLines().findShape(p, Text.class);
     	if (t != null) {
     		t.setDrawOffset(
-    			view.getWorldSpaceTransformer().screenSpaceToWorldSpace(arg1.getX() - arg0.getX()),
-    			view.getWorldSpaceTransformer().screenSpaceToWorldSpace(arg1.getY() - arg0.getY()));
-    		view.refreshMap();
+    			mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(arg1.getX() - arg0.getX()),
+    			mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(arg1.getY() - arg0.getY()));
+    		mView.refreshMap();
     		return true;
     	} else {
     		return super.onScroll(arg0, arg1, arg2, arg3);
@@ -54,8 +54,8 @@ public class DrawTextInteractionMode extends BaseDrawInteractionMode {
     }
     
     public void onUp(final MotionEvent event) {
-    	view.getActiveLines().optimize();
-    	view.refreshMap();
+    	mView.getActiveLines().optimize();
+    	mView.refreshMap();
     }
 	
 	@Override

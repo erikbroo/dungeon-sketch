@@ -53,21 +53,21 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
         this.lastErasedPoint = new PointF(e2.getX(), e2.getY());
 
         // Erase
-        view.getActiveLines().erase(
-        		view.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+        mView.getActiveLines().erase(
+        		mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(
         				this.lastErasedPoint),
-                view.getWorldSpaceTransformer().screenSpaceToWorldSpace(
+                mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(
                 		ERASER_RADIUS));
 
-        view.refreshMap();
+        mView.refreshMap();
         return true;
     }
 
     @Override
     public void onUp(final MotionEvent event) {
         this.erasing = false;
-        this.view.optimizeActiveLines();
-        view.refreshMap();
+        this.mView.optimizeActiveLines();
+        mView.refreshMap();
     }
 
     @Override

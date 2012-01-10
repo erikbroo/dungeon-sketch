@@ -240,7 +240,7 @@ public abstract class BaseToken implements Serializable {
      * relatively expensive operations, is needed frequently, and never changes
      * throughout the object's lifetime, it can be cached here.
      */
-    private String cachedTokenId = null;
+    private String cachedTokenId;
 
     /**
      * Gets a unique identifier incorporating the token's type and a further

@@ -22,9 +22,9 @@ public class Text extends Shape {
 
 	public PointF location;
 	
-	private boolean erased = false;
+	private boolean erased;
 	
-	public static boolean drawBoundingBoxes = false;
+	public static boolean drawBoundingBoxes;
 
 	public Text(String newText, float size, int color, float strokeWidth, PointF location, CoordinateTransformer transform) {
 		this.text = newText;

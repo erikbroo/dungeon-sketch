@@ -50,7 +50,7 @@ public final class TokenSelectorView extends LinearLayout {
     /**
      * Whether this control is being superimposed over a dark background.
      */
-    private boolean drawDark = false;
+    private boolean drawDark;
 
     /**
      * Constructor.
@@ -119,7 +119,7 @@ public final class TokenSelectorView extends LinearLayout {
     /**
      * Listener that fires when a token is selected.
      */
-    private OnTokenSelectedListener mOnTokenSelectedListener = null;
+    private OnTokenSelectedListener mOnTokenSelectedListener;
 
     /**
      * Database to load tokens from.

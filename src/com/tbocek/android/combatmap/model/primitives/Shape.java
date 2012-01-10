@@ -96,7 +96,7 @@ public abstract class Shape {
 	/**
 	 * Cached path that represents this line.
 	 */
-	private transient Path mPath = null;
+	private transient Path mPath;
 	/**
 	 * The color to draw this line with.
 	 */
@@ -116,7 +116,7 @@ public abstract class Shape {
 	 * Paint object that is used when drawing fog of war regions for the fog
 	 * of war editor.
 	 */
-	private static Paint fogOfWarPaint = null;
+	private static Paint fogOfWarPaint;
 
 	public Shape() {
 		super();

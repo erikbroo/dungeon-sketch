@@ -70,9 +70,9 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
         PointF p = getScreenSpacePoint(e);
     	// Need to transform to world space.
 	    currentLine.addPoint(
-	            view.getWorldSpaceTransformer().screenSpaceToWorldSpace(p));
+	            mView.getWorldSpaceTransformer().screenSpaceToWorldSpace(p));
 
-        view.refreshMap(); // Redraw the screen
+        mView.refreshMap(); // Redraw the screen
         lastPointX = p.x;
         lastPointY = p.y;
     }
@@ -84,10 +84,10 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
      */
     private PointF getScreenSpacePoint(final MotionEvent e) {
     	PointF p = new PointF(e.getX(), e.getY());
-    	if (view.shouldSnapToGrid()) {
-    		CoordinateTransformer transformer = view.getGridSpaceTransformer();
+    	if (mView.shouldSnapToGrid()) {
+    		CoordinateTransformer transformer = mView.getGridSpaceTransformer();
     		p = transformer.worldSpaceToScreenSpace(
-    				view.getData().getGrid().getNearestSnapPoint(
+    				mView.getData().getGrid().getNearestSnapPoint(
     						transformer.screenSpaceToWorldSpace(p), 0));
     	}
     	return p;
@@ -116,6 +116,6 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     }
 
     protected Shape createLine() {
-    	return view.createLine();
+    	return mView.createLine();
     }
 }
