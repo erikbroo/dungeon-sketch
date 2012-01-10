@@ -408,17 +408,18 @@ public final class CombatView extends SurfaceView {
 		getData().getGrid().drawBackground(canvas);
 
 		canvas.save();
-		getData().transformer.setMatrix(canvas);
+		getData().getWorldSpaceTransformer().setMatrix(canvas);
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
 			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
 		getData().getBackgroundLines().drawAllLinesBelowGrid(canvas);
 		canvas.restore();
 
-		getData().getGrid().drawGrid(canvas, getData().transformer);
+		getData().getGrid().drawGrid(
+				canvas, getData().getWorldSpaceTransformer());
 
 		canvas.save();
-		getData().transformer.setMatrix(canvas);
+		getData().getWorldSpaceTransformer().setMatrix(canvas);
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
 			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
@@ -429,7 +430,7 @@ public final class CombatView extends SurfaceView {
 		canvas.restore();
 
 		canvas.save();
-		getData().transformer.setMatrix(canvas);
+		getData().getWorldSpaceTransformer().setMatrix(canvas);
 		
 		// Either draw all GM notes, or draw only the ones not covered by 
 		// fog of war.
@@ -452,9 +453,9 @@ public final class CombatView extends SurfaceView {
 
 		canvas.save();
 		if (mFogOfWarMode == FogOfWarMode.CLIP) {
-			getData().transformer.setMatrix(canvas);
+			getData().getWorldSpaceTransformer().setMatrix(canvas);
 			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
-			getData().transformer.setInverseMatrix(canvas);
+			getData().getWorldSpaceTransformer().setInverseMatrix(canvas);
 		}
 
 		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
@@ -479,7 +480,7 @@ public final class CombatView extends SurfaceView {
 		getData().getGrid().drawBackground(canvas);
 
 		canvas.save();
-		getData().transformer.setMatrix(canvas);
+		getData().getWorldSpaceTransformer().setMatrix(canvas);
 		getData().getBackgroundLines().drawAllLines(canvas);
 		getData().getAnnotationLines().drawAllLines(canvas);
 		canvas.restore();
@@ -496,7 +497,7 @@ public final class CombatView extends SurfaceView {
 	 * @return The transformation object.
 	 */
 	public CoordinateTransformer getWorldSpaceTransformer() {
-		return this.getData().transformer;
+		return this.getData().getWorldSpaceTransformer();
 	}
 
 	/**
@@ -611,7 +612,7 @@ public final class CombatView extends SurfaceView {
 	 */
 	public CoordinateTransformer getGridSpaceTransformer() {
 		return getData().getGrid().gridSpaceToScreenSpaceTransformer(
-				getData().transformer);
+				getData().getWorldSpaceTransformer());
 	}
 
 	/**
@@ -710,7 +711,8 @@ public final class CombatView extends SurfaceView {
 	
 	public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
 		if (mNewTextEntryListener != null) {
-			mNewTextEntryListener.requestNewTextEntry(newTextLocationWorldSpace);
+			mNewTextEntryListener.requestNewTextEntry(
+					newTextLocationWorldSpace);
 		}
 	}
 	

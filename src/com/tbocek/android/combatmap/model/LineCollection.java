@@ -1,18 +1,19 @@
 package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Stack;
+
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.Region.Op;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
-import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.Circle;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
@@ -21,10 +22,6 @@ import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Shape;
 import com.tbocek.android.combatmap.model.primitives.StraightLine;
 import com.tbocek.android.combatmap.model.primitives.Text;
-
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.Region.Op;
 
 /**
  * Provides operations over an aggregate collection of lines.
@@ -42,7 +39,7 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     /**
      * The internal list of lines.
      */
-    private List<Shape> lines = new LinkedList<Shape>();
+    private List<Shape> mLines = new LinkedList<Shape>();
 
     /**
      * Undo/Redo History.
@@ -63,10 +60,10 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @param canvas The canvas to draw on.
      */
     public void drawAllLines(final Canvas canvas) {
-        for (int i = 0; i < lines.size(); ++i) {
-        	lines.get(i).applyDrawOffsetToCanvas(canvas);
-            lines.get(i).draw(canvas);
-            lines.get(i).revertDrawOffsetFromCanvas(canvas);
+        for (int i = 0; i < mLines.size(); ++i) {
+        	mLines.get(i).applyDrawOffsetToCanvas(canvas);
+            mLines.get(i).draw(canvas);
+            mLines.get(i).revertDrawOffsetFromCanvas(canvas);
         }
     }
 
@@ -75,11 +72,11 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @param canvas The canvas to draw on.
      */
     public void drawAllLinesBelowGrid(final Canvas canvas) {
-        for (int i = 0; i < lines.size(); ++i) {
-        	if (lines.get(i).shouldDrawBelowGrid()) {
-        		lines.get(i).applyDrawOffsetToCanvas(canvas);
-        		lines.get(i).draw(canvas);
-        		lines.get(i).revertDrawOffsetFromCanvas(canvas);
+        for (int i = 0; i < mLines.size(); ++i) {
+        	if (mLines.get(i).shouldDrawBelowGrid()) {
+        		mLines.get(i).applyDrawOffsetToCanvas(canvas);
+        		mLines.get(i).draw(canvas);
+        		mLines.get(i).revertDrawOffsetFromCanvas(canvas);
         	}
         }
     }
@@ -90,11 +87,11 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @param canvas The canvas to draw on.
      */
     public void drawAllLinesAboveGrid(final Canvas canvas) {
-        for (int i = 0; i < lines.size(); ++i) {
-        	if (!lines.get(i).shouldDrawBelowGrid()) {
-        		lines.get(i).applyDrawOffsetToCanvas(canvas);
-        		lines.get(i).draw(canvas);
-        		lines.get(i).revertDrawOffsetFromCanvas(canvas);
+        for (int i = 0; i < mLines.size(); ++i) {
+        	if (!mLines.get(i).shouldDrawBelowGrid()) {
+        		mLines.get(i).applyDrawOffsetToCanvas(canvas);
+        		mLines.get(i).draw(canvas);
+        		mLines.get(i).revertDrawOffsetFromCanvas(canvas);
         	}
         }
     }
@@ -104,8 +101,8 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @param canvas The canvas to draw on.
      */
     public void drawFogOfWar(final Canvas canvas) {
-        for (int i = 0; i < lines.size(); ++i) {
-            lines.get(i).drawFogOfWar(canvas);
+        for (int i = 0; i < mLines.size(); ++i) {
+            mLines.get(i).drawFogOfWar(canvas);
         }
     }
 
@@ -120,8 +117,8 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     	canvas.clipRect(r, Op.DIFFERENCE);
     	
     	// Union together the regions that are supposed to draw.
-        for (int i = 0; i < lines.size(); ++i) {
-            lines.get(i).clipFogOfWar(canvas);
+        for (int i = 0; i < mLines.size(); ++i) {
+            mLines.get(i).clipFogOfWar(canvas);
         }
         
         canvas.clipRect(r, Op.INTERSECT);
@@ -150,7 +147,8 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @param newLineStrokeWidth The new line's stroke width.
      * @return The new line.
      */
-	public Shape createStraightLine(int newLineColor, float newLineStrokeWidth) {
+	public Shape createStraightLine(
+			int newLineColor, float newLineStrokeWidth) {
         StraightLine l = new StraightLine(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
         c.addCreatedShape(l);
@@ -183,8 +181,12 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	}
 	
 
-	public void editText(Text editedTextObject, String text, float size, CoordinateTransformer transformer) {
-		Text newText = new Text(text, size, editedTextObject.mColor, editedTextObject.mWidth, editedTextObject.location, transformer);
+	public void editText(
+			Text editedTextObject, String text, float size, 
+			CoordinateTransformer transformer) {
+		Text newText = new Text(
+				text, size, editedTextObject.mColor, editedTextObject.mWidth, 
+				editedTextObject.location, transformer);
 		Command c = new Command(this);
 		c.addCreatedShape(newText);
 		c.addDeletedShape(editedTextObject);
@@ -198,14 +200,14 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @param line The line to add.
      */
     private void insertLine(final Shape line) {
-        if (lines.isEmpty()) {
-            lines.add(line);
+        if (mLines.isEmpty()) {
+            mLines.add(line);
             return;
         }
 
-        ListIterator<Shape> it = lines.listIterator();
+        ListIterator<Shape> it = mLines.listIterator();
         while (it.hasNext()
-                && lines.get(it.nextIndex()).getStrokeWidth()
+                && mLines.get(it.nextIndex()).getStrokeWidth()
                     >= line.getStrokeWidth()) {
             it.next();
         }
@@ -213,7 +215,7 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     }
 
     public Shape findShape(final PointF under, final Class<?> requestedClass) {
-    	for (Shape l : lines) {
+    	for (Shape l : mLines) {
         	if ((requestedClass == null || l.getClass() == requestedClass) 
         			&& l.contains(under)) {
         		return l;
@@ -228,11 +230,11 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	}
 
 	/**
-     * Deletes all regions under the tapped point.
-     * @param tappedPoint The point that was tapped, in world space.
+     * Deletes the given shape.
+     * @param l The shape to delete.
      */
     public void deleteShape(Shape l) {
-    	if (lines.contains(l)) {
+    	if (mLines.contains(l)) {
     		Command c = new Command(this);
     		c.addDeletedShape(l);
     		mCommandHistory.execute(c);
@@ -243,7 +245,7 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * Removes all lines.
      */
     public void clear() {
-        lines.clear();
+        mLines.clear();
     }
 
     /**
@@ -252,8 +254,8 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @param radius Radius around the point to erase, in world space.
      */
     public void erase(final PointF location, final float radius) {
-        for (int i = 0; i < lines.size(); ++i) {
-            lines.get(i).erase(location, radius);
+        for (int i = 0; i < mLines.size(); ++i) {
+            mLines.get(i).erase(location, radius);
         }
     }
 
@@ -265,14 +267,14 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      */
     public void optimize() {
     	Command c = new Command(this);
-        for (int i = 0; i < lines.size(); ++i) {
-        	if (lines.get(i).needsOptimization()) {
-	            List<Shape> optimizedLines = lines.get(i).removeErasedPoints();
-	            c.addDeletedShape(lines.get(i));
+        for (int i = 0; i < mLines.size(); ++i) {
+        	if (mLines.get(i).needsOptimization()) {
+	            List<Shape> optimizedLines = mLines.get(i).removeErasedPoints();
+	            c.addDeletedShape(mLines.get(i));
 	            c.addCreatedShapes(optimizedLines);
-        	} else if (lines.get(i).hasOffset()) {
-        		c.addDeletedShape(lines.get(i));
-        		c.addCreatedShape(lines.get(i).commitDrawOffset());
+        	} else if (mLines.get(i).hasOffset()) {
+        		c.addDeletedShape(mLines.get(i));
+        		c.addCreatedShape(mLines.get(i).commitDrawOffset());
         	}
         }
         mCommandHistory.execute(c);
@@ -282,12 +284,12 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      * @return True if this collection has no lines in it, False otherwise.
      */
     public boolean isEmpty() {
-        return lines.isEmpty();
+        return mLines.isEmpty();
     }
     
 	public void serialize(MapDataSerializer s) throws IOException {
 		s.startArray();
-		for (Shape shape: this.lines) {
+		for (Shape shape: this.mLines) {
 			shape.serialize(s);
 		}
 		s.endArray();
@@ -297,7 +299,7 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	public void deserialize(MapDataDeserializer s) throws IOException {
 		int arrayLevel = s.expectArrayStart();
 		while (s.hasMoreArrayItems(arrayLevel)) {
-			this.lines.add(Shape.deserialize(s));
+			this.mLines.add(Shape.deserialize(s));
 		}
 		s.expectArrayEnd();
 	}
@@ -307,7 +309,7 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
      */
     public BoundingRectangle getBoundingRectangle() {
         BoundingRectangle r = new BoundingRectangle();
-        for (Shape l : lines) {
+        for (Shape l : mLines) {
             r.updateBounds(l.getBoundingRectangle());
         }
         return r;
@@ -347,12 +349,12 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     	 */
     	public void execute() {
     		List<Shape> newLines = new LinkedList<Shape>();
-    		for (Shape l : mLineCollection.lines) {
+    		for (Shape l : mLineCollection.mLines) {
     			if (!mDeleted.contains(l)) {
     				newLines.add(l);
     			}
     		}
-    		mLineCollection.lines = newLines;
+    		mLineCollection.mLines = newLines;
 
     		for (Shape l : mCreated) {
     			mLineCollection.insertLine(l);
@@ -364,13 +366,12 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     	 */
     	public void undo() {
     		List<Shape> newLines = new LinkedList<Shape>();
-    		for (Shape l : mLineCollection.lines) {
-    			Shape DEBUG_LINE = l;
+    		for (Shape l : mLineCollection.mLines) {
     			if (!mCreated.contains(l)) {
     				newLines.add(l);
     			}
     		}
-    		mLineCollection.lines = newLines;
+    		mLineCollection.mLines = newLines;
 
     		for (Shape l : mDeleted) {
     			mLineCollection.insertLine(l);

@@ -24,14 +24,19 @@ import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
  * @author Tim Bocek
  *
  */
-public final class MapData implements Serializable {
-    /**
-     * ID for serialization.
-     */
-    private static final long serialVersionUID = -3121845340089752312L;
+public final class MapData {
 
+	/**
+	 * Version level of this map data, used for saving/loading.
+	 */
 	private static final int MAP_DATA_VERSION = 0;
 
+	/**
+	 * Initial zoom level of newly created maps.  Corresponds to 1 square = 
+	 * 64 pixels.  Not density independent.
+	 */
+	private static final int INITIAL_ZOOM = 64;
+	
     /**
      * Private constructor - singleton pattern.
      */
@@ -65,10 +70,12 @@ public final class MapData implements Serializable {
     /**
      * Loads the map data from an input stream.
      * @param input The stream to read from.
+     * @param tokens Token database to use when creating tokens.
      * @throws IOException On read error.
      * @throws ClassNotFoundException On deserialization error.
      */
-    public static void loadFromStream(final InputStream input, TokenDatabase tokens)
+    public static void loadFromStream(
+    		final InputStream input, TokenDatabase tokens)
     		throws IOException, ClassNotFoundException {
         InputStreamReader inReader = new InputStreamReader(input);
         BufferedReader reader = new BufferedReader(inReader);
@@ -102,56 +109,69 @@ public final class MapData implements Serializable {
     /**
      * Transformation from world space to screen space.
      */
-    public CoordinateTransformer transformer =
-    	new CoordinateTransformer(0, 0, 64);
+    private CoordinateTransformer mTransformer =
+    	new CoordinateTransformer(0, 0, INITIAL_ZOOM);
 
-    private CommandHistory backgroundCommandHistory =
+    /**
+     * Command history object to use for the background and associated fog of
+     * war.
+     */
+    private CommandHistory mBackgroundCommandHistory =
     		new CommandHistory();
 
-    private CommandHistory anntationCommandHistory =
+    /**
+     * Command history to use for the annotations.
+     */
+    private CommandHistory mAnntationCommandHistory =
 		    new CommandHistory();
 
-    private CommandHistory gmNotesCommandHistory =
+    /**
+     * Command history to use for the GM notes and associated fog of war.
+     */
+    private CommandHistory mGmNotesCommandHistory =
     		new CommandHistory();
     
-    private CommandHistory tokenCollectionCommandHistory = 
+    /**
+     * Command history to use for combat tokens.
+     */
+    private CommandHistory mTokenCollectionCommandHistory = 
     		new CommandHistory();
 
     /**
      * Background lines.
      */
     private LineCollection mBackgroundLines =
-    		new LineCollection(backgroundCommandHistory);
+    		new LineCollection(mBackgroundCommandHistory);
 
     /**
      * Lines that represent the fog of war.
      */
     private LineCollection mBackgroundFogOfWar =
-    		new LineCollection(backgroundCommandHistory);
+    		new LineCollection(mBackgroundCommandHistory);
 
     /**
      * Annotation lines.
      */
     private LineCollection mAnnotationLines =
-    		new LineCollection(anntationCommandHistory);
+    		new LineCollection(mAnntationCommandHistory);
 
     /**
      * Notes for the GM that are not visible when combat is occurring.
      */
     private LineCollection mGmNoteLines =
-    	new LineCollection(gmNotesCommandHistory);
+    	new LineCollection(mGmNotesCommandHistory);
     
     /**
      * Lines that represent the fog of war.
      */
     private LineCollection mGmNotesFogOfWar =
-    		new LineCollection(gmNotesCommandHistory);
+    		new LineCollection(mGmNotesCommandHistory);
 
     /**
      * Tokens that have been placed on the map.
      */
-    private TokenCollection tokens =
-    		new TokenCollection(tokenCollectionCommandHistory);
+    private TokenCollection mTokens =
+    		new TokenCollection(mTokenCollectionCommandHistory);
 
     /**
      * The grid to draw.
@@ -188,8 +208,8 @@ public final class MapData implements Serializable {
         //Find the optimal scale factor, and add a border.
         float scaleFactor = Math.min(scaleFactorX, scaleFactorY) / 1.01f;
 
-        this.transformer.setZoom(scaleFactor);
-        this.transformer.setOriginInWorldSpace(r.getXMin(), r.getYMin());
+        this.mTransformer.setZoom(scaleFactor);
+        this.mTransformer.setOriginInWorldSpace(r.getXMin(), r.getYMin());
     }
 
     /**
@@ -240,7 +260,7 @@ public final class MapData implements Serializable {
 	 * @return the tokens
 	 */
 	public TokenCollection getTokens() {
-		return tokens;
+		return mTokens;
 	}
 
 	/**
@@ -257,11 +277,16 @@ public final class MapData implements Serializable {
 		return mGrid;
 	}
 	
+	/**
+	 * Saves the entire MapData to the given serialization stream.
+	 * @param s The stream to save to.
+	 * @throws IOException On serialization error.
+	 */
 	public void serialize(MapDataSerializer s) throws IOException {
 		s.serializeInt(MAP_DATA_VERSION);
 		this.mGrid.serialize(s);
-		this.transformer.serialize(s);
-		this.tokens.serialize(s);
+		this.mTransformer.serialize(s);
+		this.mTokens.serialize(s);
 		this.mBackgroundLines.serialize(s);
 		this.mBackgroundFogOfWar.serialize(s);
 		this.mGmNoteLines.serialize(s);
@@ -269,18 +294,34 @@ public final class MapData implements Serializable {
 		this.mAnnotationLines.serialize(s);
 	}
 	
-	public static MapData deserialize(MapDataDeserializer s, TokenDatabase tokens) throws IOException {
+	/**
+	 * Creates, populates, and returns a new MapData object from the given
+	 * deserialization stream.
+	 * @param s The stream to read from.
+	 * @param tokens Token database to load tokens from.
+	 * @return The created map data.
+	 * @throws IOException On deserialization error.
+	 */
+	public static MapData deserialize(
+			MapDataDeserializer s, TokenDatabase tokens) throws IOException {
 		@SuppressWarnings("unused")
 		int mapDataVersion = s.readInt();
 		MapData data = new MapData();
 		data.mGrid = Grid.deserialize(s);
-		data.transformer = CoordinateTransformer.deserialize(s);
-		data.tokens.deserialize(s, tokens);
+		data.mTransformer = CoordinateTransformer.deserialize(s);
+		data.mTokens.deserialize(s, tokens);
 		data.mBackgroundLines.deserialize(s);
 		data.mBackgroundFogOfWar.deserialize(s);
 		data.mGmNoteLines.deserialize(s);
 		data.mGmNotesFogOfWar.deserialize(s);
 		data.mAnnotationLines.deserialize(s);
 		return data;
+	}
+
+	/**
+	 * @return the transformer
+	 */
+	public CoordinateTransformer getWorldSpaceTransformer() {
+		return mTransformer;
 	}
 }
