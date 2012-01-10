@@ -5,13 +5,10 @@ import java.util.Map;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
@@ -23,10 +20,6 @@ import android.graphics.drawable.Drawable;
  *
  */
 public abstract class DrawableToken extends BaseToken {
-    /**
-     * ID for serialization.
-     */
-	private static final long serialVersionUID = -4586968232758191016L;
 
 	/**
 	 * Alpha value that will draw at full opacity.
@@ -38,13 +31,19 @@ public abstract class DrawableToken extends BaseToken {
      */
     private static final int HALF_OPACITY = 128;
     
-    private static float[] BLOODIED_COLOR_MATRIX = 
+    /**
+     * Color transformation matrix used to place a red tint on bloodied tokens.
+     */
+    private static final float[] BLOODIED_COLOR_MATRIX = 
     		new float[] {1,  0,    0,   0,  0,
                          0,  .25f, 0,   0,  0,
                          0,  0,   .25f, 0,  0,
                          0,  0,    0,   1,  0};
     
-    private static ColorMatrixColorFilter BLOODIED_FILTER = 
+    /**
+     * Filter created from the bloodied transformation matrix.
+     */
+    private static final ColorMatrixColorFilter BLOODIED_FILTER = 
     		new ColorMatrixColorFilter(new ColorMatrix(BLOODIED_COLOR_MATRIX));
 
     /**
