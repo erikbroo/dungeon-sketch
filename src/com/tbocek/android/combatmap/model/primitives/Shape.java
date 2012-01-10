@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
@@ -13,13 +12,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Region.Op;
 
-public abstract class Shape implements Serializable {
-
-	/**
-	 * ID for serialization.
-	 */
-	private static final long serialVersionUID = -7280375520671521194L;
-
+public abstract class Shape {
+	
 	/**
 	 * The paint object that will be used to draw this line.
 	 */

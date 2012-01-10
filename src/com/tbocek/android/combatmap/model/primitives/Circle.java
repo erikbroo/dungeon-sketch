@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,27 +10,51 @@ import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 import android.graphics.Path;
 
-public class Circle extends Shape implements Serializable {
+/**
+ * Represents a circle drawn on the map.
+ * @author Tim
+ *
+ */
+public class Circle extends Shape {
 
 	/**
-	 *
+	 * Short character string that is the type of the shape.
 	 */
-	private static final long serialVersionUID = 3662381313335509811L;
-
 	public static final String SHAPE_TYPE = "cr";
+	
+	/**
+	 * When converting the circle into a freehand line that is a polygon to
+	 * approximate a circle, the number of line segments to use.
+	 */
+	private static final int FREEHAND_LINE_CONVERSION_SEGMENTS = 64;
 
-	// In world space.
-	PointF mCenter = null;
-	float mRadius = Float.NaN;
+	/**
+	 * Center of the circle, in world space.
+	 */
+	private PointF mCenter;
+	
+	/**
+	 * Radius of the circle, in world space.
+	 */
+	private float mRadius;
 
 	/**
 	 * A point on the edge of the circle, where the user first placed his
 	 * finger.
 	 */
-	PointF startPoint = null;
+	private PointF startPoint;
 
-	FreehandLine lineForErasing = null;
+	/**
+	 * When the user starts erasing a circle, it is converted into a freehand
+	 * line for easier erasing.
+	 */
+	private FreehandLine lineForErasing;
 
+	/**
+	 * Constructor from line properties.  Center and radius to be set later.
+	 * @param color Color of the new circle.
+	 * @param newLineStrokeWidth Stroke width of the new circle.
+	 */
 	public Circle(int color, float newLineStrokeWidth) {
         this.mColor = color;
         this.mWidth = newLineStrokeWidth;
@@ -81,12 +104,17 @@ public class Circle extends Shape implements Serializable {
 		}
 	}
 
+	/**
+	 * Converts this circle into a freehand line that approximates a circle, so
+	 * that we can then erase segments of the freehand line.
+	 */
 	private void createLineForErasing() {
 		lineForErasing = new FreehandLine(this.mColor, this.mWidth);
-		for (float rad = 0; rad < 2 * Math.PI; rad += 2 * Math.PI / 64f) {
+		for (float rad = 0; rad < 2 * Math.PI; 
+				rad += 2 * Math.PI / FREEHAND_LINE_CONVERSION_SEGMENTS) {
 			lineForErasing.addPoint(new PointF(
-					(float) mCenter.x + mRadius * (float) Math.cos(rad),
-					(float) mCenter.y + mRadius * (float) Math.sin(rad)));
+					mCenter.x + mRadius * (float) Math.cos(rad),
+					mCenter.y + mRadius * (float) Math.sin(rad)));
 		}
 	}
 
@@ -124,10 +152,13 @@ public class Circle extends Shape implements Serializable {
 		}
 	}
 	
+
+	@Override
 	public boolean shouldSerialize() {
 		return this.mRadius == this.mRadius && this.mCenter != null;
 	}
-	
+
+	@Override
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	s.startObject();
