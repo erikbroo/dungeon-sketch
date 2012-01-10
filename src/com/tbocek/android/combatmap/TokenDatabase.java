@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -16,6 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -94,7 +104,7 @@ public final class TokenDatabase {
                 instance = TokenDatabase.load(context);
             } catch (Exception e) {
                 instance = new TokenDatabase();
-                instance.populate(new DataManager(context));
+                instance.populate(context);
             }
         }
         return instance;
@@ -263,12 +273,12 @@ public final class TokenDatabase {
     /**
      * Populates the token database with built-in tokens and custom tokens
      * loaded from the token manager.
-     * @param dataManager The data manager to load tokens from.
+     * @param context 
      */
-    public void populate(final DataManager dataManager) {
+    public void populate(Context context) {
         this.prePopulateTags = !tagsLoaded();
-    	loadCustomImageTokens(dataManager);
-        loadBuiltInImageTokens();
+    	loadCustomImageTokens(new DataManager(context));
+        loadBuiltInImageTokens(context);
         loadColorTokens();
         loadLetterTokens();
         this.prePopulateTags = false;
@@ -300,110 +310,46 @@ public final class TokenDatabase {
 
     /**
      * Populates the token database with built-in image tokens.
+     * @param context 
      */
-    private void loadBuiltInImageTokens() {
-    	//TODO: Read these from the art credits XML file.
-        addBuiltin(R.drawable.cheetah);
-        addBuiltin(R.drawable.cougar);
-        addBuiltin(R.drawable.cute_horses);
-        addBuiltin(R.drawable.dog);
-        addBuiltin(R.drawable.dogs);
-        addBuiltin(R.drawable.douchy_guy);
-        addBuiltin(R.drawable.fox);
-        addBuiltin(R.drawable.lamb);
-        addBuiltin(R.drawable.lion);
-        addBuiltin(R.drawable.pig);
-        addBuiltin(R.drawable.rad_stag);
-        addBuiltin(R.drawable.stag2);
-        addBuiltin(R.drawable.swan);
-        addBuiltin(R.drawable.tiger1);
-        addBuiltin(R.drawable.tiger2);
-        addBuiltin(R.drawable.perseus);
-        addBuiltin(R.drawable.gorgon);
-        addBuiltin(R.drawable.dragongirl_dragontigernight);
-        addBuiltin(R.drawable.oaken_man);
-        addBuiltin(R.drawable.flagron);
-        addBuiltin(R.drawable.goren);
-        addBuiltin(R.drawable.vampire_soldier);
-        addBuiltin(R.drawable.veranesse);
-        addBuiltin(R.drawable.algrim);
-        addBuiltin(R.drawable.aquatic_evil);
-        addBuiltin(R.drawable.avalanche);
-        addBuiltin(R.drawable.baltar);
-        addBuiltin(R.drawable.berwyn);
-        addBuiltin(R.drawable.black_daggers);
-        addBuiltin(R.drawable.black_duke);
-        addBuiltin(R.drawable.circelo);
-        addBuiltin(R.drawable.col_blinky);
-        addBuiltin(R.drawable.conall);
-        addBuiltin(R.drawable.cullin);
-        addBuiltin(R.drawable.damisk);
-        addBuiltin(R.drawable.dehna);
-        addBuiltin(R.drawable.dirk_centipede);
-        addBuiltin(R.drawable.dragon_throne);
-        addBuiltin(R.drawable.dr_ranger);
-        addBuiltin(R.drawable.elvira);
-        addBuiltin(R.drawable.el_vago_ill);
-        addBuiltin(R.drawable.e_mist);
-        addBuiltin(R.drawable.fawn);
-        addBuiltin(R.drawable.ferdinand);
-        addBuiltin(R.drawable.flamebeard);
-        addBuiltin(R.drawable.gerymn);
-        addBuiltin(R.drawable.glimnor);
-        addBuiltin(R.drawable.green_dragon);
-        addBuiltin(R.drawable.gyrlang);
-        addBuiltin(R.drawable.halfskull);
-        addBuiltin(R.drawable.heretic);
-        addBuiltin(R.drawable.herugrim);
-        addBuiltin(R.drawable.icebarb);
-        addBuiltin(R.drawable.icebarb2);
-        addBuiltin(R.drawable.ikomalo);
-        addBuiltin(R.drawable.isobelle);
-        addBuiltin(R.drawable.kal);
-        addBuiltin(R.drawable.kateri);
-        addBuiltin(R.drawable.ken_invoke);
-        addBuiltin(R.drawable.lady_dread);
-        addBuiltin(R.drawable.lioness);
-        addBuiltin(R.drawable.lohman);
-        addBuiltin(R.drawable.luloah);
-        addBuiltin(R.drawable.magian);
-        addBuiltin(R.drawable.martial);
-        addBuiltin(R.drawable.melvs);
-        addBuiltin(R.drawable.minotaur);
-        addBuiltin(R.drawable.mostin);
-        addBuiltin(R.drawable.mpillar);
-        addBuiltin(R.drawable.musashi);
-        addBuiltin(R.drawable.necro);
-        addBuiltin(R.drawable.nereid);
-        addBuiltin(R.drawable.nimbus);
-        addBuiltin(R.drawable.ogre);
-        addBuiltin(R.drawable.owlbear);
-        addBuiltin(R.drawable.pax);
-        addBuiltin(R.drawable.penny);
-        addBuiltin(R.drawable.pieter);
-        addBuiltin(R.drawable.puma);
-        addBuiltin(R.drawable.rauce);
-        addBuiltin(R.drawable.reilo);
-        addBuiltin(R.drawable.sag);
-        addBuiltin(R.drawable.scrollo);
-        addBuiltin(R.drawable.seraph);
-        addBuiltin(R.drawable.shark_thing);
-        addBuiltin(R.drawable.sister_eden);
-        addBuiltin(R.drawable.smilodon);
-        addBuiltin(R.drawable.snow);
-        addBuiltin(R.drawable.stjya);
-        addBuiltin(R.drawable.tai);
-        addBuiltin(R.drawable.terma);
-        addBuiltin(R.drawable.thargad);
-        addBuiltin(R.drawable.thorn);
-        addBuiltin(R.drawable.urolka);
-        addBuiltin(R.drawable.vesten);
-        addBuiltin(R.drawable.void_walker);
-        addBuiltin(R.drawable.zanth);
-        addBuiltin(R.drawable.kragger);
-        addBuiltin(R.drawable.vogcore);
-
+    private void loadBuiltInImageTokens(Context context) {
+        try {
+        	InputStream is = context.getResources().openRawResource(R.raw.art_credits);
+        	SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp = spf.newSAXParser();
+			XMLReader xr = sp.getXMLReader();
+			xr.setContentHandler(new ArtCreditHandler(context));
+			xr.parse(new InputSource(is));
+			is.close();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
+    
+    private class ArtCreditHandler extends DefaultHandler {
+		private Context context;
+		public ArtCreditHandler(Context context) {
+			this.context=context;
+		}
+		
+		@Override
+		public void startElement(String namespaceURI, String localName, String qName, 
+		            org.xml.sax.Attributes atts) throws SAXException {
+			if (localName.equalsIgnoreCase("token")) {
+				int id = context.getResources().getIdentifier(
+						atts.getValue("res"), 
+						"drawable", 
+						"com.tbocek.android.combatmap");
+				addBuiltin(id);
+			}
+		} 
+	}
 
     /**
      * Adds a built-in image token with the given resource ID to the token
@@ -498,7 +444,7 @@ public final class TokenDatabase {
     public static TokenDatabase load(final Context context)
     		throws IOException {
         TokenDatabase d = new TokenDatabase();
-        d.populate(new DataManager(context));
+        d.populate(context);
 
         FileInputStream input = context.openFileInput("token_database");
         BufferedReader dataIn =
