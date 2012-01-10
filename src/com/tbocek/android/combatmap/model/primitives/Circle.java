@@ -21,8 +21,8 @@ public class Circle extends Shape implements Serializable {
 	public static final String SHAPE_TYPE = "cr";
 
 	// In world space.
-	PointF center = null;
-	float radius = Float.NaN;
+	PointF mCenter = null;
+	float mRadius = Float.NaN;
 
 	/**
 	 * A point on the edge of the circle, where the user first placed his
@@ -39,8 +39,10 @@ public class Circle extends Shape implements Serializable {
 
 	@Override
 	public boolean contains(PointF p) {
-		if (center == null) return false;
-		return Util.distance(p, center) < radius;
+		if (mCenter == null) {
+			return false;
+		}
+		return Util.distance(p, mCenter) < mRadius;
 	}
 
 	@Override
@@ -69,9 +71,10 @@ public class Circle extends Shape implements Serializable {
 			return;
 		}
 
-		float d = Util.distance(this.center, center);
+		float d = Util.distance(this.mCenter, center);
 
-		if ( d <= radius + this.radius && d >= Math.abs(radius - this.radius)) {
+		if (d <= radius + this.mRadius 
+				&& d >= Math.abs(radius - this.mRadius)) {
 			createLineForErasing();
 			lineForErasing.erase(center, radius);
 			invalidatePath();
@@ -82,14 +85,14 @@ public class Circle extends Shape implements Serializable {
 		lineForErasing = new FreehandLine(this.mColor, this.mWidth);
 		for (float rad = 0; rad < 2 * Math.PI; rad += 2 * Math.PI / 64f) {
 			lineForErasing.addPoint(new PointF(
-					(float) center.x + radius * (float) Math.cos(rad),
-					(float) center.y + radius * (float) Math.sin(rad)));
+					(float) mCenter.x + mRadius * (float) Math.cos(rad),
+					(float) mCenter.y + mRadius * (float) Math.sin(rad)));
 		}
 	}
 
 	@Override
 	protected Path createPath() {
-		if (center == null || radius == Float.NaN) {
+		if (mCenter == null || mRadius == Float.NaN) {
 			return null;
 		}
 
@@ -97,7 +100,7 @@ public class Circle extends Shape implements Serializable {
 			return lineForErasing.createPath();
 		} else {
 			Path p = new Path();
-			p.addCircle(center.x, center.y, radius, Path.Direction.CW);
+			p.addCircle(mCenter.x, mCenter.y, mRadius, Path.Direction.CW);
 			return p;
 		}
 	}
@@ -109,28 +112,28 @@ public class Circle extends Shape implements Serializable {
 		} else {
 			// Create a circle where the line from startPoint to P is a
 			// diameter.
-			radius = Util.distance(startPoint, p) / 2;
-			center = new PointF(
+			mRadius = Util.distance(startPoint, p) / 2;
+			mCenter = new PointF(
 					(p.x + startPoint.x) / 2, (p.y + startPoint.y) / 2);
 			invalidatePath();
 			boundingRectangle = new BoundingRectangle();
 			boundingRectangle.updateBounds(
-					new PointF(center.x - radius, center.y - radius));
+					new PointF(mCenter.x - mRadius, mCenter.y - mRadius));
 			boundingRectangle.updateBounds(
-					new PointF(center.x + radius, center.y + radius));
+					new PointF(mCenter.x + mRadius, mCenter.y + mRadius));
 		}
 	}
 	
 	public boolean shouldSerialize() {
-		return this.radius == this.radius && this.center != null;
+		return this.mRadius == this.mRadius && this.mCenter != null;
 	}
 	
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	s.startObject();
-    	s.serializeFloat(this.radius);
-    	s.serializeFloat(this.center.x);
-    	s.serializeFloat(this.center.y);
+    	s.serializeFloat(this.mRadius);
+    	s.serializeFloat(this.mCenter.x);
+    	s.serializeFloat(this.mCenter.y);
     	s.endObject();
     }
 
@@ -138,10 +141,10 @@ public class Circle extends Shape implements Serializable {
 	protected void shapeSpecificDeserialize(MapDataDeserializer s)
 			throws IOException {
 		s.expectObjectStart();
-		this.radius = s.readFloat();
-		center = new PointF();
-		this.center.x = s.readFloat();
-		this.center.y = s.readFloat();
+		this.mRadius = s.readFloat();
+		mCenter = new PointF();
+		this.mCenter.x = s.readFloat();
+		this.mCenter.y = s.readFloat();
 		s.expectObjectEnd();
 	}
 }

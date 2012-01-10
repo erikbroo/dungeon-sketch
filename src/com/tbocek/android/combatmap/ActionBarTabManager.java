@@ -8,7 +8,7 @@ import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 
 public class ActionBarTabManager extends TabManager {
-	private ActionBar actionBar;
+	private ActionBar mActionBar;
 
     /**
      * Reverse lookup so we know what tab to select when forced into an
@@ -18,12 +18,12 @@ public class ActionBarTabManager extends TabManager {
     	new HashMap<Integer, ActionBar.Tab>();
 
 	public ActionBarTabManager(ActionBar actionBar) {
-		this.actionBar = actionBar;
+		this.mActionBar = actionBar;
 	}
 
 	@Override
 	public void addTab(final String description, final int mode) {
-    	ActionBar.Tab tab = actionBar.newTab();
+    	ActionBar.Tab tab = mActionBar.newTab();
     	tab.setText(description);
     	tab.setTabListener(new ActionBar.TabListener() {
 			@Override
@@ -43,7 +43,7 @@ public class ActionBarTabManager extends TabManager {
 
 			}
     	});
-    	actionBar.addTab(tab);
+    	mActionBar.addTab(tab);
     	manipulationModeTabs.put(mode, tab);
 	}
 

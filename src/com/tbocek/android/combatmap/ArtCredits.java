@@ -24,10 +24,11 @@ public class ArtCredits extends Activity {
 	private ArtCreditsView creditsView;
 	
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         this.setContentView(R.layout.art_credits);
-        FrameLayout frame = (FrameLayout)this.findViewById(R.id.art_credits_frame);
+        FrameLayout frame = (FrameLayout) this.findViewById(
+        		R.id.art_credits_frame);
         creditsView = new ArtCreditsView(this);
         
         try {
@@ -55,12 +56,15 @@ public class ArtCredits extends Activity {
 		private String currentArtist;
 		
 		@Override
-		public void startElement(String namespaceURI, String localName, String qName, 
-		            org.xml.sax.Attributes atts) throws SAXException {
+		public void startElement(
+				String namespaceURI, String localName, String qName, 
+		        org.xml.sax.Attributes atts) throws SAXException {
 			if (localName.equalsIgnoreCase("artist")) {
 				currentArtist = atts.getValue("name");
 				creditsView.addArtist(
-						currentArtist, atts.getValue("copyright"), atts.getValue("url"));
+						currentArtist,
+						atts.getValue("copyright"),
+						atts.getValue("url"));
 			} else if (localName.equalsIgnoreCase("token")) {
 				int id = getResources().getIdentifier(
 						atts.getValue("res"), 

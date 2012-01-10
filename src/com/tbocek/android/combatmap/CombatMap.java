@@ -714,6 +714,8 @@ public final class CombatMap extends Activity {
             	fd.clearText();
              }
              break;
+         default:
+        	 super.onPrepareDialog(id, dialog);
          }
     }
 

@@ -24,8 +24,9 @@ public class BaseDrawInteractionMode extends CombatViewInteractionMode {
 	public void onLongPress(final MotionEvent ev) {
 		longPressPoint = view.getWorldSpaceTransformer()
 				.screenSpaceToWorldSpace(ev.getX(), ev.getY());
-	    if (view.isAFogOfWarLayerVisible() &&
-	    		view.getActiveFogOfWar() != null && view.getActiveFogOfWar().findShape(longPressPoint) != null) {
+	    if (view.isAFogOfWarLayerVisible() 
+	    		&& view.getActiveFogOfWar() != null 
+	    		&& view.getActiveFogOfWar().findShape(longPressPoint) != null) {
 	        view.showContextMenu();
 	    }
 	}
@@ -46,7 +47,8 @@ public class BaseDrawInteractionMode extends CombatViewInteractionMode {
 	 * @return Whether the event was handled.
 	 */
 	public boolean onContextItemSelected(final MenuItem item) {
-	      if (item.getItemId() == R.id.fog_context_delete && view.getActiveFogOfWar() != null) {
+	      if (item.getItemId() == R.id.fog_context_delete 
+	    		  && view.getActiveFogOfWar() != null) {
 	    	  view.getActiveFogOfWar().deleteShape(
 	    			  view.getActiveFogOfWar().findShape(longPressPoint));
 	    	  return true;

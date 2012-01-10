@@ -162,7 +162,8 @@ public final class BoundingRectangle implements Serializable {
 		s.serializeFloat(boundsYMax);
 	}
 	
-	public static BoundingRectangle deserialize(MapDataDeserializer s) throws IOException {
+	public static BoundingRectangle deserialize(MapDataDeserializer s)
+			throws IOException {
 		BoundingRectangle r = new BoundingRectangle();
 		r.boundsXMin = s.readFloat();
 		r.boundsXMax = s.readFloat();
