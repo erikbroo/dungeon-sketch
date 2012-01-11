@@ -113,8 +113,16 @@ public final class CombatView extends SurfaceView {
 	 */
 	private UndoRedoTarget mUndoRedoTarget;
 	
+	/**
+	 * Callback that the parent activity registers to listen to requests for
+	 * new/edited text objects.  This indirection is needed because this
+	 * operation requires a dialog, which the activity needs to open.
+	 */
 	private NewTextEntryListener mNewTextEntryListener;
 
+	/**
+	 * Callback for the Android graphics surface management system.
+	 */
 	private SurfaceHolder.Callback mSurfaceHolderCallback 
 			= new SurfaceHolder.Callback() {
 		@Override
@@ -268,6 +276,9 @@ public final class CombatView extends SurfaceView {
 		setInteractionMode(new FingerDrawInteractionMode(this));
 	}
 
+	/**
+	 * Sets the interaction mode to creating text objects.
+	 */
 	public void setTextMode() {
 		setInteractionMode(new DrawTextInteractionMode(this));
 	}
@@ -509,7 +520,7 @@ public final class CombatView extends SurfaceView {
 
 	/**
 	 * Creates a new line on whatever line set is currently active, using the
-	 * currently set color and stroke width.
+	 * currently set color, stroke width, and type.
 	 *
 	 * @return The new line.
 	 */
@@ -517,6 +528,12 @@ public final class CombatView extends SurfaceView {
 		return createLine(mActiveLines);
 	}
 
+	/**
+	 * Creates a line in the given line collection with the currently set
+	 * color, stroke width, and type.
+	 * @param lines The line collection to create the line in.
+	 * @return The created line.
+	 */
 	protected Shape createLine(LineCollection lines) {
 		switch(this.mNewLineStyle) {
 		case FREEHAND:
@@ -702,14 +719,33 @@ public final class CombatView extends SurfaceView {
 	}
 
 	
-	
+	/**
+	 * Callback interface for the activity to listen for requests to create
+	 * or edit text objects, since these actions require the activity to open
+	 * a dialog box.
+	 * @author Tim
+	 *
+	 */
 	public interface NewTextEntryListener {
+		/**
+		 * Called when a new text object is created.
+		 * @param newTextLocationWorldSpace Location to place the new text
+		 * 		object in world space.
+		 */
 		void requestNewTextEntry(PointF newTextLocationWorldSpace);
 
+		/**
+		 * Called when an edit is requested on an existing text object.
+		 * @param t The text object to edit.
+		 */
 		void requestEditTextObject(Text t);
 	}
 
-	
+	/**
+	 * Forwards a request to create a text object to the parent activity.
+	 * @param newTextLocationWorldSpace Location to place the new text object 
+	 *      in world space.
+	 */
 	public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
 		if (mNewTextEntryListener != null) {
 			mNewTextEntryListener.requestNewTextEntry(
@@ -717,6 +753,15 @@ public final class CombatView extends SurfaceView {
 		}
 	}
 	
+	/**
+	 * Creates a new text object with the given location, text, and font size.
+	 * This is called by the parent activity after being alerted to the request
+	 * for a new text object and after the resulting dialog is accepted.
+	 * @param newTextLocationWorldSpace Location to place the new text object
+	 * 		at.
+	 * @param text Contents of the new text object.
+	 * @param size Font size of the new text object.
+	 */
 	public void createNewText(
 			PointF newTextLocationWorldSpace, String text, float size) {
 		//Compute the text size as being one grid cell large.
@@ -728,10 +773,18 @@ public final class CombatView extends SurfaceView {
 		refreshMap();
 	}
 
+	/**
+	 * Forwards a request to edit a text object to the parent activity.
+	 * @param t The text object to edit.
+	 */
 	public void requestEditTextObject(Text t) {
 		mNewTextEntryListener.requestEditTextObject(t);
 	}
 
+
+	/**
+	 * @return The fog of war layer associated with the current active lines.
+	 */
 	public LineCollection getActiveFogOfWar() {
 		if (mActiveLines == getData().getBackgroundLines()) {
 			return getData().getBackgroundFogOfWar();
@@ -742,11 +795,19 @@ public final class CombatView extends SurfaceView {
 		}
 	}
 
+	/**
+	 * 
+	 * @return Whether one of the fog of war layers is visible.
+	 */
 	public boolean isAFogOfWarLayerVisible() {
 		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW 
 				|| this.mShouldDrawGmNotes;
 	}
 	
+	/**
+	 * 
+	 * @return The current target for undo and redo operations.
+	 */
 	public UndoRedoTarget getUndoRedoTarget() {
 		return mUndoRedoTarget;
 	}
