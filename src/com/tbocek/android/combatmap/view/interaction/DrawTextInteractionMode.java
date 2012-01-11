@@ -72,11 +72,11 @@ public class DrawTextInteractionMode extends BaseDrawInteractionMode {
 	
 	@Override
     public void onStartMode() {
-		Text.drawBoundingBoxes = true;
+		Text.shouldDrawBoundingBoxes(true);
     }
 	
 	@Override
     public void onEndMode() {
-		Text.drawBoundingBoxes = false;
+		Text.shouldDrawBoundingBoxes(false);
     }
 }

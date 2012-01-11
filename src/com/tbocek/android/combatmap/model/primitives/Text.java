@@ -12,13 +12,33 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
 
+/**
+ * Represents a short piece of text on the combat map.
+ * @author Tim
+ *
+ */
 public class Text extends Shape {
 
 	/**
 	 * Short character string that is the type of the shape.
 	 */
 	public static final String SHAPE_TYPE = "txt";
+	
+	/**
+	 * Global flag to control whether bounding boxes should be drawn around the
+	 * text.  This will generally be active when text is explicitly being
+	 * manipulated.
+	 */
+	private static boolean drawBoundingBoxes;
 
+	/**
+	 * Sets whether to draw bounding boxes around every text object.
+	 * @param value Whether to draw the boxes.
+	 */
+	public static void shouldDrawBoundingBoxes(boolean value) {
+		drawBoundingBoxes = value;
+	}
+	
 	public String mText;
 
 	public float mTextSize;
@@ -26,8 +46,6 @@ public class Text extends Shape {
 	public PointF mLocation;
 	
 	private boolean mErased;
-	
-	public static boolean drawBoundingBoxes;
 
 	public Text(
 			String newText, float size, int color, float strokeWidth, 
