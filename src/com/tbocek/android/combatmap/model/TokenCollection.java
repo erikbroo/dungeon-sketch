@@ -1,10 +1,10 @@
 package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
@@ -22,21 +22,30 @@ import android.graphics.Canvas;
  * @author Tim Bocek
  *
  */
-public final class TokenCollection implements Serializable, UndoRedoTarget {
-	/**
-	 * ID for serialization.
-	 */
-    private static final long serialVersionUID = 4852258096470549968L;
+public final class TokenCollection implements UndoRedoTarget {
 
     /**
      * The tokens that have been added to the grid.
      */
-    private List<BaseToken> tokens = new ArrayList<BaseToken>();
+    private List<BaseToken> mTokens = new ArrayList<BaseToken>();
     
-    private CommandHistory commandHistory;
-
+    /**
+     * Command history that supports undo and redo of token operations.
+     */
+    private CommandHistory mCommandHistory;
+    
+    /**
+     * Command that is checkpointed to while modifying a token, so that the
+     * state can be saved for undo/redo.
+     */
+    private transient ModifyTokenCommand mBuildingCommand;
+    
+    /**
+     * Constructor.
+     * @param history Command history to use for undo/redo operations.
+     */
     public TokenCollection(CommandHistory history) {
-    	commandHistory = history;
+    	mCommandHistory = history;
     }
     
     /**
@@ -47,14 +56,14 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
      */
     public BaseToken getTokenUnderPoint(
     		final PointF p, final CoordinateTransformer transformer) {
-        for (int i = 0; i < tokens.size(); ++i) {
+        for (int i = 0; i < mTokens.size(); ++i) {
         	float distance =
         		Util.distance(
         				p, transformer.worldSpaceToScreenSpace(
-        						tokens.get(i).getLocation()));
+        						mTokens.get(i).getLocation()));
             if (distance < transformer.worldSpaceToScreenSpace(
-            		tokens.get(i).getSize() / 2)) {
-                return tokens.get(i);
+            		mTokens.get(i).getSize() / 2)) {
+                return mTokens.get(i);
             }
         }
         return null;
@@ -67,7 +76,7 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
     public void addToken(final BaseToken t) {
     	AddOrDeleteTokenCommand c = new AddOrDeleteTokenCommand(this);
     	c.addToken(t);
-        commandHistory.execute(c);
+        mCommandHistory.execute(c);
     }
 
     /**
@@ -77,7 +86,7 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
     public void remove(final BaseToken t) {
     	AddOrDeleteTokenCommand c = new AddOrDeleteTokenCommand(this);
     	c.deleteToken(t);
-        commandHistory.execute(c);
+        mCommandHistory.execute(c);
     }
 
     /**
@@ -106,22 +115,34 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
             //Across the top
         	// The -attemptedDistance + 1 ensures a nice spiral pattern
             for (int i = -attemptedDistance + 1; i <= attemptedDistance; ++i) {
-                if (tryToPlaceHere(t, new PointF(point.x + i, point.y - attemptedDistance))) return;
+                if (tryToPlaceHere(t, new PointF(
+                		point.x + i, point.y - attemptedDistance))) {
+                	return;
+                }
             }
 
             //Down the right
             for (int i = -attemptedDistance; i <= attemptedDistance; ++i) {
-                if (tryToPlaceHere(t, new PointF(point.x + attemptedDistance, point.y + i))) return;
+                if (tryToPlaceHere(t, new PointF(
+                		point.x + attemptedDistance, point.y + i))) {
+                	return;
+                }
             }
 
             //Across the bottom
             for (int i = attemptedDistance; i >= -attemptedDistance; --i) {
-                if (tryToPlaceHere(t, new PointF(point.x + i, point.y + attemptedDistance))) return;
+                if (tryToPlaceHere(t, new PointF(
+                		point.x + i, point.y + attemptedDistance))) {
+                	return;
+                }
             }
 
             //Up the left
             for (int i = attemptedDistance; i >= -attemptedDistance; --i) {
-                if (tryToPlaceHere(t, new PointF(point.x - attemptedDistance, point.y + i))) return;
+                if (tryToPlaceHere(t, new PointF(
+                		point.x - attemptedDistance, point.y + i))) {
+                	return;
+                }
             }
             attemptedDistance++;
         }
@@ -153,7 +174,7 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
      */
     private boolean isLocationUnoccupied(
     		final PointF point, final double radius) {
-        for (BaseToken t : tokens) {
+        for (BaseToken t : mTokens) {
             if (Util.distance(point, t.getLocation())
             		< radius + t.getSize() / 2) {
                 return false;
@@ -172,10 +193,10 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
     public void drawAllTokens(
     		final Canvas canvas, final CoordinateTransformer transformer,
     		boolean isDark, boolean isManipulatable) {
-        for (int i = 0; i < tokens.size(); ++i) {
+        for (int i = 0; i < mTokens.size(); ++i) {
         	// TODO: Take advantage of knowing whether we have a dark
         	// background.
-            tokens.get(i).drawInPosition(canvas, transformer, isDark,
+            mTokens.get(i).drawInPosition(canvas, transformer, isDark,
             		isManipulatable);
         }
 
@@ -188,7 +209,7 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
      */
     public BoundingRectangle getBoundingRectangle() {
     	BoundingRectangle r = new BoundingRectangle();
-        for (BaseToken t : tokens) {
+        for (BaseToken t : mTokens) {
             r.updateBounds(t.getBoundingRectangle());
         }
         return r;
@@ -199,77 +220,130 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
      * @return True if collection is empty.
      */
     public boolean isEmpty() {
-        return tokens.isEmpty();
+        return mTokens.isEmpty();
     }
     
-    
-    private transient ModifyTokenCommand buildingCommand;
-    
+    /**
+     * Sets up this TokenCollection to create a command that modifies the given
+     * token.  The current state of this token will be duplicated and saved
+     * for undo purposes.
+     * @param t The token to checkpoint.
+     */
     public void checkpointToken(BaseToken t) {
-    	buildingCommand = new ModifyTokenCommand(t);
-    	buildingCommand.checkpointBeforeState();
+    	mBuildingCommand = new ModifyTokenCommand(t);
+    	mBuildingCommand.checkpointBeforeState();
     }
     
+    /**
+     * Adds an entry to the command history based on the previously checkpointed
+     * token.  The created command will swap the token's state between a copy
+     * of the state when this method was called, and the checkpointed state.
+     * The checkpoint is cleared after this method is called.
+     */
     public void createCommandHistory() {
-    	if (buildingCommand != null) {
-    		buildingCommand.checkpointAfterState();
-	    	commandHistory.addToCommandHistory(buildingCommand);
-	    	buildingCommand = null;
+    	if (mBuildingCommand != null) {
+    		mBuildingCommand.checkpointAfterState();
+	    	mCommandHistory.addToCommandHistory(mBuildingCommand);
+	    	mBuildingCommand = null;
     	}
     }
     
+    /**
+     * Undoes the current operation in the token collection's command history.
+     */
 	public void undo() {
-		commandHistory.undo();
-	}
-
-	public void redo() {
-		commandHistory.redo();
+		mCommandHistory.undo();
 	}
 	
+    /**
+     * Redoes the current operation in the token collection's command history.
+     */
+	public void redo() {
+		mCommandHistory.redo();
+	}
+	
+	/**
+	 * Saves this token collection to the given serialization stream.
+	 * @param s The stream to save to.
+	 * @throws IOException On write error.
+	 */
 	public void serialize(MapDataSerializer s) throws IOException {
 		s.startArray();
-		for (BaseToken t : this.tokens) {
+		for (BaseToken t : this.mTokens) {
 			t.serialize(s);
 		}
 		s.endArray();
 	}
 	
+	/**
+	 * Populates this token collection from the given deserialization stream.
+	 * @param s The stream to load from.
+	 * @param tokenDatabase Token database to use when creating tokens.
+	 * @throws IOException On read error.
+	 */
 	public void deserialize(
 			MapDataDeserializer s, TokenDatabase tokenDatabase) throws IOException {
 		int arrayLevel = s.expectArrayStart();
 		while (s.hasMoreArrayItems(arrayLevel)) {
-			this.tokens.add(BaseToken.deserialize(s, tokenDatabase));
+			this.mTokens.add(BaseToken.deserialize(s, tokenDatabase));
 		}
 		s.expectArrayEnd();
 	}
 	
+	/**
+	 * Represents a command that modifies a token.
+	 * @author Tim
+	 *
+	 */
 	private class ModifyTokenCommand implements CommandHistory.Command {
 
-		private BaseToken tokenToModify;
-		private BaseToken beforeState;
-		private BaseToken afterState;
+		/**
+		 * The token that this command modifies.  Should always be the "live"
+		 * version of the token.
+		 */
+		private BaseToken mTokenToModify;
 		
+		/**
+		 * State of the token before modification.
+		 */
+		private BaseToken mBeforeState;
+		
+		/**
+		 * State of the token after modification.
+		 */
+		private BaseToken mAfterState;
+		
+		/**
+		 * Constructor.
+		 * @param token The token that this command modifies.
+		 */
 		public ModifyTokenCommand(BaseToken token) {
-			tokenToModify = token;
+			mTokenToModify = token;
 		}
 		
+		/**
+		 * Saves the initial state of the token being modified.
+		 */
 		public void checkpointBeforeState() {
-			beforeState = tokenToModify.clone();
+			mBeforeState = mTokenToModify.clone();
 		}
 		
+		/**
+		 * Saves the final state of the token being modified.
+		 */
 		public void checkpointAfterState() {
-			afterState = tokenToModify.clone();
+			mAfterState = mTokenToModify.clone();
 		}
 		
 		@Override
 		public void execute() {
-			afterState.copyAttributesTo(tokenToModify);
+			mAfterState.copyAttributesTo(mTokenToModify);
 			
 		}
 
 		@Override
 		public void undo() {
-			beforeState.copyAttributesTo(tokenToModify);
+			mBeforeState.copyAttributesTo(mTokenToModify);
 			
 		}
 
@@ -280,43 +354,69 @@ public final class TokenCollection implements Serializable, UndoRedoTarget {
 		
 	}
     
+	/**
+	 * Represents a command that adds or deletes tokens.
+	 * @author Tim
+	 *
+	 */
     private class AddOrDeleteTokenCommand implements CommandHistory.Command {
-    	//TODO: Split this into two different classes.
+
+    	/**
+    	 * The token collection being modified.
+    	 */
+		private TokenCollection mTokenCollection;
+		
+		/**
+		 * List of tokens deleted in this operation.
+		 */
+    	private List<BaseToken> mTokensToDelete = Lists.newArrayList();
+    	
+    	/**
+    	 * List of tokens added in this operation.
+    	 */
+    	private List<BaseToken> mTokensToAdd = Lists.newArrayList();
+    	
+
+    	/**
+    	 * Constructor.
+    	 * @param c The token collection to modify.
+    	 */
     	public AddOrDeleteTokenCommand(TokenCollection c) {
-    		tokenCollection = c;
+    		mTokenCollection = c;
     	}
 
-		private TokenCollection tokenCollection;
-    	private List<BaseToken> tokensToDelete = new ArrayList<BaseToken>();
-    	private List<BaseToken> tokensToAdd = new ArrayList<BaseToken>();
 
+    	/**
+    	 * Adds a token to this operation's create list.
+    	 * @param t The token being created.
+    	 */
     	public void addToken(BaseToken t) {
-    		tokensToAdd.add(t);
+    		mTokensToAdd.add(t);
     	}
     	
+    	/**
+    	 * Adds a token to this operation's delete list.
+    	 * @param t The token being deleted.
+    	 */
     	public void deleteToken(BaseToken t) {
-			tokensToDelete.add(t);
-    	}
-    	
-    	public boolean hasToken(BaseToken t) {
-    		return tokensToAdd.contains(t) || tokensToDelete.contains(t);
+			mTokensToDelete.add(t);
     	}
     	
 		@Override
 		public void execute() {
-			tokenCollection.tokens.addAll(tokensToAdd);
-			tokenCollection.tokens.removeAll(tokensToDelete);
+			mTokenCollection.mTokens.addAll(mTokensToAdd);
+			mTokenCollection.mTokens.removeAll(mTokensToDelete);
 		}
 
 		@Override
 		public void undo() {
-			tokenCollection.tokens.removeAll(tokensToAdd);
-			tokenCollection.tokens.addAll(tokensToDelete);
+			mTokenCollection.mTokens.removeAll(mTokensToAdd);
+			mTokenCollection.mTokens.addAll(mTokensToDelete);
 		}
 
 		@Override
 		public boolean isNoop() {
-			return tokensToAdd.isEmpty() && tokensToDelete.isEmpty();
+			return mTokensToAdd.isEmpty() && mTokensToDelete.isEmpty();
 		}
     	
 
