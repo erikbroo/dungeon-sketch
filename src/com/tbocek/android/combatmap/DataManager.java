@@ -159,11 +159,22 @@ public final class DataManager {
     	return dir;
     }
     
+    /**
+     * Gets a file object representing a saved map with the given name.
+     * @param mapName Name of the map, without extension.
+     * @return The saved map's file object.
+     */
     private File getSavedMapFile(String mapName) {
     	File sdcard = getSavedMapDir();
     	return new File(sdcard, mapName +  MAP_EXTENSION);
     }
     
+    /**
+     * Gets a file object representing the preview for a saved map with the 
+     * given name.
+     * @param mapName Name of the map, without extension.
+     * @return The saved map's preview's file object.
+     */    
     private File getSavedMapPreviewImageFile(String mapName) {
     	File sdcard = getSavedMapDir();
     	return new File(sdcard, mapName +  PREVIEW_EXTENSION);
