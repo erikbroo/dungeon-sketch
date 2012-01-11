@@ -55,6 +55,11 @@ public final class TagListView extends ScrollView {
      * Number of pixels to pad the left of each view with.
      */
     private static final int HORIZONTAL_PADDING = 6;
+    
+    /**
+     * Default text size to use in child views.
+     */
+    private static final int DEFAULT_TEXT_SIZE = 30;
 
     /**
      * Color to highlight text with when a token is being dragged to it.
@@ -84,8 +89,13 @@ public final class TagListView extends ScrollView {
     /**
      * Size in points of the text used in the child tag views.
      */
-    private float mTextSize = 30;
+    private float mTextSize = DEFAULT_TEXT_SIZE;
 
+    /**
+     * Listener that manages dragging a token onto a tag view.
+     */
+    private View.OnDragListener mOnDrag;
+    
     /**
      * Constructor.
      * @param context The context that this view is constructed in.
@@ -157,7 +167,8 @@ public final class TagListView extends ScrollView {
                     Log.d("DRAG", Integer.toString(event.getAction()));
                     TextView tv = (TextView) view;
                     if (event.getAction() == DragEvent.ACTION_DROP) {
-                        Collection<BaseToken> toAdd =
+                        @SuppressWarnings("unchecked")
+						Collection<BaseToken> toAdd =
                         	(Collection<BaseToken>) event.getLocalState();
                         if (mOnTagListAction != null) {
                             mOnTagListAction.onDragTokensToTag(
@@ -223,8 +234,4 @@ public final class TagListView extends ScrollView {
         return this.mHighlightedTag;
     }
 
-    /**
-     * Listener that manages dragging a token onto a tag view.
-     */
-    private View.OnDragListener mOnDrag;
 }
