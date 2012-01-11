@@ -12,12 +12,6 @@ import android.graphics.Paint;
  */
 public final class RectangularGrid extends Grid {
 
-
-	/**
-	 * ID for serialization.
-	 */
-	private static final long serialVersionUID = 2762147734569183378L;
-
 	/**
      * Every MAJOR_GRID_LINE_FREQUENCYth line will be a major grid line.
      */
@@ -59,7 +53,7 @@ public final class RectangularGrid extends Grid {
         float squareSize = transformer.worldSpaceToScreenSpace(1.0f);
         float numSquaresHorizontal = (float) width / squareSize;
         float numSquaresVertical =
-            (numSquaresHorizontal * ((float) height) / ((float) width));
+            numSquaresHorizontal * ((float) height) / ((float) width);
 
         boolean shouldDrawMinorLines =
             squareSize >= MINOR_GRID_LINE_SIZE_LIMIT;

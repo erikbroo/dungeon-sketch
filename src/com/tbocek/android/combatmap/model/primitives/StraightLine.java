@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

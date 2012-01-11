@@ -33,35 +33,31 @@ public class TokenButton extends ImageView {
     /**
      * A gesture detector used to detect long presses for drag and drop start.
      */
-    private GestureDetector gestureDetector;
+    private GestureDetector mGestureDetector;
     
-    public boolean allowDrag = true;
-
     /**
-     * A gesture listener used to start a drag and drop when a long press
-     * occurs.
+     * Whether this token button is allowed to initiate a drag action.
      */
-    private SimpleOnGestureListener gestureListener =
-    	new SimpleOnGestureListener() {
-        public void onLongPress(final MotionEvent e) {
-        	if (allowDrag && android.os.Build.VERSION.SDK_INT
-        			>= android.os.Build.VERSION_CODES.HONEYCOMB)
-        		TokenButton.this.onStartDrag();
-        }
-    };
+    private boolean mAllowDrag = true;
 
     /**
      * Whether tokens should be drawn as if on a dark background.
      */
-	private boolean drawDark = false;
-
+	private boolean mDrawDark = false;
+	
     /**
-     * Called when a drag and drop operation should start.
+     * A gesture listener used to start a drag and drop when a long press
+     * occurs.
      */
-    protected void onStartDrag() {
-        startDrag(null, new View.DragShadowBuilder(TokenButton.this),
-      		  mPrototype.clone(), 0);
-    }
+    private SimpleOnGestureListener mGestureListener =
+    	new SimpleOnGestureListener() {
+        public void onLongPress(final MotionEvent e) {
+        	if (mAllowDrag && android.os.Build.VERSION.SDK_INT
+        			>= android.os.Build.VERSION_CODES.HONEYCOMB) {
+        		TokenButton.this.onStartDrag();
+        	}
+        }
+    };
 
 	/**
      * Constructor.
@@ -73,12 +69,20 @@ public class TokenButton extends ImageView {
         this.mPrototype = prototype;
 
         //Set up listener to see if a drag has started.
-        gestureDetector =
-        	new GestureDetector(this.getContext(), gestureListener);
+        mGestureDetector =
+        	new GestureDetector(this.getContext(), mGestureListener);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
         	setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
+    }
+    
+    /**
+     * Called when a drag and drop operation should start.
+     */
+    protected void onStartDrag() {
+        startDrag(null, new View.DragShadowBuilder(TokenButton.this),
+      		  mPrototype.clone(), 0);
     }
 
     @Override
@@ -86,7 +90,7 @@ public class TokenButton extends ImageView {
         mPrototype.draw(c, (float) this.getWidth() / 2,
         		(float) this.getHeight() / 2,
         		getTokenRadius(),
-        		drawDark, true);
+        		mDrawDark, true);
     }
 
 	/**
@@ -114,7 +118,7 @@ public class TokenButton extends ImageView {
 
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
-        this.gestureDetector.onTouchEvent(ev);
+        this.mGestureDetector.onTouchEvent(ev);
         return super.onTouchEvent(ev);
     }
 
@@ -122,7 +126,7 @@ public class TokenButton extends ImageView {
 	 * @param drawDark Whether tokens are drawn on a dark background.
 	 */
 	public void setShouldDrawDark(boolean drawDark) {
-		this.drawDark = drawDark;
+		this.mDrawDark = drawDark;
 	}
 
 
@@ -130,6 +134,14 @@ public class TokenButton extends ImageView {
 	 * @return Whether tokens are drawn on a dark background.
 	 */
 	public boolean shouldDrawDark() {
-		return drawDark;
+		return mDrawDark;
+	}
+
+	/**
+	 * @param allowDrag Whether to allow this token button to start a drag 
+	 * 		action.
+	 */
+	public void allowDrag(boolean allowDrag) {
+		mAllowDrag = allowDrag;
 	}
 }

@@ -201,12 +201,6 @@ public final class MapData {
 
     }
 
-
-
-
-
-
-
     /**
      * Gets a rectangle that encompasses the entire map.
      * @return The bounding rectangle.
@@ -303,7 +297,6 @@ public final class MapData {
 		this.mAnnotationLines.serialize(s);
 	}
 	
-
 
 	/**
 	 * @return the transformer

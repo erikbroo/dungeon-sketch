@@ -16,6 +16,7 @@ import android.widget.TextView;
  *
  */
 public class FontDialog extends Dialog {
+	private static final float FP_COMPARE_DELTA = .0001f;
 
     /**
      * Listener used to specify the action to take when the user confirms text
@@ -89,7 +90,7 @@ public class FontDialog extends Dialog {
 		// the provided number
 		for (int i = 0; i < mFontSize.getCount(); ++i) {
 			float parsedItem = Float.parseFloat(mFontSize.getItemAtPosition(i).toString());
-			if (Math.abs(textSize - parsedItem) < .001) {
+			if (Math.abs(textSize - parsedItem) < FP_COMPARE_DELTA) {
 				mFontSize.setSelection(i);
 			}
 		}

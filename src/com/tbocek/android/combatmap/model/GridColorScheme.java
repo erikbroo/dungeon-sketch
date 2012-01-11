@@ -107,6 +107,21 @@ public final class GridColorScheme {
     }
 
     /**
+     * Reads and returns a color scheme from the given stream.
+     * @param s The stream to read from.
+     * @return The read color stream.
+     * @throws IOException On read error.
+     */
+	public static GridColorScheme deserialize(MapDataDeserializer s) throws IOException {
+		s.expectObjectStart();
+		int bkg = s.readInt();
+		int line = s.readInt();
+		boolean dark = s.readBoolean();
+		s.expectObjectEnd();
+		return new GridColorScheme(bkg, line, dark);
+	}
+
+    /**
      * The color to draw in the background.
      */
     private int mBackgroundColor;
@@ -156,6 +171,11 @@ public final class GridColorScheme {
     	return mIsDark;
     }
     
+    /**
+     * Writes this color scheme to the given stream.
+     * @param s Serialization stream.
+     * @throws IOException On load error.
+     */
     public void serialize(MapDataSerializer s) throws IOException {
     	s.startObject();
     	s.serializeInt(this.mBackgroundColor);
@@ -163,13 +183,4 @@ public final class GridColorScheme {
     	s.serializeBoolean(this.mIsDark);
     	s.endObject();
     }
-
-	public static GridColorScheme deserialize(MapDataDeserializer s) throws IOException {
-		s.expectObjectStart();
-		int bkg = s.readInt();
-		int line = s.readInt();
-		boolean dark = s.readBoolean();
-		s.expectObjectEnd();
-		return new GridColorScheme(bkg, line, dark);
-	}
 }

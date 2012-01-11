@@ -52,7 +52,12 @@ public abstract class DrawableToken extends BaseToken {
      */
     private static Map<String, Drawable> drawableCache
     	= new HashMap<String, Drawable>();
-
+    
+    /**
+     * The loaded drawable to use.
+     */
+    private transient Drawable mDrawable;
+    
     @Override
     public final void drawBloodied(
     		final Canvas c, final float x, final float y, final float radius,
@@ -172,9 +177,6 @@ public abstract class DrawableToken extends BaseToken {
      */
     protected abstract Drawable createDrawable();
 
-    /**
-     * The loaded drawable to use.
-     */
-    private transient Drawable mDrawable;
+
 
 }

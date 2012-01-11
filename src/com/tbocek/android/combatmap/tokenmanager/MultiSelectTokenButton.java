@@ -19,6 +19,12 @@ import com.tbocek.android.combatmap.view.TokenButton;
  *
  */
 public final class MultiSelectTokenButton extends TokenButton {
+
+    /**
+     * Stroke width to use when drawing a border around selected tokens.
+     */
+    private static final int SELECTION_BORDER_STROKE_WIDTH = 4;
+    
 	/**
 	 * Whether this token is currently selected.
 	 */
@@ -30,10 +36,6 @@ public final class MultiSelectTokenButton extends TokenButton {
      */
     private MultiSelectManager mMultiSelect;
 
-    /**
-     * Stroke width to use when drawing a border around selected tokens.
-     */
-    private static final int SELECTION_BORDER_STROKE_WIDTH = 4;
 
     /**
      * Constructor.

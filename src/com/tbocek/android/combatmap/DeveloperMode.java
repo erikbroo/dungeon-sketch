@@ -2,9 +2,21 @@ package com.tbocek.android.combatmap;
 
 import android.os.StrictMode;
 
+/**
+ * Central location to enable debug options.
+ * @author Tim
+ *
+ */
 public final class DeveloperMode {
+
+	/**
+	 * Whether developer/debug mode is enabled.
+	 */
 	public static final boolean DEVELOPER_MODE = true;
 
+	/**
+	 * If in developer mode and the SDK supports it, run in strict mode.
+	 */
 	public static void strictMode() {
     	if (android.os.Build.VERSION.SDK_INT
     			>= android.os.Build.VERSION_CODES.GINGERBREAD
@@ -20,4 +32,9 @@ public final class DeveloperMode {
                     .build());
         }
 	}
+	
+	/**
+	 * Private constructor because this is a utility class.
+	 */
+	private DeveloperMode() { }
 }

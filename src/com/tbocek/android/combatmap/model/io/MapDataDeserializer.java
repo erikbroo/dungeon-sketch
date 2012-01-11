@@ -33,14 +33,6 @@ public class MapDataDeserializer {
 	}
 	
 	/**
-	 * Constructor.
-	 * @param reader The reader to read from.
-	 */
-	public MapDataDeserializer(BufferedReader reader) {
-		this.mReader = reader;
-	}
-	
-	/**
 	 * The reader to read from.
 	 */
 	private BufferedReader mReader;
@@ -56,6 +48,13 @@ public class MapDataDeserializer {
 	 */
 	private LinkedList<String> mPeekBuffer = new LinkedList<String>();
 	
+	/**
+	 * Constructor.
+	 * @param reader The reader to read from.
+	 */
+	public MapDataDeserializer(BufferedReader reader) {
+		this.mReader = reader;
+	}
 
 	/**
 	 * Consumes and returns a string value.
@@ -90,7 +89,7 @@ public class MapDataDeserializer {
 	 * @throws IOException On read error.
 	 */
 	public boolean readBoolean() throws IOException {
-		return nextToken().equals("0") ? false : true;
+		return !nextToken().equals("0");
 	}
 
 	/**

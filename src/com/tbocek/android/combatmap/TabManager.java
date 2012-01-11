@@ -23,6 +23,6 @@ public abstract class TabManager {
 	}
 
 	public interface TabSelectedListener {
-		public void onTabSelected(int tab);
+		void onTabSelected(int tab);
 	}
 }

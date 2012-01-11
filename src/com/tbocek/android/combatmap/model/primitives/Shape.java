@@ -26,9 +26,82 @@ public abstract class Shape {
 	private static final int FOG_OF_WAR_ALPHA = 128;
 	
 	/**
+	 * Paint object that is used when drawing fog of war regions for the fog
+	 * of war editor.
+	 */
+	private static Paint fogOfWarPaint;
+	
+	/**
+	 * Deserializes and returns a shape.
+	 * @param s The stream to read from.
+	 * @return The created shape.
+	 * @throws IOException On deserialization error.
+	 */
+	public static Shape deserialize(MapDataDeserializer s) throws IOException {
+		String shapeType = s.readString();
+		s.expectObjectStart();
+		int color = s.readInt();
+		float width = s.readFloat();
+		BoundingRectangle r = BoundingRectangle.deserialize(s);
+		s.expectObjectEnd();
+		
+		Shape shape;
+		
+		if (shapeType.equals(FreehandLine.SHAPE_TYPE)) {
+			shape = new FreehandLine(color, width);
+		} else if (shapeType.equals(StraightLine.SHAPE_TYPE)) {
+			shape = new StraightLine(color, width);
+		} else if (shapeType.equals(Circle.SHAPE_TYPE)) {
+			shape = new Circle(color, width);
+		} else if (shapeType.equals(Text.SHAPE_TYPE)) {
+			shape = new Text(color, width);
+		} else {
+			throw new IOException("Unrecognized shape type: " + shapeType);
+		}
+		
+		shape.mBoundingRectangle = r;
+		shape.shapeSpecificDeserialize(s);
+		return shape;
+	}
+	
+	/**
 	 * The paint object that will be used to draw this line.
 	 */
 	protected transient Paint mPaint;
+	
+	/**
+	 * X component of the pending move operation.
+	 */
+	private float mDrawOffsetDeltaX = Float.NaN;
+	
+	/**
+	 * Y component of the pending move operation.
+	 */
+	private float mDrawOffsetDeltaY = Float.NaN;
+	
+
+	/**
+	 * Cached path that represents this line.
+	 */
+	private transient Path mPath;
+	
+	/**
+	 * The color to draw this line with.
+	 */
+	public int mColor = Color.BLACK;
+	
+	/**
+	 * The stroke width to draw this line with.  +Infinity will use a fill
+	 * instead (to ensure that it draws beneath all lines).
+	 */
+	public float mWidth;
+	
+	/**
+	 * Cached rectangle that bounds all the points in this line.
+	 * This could be computed on demand, but it is easy enough to update
+	 * every time a point is added.
+	 */
+	protected BoundingRectangle mBoundingRectangle = new BoundingRectangle();
 
 	/**
 	 * Checks whether this shape contains the given point.
@@ -69,16 +142,6 @@ public abstract class Shape {
 	 * @param p The point to add.
 	 */
 	public abstract void addPoint(final PointF p);
-	
-	/**
-	 * X component of the pending move operation.
-	 */
-	private float mDrawOffsetDeltaX = Float.NaN;
-	
-	/**
-	 * Y component of the pending move operation.
-	 */
-	private float mDrawOffsetDeltaY = Float.NaN;
 	
 	/**
 	 * Sets a temporary offset for drawing this shape, which can be thought of
@@ -161,35 +224,6 @@ public abstract class Shape {
 		throw new RuntimeException(
 				"This shape does not support the move operation.");
 	}
-
-	/**
-	 * Cached path that represents this line.
-	 */
-	private transient Path mPath;
-	
-	/**
-	 * The color to draw this line with.
-	 */
-	public int mColor = Color.BLACK;
-	
-	/**
-	 * The stroke width to draw this line with.  +Infinity will use a fill
-	 * instead (to ensure that it draws beneath all lines).
-	 */
-	public float mWidth;
-	
-	/**
-	 * Cached rectangle that bounds all the points in this line.
-	 * This could be computed on demand, but it is easy enough to update
-	 * every time a point is added.
-	 */
-	protected BoundingRectangle mBoundingRectangle = new BoundingRectangle();
-	
-	/**
-	 * Paint object that is used when drawing fog of war regions for the fog
-	 * of war editor.
-	 */
-	private static Paint fogOfWarPaint;
 
 	/**
 	 * Invalidates the path so that it is recreated on the next draw operation.
@@ -323,39 +357,7 @@ public abstract class Shape {
 		}
 	}
 	
-	/**
-	 * Deserializes and returns a shape.
-	 * @param s The stream to read from.
-	 * @return The created shape.
-	 * @throws IOException On deserialization error.
-	 */
-	public static Shape deserialize(MapDataDeserializer s) throws IOException {
-		String shapeType = s.readString();
-		s.expectObjectStart();
-		int color = s.readInt();
-		float width = s.readFloat();
-		BoundingRectangle r = BoundingRectangle.deserialize(s);
-		s.expectObjectEnd();
-		
-		Shape shape;
-		
-		if (shapeType.equals(FreehandLine.SHAPE_TYPE)) {
-			shape = new FreehandLine(color, width);
-		} else if (shapeType.equals(StraightLine.SHAPE_TYPE)) {
-			shape = new StraightLine(color, width);
-		} else if (shapeType.equals(Circle.SHAPE_TYPE)) {
-			shape = new Circle(color, width);
-		} else if (shapeType.equals(Text.SHAPE_TYPE)) {
-			shape = new Text(color, width);
-		} else {
-			throw new IOException("Unrecognized shape type: " + shapeType);
-		}
-		
-		shape.mBoundingRectangle = r;
-		shape.shapeSpecificDeserialize(s);
-		return shape;
-		
-	}
+
 
 	/**
 	 * Template method that loads shape-specific data from the deserialization

@@ -44,9 +44,10 @@ public final class SolidColorToken extends BaseToken {
 
     /**
      * Draws an indication of a past location of the token.
-     * @param c
-     * @param transformer
-     * @param ghostPoint Location to draw the ghost, in world space
+     * @param c Canvas to draw on.
+     * @param x X location of the center of the ghost token.
+     * @param y Y location of the center of the ghost token.
+     * @param radius Radius of the ghost token.
      */
     @Override
     public void drawGhost(final Canvas c, final float x, final float y, final float radius) {
