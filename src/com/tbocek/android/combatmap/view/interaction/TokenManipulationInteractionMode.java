@@ -29,14 +29,6 @@ public final class TokenManipulationInteractionMode
     private static final int GRID_SNAP_THRESHOLD = 20;
 
     /**
-     * Constructor.
-     * @param view The CombatView that this mode will interact with.
-     */
-    public TokenManipulationInteractionMode(final CombatView view) {
-        super(view);
-    }
-
-    /**
      * The token currently being dragged around.
      */
     private BaseToken mCurrentToken;
@@ -55,6 +47,14 @@ public final class TokenManipulationInteractionMode
      * Whether the current token has been moved.
      */
     private boolean mMoved;
+    
+    /**
+     * Constructor.
+     * @param view The CombatView that this mode will interact with.
+     */
+    public TokenManipulationInteractionMode(final CombatView view) {
+        super(view);
+    }
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
@@ -168,47 +168,65 @@ public final class TokenManipulationInteractionMode
             return true;
         case R.id.token_context_size_tenth:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(.1f);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_quarter:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(.25f);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_half:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(.5f);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_one:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(1);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_two:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(2);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_three:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(3);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_four:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(4);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_five:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(5);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_context_size_six:
         	getView().getTokens().checkpointToken(mCurrentToken);
+        	//CHECKSTYLE:OFF
             mCurrentToken.setSize(6);
+            //CHECKSTYLE:ON
             getView().getTokens().createCommandHistory();
             return true;
         case R.id.token_border_none:
