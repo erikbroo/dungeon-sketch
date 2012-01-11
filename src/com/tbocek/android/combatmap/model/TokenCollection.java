@@ -199,7 +199,6 @@ public final class TokenCollection implements UndoRedoTarget {
             mTokens.get(i).drawInPosition(canvas, transformer, isDark,
             		isManipulatable);
         }
-
     }
 
     /**
