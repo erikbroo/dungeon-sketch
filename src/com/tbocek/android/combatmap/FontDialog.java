@@ -1,11 +1,8 @@
 package com.tbocek.android.combatmap;
 
-import com.tbocek.android.combatmap.FontDialog.OnTextConfirmedListener;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,14 +35,14 @@ public class FontDialog extends Dialog {
     /**
      * Text entry field.
      */
-    private TextView nameText;
+    private TextView mNameText;
     
-    private Spinner fontSize;
+    private Spinner mFontSize;
 
     /**
      * Button that the user clicks to confirm the text entered.
      */
-    private Button confirmButton;
+    private Button mConfirmButton;
 
     /**
      * Listener that is called when the user clicks the confirm button.
@@ -67,18 +64,18 @@ public class FontDialog extends Dialog {
         this.setTitle("Draw Text");
         this.mListener = listener;
 
-        confirmButton = (Button) this.findViewById(R.id.button_save);
-        nameText = (TextView) this.findViewById(R.id.entered_text);
-        nameText.requestFocus();
-        nameText.setText("");
+        mConfirmButton = (Button) this.findViewById(R.id.button_save);
+        mNameText = (TextView) this.findViewById(R.id.entered_text);
+        mNameText.requestFocus();
+        mNameText.setText("");
         
-        fontSize = (Spinner) this.findViewById(R.id.spinner_font_size);
+        mFontSize = (Spinner) this.findViewById(R.id.spinner_font_size);
 
-        confirmButton.setOnClickListener(new View.OnClickListener() {
+        mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                String name = (String) nameText.getText().toString();
-                float size = Float.parseFloat(fontSize.getSelectedItem().toString());
+                String name = (String) mNameText.getText().toString();
+                float size = Float.parseFloat(mFontSize.getSelectedItem().toString());
                 dismiss();
                 FontDialog.this.mListener.onTextConfirmed(name, size);
             }
@@ -86,19 +83,19 @@ public class FontDialog extends Dialog {
     }
 
 	public void populateFields(String text, float textSize) {
-		nameText.setText(text);
+		mNameText.setText(text);
 		
 		// Iterate through the font size items, select the one that best fits
 		// the provided number
-		for (int i = 0; i < fontSize.getCount(); ++i) {
-			float parsedItem = Float.parseFloat(fontSize.getItemAtPosition(i).toString());
+		for (int i = 0; i < mFontSize.getCount(); ++i) {
+			float parsedItem = Float.parseFloat(mFontSize.getItemAtPosition(i).toString());
 			if (Math.abs(textSize - parsedItem) < .001) {
-				fontSize.setSelection(i);
+				mFontSize.setSelection(i);
 			}
 		}
 	}
 
 	public void clearText() {
-		nameText.setText("");
+		mNameText.setText("");
 	}
 }

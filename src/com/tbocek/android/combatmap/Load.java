@@ -28,16 +28,6 @@ import com.tbocek.android.combatmap.view.SaveFileButton;
  */
 public final class Load extends Activity {
     /**
-     * List of save files available.
-     */
-    private List<String> mSavedFiles;
-
-    /**
-     * Data manager to facilitate save file enumeration and loading.
-     */
-    private DataManager mDataMgr;
-
-    /**
      * Width of a file button.
      */
     private static final int FILE_VIEW_WIDTH = 200;
@@ -51,7 +41,44 @@ public final class Load extends Activity {
      * Padding on each file button.
      */
     private static final int FILE_VIEW_PADDING = 16;
+    
+    /**
+     * List of save files available.
+     */
+    private List<String> mSavedFiles;
 
+    /**
+     * Data manager to facilitate save file enumeration and loading.
+     */
+    private DataManager mDataMgr;
+
+
+    
+    /**
+     * The save file button that last triggered a context menu open.  Used to
+     * determine which file to delete if a delete operation is selected.
+     */
+    private SaveFileButton mContextMenuTrigger;
+    
+    /**
+     * Listener that creates a menu to delete the given save file.
+     */
+    private View.OnCreateContextMenuListener mContextMenuListener =
+        new View.OnCreateContextMenuListener() {
+        @Override
+        public void onCreateContextMenu(final ContextMenu menu,
+                final View view, final ContextMenuInfo menuInfo) {
+            View v = view;
+            while (!(v instanceof SaveFileButton)) {
+                v = (View) v.getParent();
+            }
+            mContextMenuTrigger = (SaveFileButton) v;
+            if (menu.size() == 0) {
+            	getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
+            }
+        }
+    };
+    
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,30 +207,8 @@ public final class Load extends Activity {
         }
     }
 
-    /**
-     * The save file button that last triggered a context menu open.  Used to
-     * determine which file to delete if a delete operation is selected.
-     */
-    private SaveFileButton mContextMenuTrigger;
 
-    /**
-     * Listener that creates a menu to delete the given save file.
-     */
-    private View.OnCreateContextMenuListener mContextMenuListener =
-        new View.OnCreateContextMenuListener() {
-        @Override
-        public void onCreateContextMenu(final ContextMenu menu,
-                final View view, final ContextMenuInfo menuInfo) {
-            View v = view;
-            while (!(v instanceof SaveFileButton)) {
-                v = (View) v.getParent();
-            }
-            mContextMenuTrigger = (SaveFileButton) v;
-            if (menu.size() == 0) {
-            	getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
-            }
-        }
-    };
+ 
 
     @Override
     public boolean onContextItemSelected(final MenuItem item) {

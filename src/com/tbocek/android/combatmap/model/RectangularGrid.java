@@ -120,7 +120,7 @@ public final class RectangularGrid extends Grid {
 
     //Returns nearest snap point in grid space
     @Override
-    public final PointF getNearestSnapPoint(
+    public PointF getNearestSnapPoint(
             final PointF currentLocation,
             final float tokenDiameter) {
         float previousGridLineX =

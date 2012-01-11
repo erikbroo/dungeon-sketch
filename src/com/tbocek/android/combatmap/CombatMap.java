@@ -70,6 +70,21 @@ public final class CombatMap extends Activity {
 	private static final int TAG_LIST_TEXT_SIZE = 20;
 
     /**
+     * Dialog ID to use for the save file dialog.
+     */
+    private static final int DIALOG_ID_SAVE = 0;
+    
+    /**
+     * Dialog ID to use for the draw text dialog.
+     */
+    private static final int DIALOG_ID_DRAW_TEXT = 1;
+    
+    /**
+     * The current map.
+     */
+    private static MapData mData;
+    
+    /**
      * The view that manages the main canvas for drawing and tokens.
      */
     private CombatView mCombatView;
@@ -104,10 +119,6 @@ public final class CombatMap extends Activity {
      */
     private TagListView mTokenCategorySelector;
 
-    /**
-     * The current map.
-     */
-    private static MapData mData;
 
     /**
      * Database of available combat tokens.
@@ -118,6 +129,12 @@ public final class CombatMap extends Activity {
      * Whether the control tray on the bottom of the screen is expanded.
      */
     private boolean mIsControlTrayExpanded = true;
+    
+    /**
+     * The menu item that controls whether drawing/tokens snap to the grid.
+     * Saved because we need to listen for these events.
+     */
+    private MenuItem mSnapToGridMenuItem;
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -526,11 +543,7 @@ public final class CombatMap extends Activity {
         return true;
     }
 
-    /**
-     * The menu item that controls whether drawing/tokens snap to the grid.
-     * Saved because we need to listen for these events.
-     */
-    private MenuItem mSnapToGridMenuItem;
+
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
@@ -676,15 +689,6 @@ public final class CombatMap extends Activity {
         				"manipulation_mode", MODE_DRAW_BACKGROUND));
 	}
 
-    /**
-     * Dialog ID to use for the save file dialog.
-     */
-    public static final int DIALOG_ID_SAVE = 0;
-    
-    /**
-     * Dialog ID to use for the draw text dialog.
-     */
-    public static final int DIALOG_ID_DRAW_TEXT = 1;
 
 
     @Override
@@ -743,7 +747,7 @@ public final class CombatMap extends Activity {
          	 FontDialog fd = (FontDialog) dialog;
              if (mEditedTextObject != null) {
              	fd.populateFields(
-             			mEditedTextObject.text, mEditedTextObject.textSize);
+             			mEditedTextObject.mText, mEditedTextObject.mTextSize);
              } else {
             	fd.clearText();
              }

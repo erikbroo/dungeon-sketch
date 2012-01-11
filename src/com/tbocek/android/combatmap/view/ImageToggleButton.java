@@ -41,7 +41,7 @@ public final class ImageToggleButton extends ImageButton {
     /**
      * @return Whether the button is toggled.
      */
-    public final boolean isToggled() {
+    public boolean isToggled() {
         return mToggled;
     }
 
@@ -49,7 +49,7 @@ public final class ImageToggleButton extends ImageButton {
      * Sets the toggled state.
      * @param toggled Whether the button should be toggled.
      */
-    public final void setToggled(final boolean toggled) {
+    public void setToggled(final boolean toggled) {
         this.mToggled = toggled;
         invalidate();
     }

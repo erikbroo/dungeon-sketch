@@ -18,7 +18,9 @@ public final class HexGrid extends Grid {
      * Cached result for the tan(30 degrees).
      */
     private static final float TANGENT_30_DEGREES =
+    	//CHECKSTYLE:OFF
         (float) Math.tan(30 * Math.PI / 180);
+    	//CHECKSTYLE:ON
 
     /**
      * Square size at which grid elements will stop being drawn.
@@ -39,7 +41,7 @@ public final class HexGrid extends Grid {
         }
 
         float offset =
-            .5f * tokenDiameter - (float)Math.floor(.5 * tokenDiameter);
+            .5f * tokenDiameter - (float) Math.floor(.5 * tokenDiameter);
 
         // If we have a token that is smaller than one grid line, find the
         // nearest subgrid line instead.
@@ -76,7 +78,7 @@ public final class HexGrid extends Grid {
 
         float numSquaresHorizontal = (float) width / squareSize;
         float numSquaresVertical =
-            (numSquaresHorizontal * ((float) height) / ((float) width));
+            numSquaresHorizontal * ((float) height) / ((float) width);
 
         PointF origin = transformer.getOrigin();
 

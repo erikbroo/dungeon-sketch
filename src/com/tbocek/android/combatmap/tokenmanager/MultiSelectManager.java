@@ -16,14 +16,15 @@ public final class MultiSelectManager {
 	/**
 	 * The selected tokens.  Maps token ID to token.
 	 */
-	private Map<String, BaseToken> selection = new HashMap<String, BaseToken>();
+	private Map<String, BaseToken> mSelection 
+			= new HashMap<String, BaseToken>();
 
 	/**
 	 * Adds a token to the current selection.
 	 * @param t The token to add.  Should be a unique clone.
 	 */
 	public void addToken(final BaseToken t) {
-		selection.put(t.getTokenId(), t);
+		mSelection.put(t.getTokenId(), t);
 	}
 
 	/**
@@ -31,7 +32,7 @@ public final class MultiSelectManager {
 	 * @param tokenId ID of the token to remove.
 	 */
 	public void removeToken(final String tokenId) {
-		selection.remove(tokenId);
+		mSelection.remove(tokenId);
 	}
 
 	/**
@@ -39,7 +40,7 @@ public final class MultiSelectManager {
 	 * @return The tokens.
 	 */
 	public Collection<BaseToken> getSelectedTokens() {
-		return selection.values();
+		return mSelection.values();
 	}
 
 	/**
@@ -48,13 +49,13 @@ public final class MultiSelectManager {
 	 * @return Whether the token ID is currently selected.
 	 */
 	public boolean isTokenSelected(final String tokenId) {
-		return selection.containsKey(tokenId);
+		return mSelection.containsKey(tokenId);
 	}
 
 	/**
 	 * Clears the selection.
 	 */
 	public void selectNone() {
-		selection.clear();
+		mSelection.clear();
 	}
 }

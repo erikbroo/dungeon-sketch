@@ -104,9 +104,16 @@ public final class CombatView extends SurfaceView {
 	private boolean mSurfaceReady = false;
 	
 	/**
+	 * Drag and drop listener that allows the user to drop tokens onto the grid.
+	 */
+	private View.OnDragListener mOnDrag;
+	
+	/**
 	 * The current map data object that undo/redo actions will affect.
 	 */
 	private UndoRedoTarget mUndoRedoTarget;
+	
+	private NewTextEntryListener mNewTextEntryListener;
 
 	private SurfaceHolder.Callback mSurfaceHolderCallback 
 			= new SurfaceHolder.Callback() {
@@ -582,11 +589,6 @@ public final class CombatView extends SurfaceView {
 	}
 
 	/**
-	 * Drag and drop listener that allows the user to drop tokens onto the grid.
-	 */
-	private View.OnDragListener mOnDrag;
-
-	/**
 	 * Gets the currently active line collection.
 	 *
 	 * @return The active lines.
@@ -706,8 +708,7 @@ public final class CombatView extends SurfaceView {
 
 		void requestEditTextObject(Text t);
 	}
-	
-	private NewTextEntryListener mNewTextEntryListener;
+
 	
 	public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
 		if (mNewTextEntryListener != null) {

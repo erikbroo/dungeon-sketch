@@ -30,6 +30,34 @@ public abstract class BaseToken  {
     private static final float CUSTOM_BORDER_STROKE_WIDTH = 3;
 
     /**
+     * OPTIMIZATION: Shared, preallocated StringBuffer used to concatenate
+     * strings for token IDs.
+     */
+    private static final StringBuffer CONCAT_BUFFER = new StringBuffer(1024);
+    
+    /**
+     * Creates and loads a token from the given deserialization stream.
+     * @param s Deserialization object.
+     * @param tokenDatabase Token database for token creation.
+     * @return The newly created token.
+     * @throws IOException On deserialization error.
+     */
+	public static BaseToken deserialize(MapDataDeserializer s,
+			TokenDatabase tokenDatabase) throws IOException {
+		s.expectObjectStart();
+		String tokenId = s.readString();
+		BaseToken t = tokenDatabase.createToken(tokenId);
+		t.mSize = s.readFloat();
+		t.mLocation.x = s.readFloat();
+		t.mLocation.y = s.readFloat();
+		t.mHasCustomBorder = s.readBoolean();
+		t.mCustomBorderColor = s.readInt();
+		t.mBloodied = s.readBoolean();
+		s.expectObjectEnd();
+		return t;
+	}
+	
+    /**
      * The token's location in grid space.
      */
     private PointF mLocation = new PointF(0, 0);
@@ -59,6 +87,13 @@ public abstract class BaseToken  {
      */
     private int mCustomBorderColor;
     
+    /**
+     * OPTIMIZATION: This token's ID.  Because the token ID is computed using
+     * relatively expensive operations, is needed frequently, and never changes
+     * throughout the object's lifetime, it can be cached here.
+     */
+    private String mCachedTokenId;
+
     /**
      * Sets a custom border color for the token.
      * @param color Color of the custom border.
@@ -249,18 +284,6 @@ public abstract class BaseToken  {
         return r;
     }
 
-    /**
-     * OPTIMIZATION: Shared, preallocated StringBuffer used to concatenate
-     * strings for token IDs.
-     */
-    private static final StringBuffer CONCAT_BUFFER = new StringBuffer(1024);
-
-    /**
-     * OPTIMIZATION: This token's ID.  Because the token ID is computed using
-     * relatively expensive operations, is needed frequently, and never changes
-     * throughout the object's lifetime, it can be cached here.
-     */
-    private String mCachedTokenId;
 
     /**
      * Gets a unique identifier incorporating the token's type and a further
@@ -364,25 +387,5 @@ public abstract class BaseToken  {
     	s.endObject();
     }
 
-    /**
-     * Creates and loads a token from the given deserialization stream.
-     * @param s Deserialization object.
-     * @param tokenDatabase Token database for token creation.
-     * @return The newly created token.
-     * @throws IOException On deserialization error.
-     */
-	public static BaseToken deserialize(MapDataDeserializer s,
-			TokenDatabase tokenDatabase) throws IOException {
-		s.expectObjectStart();
-		String tokenId = s.readString();
-		BaseToken t = tokenDatabase.createToken(tokenId);
-		t.mSize = s.readFloat();
-		t.mLocation.x = s.readFloat();
-		t.mLocation.y = s.readFloat();
-		t.mHasCustomBorder = s.readBoolean();
-		t.mCustomBorderColor = s.readInt();
-		t.mBloodied = s.readBoolean();
-		s.expectObjectEnd();
-		return t;
-	}
+
 }

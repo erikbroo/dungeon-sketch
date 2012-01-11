@@ -64,27 +64,27 @@ public final class TagListView extends ScrollView {
     /**
      * The layout that contains the list of tags.
      */
-    private LinearLayout innerLayout;
+    private LinearLayout mInnerLayout;
 
     /**
      * All text views representing tags.
      */
-    private List<TextView> textViews = new ArrayList<TextView>();
+    private List<TextView> mTextViews = new ArrayList<TextView>();
 
     /**
      * The tag that should be highlighted.
      */
-    private String highlightedTag = TokenDatabase.ALL;
+    private String mHighlightedTag = TokenDatabase.ALL;
 
     /**
      * The listener that is called when a tag is selected or dragged to.
      */
-    private OnTagListActionListener onTagListAction;
+    private OnTagListActionListener mOnTagListAction;
 
     /**
      * Size in points of the text used in the child tag views.
      */
-    private float textSize = 30;
+    private float mTextSize = 30;
 
     /**
      * Constructor.
@@ -92,9 +92,9 @@ public final class TagListView extends ScrollView {
      */
     public TagListView(final Context context) {
         super(context);
-        innerLayout = new LinearLayout(this.getContext());
-        addView(innerLayout);
-        innerLayout.setOrientation(LinearLayout.VERTICAL);
+        mInnerLayout = new LinearLayout(this.getContext());
+        addView(mInnerLayout);
+        mInnerLayout.setOrientation(LinearLayout.VERTICAL);
     }
 
     /**
@@ -103,17 +103,17 @@ public final class TagListView extends ScrollView {
      * @param collection The displayed tags.
      */
     public void setTagList(final Collection<String> collection) {
-        innerLayout.removeAllViews();
-        textViews.clear();
-        innerLayout.addView(createTextView(TokenDatabase.ALL));
+        mInnerLayout.removeAllViews();
+        mTextViews.clear();
+        mInnerLayout.addView(createTextView(TokenDatabase.ALL));
         for (String tag : collection) {
-            innerLayout.addView(createTextView(tag));
+            mInnerLayout.addView(createTextView(tag));
         }
 
-        setHighlightedTag(highlightedTag);
+        setHighlightedTag(mHighlightedTag);
 
-        if (onTagListAction != null) {
-            onTagListAction.onChangeSelectedTag(highlightedTag);
+        if (mOnTagListAction != null) {
+            mOnTagListAction.onChangeSelectedTag(mHighlightedTag);
         }
     }
 
@@ -122,8 +122,8 @@ public final class TagListView extends ScrollView {
      * @param size The size to set.
      */
     public void setTextSize(final float size) {
-    	this.textSize = size;
-    	for (TextView view : textViews) {
+    	this.mTextSize = size;
+    	for (TextView view : mTextViews) {
     		view.setTextSize(size);
     	}
     }
@@ -136,16 +136,16 @@ public final class TagListView extends ScrollView {
     private TextView createTextView(final String text) {
         TextView v = new TextView(this.getContext());
         v.setText(text);
-        v.setTextSize(this.textSize);
+        v.setTextSize(this.mTextSize);
         v.setPadding(HORIZONTAL_PADDING, VERTICAL_PADDING, 0, VERTICAL_PADDING);
-        textViews.add(v);
+        mTextViews.add(v);
         v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
                 TextView textView  = (TextView) v;
                 setHighlightedTag(textView.getText().toString());
-                if (onTagListAction != null) {
-                    onTagListAction.onChangeSelectedTag(
+                if (mOnTagListAction != null) {
+                    mOnTagListAction.onChangeSelectedTag(
                     		textView.getText().toString());
                 }
             }
@@ -159,8 +159,8 @@ public final class TagListView extends ScrollView {
                     if (event.getAction() == DragEvent.ACTION_DROP) {
                         Collection<BaseToken> toAdd =
                         	(Collection<BaseToken>) event.getLocalState();
-                        if (onTagListAction != null) {
-                            onTagListAction.onDragTokensToTag(
+                        if (mOnTagListAction != null) {
+                            mOnTagListAction.onDragTokensToTag(
                             		toAdd, tv.getText().toString());
                         }
                         setTextViewColorToCorrectHighlight(tv);
@@ -189,7 +189,7 @@ public final class TagListView extends ScrollView {
      */
     public void setOnTagListActionListener(
     		final OnTagListActionListener listener) {
-        this.onTagListAction = listener;
+        this.mOnTagListAction = listener;
     }
 
     /**
@@ -197,8 +197,8 @@ public final class TagListView extends ScrollView {
      * @param tag The highlighted tag.
      */
     private void setHighlightedTag(final String tag) {
-        highlightedTag = tag;
-        for (TextView v : textViews) {
+        mHighlightedTag = tag;
+        for (TextView v : mTextViews) {
             setTextViewColorToCorrectHighlight(v);
         }
     }
@@ -209,7 +209,7 @@ public final class TagListView extends ScrollView {
      * @param v The text view to change.
      */
     private void setTextViewColorToCorrectHighlight(final TextView v) {
-        if (v.getText() == highlightedTag) {
+        if (v.getText() == mHighlightedTag) {
             v.setTextColor(Color.WHITE);
         } else {
             v.setTextColor(Color.GRAY);
@@ -220,7 +220,7 @@ public final class TagListView extends ScrollView {
      * @return The currently selected tag.
      */
     public String getTag() {
-        return this.highlightedTag;
+        return this.mHighlightedTag;
     }
 
     /**

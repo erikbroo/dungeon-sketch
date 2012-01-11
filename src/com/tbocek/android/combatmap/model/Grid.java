@@ -1,26 +1,20 @@
 package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
-import java.io.Serializable;
+
+import android.graphics.Canvas;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 
-import android.graphics.Canvas;
-
 /**
  * Abstract class for the grid lines that are drawn on the main combat canvas.
  * @author Tim Bocek
  *
  */
-public abstract class Grid implements Serializable {
-	/**
-	 * ID for serialization.
-	 */
-    private static final long serialVersionUID = -6584074665656742604L;
-
+public abstract class Grid {
 
     /**
      * Factory method that creates a grid with the given parameters.
@@ -62,6 +56,21 @@ public abstract class Grid implements Serializable {
         g.mType = gridStyle;
         return g;
     }
+    
+    /**
+     * Loads and returns a Grid object from the given deserialization stream.
+     * @param s Stream to read from.
+     * @return The loaded token object.
+     * @throws IOException On deserialization error.
+     */
+    public static Grid deserialize(MapDataDeserializer s) throws IOException {
+    	s.expectObjectStart();
+    	String type = s.readString();
+    	GridColorScheme colorScheme = GridColorScheme.deserialize(s);
+    	CoordinateTransformer transform = CoordinateTransformer.deserialize(s);
+    	s.expectObjectEnd();
+    	return createGrid(type, colorScheme, transform);
+    }
 
     /**
      * The color scheme to use when drawing this grid.
@@ -72,6 +81,14 @@ public abstract class Grid implements Serializable {
      * Saved string that lead to this style of grid, for serialization.
      */
     private String mType;
+
+    /**
+     * The transformation from grid space to world space.  We track this
+     * seperately as a property of the grid so that the grid can easily be
+     * resized to fit a drawing.
+     */
+    private CoordinateTransformer mGridToWorldTransformer =
+    	new CoordinateTransformer(0, 0, 1);
 
     /**
      * Given a point, returns a the point nearest to that point that will draw
@@ -92,14 +109,6 @@ public abstract class Grid implements Serializable {
     public abstract void drawGrid(
     		final Canvas canvas,
     		final CoordinateTransformer worldToScreenTransformer);
-
-    /**
-     * The transformation from grid space to world space.  We track this
-     * seperately as a property of the grid so that the grid can easily be
-     * resized to fit a drawing.
-     */
-    private CoordinateTransformer mGridToWorldTransformer =
-    	new CoordinateTransformer(0, 0, 1);
 
     /**
      * @return The color to use when drawing grid lines.
@@ -174,20 +183,5 @@ public abstract class Grid implements Serializable {
     	this.mColorScheme.serialize(s);
     	this.mGridToWorldTransformer.serialize(s);
     	s.endObject();
-    }
-    
-    /**
-     * Loads and returns a Grid object from the given deserialization stream.
-     * @param s Stream to read from.
-     * @return The loaded token object.
-     * @throws IOException On deserialization error.
-     */
-    public static Grid deserialize(MapDataDeserializer s) throws IOException {
-    	s.expectObjectStart();
-    	String type = s.readString();
-    	GridColorScheme colorScheme = GridColorScheme.deserialize(s);
-    	CoordinateTransformer transform = CoordinateTransformer.deserialize(s);
-    	s.expectObjectEnd();
-    	return createGrid(type, colorScheme, transform);
     }
 }

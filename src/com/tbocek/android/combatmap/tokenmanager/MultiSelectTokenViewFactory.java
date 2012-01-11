@@ -17,7 +17,7 @@ public final class MultiSelectTokenViewFactory extends TokenViewFactory {
 	 * Shared object for storing the tokens that are currently selected, so that
 	 * each token button can use that information.
 	 */
-	private MultiSelectManager multiSelect = new MultiSelectManager();
+	private MultiSelectManager mMultiSelect = new MultiSelectManager();
 
 	/**
 	 * Constructor.
@@ -30,14 +30,15 @@ public final class MultiSelectTokenViewFactory extends TokenViewFactory {
 	@Override
 	protected TokenButton newTokenView(final BaseToken prototype) {
 		MultiSelectTokenButton b = new MultiSelectTokenButton(
-				getContext(), prototype, multiSelect);
+				getContext(), prototype, mMultiSelect);
 		b.refreshSelectedState();
 		return b;
 	}
 	
 	@Override
 	public TokenButton getTokenView(final BaseToken prototype) {
-		MultiSelectTokenButton mstb = (MultiSelectTokenButton)super.getTokenView(prototype);
+		MultiSelectTokenButton mstb =
+				(MultiSelectTokenButton) super.getTokenView(prototype);
 		mstb.refreshSelectedState();
 		return mstb;
 	}
@@ -48,7 +49,7 @@ public final class MultiSelectTokenViewFactory extends TokenViewFactory {
 	 *     view.
 	 */
 	public MultiSelectManager getMultiSelectManager() {
-		return multiSelect;
+		return mMultiSelect;
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
@@ -15,12 +14,24 @@ import android.graphics.RectF;
  * @author Tim
  *
  */
-public final class BoundingRectangle implements Serializable {
-    /**
-     * ID for serialization.
-     */
-    private static final long serialVersionUID = 2063166112708845928L;
-
+public final class BoundingRectangle {
+	
+	/**
+	 * Creates a new BoundingRectangle by reading from the given stream.
+	 * @param s The deserialization object to load from.
+	 * @return The loaded BoundingRectangle.
+	 * @throws IOException On deserialization error.
+	 */
+	public static BoundingRectangle deserialize(MapDataDeserializer s)
+			throws IOException {
+		BoundingRectangle r = new BoundingRectangle();
+		r.mXMin = s.readFloat();
+		r.mXMax = s.readFloat();
+		r.mYMin = s.readFloat();
+		r.mYMax = s.readFloat();
+		return r;
+	}
+	
     /**
      * Current left bounds.
      */
@@ -175,20 +186,5 @@ public final class BoundingRectangle implements Serializable {
 		s.serializeFloat(mYMin);
 		s.serializeFloat(mYMax);
 	}
-	
-	/**
-	 * Creates a new BoundingRectangle by reading from the given stream.
-	 * @param s The deserialization object to load from.
-	 * @return The loaded BoundingRectangle.
-	 * @throws IOException On deserialization error.
-	 */
-	public static BoundingRectangle deserialize(MapDataDeserializer s)
-			throws IOException {
-		BoundingRectangle r = new BoundingRectangle();
-		r.mXMin = s.readFloat();
-		r.mXMax = s.readFloat();
-		r.mYMin = s.readFloat();
-		r.mYMax = s.readFloat();
-		return r;
-	}
+
 }

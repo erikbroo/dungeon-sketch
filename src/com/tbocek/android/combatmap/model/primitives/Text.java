@@ -19,32 +19,34 @@ public class Text extends Shape {
 	 */
 	public static final String SHAPE_TYPE = "txt";
 
-	public String text;
+	public String mText;
 
-	public float textSize;
+	public float mTextSize;
 
-	public PointF location;
+	public PointF mLocation;
 	
-	private boolean erased;
+	private boolean mErased;
 	
 	public static boolean drawBoundingBoxes;
 
-	public Text(String newText, float size, int color, float strokeWidth, PointF location, CoordinateTransformer transform) {
-		this.text = newText;
-		this.textSize = size;
+	public Text(
+			String newText, float size, int color, float strokeWidth, 
+			PointF location, CoordinateTransformer transform) {
+		this.mText = newText;
+		this.mTextSize = size;
 		this.mColor = color;
 		this.mWidth = strokeWidth;
 		
-		this.location = location;
+		this.mLocation = location;
 		
 		// Compute the bounding rectangle.
 		// To do this, we need to create the Paint object so we know the size
 		// of the text.
 		ensurePaintCreated();
-		this.mPaint.setTextSize(textSize);
+		this.mPaint.setTextSize(mTextSize);
 		
 		Rect bounds = new Rect();
-		mPaint.getTextBounds(text, 0, text.length(), bounds);
+		mPaint.getTextBounds(mText, 0, mText.length(), bounds);
 		this.mBoundingRectangle.updateBounds(location);
 		this.mBoundingRectangle.updateBounds(
 				new PointF(
@@ -68,13 +70,13 @@ public class Text extends Shape {
 	 * @param copyFrom
 	 */
 	public Text(Text copyFrom) {
-		text = copyFrom.text;
-		textSize = copyFrom.textSize;
+		mText = copyFrom.mText;
+		mTextSize = copyFrom.mTextSize;
 		this.mColor = copyFrom.mColor;
 		this.mWidth = copyFrom.mWidth;
 		this.mBoundingRectangle = new BoundingRectangle();
 		this.mBoundingRectangle.updateBounds(copyFrom.mBoundingRectangle);
-		this.location = new PointF(copyFrom.location.x, copyFrom.location.y);
+		this.mLocation = new PointF(copyFrom.mLocation.x, copyFrom.mLocation.y);
 	}
 
 	@Override
@@ -85,16 +87,16 @@ public class Text extends Shape {
 	@Override
 	public boolean needsOptimization() {
 		// TODO Auto-generated method stub
-		return erased;
+		return mErased;
 	}
 
 	@Override
 	public List<Shape> removeErasedPoints() {
 		List<Shape> ret = new ArrayList<Shape>();
-		if (!erased) {
+		if (!mErased) {
 			ret.add(this);
 		} else {
-			erased = false;
+			mErased = false;
 		}
 		return ret;
 	}
@@ -102,7 +104,7 @@ public class Text extends Shape {
 	@Override
 	public void erase(PointF center, float radius) {
 		if (this.mBoundingRectangle.intersectsWithCircle(center, radius)) {
-			erased = true;
+			mErased = true;
 		}
 	}
 
@@ -120,20 +122,20 @@ public class Text extends Shape {
 	@Override
 	public void draw(final Canvas c) {
 		ensurePaintCreated();
-		this.mPaint.setTextSize(textSize);
+		this.mPaint.setTextSize(mTextSize);
 		if (Text.drawBoundingBoxes) {
 			this.mPaint.setStyle(Style.STROKE);
 			c.drawRect(this.mBoundingRectangle.toRectF(), mPaint);
 			this.mPaint.setStyle(Style.FILL);
 		}
-		c.drawText(text, location.x, location.y, this.mPaint);
+		c.drawText(mText, mLocation.x, mLocation.y, this.mPaint);
 	}
 	
 	protected Shape getMovedShape(float deltaX, float deltaY) {
 		Text t = new Text(this);
 		
-		t.location.x += deltaX;
-		t.location.y += deltaY;
+		t.mLocation.x += deltaX;
+		t.mLocation.y += deltaY;
 		t.mBoundingRectangle.move(deltaX, deltaY);
 		
 		return t;
@@ -147,21 +149,21 @@ public class Text extends Shape {
     	serializeBase(s, SHAPE_TYPE);
     	
     	s.startObject();
-    	s.serializeString(this.text);
-    	s.serializeFloat(this.textSize);
-    	s.serializeFloat(this.location.x);
-    	s.serializeFloat(this.location.y);
+    	s.serializeString(this.mText);
+    	s.serializeFloat(this.mTextSize);
+    	s.serializeFloat(this.mLocation.x);
+    	s.serializeFloat(this.mLocation.y);
     	s.endObject();
     }
 
 	@Override
 	protected void shapeSpecificDeserialize(MapDataDeserializer s) throws IOException {
 		s.expectObjectStart();
-		this.text = s.readString();
-		this.textSize = s.readFloat();
-		location = new PointF();
-		this.location.x = s.readFloat();
-		this.location.y = s.readFloat();
+		this.mText = s.readString();
+		this.mTextSize = s.readFloat();
+		mLocation = new PointF();
+		this.mLocation.x = s.readFloat();
+		this.mLocation.y = s.readFloat();
 		s.expectObjectEnd();
 	}
 

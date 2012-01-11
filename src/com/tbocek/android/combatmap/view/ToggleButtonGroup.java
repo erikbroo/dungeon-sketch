@@ -4,46 +4,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToggleButtonGroup {
-	private List<ImageToggleButton> members = new ArrayList<ImageToggleButton>();
-	private ImageToggleButton defaultMember;
+	private List<ImageToggleButton> mMembers 
+			= new ArrayList<ImageToggleButton>();
+	private ImageToggleButton mDefaultMember;
 	
 	public void add(ImageToggleButton toAdd) {
-		members.add(toAdd);
-		if (defaultMember == null) {
-			defaultMember = toAdd;
+		mMembers.add(toAdd);
+		if (mDefaultMember == null) {
+			mDefaultMember = toAdd;
 		}
 	}
 	
 	public void remove(ImageToggleButton toRemove) {
-		members.remove(toRemove);
-		if (defaultMember == toRemove) {
-			defaultMember = !members.isEmpty() ? members.get(0) : null;
+		mMembers.remove(toRemove);
+		if (mDefaultMember == toRemove) {
+			mDefaultMember = !mMembers.isEmpty() ? mMembers.get(0) : null;
 		}
 	}
 	
 	public void setGroupVisibility(final int visibility) {
-        for (ImageToggleButton b : members) {
+        for (ImageToggleButton b : mMembers) {
             b.setVisibility(visibility);
         }
     }
 	
 	public void maybeSelectDefault() {
-		for (ImageToggleButton b : members) {
+		for (ImageToggleButton b : mMembers) {
 			if (b.isToggled()) {
 				return;
 			}
 		}
-		defaultMember.performClick();
+		mDefaultMember.performClick();
 	}
 	
 	public void untoggle() {
-        for (ImageToggleButton b : members) {
+        for (ImageToggleButton b : mMembers) {
             b.setToggled(false);
         }
 	}
 
 	public void forceDefault() {
 		untoggle();
-		defaultMember.performClick();
+		mDefaultMember.performClick();
 	}
 }

@@ -17,24 +17,19 @@ import android.graphics.Paint.Style;
  */
 public final class SolidColorToken extends BaseToken {
 
-	/**
-	 * ID for serialization.
-	 */
-	private static final long serialVersionUID = 6989219234978442286L;
-
 	private static final DecimalFormat SORT_ORDER_FORMAT =
 		new DecimalFormat("#0000.###");
 
 	/**
      * This token's color.
      */
-    private int color;
+    private int mColor;
 
     /**
      * A sort order for the token, since sorting on color does not produce a
      * pleasing ordering to the tokens.
      */
-    private int sortOrder;
+    private int mSortOrder;
 
     /**
      * Constructor.
@@ -42,9 +37,9 @@ public final class SolidColorToken extends BaseToken {
      * @param sortOrder Ordering for this token.  We manually specify this
      * 		because sorting on color doesn't produce good-looking results.
      */
-    public SolidColorToken(final int c, final int sortOrder){
-        this.color = c;
-        this.sortOrder  = sortOrder;
+    public SolidColorToken(final int c, final int sortOrder) {
+        this.mColor = c;
+        this.mSortOrder  = sortOrder;
     }
 
     /**
@@ -57,7 +52,7 @@ public final class SolidColorToken extends BaseToken {
     public void drawGhost(final Canvas c, final float x, final float y, final float radius) {
         Paint p = new Paint();
         p.setStrokeWidth(2);
-        p.setColor(color);
+        p.setColor(mColor);
         p.setStyle(Style.STROKE);
         c.drawCircle(x, y, radius, p);
     }
@@ -68,7 +63,7 @@ public final class SolidColorToken extends BaseToken {
     		final boolean isManipulatable) {
     	// TODO: Respect whether the token is manipulatable.
         Paint p = new Paint();
-        p.setColor(color);
+        p.setColor(mColor);
         c.drawCircle(x, y, radius, p);
     }
 
@@ -78,22 +73,22 @@ public final class SolidColorToken extends BaseToken {
 
         Paint p = new Paint();
         // If token is already colored red, use a dark red border so it's visible
-        p.setColor(color != Color.RED ? Color.RED : Color.rgb(127, 0, 0));
+        p.setColor(mColor != Color.RED ? Color.RED : Color.rgb(127, 0, 0));
         p.setStyle(Style.STROKE);
         p.setStrokeWidth(8);
-        c.drawCircle(x, y, radius-4, p);
+        c.drawCircle(x, y, radius - 4, p);
     }
 
     @Override
     public BaseToken clone() {
-        return copyAttributesTo(new SolidColorToken(color, sortOrder));
+        return copyAttributesTo(new SolidColorToken(mColor, mSortOrder));
     }
 
     @Override
     protected String getTokenClassSpecificId() {
     	SORT_ORDER_FORMAT.setDecimalSeparatorAlwaysShown(false);
-        return SORT_ORDER_FORMAT.format(sortOrder)
-        		+ '_' + Integer.toString(color);
+        return SORT_ORDER_FORMAT.format(mSortOrder)
+        		+ '_' + Integer.toString(mColor);
     }
 
     @Override

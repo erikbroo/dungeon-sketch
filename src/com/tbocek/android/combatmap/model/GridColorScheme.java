@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
@@ -13,11 +12,7 @@ import android.graphics.Color;
  * @author Tim Bocek
  *
  */
-public final class GridColorScheme implements Serializable{
-	/**
-	 * ID to use for serialization.
-	 */
-    private static final long serialVersionUID = -7991703730328026635L;
+public final class GridColorScheme {
 
     // BUILT-IN COLOR SCHEMES
 
@@ -84,14 +79,30 @@ public final class GridColorScheme implements Serializable{
      * @return The color scheme.
      */
     public static GridColorScheme fromNamedScheme(final String name) {
-        if (name.equals("graphpaper")) return GRAPH_PAPER;
-        if (name.equals("grass")) return GRASS;
-        if (name.equals("ice")) return ICE;
-        if (name.equals("forest")) return FOREST;
-        if (name.equals("night")) return NIGHT;
-        if (name.equals("dungeon")) return DUNGEON;
-        if (name.equals("hologram")) return HOLOGRAM;
-        if (name.equals("console")) return CONSOLE;
+        if (name.equals("graphpaper")) {
+        	return GRAPH_PAPER;
+        }
+        if (name.equals("grass")) {
+        	return GRASS;
+        }
+        if (name.equals("ice")) {
+        	return ICE;
+        }
+        if (name.equals("forest")) {
+        	return FOREST;
+        }
+        if (name.equals("night")) {
+        	return NIGHT;
+        }
+        if (name.equals("dungeon")) {
+        	return DUNGEON;
+        }
+        if (name.equals("hologram")) {
+        	return HOLOGRAM;
+        }
+        if (name.equals("console")) {
+        	return CONSOLE;
+        }
         return STANDARD;
     }
 

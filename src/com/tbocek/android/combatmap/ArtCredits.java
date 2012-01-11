@@ -62,6 +62,20 @@ public class ArtCredits extends Activity {
         frame.addView(mCreditsView);
 	}
 	
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Intent intent = new Intent(this, CombatMap.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+	
 	/**
 	 * SAX handler that parses the art credit file and sets up the credits
 	 * view.
@@ -94,19 +108,4 @@ public class ArtCredits extends Activity {
 			}
 		} 
 	}
-	
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
-                Intent intent = new Intent(this, CombatMap.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 }

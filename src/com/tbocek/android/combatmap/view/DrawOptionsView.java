@@ -48,6 +48,42 @@ public final class DrawOptionsView extends LinearLayout {
      * Stroke width to use for the ink tube tool.
      */
     private static final float INKTUBE_STROKE_WIDTH = 2.0f;
+
+    /**
+     * The listener that is called when something about the current draw tool
+     * changes.
+     */
+    private OnChangeDrawToolListener mOnChangeDrawToolListener =
+        new NullChangeDrawToolListener();
+    
+    /**
+     * The layout that will hold drawing buttons.
+     */
+    private LinearLayout mLayout;
+
+    /**
+     * A list of all buttons that select a drawing tool, so that they can be
+     * modified as a group.
+     */
+    private ToggleButtonGroup mToolsGroup =  new ToggleButtonGroup();
+
+    /**
+     * A list of all buttons that select a color, so that they can be modified
+     * as a group.
+     */
+    private ToggleButtonGroup mColorGroup = new ToggleButtonGroup();
+
+    /**
+     * List of all buttons that select line widths, so that they can be modified
+     * as a group.
+     */
+    private ToggleButtonGroup mLineWidthGroup = new ToggleButtonGroup();
+
+    /**
+     * Line widths that do not make sense when using tools that don't support
+     * drawing a region (like straight lines).
+     */
+    private ToggleButtonGroup mLineWidthRegionGroup = new ToggleButtonGroup();
     
     /**
      * OnClickListener for when a button representing a color is clicked.
@@ -350,13 +386,6 @@ public final class DrawOptionsView extends LinearLayout {
 
 
     /**
-     * The listener that is called when something about the current draw tool
-     * changes.
-     */
-    private OnChangeDrawToolListener mOnChangeDrawToolListener =
-        new NullChangeDrawToolListener();
-
-    /**
      * Sets the listener to call when a new draw tool is selected.
      * @param listener The new listener
      */
@@ -364,35 +393,6 @@ public final class DrawOptionsView extends LinearLayout {
             final OnChangeDrawToolListener listener) {
         this.mOnChangeDrawToolListener = listener;
     }
-
-    /**
-     * The layout that will hold drawing buttons.
-     */
-    private LinearLayout mLayout;
-
-    /**
-     * A list of all buttons that select a drawing tool, so that they can be
-     * modified as a group.
-     */
-    private ToggleButtonGroup mToolsGroup =  new ToggleButtonGroup();
-
-    /**
-     * A list of all buttons that select a color, so that they can be modified
-     * as a group.
-     */
-    private ToggleButtonGroup mColorGroup = new ToggleButtonGroup();
-
-    /**
-     * List of all buttons that select line widths, so that they can be modified
-     * as a group.
-     */
-    private ToggleButtonGroup mLineWidthGroup = new ToggleButtonGroup();
-
-    /**
-     * Line widths that do not make sense when using tools that don't support
-     * drawing a region (like straight lines).
-     */
-    private ToggleButtonGroup mLineWidthRegionGroup = new ToggleButtonGroup();
 
     /**
      * Automatically loads the default tool.

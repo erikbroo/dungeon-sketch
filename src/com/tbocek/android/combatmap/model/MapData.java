@@ -5,11 +5,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
 
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
@@ -38,17 +35,10 @@ public final class MapData {
 	private static final int INITIAL_ZOOM = 64;
 	
     /**
-     * Private constructor - singleton pattern.
-     */
-    private MapData() {
-
-    }
-
-    /**
      * The map data currently being managed.
      */
     private static MapData instance;
-
+	
     /**
      * Gets the current map data instance.
      * @return The map data.
@@ -66,7 +56,7 @@ public final class MapData {
     public static void clear() {
         instance = new MapData();
     }
-
+    
     /**
      * Loads the map data from an input stream.
      * @param input The stream to read from.
@@ -105,7 +95,32 @@ public final class MapData {
 	        outWriter.close();
     	}
     }
+    
+	/**
+	 * Creates, populates, and returns a new MapData object from the given
+	 * deserialization stream.
+	 * @param s The stream to read from.
+	 * @param tokens Token database to load tokens from.
+	 * @return The created map data.
+	 * @throws IOException On deserialization error.
+	 */
+	public static MapData deserialize(
+			MapDataDeserializer s, TokenDatabase tokens) throws IOException {
+		@SuppressWarnings("unused")
+		int mapDataVersion = s.readInt();
+		MapData data = new MapData();
+		data.mGrid = Grid.deserialize(s);
+		data.mTransformer = CoordinateTransformer.deserialize(s);
+		data.mTokens.deserialize(s, tokens);
+		data.mBackgroundLines.deserialize(s);
+		data.mBackgroundFogOfWar.deserialize(s);
+		data.mGmNoteLines.deserialize(s);
+		data.mGmNotesFogOfWar.deserialize(s);
+		data.mAnnotationLines.deserialize(s);
+		return data;
+	}
 
+    
     /**
      * Transformation from world space to screen space.
      */
@@ -177,6 +192,19 @@ public final class MapData {
      * The grid to draw.
      */
     private Grid mGrid = new RectangularGrid();
+
+	
+    /**
+     * Private constructor - singleton pattern.
+     */
+    private MapData() {
+
+    }
+
+
+
+
+
 
 
     /**
@@ -275,29 +303,7 @@ public final class MapData {
 		this.mAnnotationLines.serialize(s);
 	}
 	
-	/**
-	 * Creates, populates, and returns a new MapData object from the given
-	 * deserialization stream.
-	 * @param s The stream to read from.
-	 * @param tokens Token database to load tokens from.
-	 * @return The created map data.
-	 * @throws IOException On deserialization error.
-	 */
-	public static MapData deserialize(
-			MapDataDeserializer s, TokenDatabase tokens) throws IOException {
-		@SuppressWarnings("unused")
-		int mapDataVersion = s.readInt();
-		MapData data = new MapData();
-		data.mGrid = Grid.deserialize(s);
-		data.mTransformer = CoordinateTransformer.deserialize(s);
-		data.mTokens.deserialize(s, tokens);
-		data.mBackgroundLines.deserialize(s);
-		data.mBackgroundFogOfWar.deserialize(s);
-		data.mGmNoteLines.deserialize(s);
-		data.mGmNotesFogOfWar.deserialize(s);
-		data.mAnnotationLines.deserialize(s);
-		return data;
-	}
+
 
 	/**
 	 * @return the transformer

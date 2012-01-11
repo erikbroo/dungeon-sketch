@@ -39,8 +39,7 @@ public final class BuiltInImageToken extends DrawableToken {
     public BuiltInImageToken(final int resourceId) {
         mResourceId = resourceId;
     }
-
-
+    
     @Override
     protected Drawable createDrawable() {
         return res != null ? res.getDrawable(mResourceId) : null;

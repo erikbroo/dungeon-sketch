@@ -26,7 +26,7 @@ public final class FreehandLine extends Shape {
     /**
      * The points that comprise this line.
      */
-    private List<PointF> points = new ArrayList<PointF>();
+    private List<PointF> mPoints = new ArrayList<PointF>();
 
     /**
      * Whether each point in the line should be drawn.  This allows us to
@@ -34,9 +34,10 @@ public final class FreehandLine extends Shape {
      * However, it's only a temporary fix; the line should later be optimized
      * so that points that shouldn't draw get removed instead.
      */
-    private List<Boolean> shouldDraw = new ArrayList<Boolean>();
+    private List<Boolean> mShouldDraw = new ArrayList<Boolean>();
 
-    private transient List<StraightLine> partiallyErasedLineSegments = new ArrayList<StraightLine>();
+    private transient List<StraightLine> mPartiallyErasedLineSegments 
+    		= new ArrayList<StraightLine>();
 
     /**
      * Constructor.
@@ -54,8 +55,8 @@ public final class FreehandLine extends Shape {
      */
     @Override
 	public void addPoint(final PointF p) {
-        points.add(p);
-        shouldDraw.add(true);
+        mPoints.add(p);
+        mShouldDraw.add(true);
         mBoundingRectangle.updateBounds(p);
         invalidatePath();
     }
@@ -68,27 +69,27 @@ public final class FreehandLine extends Shape {
 	@Override
 	protected Path createPath() {
 		//Do not try to draw a line with too few points.
-		if (points.size() < 2) {
+		if (mPoints.size() < 2) {
 			return null;
 		}
 
 		Path path = new Path();
 		boolean penDown = false;
-		for (int i = 0; i < points.size(); ++i) {
-		    PointF p1 = points.get(i);
+		for (int i = 0; i < mPoints.size(); ++i) {
+		    PointF p1 = mPoints.get(i);
 		    if (penDown) {
 		    	path.lineTo(p1.x, p1.y);
 		    } else {
 		    	path.moveTo(p1.x, p1.y);
 		    }
-		    penDown = shouldDraw.get(i).booleanValue();
+		    penDown = mShouldDraw.get(i).booleanValue();
 		}
 
-		if (partiallyErasedLineSegments == null) {
-			partiallyErasedLineSegments = new ArrayList<StraightLine>();
+		if (mPartiallyErasedLineSegments == null) {
+			mPartiallyErasedLineSegments = new ArrayList<StraightLine>();
 		}
 
-		for (StraightLine l : partiallyErasedLineSegments) {
+		for (StraightLine l : mPartiallyErasedLineSegments) {
 			path.addPath(l.createPath());
 		}
 
@@ -106,27 +107,27 @@ public final class FreehandLine extends Shape {
     @Override
 	public void erase(final PointF center, final float radius) {
         if (mBoundingRectangle.intersectsWithCircle(center, radius)) {
-    		if (partiallyErasedLineSegments == null) {
-    			partiallyErasedLineSegments = new ArrayList<StraightLine>();
+    		if (mPartiallyErasedLineSegments == null) {
+    			mPartiallyErasedLineSegments = new ArrayList<StraightLine>();
     		}
 
-        	for (StraightLine sl : partiallyErasedLineSegments) {
+        	for (StraightLine sl : mPartiallyErasedLineSegments) {
         		sl.erase(center, radius);
         	}
 
-	        for (int i = 0; i < points.size() - 1; ++i) {
-	        	if (shouldDraw.get(i)) {
-		        	PointF p1 = points.get(i);
-		        	PointF p2 = points.get(i+1);
+	        for (int i = 0; i < mPoints.size() - 1; ++i) {
+	        	if (mShouldDraw.get(i)) {
+		        	PointF p1 = mPoints.get(i);
+		        	PointF p2 = mPoints.get(i + 1);
 		        	Util.IntersectionPair intersection =
 		        		Util.lineCircleIntersection(p1, p2, center, radius);
 		        	if (intersection != null) {
-		        		shouldDraw.set(i, false);
+		        		mShouldDraw.set(i, false);
 		        		StraightLine sl = new StraightLine(this.mColor, this.mWidth);
 		        		sl.addPoint(p1);
 		        		sl.addPoint(p2);
 		        		sl.erase(center, radius);
-		        		this.partiallyErasedLineSegments.add(sl);
+		        		this.mPartiallyErasedLineSegments.add(sl);
 		        	}
 	        	}
 	        }
@@ -146,27 +147,27 @@ public final class FreehandLine extends Shape {
         List<Shape> optimizedLines = new ArrayList<Shape>();
         FreehandLine l = new FreehandLine(mColor, mWidth);
         optimizedLines.add(l);
-        for (int i = 0; i < points.size(); ++i) {
-        	l.addPoint(points.get(i));
-            if (!this.shouldDraw.get(i).booleanValue()) {
+        for (int i = 0; i < mPoints.size(); ++i) {
+        	l.addPoint(mPoints.get(i));
+            if (!this.mShouldDraw.get(i).booleanValue()) {
                 //Do not add a line with only one point in it, those are useless
-                if (l.points.size() <= 1) {
+                if (l.mPoints.size() <= 1) {
                     optimizedLines.remove(l);
                 }
                 l = new FreehandLine(mColor, mWidth);
                 optimizedLines.add(l);
             }
-            this.shouldDraw.set(i, true);
+            this.mShouldDraw.set(i, true);
         }
 
-        for (StraightLine sl : partiallyErasedLineSegments) {
+        for (StraightLine sl : mPartiallyErasedLineSegments) {
         	if (sl.needsOptimization()) {
         		optimizedLines.addAll(sl.removeErasedPoints());
         	} else {
         		optimizedLines.add(sl);
         	}
         }
-        this.partiallyErasedLineSegments = new ArrayList<StraightLine>();
+        this.mPartiallyErasedLineSegments = new ArrayList<StraightLine>();
 
         // shouldDraw was reset, path is invalid
         invalidatePath();
@@ -180,7 +181,7 @@ public final class FreehandLine extends Shape {
      */
     @Override
 	public boolean needsOptimization() {
-    	for (boolean b : shouldDraw) {
+    	for (boolean b : mShouldDraw) {
     		if (!b) {
     			return true;
     		}
@@ -209,11 +210,11 @@ public final class FreehandLine extends Shape {
 
     	// i and j store consecutive points, so they define a line segment.
     	// Start with the line segment from the last point to the first point.
-    	int j = points.size() - 1;
+    	int j = mPoints.size() - 1;
     	boolean oddNodes = false;
-    	for (int i = 0; i < points.size(); ++i) {
-    		PointF pj = points.get(j);
-    		PointF pi = points.get(i);
+    	for (int i = 0; i < mPoints.size(); ++i) {
+    		PointF pj = mPoints.get(j);
+    		PointF pi = mPoints.get(i);
 
     		// Check if the test point is in between the y coordinates of the
     		// two points that make up this line segment.  This checks two
@@ -236,7 +237,7 @@ public final class FreehandLine extends Shape {
     	serializeBase(s, SHAPE_TYPE);
     	s.startObject();
     	s.startArray();
-    	for (PointF p : this.points) {
+    	for (PointF p : this.mPoints) {
     		s.serializeFloat(p.x);
     		s.serializeFloat(p.y);
     	}
@@ -253,8 +254,8 @@ public final class FreehandLine extends Shape {
 			PointF p = new PointF();
 			p.x = s.readFloat();
 			p.y = s.readFloat();
-			this.points.add(p);
-			this.shouldDraw.add(true);
+			this.mPoints.add(p);
+			this.mShouldDraw.add(true);
 		}
 		s.expectArrayEnd();
 		s.expectObjectEnd();

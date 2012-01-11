@@ -1,8 +1,6 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -24,7 +22,7 @@ public final class MultiSelectTokenButton extends TokenButton {
 	/**
 	 * Whether this token is currently selected.
 	 */
-    private boolean selected;
+    private boolean mSelected;
 
     /**
      * The manager that tracks which tokens are selected across a group of
@@ -53,9 +51,9 @@ public final class MultiSelectTokenButton extends TokenButton {
         this.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(final View arg0) {
-				selected = !selected;
+				mSelected = !mSelected;
 				invalidate();
-				if (selected) {
+				if (mSelected) {
 					mMultiSelect.addToken(getClone());
 				} else {
 					mMultiSelect.removeToken(getTokenId());
@@ -67,7 +65,7 @@ public final class MultiSelectTokenButton extends TokenButton {
     @Override
     public void onDraw(final Canvas c) {
     	super.onDraw(c);
-	    if (selected) {
+	    if (mSelected) {
 	    	float radius = this.getTokenRadius();
 	    	Paint p = new Paint();
 	    	p.setColor(TagListView.DRAG_HIGHLIGHT_COLOR);
@@ -81,7 +79,7 @@ public final class MultiSelectTokenButton extends TokenButton {
     protected void onStartDrag() {
        	// Add this token to the selection, so we are at least dragging it.    
     	ArrayList<BaseToken> tokens = new ArrayList<BaseToken>(this.mMultiSelect.getSelectedTokens());
-    	if (!this.selected){
+    	if (!this.mSelected) {
     		tokens.add(0, getClone());
     	}
         startDrag(
@@ -94,6 +92,6 @@ public final class MultiSelectTokenButton extends TokenButton {
      * Reloads whether this token is selected from the token database.
      */
 	public void refreshSelectedState() {
-		this.selected = mMultiSelect.isTokenSelected(getTokenId());
+		this.mSelected = mMultiSelect.isTokenSelected(getTokenId());
 	}
 }

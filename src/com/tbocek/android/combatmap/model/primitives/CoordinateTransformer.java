@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
@@ -15,12 +14,23 @@ import android.graphics.Canvas;
  * @author Tim Bocek
  *
  */
-public final class CoordinateTransformer implements Serializable {
+public final class CoordinateTransformer {
 
-	/**
-	 * ID for serialization.
-	 */
-    private static final long serialVersionUID = -336836518697184615L;
+    /**
+     * Creates and loads a coordinate transform object from the given stream.
+     * @param s Stream to load from.
+     * @return The loaded CoordinateTransformer object.
+     * @throws IOException On deserialization error.
+     */
+	public static CoordinateTransformer deserialize(MapDataDeserializer s)
+			throws IOException {
+		s.expectObjectStart();
+		float x = s.readFloat();
+		float y = s.readFloat();
+		float zoom = s.readFloat();
+		s.expectObjectEnd();
+		return new CoordinateTransformer(x, y, zoom);
+	}
 
     /**
      * Conversion of lengths in world space to lengths in screen space.
@@ -217,19 +227,4 @@ public final class CoordinateTransformer implements Serializable {
     	s.endObject();
     }
 
-    /**
-     * Creates and loads a coordinate transform object from the given stream.
-     * @param s Stream to load from.
-     * @return The loaded CoordinateTransformer object.
-     * @throws IOException On deserialization error.
-     */
-	public static CoordinateTransformer deserialize(MapDataDeserializer s)
-			throws IOException {
-		s.expectObjectStart();
-		float x = s.readFloat();
-		float y = s.readFloat();
-		float zoom = s.readFloat();
-		s.expectObjectEnd();
-		return new CoordinateTransformer(x, y, zoom);
-	}
 }

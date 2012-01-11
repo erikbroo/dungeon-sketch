@@ -172,7 +172,20 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	}
 	
 
-	public Shape createText(String text, float size, int color, float strokeWidth, PointF location, CoordinateTransformer transform) {
+	/**
+	 * Creates a new text object with the given parameters in this line
+	 * collection.
+	 * @param text Text that the object contains.
+	 * @param size Font size.
+	 * @param color Font color.
+	 * @param strokeWidth Stroke width (currently unused).
+	 * @param location Location.
+	 * @param transform World to screen space transformer.
+	 * @return The created text object.
+	 */
+	public Shape createText(
+			String text, float size, int color, float strokeWidth, 
+			PointF location, CoordinateTransformer transform) {
 		Text t = new Text(text, size, color, strokeWidth, location, transform);
 		Command c = new Command(this);
 		c.addCreatedShape(t);
@@ -181,12 +194,19 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	}
 	
 
+	/**
+	 * Modifies the given text object's contents and font.
+	 * @param editedTextObject Text object to modify.
+	 * @param text The new text.
+	 * @param size The new font size.
+	 * @param transformer World to screen space transformer.
+	 */
 	public void editText(
 			Text editedTextObject, String text, float size, 
 			CoordinateTransformer transformer) {
 		Text newText = new Text(
 				text, size, editedTextObject.mColor, editedTextObject.mWidth, 
-				editedTextObject.location, transformer);
+				editedTextObject.mLocation, transformer);
 		Command c = new Command(this);
 		c.addCreatedShape(newText);
 		c.addDeletedShape(editedTextObject);
@@ -214,6 +234,14 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
         it.add(line);
     }
 
+    /**
+     * Finds and returns the shape under the given point, potentially with the
+     * given type.  If there are multiple candidates, returns one arbitrarily.
+     * @param under Point that should lie in the found shape.
+     * @param requestedClass Desired class (subclass of Shape) to find, or null
+     * 		to find anything.
+     * @return A shape that meets the criteria.
+     */
     public Shape findShape(final PointF under, final Class<?> requestedClass) {
     	for (Shape l : mLines) {
         	if ((requestedClass == null || l.getClass() == requestedClass) 
@@ -225,6 +253,12 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     }
     
 
+    /**
+     * Finds and returns the shape under the given point.  If there are multiple
+     * candidates, returns one arbitrarily.
+     * @param under Point that should lie in the found shape.
+     * @return A shape that meets the criteria.
+     */
 	public Shape findShape(PointF under) {
 		return findShape(under, null);
 	}
@@ -287,6 +321,11 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
         return mLines.isEmpty();
     }
     
+    /**
+     * Saves this line collection to the given stream.
+     * @param s Stream to save to.
+     * @throws IOException On serialization error.
+     */
 	public void serialize(MapDataSerializer s) throws IOException {
 		s.startArray();
 		for (Shape shape: this.mLines) {
@@ -295,7 +334,11 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 		s.endArray();
 	}
 	
-
+	/**
+	 * Populates this line collection by reading from the given stream.
+	 * @param s Stream to load from.
+	 * @throws IOException On deserialization error.
+	 */
 	public void deserialize(MapDataDeserializer s) throws IOException {
 		int arrayLevel = s.expectArrayStart();
 		while (s.hasMoreArrayItems(arrayLevel)) {
@@ -411,10 +454,16 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     	}
     }
 
+    /**
+     * Undoes an operation, if there is one to undo.
+     */
 	public void undo() {
 		mCommandHistory.undo();
 	}
 
+	/**
+	 * Redoes an operation, if there is one to redo.
+	 */
 	public void redo() {
 		mCommandHistory.redo();
 	}
