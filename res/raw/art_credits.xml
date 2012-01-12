@@ -54,6 +54,20 @@
         
     </artist>
     <artist
+        name="Kalle Bladin"
+        copyright="© Kalle Bladin. All rights reserved."
+        url="http://k-bladin.deviantart.com/;http://kallebladin.carbonmade.com/">
+        <token
+            res="boy_and_monster"
+            url="http://k-bladin.deviantart.com/art/A-child-and-his-monster-243876503"/>
+        <token
+            res="tricky_troll"
+            url="http://k-bladin.deviantart.com/art/Tricky-Troll-173885312"/>
+        <token
+            res="persuasion"
+            url="http://k-bladin.deviantart.com/art/Persuasion-278313180"/>
+    </artist>
+    <artist
         name="Storn A. Cook"
         url="http://www.stornart.com/"
         copyright="Lisenced under CC BY NC SA 2.5">
@@ -141,6 +155,52 @@
             url="http://www.flickr.com/photos/24267755@N04/5607624261/"/>
     </artist>
     <artist
+        name="Mac M 13"
+        copyright="Lisenced under CC BY SA 3.0">
+        <token 
+            res="dragon_furioso"
+            url="http://commons.wikimedia.org/wiki/File:Furioso_dragon-13-.jpg"/>
+    </artist>
+    <artist
+        name="Matěj Čadil"
+        copyright="CC BY 3.0">
+        <token
+            res="thorin"    
+            url="http://commons.wikimedia.org/wiki/File:Thorin_in_blue_mountains.jpg"/>
+    </artist>
+    <artist
+        name="Johnaemeth"
+        copyright="CC BY SA 3.0">
+        <token
+            res="johnaemeth"
+            url="http://commons.wikimedia.org/wiki/File:The_Sun-God%27s_Lair_In_The_Dwellings_Under_The_Pyro-Middeon_ZOOMED2.jpg"/>   
+    </artist>
+    <artist
+        name="Markus Röncke"
+        copyright="Public Domain"
+        url="http://www.elfwood.com/~demodus">
+        <token
+            res="orcshaman"
+            url="http://www.elfwood.com/~demodus/Orc-Shaman.2676868.html"/>  
+        <token
+            res="iseedeath"
+            url="http://www.elfwood.com/~demodus/-and-I-see-death-through-golden-eyes.2676871.html"/>
+        <token
+            res="pastandpresent"
+            url="http://www.elfwood.com/~demodus/Master-of-Past-and-Present.3570253.html"/>
+        <token
+            res="flamesandshadows"
+            url="http://www.elfwood.com/~demodus/Of-Flames-and-Shadows.2676848.html"/>
+    </artist>
+    <artist
+        name="Markus Röncke 2"
+        copyright="CC Sampling 1.0"
+        url="http://www.elfwood.com/~demodus">
+        <token
+            res="dragon_roncke"
+            url="http://www.elfwood.com/~demodus/The-Dragon-s-Sky.2676846.html"/>  
+    </artist>
+    <artist
         name="Sir Edwin Henry Landseer"
         copyright="Available in the public domain">
         <token res="cheetah"/>
@@ -164,5 +224,12 @@
         copyright="Available in the public domain">
         <token res="gorgon"/>
         <token res="perseus"/>
+    </artist>
+    <artist
+        name="Victor Vasnetsov"
+        copyright="Available in the public domain">
+        <token res="vasnetsov1"/>
+        <token res="vasnetsov2"/>
+        <token res="vasnetsov3"/>
     </artist>
 </art_credits>
