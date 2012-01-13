@@ -30,17 +30,17 @@ public final class TokenSelectorView extends LinearLayout {
 	/**
      * The inner layout that contains the tokens.
      */
-	private LinearLayout tokenLayout;
+	private LinearLayout mTokenLayout;
 
 	/**
 	 * Button that represents opening the tag selector.
 	 */
-    private Button groupSelector;
+    private Button mGroupSelector;
 
     /**
      * Button that represents opening the token manager.
      */
-    private Button tokenManager;
+    private Button mTokenManager;
 
     /**
      * A factory that caches views already created for a given token.
@@ -50,8 +50,32 @@ public final class TokenSelectorView extends LinearLayout {
     /**
      * Whether this control is being superimposed over a dark background.
      */
-    private boolean drawDark;
+    private boolean mDrawDark;
 
+    /**
+     * Listener that fires when an individual token is clicked.  This forwards
+     * the call on.
+     */
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            TokenButton clicked = (TokenButton) v;
+            if (mOnTokenSelectedListener != null) {
+                mOnTokenSelectedListener.onTokenSelected(clicked.getClone());
+            }
+        }
+    };
+
+    /**
+     * Listener that fires when a token is selected.
+     */
+    private OnTokenSelectedListener mOnTokenSelectedListener;
+
+    /**
+     * Database to load tokens from.
+     */
+    private TokenDatabase mTokenDatabase;
+    
     /**
      * Constructor.
      * @param context The context to create this view in.
@@ -62,17 +86,18 @@ public final class TokenSelectorView extends LinearLayout {
         //Create and add the child layout, which will be a linear layout of
         // tokens.
 
-        tokenLayout = new LinearLayout(context);
+        mTokenLayout = new LinearLayout(context);
         ((HorizontalScrollView) findViewById(R.id.token_scroll_view))
-        		.addView(tokenLayout);
+        		.addView(mTokenLayout);
 
-        groupSelector = (Button) findViewById(
+        mGroupSelector = (Button) findViewById(
         		R.id.token_category_selector_button);
-        groupSelector.setAlpha(1.0f);
-        tokenManager = (Button) findViewById(R.id.token_manager_button);
-        tokenManager.setAlpha(1.0f);
+        mGroupSelector.setAlpha(1.0f);
+        mTokenManager = (Button) findViewById(R.id.token_manager_button);
+        mTokenManager.setAlpha(1.0f);
         mTokenViewFactory = new TokenViewFactory(context);
     }
+    
 
 
     /**
@@ -82,26 +107,12 @@ public final class TokenSelectorView extends LinearLayout {
      */
     private View createTokenView(final BaseToken prototype) {
         View b = this.mTokenViewFactory.getTokenView(prototype);
-        b.setOnClickListener(onClickListener);
+        b.setOnClickListener(mOnClickListener);
         b.setLayoutParams(new LinearLayout.LayoutParams(
         		(int) (TOKEN_VIEW_SIZE * getResources().getDisplayMetrics().density),
         		(int) (TOKEN_VIEW_SIZE * getResources().getDisplayMetrics().density)));
         return b;
     }
-
-    /**
-     * Listener that fires when an individual token is clicked.  This forwards
-     * the call on.
-     */
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            TokenButton clicked = (TokenButton) v;
-            if (mOnTokenSelectedListener != null) {
-                mOnTokenSelectedListener.onTokenSelected(clicked.getClone());
-            }
-        }
-    };
 
     /**
      * Listener that fires when a token is selected.
@@ -115,16 +126,6 @@ public final class TokenSelectorView extends LinearLayout {
     	 */
         void onTokenSelected(BaseToken t);
     }
-
-    /**
-     * Listener that fires when a token is selected.
-     */
-    private OnTokenSelectedListener mOnTokenSelectedListener;
-
-    /**
-     * Database to load tokens from.
-     */
-    private TokenDatabase tokenDatabase;
 
     /**
      * Sets the listener to fire when a token is selected.
@@ -143,7 +144,7 @@ public final class TokenSelectorView extends LinearLayout {
      */
     public void setOnClickGroupSelectorListener(
     		final View.OnClickListener listener) {
-        groupSelector.setOnClickListener(listener);
+        mGroupSelector.setOnClickListener(listener);
     }
 
     /**
@@ -153,7 +154,7 @@ public final class TokenSelectorView extends LinearLayout {
      */
     public void setOnClickTokenManagerListener(
     		final View.OnClickListener listener) {
-        tokenManager.setOnClickListener(listener);
+        mTokenManager.setOnClickListener(listener);
     }
 
 
@@ -162,8 +163,8 @@ public final class TokenSelectorView extends LinearLayout {
      * @param database The token database.
      */
     public void setTokenDatabase(final TokenDatabase database) {
-        this.tokenDatabase = database;
-        setTokenList(tokenDatabase.getAllTokens());
+        this.mTokenDatabase = database;
+        setTokenList(mTokenDatabase.getAllTokens());
     }
 
     /**
@@ -171,7 +172,7 @@ public final class TokenSelectorView extends LinearLayout {
      * @param checkedTag The tag currently being displayed.
      */
     public void setSelectedTag(final String checkedTag) {
-        setTokenList(tokenDatabase.getTokensForTag(checkedTag));
+        setTokenList(mTokenDatabase.getTokensForTag(checkedTag));
     }
 
     /**
@@ -179,13 +180,13 @@ public final class TokenSelectorView extends LinearLayout {
      * @param tokens Tokens to offer in the selector.
      */
     private void setTokenList(final Collection<BaseToken> tokens) {
-        tokenLayout.removeAllViews();
+        mTokenLayout.removeAllViews();
         Collection<TokenButton> buttons = new ArrayList<TokenButton>();
         for (BaseToken token : tokens) {
         	TokenButton b = (TokenButton) createTokenView(token);
-            tokenLayout.addView(b);
+            mTokenLayout.addView(b);
             buttons.add(b);
-            b.setShouldDrawDark(drawDark);
+            b.setShouldDrawDark(mDrawDark);
         }
         new TokenLoadTask(buttons).execute();
     }
@@ -195,7 +196,7 @@ public final class TokenSelectorView extends LinearLayout {
 	 * @param drawDark Whether tokens are drawn on a dark background.
 	 */
 	public void setShouldDrawDark(boolean drawDark) {
-		this.drawDark = drawDark;
+		this.mDrawDark = drawDark;
 	}
 
 
@@ -203,6 +204,6 @@ public final class TokenSelectorView extends LinearLayout {
 	 * @return Whether tokens are drawn on a dark background.
 	 */
 	public boolean shouldDrawDark() {
-		return drawDark;
+		return mDrawDark;
 	}
 }

@@ -8,6 +8,7 @@ import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -39,21 +40,45 @@ public class Text extends Shape {
 		drawBoundingBoxes = value;
 	}
 	
-	public String mText;
+	/**
+	 * Contents of the text field.
+	 */
+	private String mText;
 
-	public float mTextSize;
+	/**
+	 * Text size, in world space.  1 point = 1 grid space, although this
+	 * is not rescaled to account for later changes in grid size.
+	 */
+	private float mTextSize;
 
-	public PointF mLocation;
+	/**
+	 * Location of the lower left hand corner of the text.
+	 */
+	private PointF mLocation;
 	
+	/**
+	 * Whether this text object has a pending erase operation.
+	 */
 	private boolean mErased;
 
+	/**
+	 * Constructor.
+	 * @param text The contents of the text object.
+	 * @param size Font size for the text object.
+	 * @param color Color of the text.
+	 * @param strokeWidth Stroke width to use (currently ignored, might bold the
+	 * 		text later).
+	 * @param location Location of the lower left hand corner of the text.
+	 * @param transform Coordinate transformer from world to screen space.  This
+	 * 		is only used to determine the bounding box, and is not saved.
+	 */
 	public Text(
-			String newText, float size, int color, float strokeWidth, 
+			String text, float size, int color, float strokeWidth, 
 			PointF location, CoordinateTransformer transform) {
-		this.mText = newText;
+		this.mText = text;
 		this.mTextSize = size;
-		this.mColor = color;
-		this.mWidth = strokeWidth;
+		this.setColor(color);
+		this.setWidth(strokeWidth);
 		
 		this.mLocation = location;
 		
@@ -61,12 +86,12 @@ public class Text extends Shape {
 		// To do this, we need to create the Paint object so we know the size
 		// of the text.
 		ensurePaintCreated();
-		this.mPaint.setTextSize(mTextSize);
+		this.getPaint().setTextSize(mTextSize);
 		
 		Rect bounds = new Rect();
-		mPaint.getTextBounds(mText, 0, mText.length(), bounds);
-		this.mBoundingRectangle.updateBounds(location);
-		this.mBoundingRectangle.updateBounds(
+		getPaint().getTextBounds(mText, 0, mText.length(), bounds);
+		this.getBoundingRectangle().updateBounds(location);
+		this.getBoundingRectangle().updateBounds(
 				new PointF(
 						location.x + bounds.width(), 
 						location.y - bounds.height()));
@@ -75,31 +100,32 @@ public class Text extends Shape {
 	/**
 	 * HACK: Ctor for deserialization ONLY!!!  The bounding rectangle in
 	 * particular MUST be manually set!!!
-	 * @param color
-	 * @param strokeWidth
+	 * @param color Color of the text object.
+	 * @param strokeWidth Stroke width of the text object.
 	 */
 	Text(int color, float strokeWidth) {
-		this.mColor = color;
-		this.mWidth = strokeWidth;
+		this.setColor(color);
+		this.setWidth(strokeWidth);
 	}
 	
 	/**
 	 * Copy constructor.
-	 * @param copyFrom
+	 * @param copyFrom Text object to copy parameters from.
 	 */
 	public Text(Text copyFrom) {
 		mText = copyFrom.mText;
 		mTextSize = copyFrom.mTextSize;
-		this.mColor = copyFrom.mColor;
-		this.mWidth = copyFrom.mWidth;
-		this.mBoundingRectangle = new BoundingRectangle();
-		this.mBoundingRectangle.updateBounds(copyFrom.mBoundingRectangle);
+		this.setColor(copyFrom.getColor());
+		this.setWidth(copyFrom.getWidth());
+		this.getBoundingRectangle().clear();
+		this.getBoundingRectangle().updateBounds(
+				copyFrom.getBoundingRectangle());
 		this.mLocation = new PointF(copyFrom.mLocation.x, copyFrom.mLocation.y);
 	}
 
 	@Override
 	public boolean contains(PointF p) {
-		return this.mBoundingRectangle.contains(p);
+		return this.getBoundingRectangle().contains(p);
 	}
 
 	@Override
@@ -121,7 +147,7 @@ public class Text extends Shape {
 
 	@Override
 	public void erase(PointF center, float radius) {
-		if (this.mBoundingRectangle.intersectsWithCircle(center, radius)) {
+		if (this.getBoundingRectangle().intersectsWithCircle(center, radius)) {
 			mErased = true;
 		}
 	}
@@ -139,30 +165,33 @@ public class Text extends Shape {
 
 	@Override
 	public void draw(final Canvas c) {
-		ensurePaintCreated();
-		this.mPaint.setTextSize(mTextSize);
+		Paint p = getPaint();
+		p.setTextSize(mTextSize);
 		if (Text.drawBoundingBoxes) {
-			this.mPaint.setStyle(Style.STROKE);
-			c.drawRect(this.mBoundingRectangle.toRectF(), mPaint);
-			this.mPaint.setStyle(Style.FILL);
+			this.getPaint().setStyle(Style.STROKE);
+			c.drawRect(this.getBoundingRectangle().toRectF(), getPaint());
+			p.setStyle(Style.FILL);
 		}
-		c.drawText(mText, mLocation.x, mLocation.y, this.mPaint);
+		c.drawText(mText, mLocation.x, mLocation.y, this.getPaint());
 	}
 	
+	@Override
 	protected Shape getMovedShape(float deltaX, float deltaY) {
 		Text t = new Text(this);
 		
 		t.mLocation.x += deltaX;
 		t.mLocation.y += deltaY;
-		t.mBoundingRectangle.move(deltaX, deltaY);
+		t.getBoundingRectangle().move(deltaX, deltaY);
 		
 		return t;
 	}
 	
+	@Override
 	public boolean shouldDrawBelowGrid() {
-		return false;
+		return false; //Text should never draw below the grid.
 	}
 	
+	@Override
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	
@@ -183,6 +212,27 @@ public class Text extends Shape {
 		this.mLocation.x = s.readFloat();
 		this.mLocation.y = s.readFloat();
 		s.expectObjectEnd();
+	}
+	
+	/**
+	 * @return The contents of the text object.
+	 */
+	public String getText() {
+		return this.mText;
+	}
+	
+	/**
+	 * @return The size of the text in the text object.
+	 */
+	public float getTextSize() {
+		return this.mTextSize;
+	}
+	
+	/**
+	 * @return The location of the lower left hand corner of the text.
+	 */
+	public PointF getLocation() {
+		return this.mLocation;
 	}
 
 }

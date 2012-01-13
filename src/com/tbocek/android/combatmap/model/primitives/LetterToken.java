@@ -84,13 +84,15 @@ public final class LetterToken extends BaseToken {
         paint.setTextSize(radius);
         paint.setStrokeWidth(2);
         paint.setStyle(Style.FILL);
+        //CHECKSTYLE:OFF
         c.drawText(mLetter, x - radius / 4, y + radius / 4, paint);
+        //CHECKSTYLE:ON
     }
 
     @Override
     public void drawGhost(final Canvas c, final float x, final float y,
     		final float radius) {
-        //TODO(tim.bocek): Make this look different
+        //TODO: Make this look different
         Paint p = new Paint();
         p.setColor(Color.GRAY);
         draw(c, x, y, radius, p);

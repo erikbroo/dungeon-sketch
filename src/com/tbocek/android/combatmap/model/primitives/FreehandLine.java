@@ -36,6 +36,10 @@ public final class FreehandLine extends Shape {
      */
     private List<Boolean> mShouldDraw = new ArrayList<Boolean>();
 
+    /**
+     * When a segment of this freehand line has only a portion erased,
+     * the resulting new line segments are placed in this array.
+     */
     private transient List<StraightLine> mPartiallyErasedLineSegments 
     		= new ArrayList<StraightLine>();
 
@@ -45,8 +49,8 @@ public final class FreehandLine extends Shape {
      * @param newLineStrokeWidth Line stroke width.
      */
     public FreehandLine(final int color, final float newLineStrokeWidth) {
-        this.mColor = color;
-        this.mWidth = newLineStrokeWidth;
+        this.setColor(color);
+        this.setWidth(newLineStrokeWidth);
     }
 
     /**
@@ -57,7 +61,7 @@ public final class FreehandLine extends Shape {
 	public void addPoint(final PointF p) {
         mPoints.add(p);
         mShouldDraw.add(true);
-        mBoundingRectangle.updateBounds(p);
+        getBoundingRectangle().updateBounds(p);
         invalidatePath();
     }
 
@@ -106,7 +110,7 @@ public final class FreehandLine extends Shape {
      */
     @Override
 	public void erase(final PointF center, final float radius) {
-        if (mBoundingRectangle.intersectsWithCircle(center, radius)) {
+        if (getBoundingRectangle().intersectsWithCircle(center, radius)) {
     		if (mPartiallyErasedLineSegments == null) {
     			mPartiallyErasedLineSegments = new ArrayList<StraightLine>();
     		}
@@ -123,7 +127,7 @@ public final class FreehandLine extends Shape {
 		        		Util.lineCircleIntersection(p1, p2, center, radius);
 		        	if (intersection != null) {
 		        		mShouldDraw.set(i, false);
-		        		StraightLine sl = new StraightLine(this.mColor, this.mWidth);
+		        		StraightLine sl = new StraightLine(this.getColor(), this.getWidth());
 		        		sl.addPoint(p1);
 		        		sl.addPoint(p2);
 		        		sl.erase(center, radius);
@@ -145,7 +149,7 @@ public final class FreehandLine extends Shape {
     @Override
 	public List<Shape> removeErasedPoints() {
         List<Shape> optimizedLines = new ArrayList<Shape>();
-        FreehandLine l = new FreehandLine(mColor, mWidth);
+        FreehandLine l = new FreehandLine(getColor(), getWidth());
         optimizedLines.add(l);
         for (int i = 0; i < mPoints.size(); ++i) {
         	l.addPoint(mPoints.get(i));
@@ -154,7 +158,7 @@ public final class FreehandLine extends Shape {
                 if (l.mPoints.size() <= 1) {
                     optimizedLines.remove(l);
                 }
-                l = new FreehandLine(mColor, mWidth);
+                l = new FreehandLine(getColor(), getWidth());
                 optimizedLines.add(l);
             }
             this.mShouldDraw.set(i, true);
@@ -199,7 +203,7 @@ public final class FreehandLine extends Shape {
 	public boolean contains(PointF p) {
     	// First, check whether the bounding rectangle contains the point so
     	// we can efficiently and quickly get rid of easy cases.
-    	if (!this.mBoundingRectangle.contains(p)) {
+    	if (!this.getBoundingRectangle().contains(p)) {
     		return false;
     	}
 
@@ -233,6 +237,7 @@ public final class FreehandLine extends Shape {
     	return oddNodes;
     }
     
+    @Override
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	s.startObject();

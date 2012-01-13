@@ -67,7 +67,7 @@ public abstract class Shape {
 	/**
 	 * The paint object that will be used to draw this line.
 	 */
-	protected transient Paint mPaint;
+	private transient Paint mPaint;
 	
 	/**
 	 * X component of the pending move operation.
@@ -88,20 +88,20 @@ public abstract class Shape {
 	/**
 	 * The color to draw this line with.
 	 */
-	public int mColor = Color.BLACK;
+	private int mColor = Color.BLACK;
 	
 	/**
 	 * The stroke width to draw this line with.  +Infinity will use a fill
 	 * instead (to ensure that it draws beneath all lines).
 	 */
-	public float mWidth;
+	private float mWidth;
 	
 	/**
 	 * Cached rectangle that bounds all the points in this line.
 	 * This could be computed on demand, but it is easy enough to update
 	 * every time a point is added.
 	 */
-	protected BoundingRectangle mBoundingRectangle = new BoundingRectangle();
+	private BoundingRectangle mBoundingRectangle = new BoundingRectangle();
 
 	/**
 	 * Checks whether this shape contains the given point.
@@ -291,10 +291,10 @@ public abstract class Shape {
 		if (mPaint == null) {
 	        mPaint = new Paint();
 	        mPaint.setColor(mColor);
-	        if (mWidth == Float.POSITIVE_INFINITY) {
+	        if (getWidth() == Float.POSITIVE_INFINITY) {
 	        	mPaint.setStyle(Paint.Style.FILL);
 	        } else {
-		        mPaint.setStrokeWidth(mWidth);
+		        mPaint.setStrokeWidth(getWidth());
 		        mPaint.setStyle(Paint.Style.STROKE);
 	        }
 	    }
@@ -312,7 +312,7 @@ public abstract class Shape {
 	 * @return This line's stroke width.
 	 */
 	public float getStrokeWidth() {
-	    return this.mWidth;
+	    return this.getWidth();
 	}
 
 	/**
@@ -321,7 +321,7 @@ public abstract class Shape {
 	 * @return
 	 */
 	public boolean shouldDrawBelowGrid() {
-		return this.mWidth > 1.0f;
+		return this.getWidth() > 1.0f;
 	}
 
 	/**
@@ -351,13 +351,11 @@ public abstract class Shape {
 			s.serializeString(shapeType);
 			s.startObject();
 			s.serializeInt(this.mColor);
-			s.serializeFloat(this.mWidth);
+			s.serializeFloat(this.getWidth());
 			this.mBoundingRectangle.serialize(s);
 			s.endObject();
 		}
 	}
-	
-
 
 	/**
 	 * Template method that loads shape-specific data from the deserialization
@@ -367,6 +365,44 @@ public abstract class Shape {
 	 */
 	protected abstract void shapeSpecificDeserialize(MapDataDeserializer s)
 			throws IOException;
+
+	/**
+	 * @return This shape's color.
+	 */
+	public int getColor() {
+		return mColor;
+	}
+
+	/**
+	 * Sets the current shape's color.
+	 * @param color The new color.
+	 */
+	public void setColor(int color) {
+		mColor = color;
+	}
+
+	/**
+	 * @return This shape's line width
+	 */
+	public float getWidth() {
+		return mWidth;
+	}
+
+	/**
+	 * Sets the width of the current line.
+	 * @param width The line width.
+	 */
+	public void setWidth(float width) {
+		mWidth = width;
+	}
+	
+	/** 
+	 * @return The paint object that should be used to draw this shape.
+	 */
+	protected Paint getPaint() {
+		ensurePaintCreated();
+		return mPaint;
+	}
 
 
 }

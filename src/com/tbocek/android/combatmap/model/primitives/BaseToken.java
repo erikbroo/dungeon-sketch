@@ -70,17 +70,17 @@ public abstract class BaseToken  {
     /**
      * Whether the token is bloodied.
      */
-    private boolean mBloodied = false;
+    private boolean mBloodied;
     
     /**
      * Cached paint object for the custom token border.
      */
-    private transient Paint mCachedCustomBorderPaint = null;
+    private transient Paint mCachedCustomBorderPaint;
     
     /**
      * Whether this token instance has been given a custom border.
      */
-    private boolean mHasCustomBorder = false;
+    private boolean mHasCustomBorder;
     
     /**
      * The color of the custom border if one is being used.
@@ -386,6 +386,4 @@ public abstract class BaseToken  {
     	s.serializeBoolean(this.mBloodied);
     	s.endObject();
     }
-
-
 }

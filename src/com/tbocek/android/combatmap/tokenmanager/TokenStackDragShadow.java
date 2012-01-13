@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.view.View;

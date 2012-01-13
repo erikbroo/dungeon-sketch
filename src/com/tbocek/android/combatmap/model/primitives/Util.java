@@ -11,6 +11,11 @@ import android.graphics.Color;
  *
  */
 public final class Util {
+	
+	/**
+	 * Error margin to use when comparing floating point numbers.
+	 */
+	public static final float FP_COMPARE_ERROR = 1e-10f;
 
     /**
      * Hue is represented on a 360 degree circle.
@@ -28,10 +33,6 @@ public final class Util {
      */
     private static final float SAT_LUM_ADJUST = .5f;
 
-    /**
-     * Utility class - private constructor.
-     */
-    private Util() { }
 
     /**
      * Compute the distance between two PointFs.
@@ -95,7 +96,16 @@ public final class Util {
      *
      */
     public static class IntersectionPair {
-
+		/**
+    	 * The first intersection.
+    	 */
+    	private PointF mIntersection1;
+    	
+    	/**
+    	 * The second intersection.
+    	 */
+    	private PointF mIntersection2;
+    	
     	/**
     	 * Constructor.
     	 * @param i1 First intersection.
@@ -119,16 +129,6 @@ public final class Util {
 		public PointF getIntersection2() {
 			return mIntersection2;
 		}
-
-		/**
-    	 * The first intersection.
-    	 */
-    	private PointF mIntersection1;
-    	
-    	/**
-    	 * The second intersection.
-    	 */
-    	private PointF mIntersection2;
     }
 
     /**
@@ -180,8 +180,6 @@ public final class Util {
 					(det * dy + signDy * dx * Math.sqrt(discriminant)) 
 							/ dsquared) + center.x;
 
-			// TODO: Only compute these if the line is sufficiently vertical so
-			// as to need the Y coordinate to compute the parameterization.
 			float intersect1Y = (float) (
 					(det * dx - Math.abs(dy) * Math.sqrt(discriminant)) 
 							/ dsquared) + center.y;
@@ -196,4 +194,10 @@ public final class Util {
 			return null;
 		}
     }
+    
+
+    /**
+     * Utility class - private constructor.
+     */
+    private Util() { }
 }

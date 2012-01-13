@@ -10,6 +10,13 @@ import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 import android.graphics.Path;
 
+/**
+ * Shape class that represents a single straight line segment.  Contains
+ * methods for manipulating portions of the line segment based on a
+ * parameterization of the segment.
+ * @author Tim
+ *
+ */
 public class StraightLine extends Shape {
 
 	/**
@@ -17,18 +24,33 @@ public class StraightLine extends Shape {
 	 */
 	public static final String SHAPE_TYPE = "sl";
 
+	/**
+	 * First endpoint on the line.  X coordinate guaranteed to be less than x
+	 * coordinate of mEnd.
+	 */
 	private PointF mStart;
+	
+	/**
+	 * Second endpoint on the line.  X coordinate guaranteed to be greater than
+	 * x coordinate of mStart.
+	 */
 	private PointF mEnd;
 
 	/**
-	 * X coordinates at which to toggle the line on and off, for erasing
-	 * purposes.
+	 * Where to toggle the line on and off, for erasing purposes.  These
+	 * values are parameterized by the length of the line, so that all
+	 * values fall in the range [0,1].  
 	 */
 	private List<Float> mLineToggleParameterization;
 
+	/**
+	 * Constructor.
+	 * @param color Color of the line.
+	 * @param newLineStrokeWidth Stroke width of the line.
+	 */
 	public StraightLine(int color, float newLineStrokeWidth) {
-        this.mColor = color;
-        this.mWidth = newLineStrokeWidth;
+        this.setColor(color);
+        this.setWidth(newLineStrokeWidth);
 	}
 
 	@Override
@@ -51,7 +73,7 @@ public class StraightLine extends Shape {
 				float startT = mLineToggleParameterization.get(i);
 				float endT = mLineToggleParameterization.get(i + 1);
 
-				StraightLine l = new StraightLine(this.mColor, this.mWidth);
+				StraightLine l = new StraightLine(this.getColor(), this.getWidth());
 				l.addPoint(parameterizationToPoint(startT));
 				l.addPoint(parameterizationToPoint(endT));
 				shapes.add(l);
@@ -65,7 +87,8 @@ public class StraightLine extends Shape {
 	@Override
 	public void erase(PointF center, float radius) {
 		if (mStart == null || mEnd == null
-				|| !mBoundingRectangle.intersectsWithCircle(center, radius)) {
+				|| !getBoundingRectangle().intersectsWithCircle(
+						center, radius)) {
 			return;
 		}
 
@@ -87,6 +110,10 @@ public class StraightLine extends Shape {
 		}
 	}
 
+	/**
+	 * Makes sure that start point's X coordinate occurs before the end point's
+	 * X coordinate.  This assumption is used elsewhere.
+	 */
 	private void canonicalizePointOrder() {
 		if (mEnd.x < mStart.x) {
 			PointF tmp;
@@ -97,8 +124,11 @@ public class StraightLine extends Shape {
 	}
 
 	/**
-	 * @param segmentStart
-	 * @param segmentEnd
+	 * 
+	 * @param segmentStart Start of the erased segment, parameterized by the
+	 * 		length of the line.
+	 * @param segmentEnd End of the erased segment, parameterized by the length
+	 * 		of the line.
 	 */
 	void insertErasedSegment(float segmentStart, float segmentEnd) {
 		// Make sure first intersections are ordered
@@ -182,13 +212,20 @@ public class StraightLine extends Shape {
 		} else {
 			mEnd = p;
 			// Re-create the bounding rectangle every time this is done.
-			mBoundingRectangle = new BoundingRectangle();
-			mBoundingRectangle.updateBounds(mStart);
-			mBoundingRectangle.updateBounds(mEnd);
+			getBoundingRectangle().clear();
+			getBoundingRectangle().updateBounds(mStart);
+			getBoundingRectangle().updateBounds(mEnd);
 			invalidatePath();
 		}
 	}
 
+	/**
+	 * Given a point, gives a distance scaled to the length of the line where
+	 * that point falls on the line.
+	 * @param p The point to parameterize.  Must fall on the line.
+	 * @return Distance along the line segment where the point falls, scaled
+	 * 		to the range [0,1].
+	 */
 	private float pointToParameterization(PointF p) {
 		if (Math.abs(mEnd.y - mStart.y) > Math.abs(mEnd.x - mStart.x)) {
 			return (p.y - mStart.y) / (mEnd.y - mStart.y);
@@ -197,12 +234,19 @@ public class StraightLine extends Shape {
 		}
 	}
 
+	/**
+	 * Given a float in the range [0,1] that represents a distance along this
+	 * line scaled to the length of the line, returns a the coordinates where
+	 * that distance occurs on the line.
+	 * @param t The parameterized distance.
+	 * @return The point where that parameterization occurs on the line.
+	 */
 	private PointF parameterizationToPoint(float t) {
 		return new PointF(mStart.x + t * (mEnd.x - mStart.x),
 				          mStart.y + t * (mEnd.y - mStart.y));
 	}
 	
-	
+	@Override
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
     	

@@ -205,8 +205,8 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 			Text editedTextObject, String text, float size, 
 			CoordinateTransformer transformer) {
 		Text newText = new Text(
-				text, size, editedTextObject.mColor, editedTextObject.mWidth, 
-				editedTextObject.mLocation, transformer);
+				text, size, editedTextObject.getColor(), editedTextObject.getWidth(), 
+				editedTextObject.getLocation(), transformer);
 		Command c = new Command(this);
 		c.addCreatedShape(newText);
 		c.addDeletedShape(editedTextObject);

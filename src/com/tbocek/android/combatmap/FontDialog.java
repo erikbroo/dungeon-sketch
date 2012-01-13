@@ -1,5 +1,7 @@
 package com.tbocek.android.combatmap;
 
+import com.tbocek.android.combatmap.model.primitives.Util;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
@@ -16,7 +18,7 @@ import android.widget.TextView;
  *
  */
 public class FontDialog extends Dialog {
-	private static final float FP_COMPARE_DELTA = .0001f;
+
 
     /**
      * Listener used to specify the action to take when the user confirms text
@@ -28,6 +30,7 @@ public class FontDialog extends Dialog {
         /**
          * Called when the user confirms the text entered.
          * @param text The text entered by the user.
+         * @param fontSize The font size specified in the dialog.
          */
         void onTextConfirmed(String text, float fontSize);
     }
@@ -38,6 +41,9 @@ public class FontDialog extends Dialog {
      */
     private TextView mNameText;
     
+    /**
+     * Spinner for font size selection.
+     */
     private Spinner mFontSize;
 
     /**
@@ -55,8 +61,6 @@ public class FontDialog extends Dialog {
      * @param context Context to create the dialog in.
      * @param listener Listener that specifies the action to take when the user
      * 		confirms the text entered.
-     * @param title Title to display in the dialog.
-     * @param confirmText Text to display on the confirmation button.
      */
     public FontDialog(
             final Context context, final OnTextConfirmedListener listener) {
@@ -83,6 +87,12 @@ public class FontDialog extends Dialog {
         });
     }
 
+    /**
+     * Sets the value of the text and font size fields, for when this dialog
+     * is used to edit instead of create text objects.
+     * @param text The current text of the object being edited.
+     * @param textSize The current font size of the object being edited.
+     */
 	public void populateFields(String text, float textSize) {
 		mNameText.setText(text);
 		
@@ -90,12 +100,15 @@ public class FontDialog extends Dialog {
 		// the provided number
 		for (int i = 0; i < mFontSize.getCount(); ++i) {
 			float parsedItem = Float.parseFloat(mFontSize.getItemAtPosition(i).toString());
-			if (Math.abs(textSize - parsedItem) < FP_COMPARE_DELTA) {
+			if (Math.abs(textSize - parsedItem) < Util.FP_COMPARE_ERROR) {
 				mFontSize.setSelection(i);
 			}
 		}
 	}
 
+	/**
+	 * Removes any currently entered text from the dialog.
+	 */
 	public void clearText() {
 		mNameText.setText("");
 	}

@@ -35,53 +35,51 @@ public final class TokenCreatorView extends View {
     /**
      * Whether a circle has been drawn on the loaded token yet.
      */
-    private boolean hasCircle;
-
-    // All of the following in screen space
+    private boolean mHasCircle;
 
     /**
      * X coordinate of the center of the circle drawn on the candidate image,
      * in screen space.
      */
-    private float circleCenterX;
+    private float mCircleCenterX;
 
     /**
      * Y coordinate of the center of the circle drawn on the candidate image,
      * in screen space.
      */
-    private float circleCenterY;
+    private float mCircleCenterY;
 
     /**
      * Radius of the circle drawn on the candidate image, in screen space.
      */
-    private float circleRadius;
+    private float mCircleRadius;
 
     /**
      * The current image that is being cropped.
      */
-    private Drawable currentImage;
+    private Drawable mCurrentImage;
 
     /**
      * Detector that will allow the user to move the candidate circle.
      */
-    private GestureDetector gestureDetector;
+    private GestureDetector mGestureDetector;
 
     /**
      * Detector that will allow the user to pinch zoom to resize the candidate
      * circle.
      */
-    private ScaleGestureDetector scaleDetector;
+    private ScaleGestureDetector mScaleDetector;
 
     /**
      * Gesture listener that moves the candidate circle when the user scrolls.
      */
-    private SimpleOnGestureListener onGesture = new SimpleOnGestureListener() {
+    private SimpleOnGestureListener mOnGesture = new SimpleOnGestureListener() {
         @Override
         public boolean onScroll(
         		final MotionEvent e1, final MotionEvent e2,
         		final float distanceX, final float distanceY) {
-            circleCenterX -= distanceX;
-            circleCenterY -= distanceY;
+            mCircleCenterX -= distanceX;
+            mCircleCenterY -= distanceY;
             invalidate();
             return true;
         }
@@ -91,14 +89,14 @@ public final class TokenCreatorView extends View {
      * Gesture listener that resizes the candidate circle when the user pinch
      * zooms.
      */
-    private SimpleOnScaleGestureListener onScaleGesture =
+    private SimpleOnScaleGestureListener mOnScaleGesture =
     		new SimpleOnScaleGestureListener() {
         @Override
         public boolean onScale(final ScaleGestureDetector detector) {
-            circleCenterX = detector.getFocusX();
-            circleCenterY = detector.getFocusY();
-            circleRadius = detector.getCurrentSpan() / 2;
-            hasCircle = true;
+            mCircleCenterX = detector.getFocusX();
+            mCircleCenterY = detector.getFocusY();
+            mCircleRadius = detector.getCurrentSpan() / 2;
+            mHasCircle = true;
             invalidate();
             return true;
         }
@@ -112,8 +110,9 @@ public final class TokenCreatorView extends View {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);
-        gestureDetector = new GestureDetector(getContext(), onGesture);
-        scaleDetector = new ScaleGestureDetector(getContext(), onScaleGesture);
+        mGestureDetector = new GestureDetector(getContext(), mOnGesture);
+        mScaleDetector = new ScaleGestureDetector(
+        		getContext(), mOnScaleGesture);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
         	setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -125,9 +124,9 @@ public final class TokenCreatorView extends View {
      * @param image The image to eventually use as a token.
      */
     public void setImage(final Drawable image) {
-        currentImage = image;
+        mCurrentImage = image;
         // New image, so clear the circle.
-        hasCircle = false;
+        mHasCircle = false;
         invalidate();
     }
 
@@ -135,26 +134,26 @@ public final class TokenCreatorView extends View {
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
     	// Forward touch events to the gesture detectors.
-        this.gestureDetector.onTouchEvent(ev);
-        this.scaleDetector.onTouchEvent(ev);
+        this.mGestureDetector.onTouchEvent(ev);
+        this.mScaleDetector.onTouchEvent(ev);
         return true;
     }
 
     @Override
     public void onDraw(final Canvas canvas) {
-        if (currentImage == null) {
+        if (mCurrentImage == null) {
         	return;
         }
 
-        currentImage.setBounds(getImageRect());
-        if (hasCircle) {
+        mCurrentImage.setBounds(getImageRect());
+        if (mHasCircle) {
             // If a circle is being drawn, draw a half-brightness version of
             // the full image followed by a full-brightness version of the
             // clipped region
             drawHalfBrightnessImage(canvas);
             drawFullBrightnessCircle(canvas);
         } else {
-        	currentImage.draw(canvas);
+        	mCurrentImage.draw(canvas);
         }
     }
 
@@ -164,11 +163,11 @@ public final class TokenCreatorView extends View {
      */
     public void drawHalfBrightnessImage(final Canvas canvas) {
         //TODO: Cache the result of the color filter
-        currentImage.setColorFilter(
+        mCurrentImage.setColorFilter(
         		new PorterDuffColorFilter(
         				Color.GRAY, PorterDuff.Mode.MULTIPLY));
-        currentImage.draw(canvas);
-        currentImage.setColorFilter(null);
+        mCurrentImage.draw(canvas);
+        mCurrentImage.setColorFilter(null);
     }
 
     /**
@@ -181,9 +180,9 @@ public final class TokenCreatorView extends View {
         canvas.save(Canvas.CLIP_SAVE_FLAG);
         Path p = new Path();
         p.addCircle(
-        		circleCenterX, circleCenterY, circleRadius, Path.Direction.CW);
+        		mCircleCenterX, mCircleCenterY, mCircleRadius, Path.Direction.CW);
         canvas.clipPath(p);
-        currentImage.draw(canvas);
+        mCurrentImage.draw(canvas);
         canvas.restore();
     }
 
@@ -196,12 +195,12 @@ public final class TokenCreatorView extends View {
      */
     public Bitmap getClippedBitmap() {
         //TODO: Downscale in the case of a large image.
-        if (currentImage == null || !hasCircle) {
+        if (mCurrentImage == null || !mHasCircle) {
         	return null;
         }
         float scale = getScaleFactor();
 
-        float squareSizeImageSpace = 2 * circleRadius * scale;
+        float squareSizeImageSpace = 2 * mCircleRadius * scale;
         int bitmapSquareSize =
         	Math.min((int) squareSizeImageSpace, MAX_TOKEN_SIZE);
 
@@ -220,15 +219,15 @@ public final class TokenCreatorView extends View {
                 (int) (-upperLeftImageSpace.x),
                 (int) (-upperLeftImageSpace.y),
                 (int) (-upperLeftImageSpace.x
-                		+ currentImage.getIntrinsicWidth()),
+                		+ mCurrentImage.getIntrinsicWidth()),
                 (int) (-upperLeftImageSpace.y
-                		+ currentImage.getIntrinsicHeight()));
+                		+ mCurrentImage.getIntrinsicHeight()));
 
         Canvas canvas = new Canvas(bitmap);
         float outputScale = ((float) bitmapSquareSize) / squareSizeImageSpace;
         canvas.scale(outputScale, outputScale);
-        currentImage.setBounds(clippingRect);
-        currentImage.draw(canvas);
+        mCurrentImage.setBounds(clippingRect);
+        mCurrentImage.draw(canvas);
 
         return bitmap;
     }
@@ -240,13 +239,13 @@ public final class TokenCreatorView extends View {
      * @return The rectangle.
      */
     private Rect getImageRect() {
-        if (currentImage == null) {
+        if (mCurrentImage == null) {
         	return null;
         }
 
         float screenAspectRatio = ((float) getWidth()) / ((float) getHeight());
-        float imageAspectRatio = ((float) currentImage.getIntrinsicWidth())
-        		/ ((float) currentImage.getIntrinsicHeight());
+        float imageAspectRatio = ((float) mCurrentImage.getIntrinsicWidth())
+        		/ ((float) mCurrentImage.getIntrinsicHeight());
 
         float width;
         float height;
@@ -264,7 +263,7 @@ public final class TokenCreatorView extends View {
         float startX = (getWidth() - width) / 2;
         float startY = (getHeight() - height) / 2;
         return new Rect(
-        		(int) (startX), (int) (startY),
+        		(int) startX, (int) startY,
         		(int) (startX + width), (int) (startY + height));
     }
 
@@ -273,21 +272,21 @@ public final class TokenCreatorView extends View {
      * @return The scale factor.
      */
     private float getScaleFactor() {
-        if (currentImage == null) {
+        if (mCurrentImage == null) {
         	return 1f;
         }
 
         float screenAspectRatio = ((float) getWidth()) / ((float) getHeight());
-        float imageAspectRatio = ((float) currentImage.getIntrinsicWidth())
-        		/ ((float) currentImage.getIntrinsicHeight());
+        float imageAspectRatio = ((float) mCurrentImage.getIntrinsicWidth())
+        		/ ((float) mCurrentImage.getIntrinsicHeight());
 
         if (imageAspectRatio > screenAspectRatio) {
             // Screen width is limiting factor
-            return ((float) currentImage.getIntrinsicWidth())
+            return ((float) mCurrentImage.getIntrinsicWidth())
             		/ ((float) getWidth());
         } else {
             // Screen height is limiting factor
-            return ((float) currentImage.getIntrinsicHeight())
+            return ((float) mCurrentImage.getIntrinsicHeight())
             		/ ((float) getHeight());
         }
 
@@ -303,8 +302,8 @@ public final class TokenCreatorView extends View {
     	// factor but the origin  was at the upper left hand corner of the clip
     	// rectangle
         Rect clipRect = getImageRect();
-        float imageClipSpaceX = circleCenterX - clipRect.left;
-        float imageClipSpaceY = circleCenterY - clipRect.top;
+        float imageClipSpaceX = mCircleCenterX - clipRect.left;
+        float imageClipSpaceY = mCircleCenterY - clipRect.top;
 
         // Now, scale these coordinates using the scale factor
         float scaleFactor = getScaleFactor();

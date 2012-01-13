@@ -40,23 +40,23 @@ public final class TokenCreator extends Activity {
      * The view that implements drawing the selected image and allowing the user
      * to sepcify a circle on it.
      */
-    private TokenCreatorView view;
+    private TokenCreatorView mTokenCreatorView;
 
     /**
      * Whether the image selector activity was started automatically.  If true,
      * and the activity was cancelled, this activity should end as well.
      */
-    private boolean imageSelectorStartedAutomatically = false;
+    private boolean mImageSelectorStartedAutomatically = false;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
     	DeveloperMode.strictMode();
         super.onCreate(savedInstanceState);
-        view = new TokenCreatorView(this);
-        setContentView(view);
+        mTokenCreatorView = new TokenCreatorView(this);
+        setContentView(mTokenCreatorView);
 
         // Automatically select a new image when the view starts.
-        imageSelectorStartedAutomatically = true;
+        mImageSelectorStartedAutomatically = true;
         startImageSelectorActivity();
     }
 
@@ -71,7 +71,7 @@ public final class TokenCreator extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         case R.id.token_image_creator_pick:
-        	imageSelectorStartedAutomatically = false;
+        	mImageSelectorStartedAutomatically = false;
             startImageSelectorActivity();
             return true;
         case R.id.token_image_creator_accept:
@@ -132,7 +132,7 @@ public final class TokenCreator extends Activity {
      * @throws IOException On write error.
      */
     private String saveToInternalImage(final String name) throws IOException {
-        Bitmap bitmap = view.getClippedBitmap();
+        Bitmap bitmap = mTokenCreatorView.getClippedBitmap();
         if (bitmap == null) {
         	return null;
         }
@@ -149,7 +149,7 @@ public final class TokenCreator extends Activity {
 	            try {
 	                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
 	                        this.getContentResolver(), data.getData());
-	                view.setImage(new BitmapDrawable(bitmap));
+	                mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
 	            } catch (Exception e) {
 	                e.printStackTrace();
 	                Toast toast = Toast.makeText(
@@ -159,7 +159,7 @@ public final class TokenCreator extends Activity {
 	                toast.show();
 	            }
         	} else if (resultCode == Activity.RESULT_CANCELED) {
-        		if (imageSelectorStartedAutomatically) {
+        		if (mImageSelectorStartedAutomatically) {
         			finish();
         		}
         	}

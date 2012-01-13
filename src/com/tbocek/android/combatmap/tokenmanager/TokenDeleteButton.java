@@ -23,45 +23,22 @@ public final class TokenDeleteButton extends ImageView {
 	/**
 	 * The token that was last dropped onto the button.
 	 */
-    private Collection<BaseToken> managedTokens;
-
-    /**
-     * Constructor.
-     * @param context The context to construct in.
-     */
-    public TokenDeleteButton(final Context context) {
-        super(context);
-        setImageResource(R.drawable.trashcan);
-        setOnDragListener(this.onDragToTrashCanListener);
-    }
-
-    /**
-	 * @param tokens The tokens to manage.
-	 */
-	public void setManagedTokens(final Collection<BaseToken> tokens) {
-		this.managedTokens = tokens;
-	}
-
-	/**
-	 * @return The managed tokens.
-	 */
-	public Collection<BaseToken> getManagedTokens() {
-		return managedTokens;
-	}
-
+    private Collection<BaseToken> mManagedTokens;
+    
 	/**
      * On drag listener that manages changing the color of the button and
      * opening the context menu.
      */
-   private OnDragListener onDragToTrashCanListener = new OnDragListener() {
+   private OnDragListener mOnDragToTrashCanListener = new OnDragListener() {
         @Override
         public boolean onDrag(final View view, final DragEvent event) {
             Log.d("DRAG", Integer.toString(event.getAction()));
             ImageView iv = (ImageView) view;
             if (event.getAction() == DragEvent.ACTION_DROP) {
-                Collection<BaseToken> t =
+                @SuppressWarnings("unchecked")
+				Collection<BaseToken> t =
                 	(Collection<BaseToken>) event.getLocalState();
-                managedTokens = t;
+                mManagedTokens = t;
                 iv.showContextMenu();
                 iv.setImageResource(R.drawable.trashcan);
             } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
@@ -76,4 +53,30 @@ public final class TokenDeleteButton extends ImageView {
             return true;
         }
     };
+    
+    /**
+     * Constructor.
+     * @param context The context to construct in.
+     */
+    public TokenDeleteButton(final Context context) {
+        super(context);
+        setImageResource(R.drawable.trashcan);
+        setOnDragListener(this.mOnDragToTrashCanListener);
+    }
+
+    /**
+	 * @param tokens The tokens to manage.
+	 */
+	public void setManagedTokens(final Collection<BaseToken> tokens) {
+		this.mManagedTokens = tokens;
+	}
+
+	/**
+	 * @return The managed tokens.
+	 */
+	public Collection<BaseToken> getManagedTokens() {
+		return mManagedTokens;
+	}
+
+
 }

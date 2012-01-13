@@ -4,29 +4,43 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tbocek.android.combatmap.TokenDatabase;
-import com.tbocek.android.combatmap.model.primitives.BaseToken;
-
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
+
+/**
+ * This task loads custom token images on a separate thread.  This allows faster
+ * startup times for activities that need to load the entire token library.
+ * @author Tim
+ *
+ */
 public class TokenLoadTask
 	extends AsyncTask<Void, String, Void> {
 
-	// Map from token ID to the token button to show once that token ID loads.
-	private Map<String, TokenButton> tokenButtonMap;
-	private Collection<TokenButton> tokenButtons;
+	/**
+	 * Map from token ID to the token button to show once that token ID loads.
+	 */
+	private Map<String, TokenButton> mTokenButtonMap;
+	
+	/**
+	 * The list of token buttons that are being loaded.
+	 */
+	private Collection<TokenButton> mTokenButtons;
 
+	/**
+	 * Constructor.
+	 * @param buttons The list of token buttons to load.
+	 */
 	public TokenLoadTask(Collection<TokenButton> buttons) {
 		super();
-		tokenButtons = buttons;
+		mTokenButtons = buttons;
 	}
 
 
 	@Override
 	protected Void doInBackground(Void... args) {
-		for (TokenButton b : tokenButtonMap.values()) {
+		for (TokenButton b : mTokenButtonMap.values()) {
 			BaseToken t = b.getClone();
 			if (t.needsLoad()) {
 				t.load();
@@ -38,11 +52,11 @@ public class TokenLoadTask
 
 	@Override
 	protected void onPreExecute() {
-		tokenButtonMap = new HashMap<String, TokenButton>();
-		for (TokenButton b : tokenButtons) {
+		mTokenButtonMap = new HashMap<String, TokenButton>();
+		for (TokenButton b : mTokenButtons) {
 			if (b.getClone().needsLoad()) {
 				b.setVisibility(View.INVISIBLE);
-				tokenButtonMap.put(b.getTokenId(), b);
+				mTokenButtonMap.put(b.getTokenId(), b);
 			}
 		}
 	}
@@ -50,7 +64,7 @@ public class TokenLoadTask
 	@Override
 	protected void onProgressUpdate(String... progress) {
 		String tokenId = progress[0];
-		TokenButton b = tokenButtonMap.get(tokenId);
+		TokenButton b = mTokenButtonMap.get(tokenId);
 		if (b != null) {
 			b.setVisibility(View.VISIBLE);
 			b.invalidate();

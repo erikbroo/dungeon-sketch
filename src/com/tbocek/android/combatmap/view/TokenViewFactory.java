@@ -19,7 +19,7 @@ public class TokenViewFactory {
 	/**
 	 * Map that stores cached views for tokens.
 	 */
-    private Map<BaseToken, View> cachedViews = new HashMap<BaseToken, View>();
+    private Map<BaseToken, View> mCachedViews = new HashMap<BaseToken, View>();
 
     /**
      * The context to use when creating views.
@@ -40,12 +40,12 @@ public class TokenViewFactory {
      * @return The view for the given token.
      */
     public View getTokenView(final BaseToken prototype) {
-        if (cachedViews.containsKey(prototype)) {
-        	return cachedViews.get(prototype);
+        if (mCachedViews.containsKey(prototype)) {
+        	return mCachedViews.get(prototype);
         }
 
         TokenButton b = newTokenView(prototype);
-        cachedViews.put(prototype, b);
+        mCachedViews.put(prototype, b);
         return b;
     }
 

@@ -56,8 +56,8 @@ public class Circle extends Shape {
 	 * @param newLineStrokeWidth Stroke width of the new circle.
 	 */
 	public Circle(int color, float newLineStrokeWidth) {
-        this.mColor = color;
-        this.mWidth = newLineStrokeWidth;
+        this.setColor(color);
+        this.setWidth(newLineStrokeWidth);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class Circle extends Shape {
 			return;
 		}
 
-		if (!mBoundingRectangle.intersectsWithCircle(center, radius)) {
+		if (!getBoundingRectangle().intersectsWithCircle(center, radius)) {
 			return;
 		}
 
@@ -109,7 +109,7 @@ public class Circle extends Shape {
 	 * that we can then erase segments of the freehand line.
 	 */
 	private void createLineForErasing() {
-		mLineForErasing = new FreehandLine(this.mColor, this.mWidth);
+		mLineForErasing = new FreehandLine(this.getColor(), this.getWidth());
 		for (float rad = 0; rad < 2 * Math.PI; 
 				rad += 2 * Math.PI / FREEHAND_LINE_CONVERSION_SEGMENTS) {
 			mLineForErasing.addPoint(new PointF(
@@ -144,10 +144,10 @@ public class Circle extends Shape {
 			mCenter = new PointF(
 					(p.x + mStartPoint.x) / 2, (p.y + mStartPoint.y) / 2);
 			invalidatePath();
-			mBoundingRectangle = new BoundingRectangle();
-			mBoundingRectangle.updateBounds(
+			getBoundingRectangle().clear();
+			getBoundingRectangle().updateBounds(
 					new PointF(mCenter.x - mRadius, mCenter.y - mRadius));
-			mBoundingRectangle.updateBounds(
+			getBoundingRectangle().updateBounds(
 					new PointF(mCenter.x + mRadius, mCenter.y + mRadius));
 		}
 	}

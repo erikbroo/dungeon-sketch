@@ -187,4 +187,14 @@ public final class BoundingRectangle {
 		s.serializeFloat(mYMax);
 	}
 
+	/**
+	 * Returns the bounding rectangle to its initial state.
+	 */
+	public void clear() {
+		   mXMin = Float.MAX_VALUE;
+		   mXMax = Float.MIN_VALUE;
+		   mYMin = Float.MAX_VALUE;
+		   mYMax = Float.MIN_VALUE;
+	}
+
 }

@@ -17,8 +17,22 @@ import android.graphics.Paint.Style;
  */
 public final class SolidColorToken extends BaseToken {
 
+	/**
+	 * Format string that pads the sort order with 0s.
+	 */
 	private static final DecimalFormat SORT_ORDER_FORMAT =
 		new DecimalFormat("#0000.###");
+	
+	/**
+	 * Color to use when bloodying a token that is already colored red.
+	 */
+	private static final int RED_TOKEN_BLOODIED_BORDER_COLOR =
+			Color.rgb(127, 0, 0);
+	
+	/**
+	 * Stroke width to use for drawing a red border around bloodied tokens.
+	 */
+	private static final int BLOODIED_BORDER_STROKE_WIDTH = 8;
 
 	/**
      * This token's color.
@@ -74,10 +88,14 @@ public final class SolidColorToken extends BaseToken {
 
         Paint p = new Paint();
         // If token is already colored red, use a dark red border so it's visible
-        p.setColor(mColor != Color.RED ? Color.RED : Color.rgb(127, 0, 0));
+        p.setColor(mColor != Color.RED 
+        		? Color.RED 
+        		: RED_TOKEN_BLOODIED_BORDER_COLOR);
         p.setStyle(Style.STROKE);
-        p.setStrokeWidth(8);
+        p.setStrokeWidth(BLOODIED_BORDER_STROKE_WIDTH);
+        //CHECKSTYLE:OFF
         c.drawCircle(x, y, radius - 4, p);
+        //CHECKSTYLE:ON
     }
 
     @Override

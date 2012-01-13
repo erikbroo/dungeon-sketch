@@ -31,8 +31,6 @@ import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenLoadTask;
-import com.tbocek.android.combatmap.view.TokenViewFactory;
-
 /**
  * This activity lets the user view their library of tokens and manage which
  * tags apply to which tokens.
@@ -58,23 +56,23 @@ public final class TokenManager extends Activity {
     /**
      * View that displays tags in the token database.
      */
-	private TagListView tagListView;
+	private TagListView mTagListView;
 
 	/**
 	 * The database to load tags and tokens from.
 	 */
-    private TokenDatabase tokenDatabase;
+    private TokenDatabase mTokenDatabase;
 
     /**
      * Scroll view that wraps the layout of tokens for the currently selected
      * tag and allows it to scroll.
      */
-    private ScrollView scrollView;
+    private ScrollView mScrollView;
 
     /**
      * Drag target to delete tokens.
      */
-    private TokenDeleteButton trashButton;
+    private TokenDeleteButton mTrashButton;
 
     /**
      * Factory that creates views to display tokens and implements a caching
@@ -86,7 +84,7 @@ public final class TokenManager extends Activity {
      * Listener that reloads the token view when a new tag is selected, and
      * tags a token when a token is dragged onto that tag.
      */
-    private TagListView.OnTagListActionListener onTagListActionListener =
+    private TagListView.OnTagListActionListener mOnTagListActionListener =
     	new TagListView.OnTagListActionListener() {
 		@Override
 		public void onChangeSelectedTag(final String newTag) {
@@ -97,7 +95,7 @@ public final class TokenManager extends Activity {
 		public void onDragTokensToTag(
 				final Collection<BaseToken> tokens, final String tag) {
 			for (BaseToken t : tokens) {
-				tokenDatabase.tagToken(t.getTokenId(), tag);
+				mTokenDatabase.tagToken(t.getTokenId(), tag);
 			}
 
 		}
@@ -109,14 +107,13 @@ public final class TokenManager extends Activity {
      */
 	private void setScrollViewTag(final String tag) {
 		mTokenViewFactory.getMultiSelectManager().selectNone();
-		scrollView.removeAllViews();
-		Collection<BaseToken> tokens = null;
+		mScrollView.removeAllViews();
 		if (tag.equals(TokenDatabase.ALL)) {
-			scrollView.addView(
-					getTokenButtonLayout(tokenDatabase.getAllTokens()));
+			mScrollView.addView(
+					getTokenButtonLayout(mTokenDatabase.getAllTokens()));
 		} else {
-			scrollView.addView(
-					getTokenButtonLayout(tokenDatabase.getTokensForTag(tag)));
+			mScrollView.addView(
+					getTokenButtonLayout(mTokenDatabase.getTokensForTag(tag)));
 		}
 	}
 
@@ -132,23 +129,23 @@ public final class TokenManager extends Activity {
 
 		mTokenViewFactory = new MultiSelectTokenViewFactory(this);
 
-    	tagListView = new TagListView(this);
-    	tagListView.setOnTagListActionListener(onTagListActionListener);
+    	mTagListView = new TagListView(this);
+    	mTagListView.setOnTagListActionListener(mOnTagListActionListener);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	    	trashButton = new TokenDeleteButton(this);
-	    	this.registerForContextMenu(trashButton);
+	    	mTrashButton = new TokenDeleteButton(this);
+	    	this.registerForContextMenu(mTrashButton);
 	    	((FrameLayout) this.findViewById(
 	    			R.id.token_manager_delete_button_frame))
-	    			.addView(trashButton);
+	    			.addView(mTrashButton);
         }
 
 
     	FrameLayout tagListFrame =
     		(FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
-    	tagListFrame.addView(tagListView);
+    	tagListFrame.addView(mTagListView);
 
-    	scrollView =
+    	mScrollView =
     		(ScrollView) this.findViewById(R.id.token_manager_scroll_view);
 
     }
@@ -164,8 +161,8 @@ public final class TokenManager extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		tokenDatabase = TokenDatabase.getInstance(this.getApplicationContext());
-		tagListView.setTagList(tokenDatabase.getTags());
+		mTokenDatabase = TokenDatabase.getInstance(this.getApplicationContext());
+		mTagListView.setTagList(mTokenDatabase.getTags());
     	Debug.stopMethodTracing();
 	}
 
@@ -173,7 +170,7 @@ public final class TokenManager extends Activity {
 	public void onPause() {
 		super.onPause();
 		try {
-			tokenDatabase.save(this);
+			mTokenDatabase.save(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -257,8 +254,8 @@ public final class TokenManager extends Activity {
     		 return new TextPromptDialog(this,
     				 new TextPromptDialog.OnTextConfirmedListener() {
 				public void onTextConfirmed(final String text) {
-					tokenDatabase.addEmptyTag(text);
-					tagListView.setTagList(tokenDatabase.getTags());
+					mTokenDatabase.addEmptyTag(text);
+					mTagListView.setTagList(mTokenDatabase.getTags());
 				}
 			}, "New Tag", "Create");
     	default:
@@ -271,8 +268,8 @@ public final class TokenManager extends Activity {
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v,
                                     final ContextMenuInfo menuInfo) {
-      	if (v == this.trashButton) {
-      		Collection<BaseToken> tokens = this.trashButton.getManagedTokens();
+      	if (v == this.mTrashButton) {
+      		Collection<BaseToken> tokens = this.mTrashButton.getManagedTokens();
       		int builtInTokens = countBuiltInTokens(tokens);
       		int customTokens = tokens.size() - builtInTokens;
       		if (customTokens > 0) {
@@ -294,8 +291,8 @@ public final class TokenManager extends Activity {
 	      				deleteText);
       		}
 
-      		if (!this.tagListView.getTag().equals(TokenDatabase.ALL)) {
-      			String removeText = "Remove '" + tagListView.getTag() + "' Tag";
+      		if (!this.mTagListView.getTag().equals(TokenDatabase.ALL)) {
+      			String removeText = "Remove '" + mTagListView.getTag() + "' Tag";
 
       			if (tokens.size() > 1) {
       				removeText += " from " + Integer.toString(tokens.size())
@@ -307,6 +304,11 @@ public final class TokenManager extends Activity {
       	}
     }
 
+    /**
+     * Given a list of tokens, provides a count of the number that are built in.
+     * @param tokens The tokens to examine.
+     * @return The number of tokens that are built in.
+     */
     private int countBuiltInTokens(Collection<BaseToken> tokens) {
     	int count = 0;
     	for (BaseToken t : tokens) {
@@ -322,10 +324,10 @@ public final class TokenManager extends Activity {
     	//TODO: Move more of this functionality into TokenDeleteButton.
     	switch (item.getItemId()) {
     	case R.id.token_delete_entire_token:
-    		Collection<BaseToken> tokens = this.trashButton.getManagedTokens();
+    		Collection<BaseToken> tokens = this.mTrashButton.getManagedTokens();
     		for (BaseToken token : tokens) {
     			if (!token.isBuiltIn()) {
-		    		this.tokenDatabase.removeToken(token);
+		    		this.mTokenDatabase.removeToken(token);
 		    		try {
 		    			token.maybeDeletePermanently();
 		    		} catch (IOException e) {
@@ -339,13 +341,13 @@ public final class TokenManager extends Activity {
 		    		}
     			}
     		}
-    		setScrollViewTag(this.tagListView.getTag());
+    		setScrollViewTag(this.mTagListView.getTag());
     		return true;
     	case R.id.token_delete_from_tag:
-    		tokens = this.trashButton.getManagedTokens();
-    		String tag = this.tagListView.getTag();
+    		tokens = this.mTrashButton.getManagedTokens();
+    		String tag = this.mTagListView.getTag();
     		for (BaseToken token : tokens) {
-	    		this.tokenDatabase.removeTagFromToken(token.getTokenId(), tag);
+	    		this.mTokenDatabase.removeTagFromToken(token.getTokenId(), tag);
 	    		setScrollViewTag(tag);
     		}
 	    	return true;

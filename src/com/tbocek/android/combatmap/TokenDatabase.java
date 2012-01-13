@@ -44,6 +44,62 @@ import com.tbocek.android.combatmap.model.primitives.Util;
  *
  */
 public final class TokenDatabase {
+
+    /**
+     * Delimiter to use when saving the token database.
+     */
+    private static final String FILE_DELIMITER = "`";
+
+	/**
+	 * Always-present member at the top of the tag list that selects all tokens.
+	 */
+	public static final String ALL = "All";
+    
+    /**
+     * The singleton token database instance.
+     */
+    private static TokenDatabase instance;
+    
+
+    /**
+     * Returns the instance of the token database.
+     * @param context A context to use when loading data if needed.
+     * @return The token database.
+     */
+    public static TokenDatabase getInstance(final Context context) {
+        if (instance == null) {
+            try {
+                instance = TokenDatabase.load(context);
+            } catch (Exception e) {
+                instance = new TokenDatabase();
+                instance.populate(context);
+            }
+        }
+        return instance;
+    }
+    
+
+    /**
+     * Loads a token database from internal storage, and replaces the current
+     * singleton token database with the loaded one.
+     * @param context The context to use when loading.
+     * @return The loaded database.
+     * @throws IOException On read error.
+     */
+    public static TokenDatabase load(final Context context)
+    		throws IOException {
+        TokenDatabase d = new TokenDatabase();
+        d.populate(context);
+
+        FileInputStream input = context.openFileInput("token_database");
+        BufferedReader dataIn =
+        	new BufferedReader(new InputStreamReader(input));
+        d.load(dataIn);
+        dataIn.close();
+
+        return d;
+    }
+    
     /**
      * Mapping from a string representing a token ID to a set of tags that that
      * token has.
@@ -72,42 +128,14 @@ public final class TokenDatabase {
      */
     private transient boolean mPrePopulateTags = true;
 
-	/**
-	 * Always-present member at the top of the tag list that selects all tokens.
-	 */
-	public static final String ALL = "All";
 
-    /**
-     * Delimiter to use when saving the token database.
-     */
-    private static final String FILE_DELIMITER = "`";
 
     /**
      * Private constructor - this is a singleton.
      */
     private TokenDatabase() { }
 
-    /**
-     * The singleton token database instance.
-     */
-    private static TokenDatabase instance;
 
-    /**
-     * Returns the instance of the token database.
-     * @param context A context to use when loading data if needed.
-     * @return The token database.
-     */
-    public static TokenDatabase getInstance(final Context context) {
-        if (instance == null) {
-            try {
-                instance = TokenDatabase.load(context);
-            } catch (Exception e) {
-                instance = new TokenDatabase();
-                instance.populate(context);
-            }
-        }
-        return instance;
-    }
 
     /**
      * Adds a tag with no tokens associated with it to the token database.
@@ -455,26 +483,6 @@ public final class TokenDatabase {
         }
     }
 
-    /**
-     * Loads a token database from internal storage, and replaces the current
-     * singleton token database with the loaded one.
-     * @param context The context to use when loading.
-     * @return The loaded database.
-     * @throws IOException On read error.
-     */
-    public static TokenDatabase load(final Context context)
-    		throws IOException {
-        TokenDatabase d = new TokenDatabase();
-        d.populate(context);
-
-        FileInputStream input = context.openFileInput("token_database");
-        BufferedReader dataIn =
-        	new BufferedReader(new InputStreamReader(input));
-        d.load(dataIn);
-        dataIn.close();
-
-        return d;
-    }
 
     /**
      * Reads data into this token database from the given reader.

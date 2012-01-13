@@ -747,7 +747,8 @@ public final class CombatMap extends Activity {
          	 FontDialog fd = (FontDialog) dialog;
              if (mEditedTextObject != null) {
              	fd.populateFields(
-             			mEditedTextObject.mText, mEditedTextObject.mTextSize);
+             			mEditedTextObject.getText(), 
+             			mEditedTextObject.getTextSize());
              } else {
             	fd.clearText();
              }
