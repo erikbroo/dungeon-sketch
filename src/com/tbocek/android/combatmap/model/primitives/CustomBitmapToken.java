@@ -24,7 +24,6 @@ public final class CustomBitmapToken extends DrawableToken {
 
     /**
      * Sets the data manager that will be used to load images.
-     * TODO: Can this be combined with the static field in BuiltInImageToken?
      * @param manager The data manager.
      */
 	public static void registerDataManager(final DataManager manager) {
