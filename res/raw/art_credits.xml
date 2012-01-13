@@ -1,235 +1,212 @@
 <art_credits>
 
-    <artist
-        name="Mary-Beth Jeffrey"
-        copyright="Copyright © 2011 Mary-Beth Jeffrey"
-        url="http://cumuluscastle.deviantart.com/">
-        <token
-            res="oaken_man"
-            url="http://cumuluscastle.deviantart.com/#/d4ldgxi"/>
-    </artist>
-    <artist
-        name="Scott O'Brien"
-        copyright="Illustrated by Scott O'Brien, All rights reserved"
-        url="http://scooter782.deviantart.com/">
-        <token
-            res="goren"
-            url="http://scooter782.deviantart.com/art/Goren-278352944"/>
-        <token
-            res="veranesse"
-            url="http://scooter782.deviantart.com/#/d4lq17j"/>
-        <token
-            res="vampire_soldier"
-            url="http://scooter782.deviantart.com/#/d4kprxt"/>
-        <token
-            res="flagron"
-            url="http://scooter782.deviantart.com/art/Flagron-274621434"/>
-        <token 
-            res="kragger"
-            url="http://scooter782.deviantart.com/gallery/#/d4ji2uu"/>
-        <token 
-            res="vogcore"
-            url="http://scooter782.deviantart.com/#/d4lq24l"/>
-        <token
-            res="becar"
-            url="http://scooter782.deviantart.com/gallery/#/d4ji2jl"/>
-    </artist>
-    <artist
-        name="Zhack-Isfaction"
-        copyright="All rights reserved"
-        url="http://zhack-isfaction.deviantart.com/">
-        <token
-            res="battlemage"
-            url="http://zhack-isfaction.deviantart.com/#/d4lme8b"/>
-        <token 
-            res="wolfman"
-            url="http://zhack-isfaction.deviantart.com/gallery/#/d48eeab"/>
-        <token res="blade_dancer"/>
-        <token
-            res="suspicious"
-            url="http://zhack-isfaction.deviantart.com/gallery/?offset=24#/d46qyvk"/>
-        <token
-            res="zoidmonster"
-            url="http://zhack-isfaction.deviantart.com/gallery/#/d46rb4g"/>
-        
-    </artist>
-    <artist
-        name="Kalle Bladin"
-        copyright="© Kalle Bladin. All rights reserved."
-        url="http://k-bladin.deviantart.com/;http://kallebladin.carbonmade.com/">
-        <token
-            res="boy_and_monster"
-            url="http://k-bladin.deviantart.com/art/A-child-and-his-monster-243876503"/>
-        <token
-            res="tricky_troll"
-            url="http://k-bladin.deviantart.com/art/Tricky-Troll-173885312"/>
-        <token
-            res="persuasion"
-            url="http://k-bladin.deviantart.com/art/Persuasion-278313180"/>
-    </artist>
-    <artist
-        name="Storn A. Cook"
-        url="http://www.stornart.com/"
-        copyright="Lisenced under CC BY NC SA 2.5">
-		<token res="algrim"/>
-		<token res="aquatic_evil"/>
-		<token res="avalanche"/>
-		<token res="baltar"/>
-		<token res="berwyn"/>
-		<token res="black_daggers"/>
-		<token res="black_duke"/>
-		<token res="circelo"/>
-		<token res="col_blinky"/>
-		<token res="conall"/>
-		<token res="cullin"/>
-		<token res="damisk"/>
-		<token res="dehna"/>
-		<token res="dirk_centipede"/>
-		<token res="dragon_throne"/>
-		<token res="dr_ranger"/>
-		<token res="elvira"/>
-		<token res="el_vago_ill"/>
-		<token res="e_mist"/>
-		<token res="fawn"/>
-		<token res="ferdinand"/>
-		<token res="flamebeard"/>
-		<token res="gerymn"/>
-		<token res="glimnor"/>
-		<token res="green_dragon"/>
-		<token res="gyrlang"/>
-		<token res="halfskull"/>
-		<token res="heretic"/>
-		<token res="herugrim"/>
-		<token res="icebarb"/>
-		<token res="icebarb2"/>
-		<token res="ikomalo"/>
-		<token res="isobelle"/>
-		<token res="kal"/>
-		<token res="kateri"/>
-		<token res="ken_invoke"/>
-		<token res="lady_dread"/>
-		<token res="lioness"/>
-		<token res="lohman"/>
-		<token res="luloah"/>
-		<token res="magian"/>
-		<token res="martial"/>
-		<token res="melvs"/>
-		<token res="minotaur"/>
-		<token res="mostin"/>
-		<token res="mpillar"/>
-		<token res="musashi"/>
-		<token res="necro"/>
-		<token res="nereid"/>
-		<token res="nimbus"/>
-		<token res="ogre"/>
-		<token res="owlbear"/>
-		<token res="pax"/>
-		<token res="penny"/>
-		<token res="pieter"/>
-		<token res="puma"/>
-		<token res="rauce"/>
-		<token res="reilo"/>
-		<token res="sag"/>
-		<token res="scrollo"/>
-		<token res="seraph"/>
-		<token res="shark_thing"/>
-		<token res="sister_eden"/>
-		<token res="smilodon"/>
-		<token res="snow"/>
-		<token res="stjya"/>
-		<token res="tai"/>
-		<token res="terma"/>
-		<token res="thargad"/>
-		<token res="thorn"/>
-		<token res="urolka"/>
-		<token res="vesten"/>
-		<token res="void_walker"/>
-		<token res="zanth"/>
-    </artist>
-    <artist 
-        name="dragontigerknight"
-        url="http://www.flickr.com/photos/24267755@N04/"
-        copyright="Lisenced under CC BY 2.0">
-        <token 
-            res="dragongirl_dragontigernight"
-            url="http://www.flickr.com/photos/24267755@N04/5607624261/"/>
-    </artist>
-    <artist
-        name="Mac M 13"
-        copyright="Lisenced under CC BY SA 3.0">
-        <token 
-            res="dragon_furioso"
-            url="http://commons.wikimedia.org/wiki/File:Furioso_dragon-13-.jpg"/>
-    </artist>
-    <artist
-        name="Matěj Čadil"
-        copyright="CC BY 3.0">
-        <token
-            res="thorin"    
-            url="http://commons.wikimedia.org/wiki/File:Thorin_in_blue_mountains.jpg"/>
-    </artist>
-    <artist
-        name="Johnaemeth"
-        copyright="CC BY SA 3.0">
-        <token
-            res="johnaemeth"
-            url="http://commons.wikimedia.org/wiki/File:The_Sun-God%27s_Lair_In_The_Dwellings_Under_The_Pyro-Middeon_ZOOMED2.jpg"/>   
-    </artist>
-    <artist
-        name="Markus Röncke"
-        copyright="Public Domain"
-        url="http://www.elfwood.com/~demodus">
-        <token
-            res="orcshaman"
-            url="http://www.elfwood.com/~demodus/Orc-Shaman.2676868.html"/>  
-        <token
-            res="iseedeath"
-            url="http://www.elfwood.com/~demodus/-and-I-see-death-through-golden-eyes.2676871.html"/>
-        <token
-            res="pastandpresent"
-            url="http://www.elfwood.com/~demodus/Master-of-Past-and-Present.3570253.html"/>
-        <token
-            res="flamesandshadows"
-            url="http://www.elfwood.com/~demodus/Of-Flames-and-Shadows.2676848.html"/>
-    </artist>
-    <artist
-        name="Markus Röncke 2"
-        copyright="CC Sampling 1.0"
-        url="http://www.elfwood.com/~demodus">
-        <token
-            res="dragon_roncke"
-            url="http://www.elfwood.com/~demodus/The-Dragon-s-Sky.2676846.html"/>  
-    </artist>
-    <artist
-        name="Sir Edwin Henry Landseer"
-        copyright="Available in the public domain">
-        <token res="cheetah"/>
-        <token res="cougar"/>
-        <token res="cute_horses"/>
-        <token res="dog"/>
-        <token res="dogs"/>
-        <token res="douchy_guy"/>
-        <token res="fox"/>
-        <token res="lamb"/>
-        <token res="lion"/>
-        <token res="pig"/>
-        <token res="rad_stag"/>
-        <token res="stag2"/>
-        <token res="swan"/>
-        <token res="tiger1"/>
-        <token res="tiger2"/>
-    </artist>
-    <artist
-        name="Walter Crane"
-        copyright="Available in the public domain">
-        <token res="gorgon"/>
-        <token res="perseus"/>
-    </artist>
-    <artist
-        name="Victor Vasnetsov"
-        copyright="Available in the public domain">
-        <token res="vasnetsov1"/>
-        <token res="vasnetsov2"/>
-        <token res="vasnetsov3"/>
-    </artist>
+	<artist name="Mary-Beth Jeffrey" copyright="Copyright © 2011 Mary-Beth Jeffrey"
+		url="http://cumuluscastle.deviantart.com/">
+		<token res="oaken_man" url="http://cumuluscastle.deviantart.com/#/d4ldgxi" />
+	</artist>
+	<artist name="Scott O'Brien" copyright="Illustrated by Scott O'Brien, All rights reserved"
+		url="http://scooter782.deviantart.com/">
+		<token res="goren"
+			url="http://scooter782.deviantart.com/art/Goren-278352944" />
+		<token res="veranesse" url="http://scooter782.deviantart.com/#/d4lq17j" />
+		<token res="vampire_soldier" url="http://scooter782.deviantart.com/#/d4kprxt" />
+		<token res="flagron"
+			url="http://scooter782.deviantart.com/art/Flagron-274621434" />
+		<token res="kragger" url="http://scooter782.deviantart.com/gallery/#/d4ji2uu" />
+		<token res="vogcore" url="http://scooter782.deviantart.com/#/d4lq24l" />
+		<token res="becar" url="http://scooter782.deviantart.com/gallery/#/d4ji2jl" />
+	</artist>
+	<artist name="Zhack-Isfaction" copyright="All rights reserved"
+		url="http://zhack-isfaction.deviantart.com/">
+		<token res="battlemage" url="http://zhack-isfaction.deviantart.com/#/d4lme8b" />
+		<token res="wolfman"
+			url="http://zhack-isfaction.deviantart.com/gallery/#/d48eeab" />
+		<token res="blade_dancer" />
+		<token res="suspicious"
+			url="http://zhack-isfaction.deviantart.com/gallery/?offset=24#/d46qyvk" />
+		<token res="zoidmonster"
+			url="http://zhack-isfaction.deviantart.com/gallery/#/d46rb4g" />
+
+	</artist>
+	<artist name="Kalle Bladin" copyright="© Kalle Bladin. All rights reserved."
+		url="http://k-bladin.deviantart.com/;http://kallebladin.carbonmade.com/">
+		<token res="boy_and_monster"
+			url="http://k-bladin.deviantart.com/art/A-child-and-his-monster-243876503" />
+		<token res="tricky_troll"
+			url="http://k-bladin.deviantart.com/art/Tricky-Troll-173885312" />
+		<token res="persuasion"
+			url="http://k-bladin.deviantart.com/art/Persuasion-278313180" />
+	</artist>
+	<artist name="Storn A. Cook" url="http://www.stornart.com/"
+		copyright="Lisenced under CC BY NC SA 2.5">
+		<token res="algrim" />
+		<token res="aquatic_evil" />
+		<token res="avalanche" />
+		<token res="baltar" />
+		<token res="berwyn" />
+		<token res="black_daggers" />
+		<token res="black_duke" />
+		<token res="circelo" />
+		<token res="col_blinky" />
+		<token res="conall" />
+		<token res="cullin" />
+		<token res="damisk" />
+		<token res="dehna" />
+		<token res="dirk_centipede" />
+		<token res="dragon_throne" />
+		<token res="dr_ranger" />
+		<token res="elvira" />
+		<token res="el_vago_ill" />
+		<token res="e_mist" />
+		<token res="fawn" />
+		<token res="ferdinand" />
+		<token res="flamebeard" />
+		<token res="gerymn" />
+		<token res="glimnor" />
+		<token res="green_dragon" />
+		<token res="gyrlang" />
+		<token res="halfskull" />
+		<token res="heretic" />
+		<token res="herugrim" />
+		<token res="icebarb" />
+		<token res="icebarb2" />
+		<token res="ikomalo" />
+		<token res="isobelle" />
+		<token res="kal" />
+		<token res="kateri" />
+		<token res="ken_invoke" />
+		<token res="lady_dread" />
+		<token res="lioness" />
+		<token res="lohman" />
+		<token res="luloah" />
+		<token res="magian" />
+		<token res="martial" />
+		<token res="melvs" />
+		<token res="minotaur" />
+		<token res="mostin" />
+		<token res="mpillar" />
+		<token res="musashi" />
+		<token res="necro" />
+		<token res="nereid" />
+		<token res="nimbus" />
+		<token res="ogre" />
+		<token res="owlbear" />
+		<token res="pax" />
+		<token res="penny" />
+		<token res="pieter" />
+		<token res="puma" />
+		<token res="rauce" />
+		<token res="reilo" />
+		<token res="sag" />
+		<token res="scrollo" />
+		<token res="seraph" />
+		<token res="shark_thing" />
+		<token res="sister_eden" />
+		<token res="smilodon" />
+		<token res="snow" />
+		<token res="stjya" />
+		<token res="tai" />
+		<token res="terma" />
+		<token res="thargad" />
+		<token res="thorn" />
+		<token res="urolka" />
+		<token res="vesten" />
+		<token res="void_walker" />
+		<token res="zanth" />
+	</artist>
+	<artist name="dragontigerknight" url="http://www.flickr.com/photos/24267755@N04/"
+		copyright="Lisenced under CC BY 2.0">
+		<token res="dragongirl_dragontigernight"
+			url="http://www.flickr.com/photos/24267755@N04/5607624261/" />
+	</artist>
+	<artist name="Mac M 13" copyright="Lisenced under CC BY SA 3.0">
+		<token res="dragon_furioso"
+			url="http://commons.wikimedia.org/wiki/File:Furioso_dragon-13-.jpg" />
+	</artist>
+	<artist name="Matěj Čadil" copyright="CC BY 3.0">
+		<token res="thorin"
+			url="http://commons.wikimedia.org/wiki/File:Thorin_in_blue_mountains.jpg" />
+	</artist>
+	<artist name="Johnaemeth" copyright="CC BY SA 3.0">
+		<token res="johnaemeth"
+			url="http://commons.wikimedia.org/wiki/File:The_Sun-God%27s_Lair_In_The_Dwellings_Under_The_Pyro-Middeon_ZOOMED2.jpg" />
+	</artist>
+	<artist name="Markus Röncke" copyright="Copyright Marcus Röncke, Used with Permission."
+		url="http://www.elfwood.com/~demodus">
+		<token res="orcshaman"
+			url="http://www.elfwood.com/~demodus/Orc-Shaman.2676868.html" />
+		<token res="iseedeath"
+			url="http://www.elfwood.com/~demodus/-and-I-see-death-through-golden-eyes.2676871.html" />
+		<token res="pastandpresent"
+			url="http://www.elfwood.com/~demodus/Master-of-Past-and-Present.3570253.html" />
+		<token res="flamesandshadows"
+			url="http://www.elfwood.com/~demodus/Of-Flames-and-Shadows.2676848.html" />
+		<token res="dragon_roncke"
+			url="http://www.elfwood.com/~demodus/The-Dragon-s-Sky.2676846.html" />
+		<token res="ancient_troll2" />
+		<token res="angel_of_pain" />
+		<token res="archmage_3" />
+		<token res="blade_wizard" />
+		<token res="chaos_warlord" />
+		<token res="cyclops" />
+		<token res="dark_chimaira_" />
+		<token res="deathangel" />
+		<token res="deep_one2" />
+		<token res="dreadknight_klein" />
+		<token res="elbenkrieger2" />
+		<token res="frostgiant_2" />
+		<token res="ghostrider_in_the_sky_1" />
+		<token res="ghostrider_in_the_sky_2" />
+		<token res="ghouls2" />
+		<token res="goblinportrait2" />
+		<token res="greed2" />
+		<token res="icemountain_ranger" />
+		<token res="kampf2_02" />
+		<token res="magnus_3" />
+		<token res="manticore3" />
+		<token res="nyarlathotep" />
+		<token res="ocean" />
+		<token res="ogreportrait3" />
+		<token res="ogre_sketch" />
+		<token res="orcportrait3" />
+		<token res="ork_krieger" />
+		<token res="planetary_misfortune" />
+		<token res="sea_serpent" />
+		<token res="shoggoth2" />
+		<token res="siren2" />
+		<token res="sothoth" />
+		<token res="stargazer2" />
+		<token res="sunset_dragon" />
+		<token res="swamp_trollop_2" />
+		<token res="titan" />
+		<token res="titan2" />
+		<token res="trollconcept2" />
+		<token res="zombie_warrior" />
+	</artist>
+	<artist name="Sir Edwin Henry Landseer" copyright="Available in the public domain">
+		<token res="cheetah" />
+		<token res="cougar" />
+		<token res="cute_horses" />
+		<token res="dog" />
+		<token res="dogs" />
+		<token res="douchy_guy" />
+		<token res="fox" />
+		<token res="lamb" />
+		<token res="lion" />
+		<token res="pig" />
+		<token res="rad_stag" />
+		<token res="stag2" />
+		<token res="swan" />
+		<token res="tiger1" />
+		<token res="tiger2" />
+	</artist>
+	<artist name="Walter Crane" copyright="Available in the public domain">
+		<token res="gorgon" />
+		<token res="perseus" />
+	</artist>
+	<artist name="Victor Vasnetsov" copyright="Available in the public domain">
+		<token res="vasnetsov1" />
+		<token res="vasnetsov2" />
+		<token res="vasnetsov3" />
+	</artist>
 </art_credits>

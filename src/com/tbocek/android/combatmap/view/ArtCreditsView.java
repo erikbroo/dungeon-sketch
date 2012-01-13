@@ -76,7 +76,7 @@ public class ArtCreditsView extends LinearLayout {
 			TextView urlView = new TextView(getContext());
 			urlView.setTextSize(SMALL_TEXT_SIZE);
 			urlView.setAutoLinkMask(Linkify.WEB_URLS);
-			urlView.setText(url);
+			urlView.setText(url.replace(';', '\n'));
 			this.addView(urlView);
 		}
 		
