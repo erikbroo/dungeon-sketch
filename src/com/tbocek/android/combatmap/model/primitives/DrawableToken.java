@@ -103,11 +103,11 @@ public abstract class DrawableToken extends BaseToken {
             d.setBounds(new Rect((int) (x - radius), (int) (y - radius),
                                      (int) (x + radius), (int) (y + radius)));
             if (!isManipulatable) {
-            	d.setColorFilter(BLOODIED_FILTER);
+            	d.setAlpha(HALF_OPACITY);
             }
             d.draw(c);
             if (!isManipulatable) {
-            	d.setColorFilter(null);
+            	d.setAlpha(FULL_OPACITY);
             }
             c.restore();
         } else {
