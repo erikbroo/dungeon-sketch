@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -28,6 +29,7 @@ import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
+import com.tbocek.android.combatmap.view.GridLayout;
 import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenLoadTask;
@@ -183,17 +185,15 @@ public final class TokenManager extends Activity {
 	 * @return Composite view that lays out buttons representing all tokens.
 	 */
 	private View getTokenButtonLayout(final Collection<BaseToken> tokens) {
+		GridLayout grid = new GridLayout(this);
 		int width =  (int) (TOKEN_LAYOUT_RELATIVE_SIZE * this.getWidth());
-		int tokenWidth = TOKEN_BUTTON_SIZE;
-		int tokenHeight = TOKEN_BUTTON_SIZE;
-		int tokensPerRow = width / tokenWidth;
-
-
-		LinearLayout layout = new LinearLayout(this);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		LinearLayout currentRow = null;
+		grid.setLayoutParams(new ViewGroup.LayoutParams(
+				width, ViewGroup.LayoutParams.WRAP_CONTENT));
+		int cellDimension = (int) (
+				TOKEN_BUTTON_SIZE * getResources().getDisplayMetrics().density);
+		grid.setCellDimensions(cellDimension, cellDimension);
+		
 		ArrayList<TokenButton> allButtons = new ArrayList<TokenButton>();
-		int i = 0;
 		for (BaseToken t : tokens) {
 			TokenButton b = (TokenButton) mTokenViewFactory.getTokenView(t);
 			b.setShouldDrawDark(true);
@@ -202,23 +202,19 @@ public final class TokenManager extends Activity {
 			// Remove all views from the parent, if there is one.
 			// This is safe because we are totally replacing the view contents
 			// here.
-			LinearLayout parent = (LinearLayout) b.getParent();
+			ViewGroup parent = (ViewGroup) b.getParent();
 			if (parent != null) {
 				parent.removeAllViews();
 			}
 
 			b.setLayoutParams(
-					new LinearLayout.LayoutParams(tokenWidth, tokenHeight));
-			if (i % tokensPerRow == 0) {
-				currentRow = new LinearLayout(this);
-				currentRow.setOrientation(LinearLayout.HORIZONTAL);
-				layout.addView(currentRow);
-			}
-			currentRow.addView(b);
-			++i;
+					new ViewGroup.LayoutParams(
+							ViewGroup.LayoutParams.MATCH_PARENT, 
+							ViewGroup.LayoutParams.MATCH_PARENT));
+			grid.addView(b);
 		}
 		new TokenLoadTask(allButtons).execute();
-		return layout;
+		return grid;
 	}
 
 	@Override
