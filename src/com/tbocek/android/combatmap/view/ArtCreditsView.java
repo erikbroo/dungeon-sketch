@@ -7,6 +7,7 @@ import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 
 import android.content.Context;
 import android.text.util.Linkify;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -48,12 +49,38 @@ public class ArtCreditsView extends LinearLayout {
 	private Map<String, ViewGroup> mTokenViewsForArtist = Maps.newHashMap();
 	
 	/**
+	 * Provides a listener for when a token is clicked on.
+	 * @author Tim
+	 *
+	 */
+	public interface TokenButtonClickListener {
+		/**
+		 * Called when a token button is clicked on.
+		 * @param url URL for a full version of the image.
+		 */
+		void onTokenButtonClick(String url);
+	}
+	
+	/**
+	 * Listener for clicks on specific token buttons.
+	 */
+	private TokenButtonClickListener mTokenButtonClickListener;
+	
+	/**
 	 * Constructor.
 	 * @param context Context to construct in.
 	 */
 	public ArtCreditsView(Context context) {
 		super(context);
 		this.setOrientation(LinearLayout.VERTICAL);
+	}
+	
+	/**
+	 * Sets the listener to use for clicks on token buttons.
+	 * @param listener The listener to set.
+	 */
+	public void setTokenButtonClickListener(TokenButtonClickListener listener) {
+		mTokenButtonClickListener = listener;
 	}
 	
 	/**
@@ -109,8 +136,9 @@ public class ArtCreditsView extends LinearLayout {
 	 * been added with addArtist.
 	 * @param name Name of the artist who contributed the token.
 	 * @param resource Resource identifier for the contributed token.
+	 * @param url URL for the full version of the token, if provided.
 	 */
-	public void addArtCredit(String name, int resource) {
+	public void addArtCredit(String name, int resource, String url) {
 		TokenButton b = new TokenButton(
 				this.getContext(), new BuiltInImageToken(resource));
 		b.allowDrag(false);
@@ -119,7 +147,42 @@ public class ArtCreditsView extends LinearLayout {
 						* TOKEN_SIZE), 
 				(int) (getResources().getDisplayMetrics().density
 						* TOKEN_SIZE)));
+		b.setOnClickListener(new InnerTokenButtonClickListener(url));
 		mTokenViewsForArtist.get(name).addView(b);
+	}
+	
+	/**
+	 * Implements a View.OnClickListener to store artist name and token info,
+	 * and forward the call on to the TokenButtonClickListener registered
+	 * for this ArtistCreditsView instance.
+	 * @author Tim
+	 *
+	 */
+	private class InnerTokenButtonClickListener 
+			implements View.OnClickListener {
+		
+		/**
+		 * URL for the full size image of the token.
+		 */
+		private String mTokenUrl;
+
+		/**
+		 * Constructor.
+		 * @param tokenUrl URL for the full size image of the token.
+		 */
+		public InnerTokenButtonClickListener(String tokenUrl) {
+			mTokenUrl = tokenUrl;
+			
+		}
+		
+		@Override
+		public void onClick(View v) {
+			if (mTokenButtonClickListener != null) {
+				mTokenButtonClickListener.onTokenButtonClick(mTokenUrl);
+			}
+			
+		}
+		
 	}
 	
 }

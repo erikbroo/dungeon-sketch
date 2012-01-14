@@ -14,6 +14,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -40,6 +41,17 @@ public class ArtCredits extends Activity {
         FrameLayout frame = (FrameLayout) this.findViewById(
         		R.id.art_credits_frame);
         mCreditsView = new ArtCreditsView(this);
+        mCreditsView.setTokenButtonClickListener(
+        		new ArtCreditsView.TokenButtonClickListener() {
+			@Override
+			public void onTokenButtonClick(String url) {
+				if (url != null) {
+					Intent browserIntent = new Intent(
+							Intent.ACTION_VIEW, Uri.parse(url));
+					startActivity(browserIntent);
+				}
+			}
+		});
         
         try {
         	InputStream is = getResources().openRawResource(R.raw.art_credits);
@@ -104,7 +116,8 @@ public class ArtCredits extends Activity {
 						atts.getValue("res"), 
 						"drawable", 
 						"com.tbocek.android.combatmap");
-				mCreditsView.addArtCredit(mCurrentArtist, id);
+				mCreditsView.addArtCredit(
+						mCurrentArtist, id, atts.getValue("url"));
 			}
 		} 
 	}
