@@ -237,19 +237,18 @@ public final class TokenDatabase {
     }
 
 	/**
-	 * Given a collection of token IDs, returns a list of tokens, sorted by
-	 * ID, that that contains the known tokens that match those IDs.
+	 * Given a collection of token IDs, returns a list of tokens, sorted based
+	 * on the sort order that each token class defines, that that contains the 
+	 * known tokens that match those IDs.
 	 * @param tokenIds Collection of IDs to look up.
 	 * @return List of tokens.
 	 */
 	private List<BaseToken> tokenIdsToTokens(
 			final Collection<String> tokenIds) {
-		ArrayList<String> sortedIds = new ArrayList<String>(tokenIds);
-        Collections.sort(sortedIds);
 
         List<BaseToken> tokens = new ArrayList<BaseToken>();
 
-        for (String tokenId : sortedIds) {
+        for (String tokenId : tokenIds) {
             // Add the token for this ID.
             // No worries if the token doesn't exist - by design the database
             // could include tokens that don't exist anymore since it connects a
@@ -258,6 +257,14 @@ public final class TokenDatabase {
                 tokens.add(mTokenForId.get(tokenId));
             }
         }
+        
+        Collections.sort(tokens, new Comparator<BaseToken>() {
+			@Override
+			public int compare(BaseToken t1, BaseToken t2) {
+				// TODO Auto-generated method stub
+				return t1.getSortOrder().compareTo(t2.getSortOrder());
+			}
+        });
         return tokens;
 	}
 
@@ -379,6 +386,11 @@ public final class TokenDatabase {
 		private Context mContext;
 		
 		/**
+		 * Count of the tokens that have been loaded; used to sort them later.
+		 */
+		private int mCurrentSortOrder;
+		
+		/**
 		 * Constructor.
 		 * @param context Application context to load resources from.
 		 */
@@ -395,7 +407,8 @@ public final class TokenDatabase {
 						atts.getValue("res"), 
 						"drawable", 
 						"com.tbocek.android.combatmap");
-				addBuiltin(id);
+				addBuiltin(id, mCurrentSortOrder);
+				mCurrentSortOrder++;
 			}
 		} 
 	}
@@ -404,9 +417,10 @@ public final class TokenDatabase {
      * Adds a built-in image token with the given resource ID to the token
      * database.
      * @param resourceId The ID of the drawable resource to add.
+     * @param sortOrder The sort order to use.
      */
-    private void addBuiltin(final int resourceId) {
-        addTokenPrototype(new BuiltInImageToken(resourceId));
+    private void addBuiltin(final int resourceId, final int sortOrder) {
+        addTokenPrototype(new BuiltInImageToken(resourceId, sortOrder));
     }
 
     /**

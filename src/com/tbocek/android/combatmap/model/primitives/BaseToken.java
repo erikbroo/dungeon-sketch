@@ -93,6 +93,12 @@ public abstract class BaseToken  {
      * throughout the object's lifetime, it can be cached here.
      */
     private String mCachedTokenId;
+    
+    /**
+     * OPTIMIZATION: This token's sort order.  See the optimization note on
+     * mCachedTokenId;
+     */
+    private String mCachedSortOrder;
 
     /**
      * Sets a custom border color for the token.
@@ -307,7 +313,31 @@ public abstract class BaseToken  {
      * @return The class-specific part of the ID.
      */
     protected abstract String getTokenClassSpecificId();
-
+    
+    /**
+     * Gets a global sort order incorporating this token's class and a
+     * class-specific sort order.  Tokens are sorted first by class, then by
+     * an order specified by each class.
+     * @return The sort order.
+     */
+    public final String getSortOrder() {
+        if (mCachedSortOrder == null) {
+            CONCAT_BUFFER.setLength(0);
+            CONCAT_BUFFER.append(this.getClass().getName());
+            CONCAT_BUFFER.append(getTokenClassSpecificSortOrder());
+            mCachedSortOrder = CONCAT_BUFFER.toString();
+        }
+        return mCachedSortOrder;
+    }
+    
+    /**
+     * @return A sort order within this token class.  By default, it is the same
+     * 		as the class specific ID, but subclasses can override this.
+     */
+    protected String getTokenClassSpecificSortOrder() {
+    	return getTokenClassSpecificId();
+    }
+    
     @Override
     public final boolean equals(final Object other) {
         if (this == other) { return true; }

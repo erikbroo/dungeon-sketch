@@ -139,7 +139,7 @@ public class ArtCreditsView extends LinearLayout {
 	 */
 	public void addArtCredit(String name, int resource, String url) {
 		TokenButton b = new TokenButton(
-				this.getContext(), new BuiltInImageToken(resource));
+				this.getContext(), new BuiltInImageToken(resource, 0));
 		b.allowDrag(false);
 		b.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,

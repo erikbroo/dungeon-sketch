@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,12 @@ import android.graphics.drawable.Drawable;
  *
  */
 public final class BuiltInImageToken extends DrawableToken {
-
+	/**
+	 * Format string that pads the sort order with 0s.
+	 */
+	private static final DecimalFormat SORT_ORDER_FORMAT =
+		new DecimalFormat("#0000.###");
+	
     /**
      * HACK: The resources.  This must be set prior to creating
      * BuildInImageTokens.
@@ -31,13 +37,21 @@ public final class BuiltInImageToken extends DrawableToken {
      * The resource to load for this token.
      */
     private int mResourceId;
+    
+    /**
+     * Relative order to sort this token in.
+     */
+    private int mSortOrder;
 
     /**
      * Constructor from resource ID.
      * @param resourceId The resource to load for this token.
+     * @param sortOrder Integer that will be used to specify a sort order for
+     * 		this class.
      */
-    public BuiltInImageToken(final int resourceId) {
+    public BuiltInImageToken(final int resourceId, final int sortOrder) {
         mResourceId = resourceId;
+        mSortOrder = sortOrder;
     }
     
     @Override
@@ -47,7 +61,7 @@ public final class BuiltInImageToken extends DrawableToken {
 
     @Override
     public BaseToken clone() {
-        return copyAttributesTo(new BuiltInImageToken(mResourceId));
+        return copyAttributesTo(new BuiltInImageToken(mResourceId, mSortOrder));
     }
 
     @Override
@@ -61,5 +75,12 @@ public final class BuiltInImageToken extends DrawableToken {
         s.add("built-in");
         s.add("image");
         return s;
+    }
+    
+    @Override
+    protected String getTokenClassSpecificSortOrder() {
+    	SORT_ORDER_FORMAT.setDecimalSeparatorAlwaysShown(false);
+        return SORT_ORDER_FORMAT.format(mSortOrder);
+
     }
 }
