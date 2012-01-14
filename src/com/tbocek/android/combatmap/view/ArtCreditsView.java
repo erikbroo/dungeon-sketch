@@ -9,7 +9,6 @@ import android.content.Context;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -114,11 +113,11 @@ public class ArtCreditsView extends LinearLayout {
 		this.addView(licenseView);
 		
 		// Add a scrollable view of contributed tokens
-		HorizontalScrollView scroller =
-				new HorizontalScrollView(this.getContext());
-		LinearLayout tokenView = new LinearLayout(this.getContext());
-		scroller.addView(tokenView);
-		this.addView(scroller);
+		GridLayout tokenView = new GridLayout(this.getContext());
+		int cellDimension = (int) (getResources().getDisplayMetrics().density
+				* TOKEN_SIZE);
+		tokenView.setCellDimensions(cellDimension, cellDimension);
+		this.addView(tokenView);
 		mTokenViewsForArtist.put(name, tokenView);
 		
 		// Add some vertical padding
@@ -143,10 +142,8 @@ public class ArtCreditsView extends LinearLayout {
 				this.getContext(), new BuiltInImageToken(resource));
 		b.allowDrag(false);
 		b.setLayoutParams(new LinearLayout.LayoutParams(
-				(int) (getResources().getDisplayMetrics().density
-						* TOKEN_SIZE), 
-				(int) (getResources().getDisplayMetrics().density
-						* TOKEN_SIZE)));
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT));
 		b.setOnClickListener(new InnerTokenButtonClickListener(url));
 		mTokenViewsForArtist.get(name).addView(b);
 	}
