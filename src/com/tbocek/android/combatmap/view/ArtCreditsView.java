@@ -39,7 +39,7 @@ public class ArtCreditsView extends LinearLayout {
 	/**
 	 * Size of the token images, in density-independent pixels.
 	 */
-	private static final int TOKEN_SIZE = 128;
+	private static final int TOKEN_SIZE = 200;
 	
 	/**
 	 * Map that enables lookup of a list of tokens that an artist contributed
