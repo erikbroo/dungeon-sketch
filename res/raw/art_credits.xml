@@ -183,49 +183,53 @@
 		<token res="trollconcept2" />
 		<token res="zombie_warrior" />
 	</artist>
-	<artist
-	   name="Francesca Baerald"
-	   copyright="TBD"
-	   url="http://francescabaerald.deviantart.com/">
-	   <token 
-	        res="angel_of_death"
-	        url="http://francescabaerald.deviantart.com/gallery/#/d49q94r"/>
-       <token 
-            res="athanasius_weirman"
-            url="http://francescabaerald.deviantart.com/gallery/#/d4dtii1"/>
-       <token
-            res="beastmaster"
-            url="http://francescabaerald.deviantart.com/art/The-Beastmaster-274600849"/>
-       <token 
-            res="beastmaster_dragon"
-            url="http://francescabaerald.deviantart.com/art/The-Beastmaster-274600849"/>
-       <token 
-            res="mothmans_lair"
-            url="http://francescabaerald.deviantart.com/gallery/#/d47fufw"/>
-       <token 
-            res="northern_winds"
-            url="http://francescabaerald.deviantart.com/gallery/#/d47ftxa"/>
-       <token 
-            res="raek"
-            url="http://francescabaerald.deviantart.com/gallery/#/d4fxl6s"/>
-       <token 
-            res="secrets"
-            url="http://francescabaerald.deviantart.com/gallery/#/d47fubu"/>
-       <token 
-            res="she_devil"
-            url="http://francescabaerald.deviantart.com/gallery/#/d4b78fz"/>
-       <token 
-            res="tarot_the_devil"
-            url="http://francescabaerald.deviantart.com/gallery/#/d47frpf"/>
-       <token 
-            res="taste_the_unexpected"
-            url="http://francescabaerald.deviantart.com/gallery/#/d4c34jc"/>
-       <token 
-            res="thor"
-            url="http://francescabaerald.deviantart.com/gallery/#/d47fumd"/>
-       <token 
-            res="vanya_altea"
-            url="http://francescabaerald.deviantart.com/gallery/#/d4fxldz"/>
+	<artist name="Rinpoo Chuang" url="http://rinpoo-chuang.deviantart.com/"
+		copyright="For noncommercial use only.  Used with permission.">
+		<token res="aurak" />
+		<token res="dragon_hurlant" />
+		<token res="female_dragon" />
+		<token res="griffon" />
+		<token res="la_nuit_des_lumieres" />
+		<token res="manticore" />
+		<token res="moi" />
+		<token res="nocturne" />
+		<token res="o_o_oooooo" />
+		<token res="rakshase" />
+		<token res="rascal" />
+		<token res="rencontre_imprevue" />
+		<token res="roar" />
+		<token res="shadowsaber" />
+		<token res="tetaclak" />
+		<token res="yenkii_albing" />
+	</artist>
+	<artist name="Francesca Baerald" copyright="TBD"
+		url="http://francescabaerald.deviantart.com/">
+		<token res="angel_of_death"
+			url="http://francescabaerald.deviantart.com/gallery/#/d49q94r" />
+		<token res="athanasius_weirman"
+			url="http://francescabaerald.deviantart.com/gallery/#/d4dtii1" />
+		<token res="beastmaster"
+			url="http://francescabaerald.deviantart.com/art/The-Beastmaster-274600849" />
+		<token res="beastmaster_dragon"
+			url="http://francescabaerald.deviantart.com/art/The-Beastmaster-274600849" />
+		<token res="mothmans_lair"
+			url="http://francescabaerald.deviantart.com/gallery/#/d47fufw" />
+		<token res="northern_winds"
+			url="http://francescabaerald.deviantart.com/gallery/#/d47ftxa" />
+		<token res="raek"
+			url="http://francescabaerald.deviantart.com/gallery/#/d4fxl6s" />
+		<token res="secrets"
+			url="http://francescabaerald.deviantart.com/gallery/#/d47fubu" />
+		<token res="she_devil"
+			url="http://francescabaerald.deviantart.com/gallery/#/d4b78fz" />
+		<token res="tarot_the_devil"
+			url="http://francescabaerald.deviantart.com/gallery/#/d47frpf" />
+		<token res="taste_the_unexpected"
+			url="http://francescabaerald.deviantart.com/gallery/#/d4c34jc" />
+		<token res="thor"
+			url="http://francescabaerald.deviantart.com/gallery/#/d47fumd" />
+		<token res="vanya_altea"
+			url="http://francescabaerald.deviantart.com/gallery/#/d4fxldz" />
 	</artist>
 	<artist name="Sir Edwin Henry Landseer" copyright="Available in the public domain">
 		<token res="cheetah" />
