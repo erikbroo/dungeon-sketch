@@ -29,6 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
 
+import com.google.common.collect.Sets;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
@@ -407,7 +408,14 @@ public final class TokenDatabase {
 						atts.getValue("res"), 
 						"drawable", 
 						"com.tbocek.android.combatmap");
-				addBuiltin(id, mCurrentSortOrder);
+				String tagList = atts.getValue("tags");
+				Set<String> defaultTags = Sets.newHashSet();
+				if (tagList != null) {
+					for (String s: tagList.split(",")) {
+						defaultTags.add(s);
+					}
+				}
+				addBuiltin(id, mCurrentSortOrder, defaultTags);
 				mCurrentSortOrder++;
 			}
 		} 
@@ -418,9 +426,13 @@ public final class TokenDatabase {
      * database.
      * @param resourceId The ID of the drawable resource to add.
      * @param sortOrder The sort order to use.
+     * @param defaultTags Tags that this built in token should be in by default.
      */
-    private void addBuiltin(final int resourceId, final int sortOrder) {
-        addTokenPrototype(new BuiltInImageToken(resourceId, sortOrder));
+    private void addBuiltin(
+    		final int resourceId, final int sortOrder,
+    		Set<String> defaultTags) {
+        addTokenPrototype(new BuiltInImageToken(
+        		resourceId, sortOrder, defaultTags));
     }
 
     /**

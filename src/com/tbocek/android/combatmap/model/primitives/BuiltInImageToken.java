@@ -42,6 +42,11 @@ public final class BuiltInImageToken extends DrawableToken {
      * Relative order to sort this token in.
      */
     private int mSortOrder;
+    
+    /**
+     * Tags loaded for this built-in token.
+     */
+    private Set<String> mDefaultTags;
 
     /**
      * Constructor from resource ID.
@@ -49,9 +54,11 @@ public final class BuiltInImageToken extends DrawableToken {
      * @param sortOrder Integer that will be used to specify a sort order for
      * 		this class.
      */
-    public BuiltInImageToken(final int resourceId, final int sortOrder) {
+    public BuiltInImageToken(final int resourceId, final int sortOrder,
+    		final Set<String> defaultTags) {
         mResourceId = resourceId;
         mSortOrder = sortOrder;
+        mDefaultTags = defaultTags;
     }
     
     @Override
@@ -61,7 +68,8 @@ public final class BuiltInImageToken extends DrawableToken {
 
     @Override
     public BaseToken clone() {
-        return copyAttributesTo(new BuiltInImageToken(mResourceId, mSortOrder));
+        return copyAttributesTo(new BuiltInImageToken(
+        		mResourceId, mSortOrder, mDefaultTags));
     }
 
     @Override
@@ -74,6 +82,7 @@ public final class BuiltInImageToken extends DrawableToken {
         Set<String> s = new HashSet<String>();
         s.add("built-in");
         s.add("image");
+        s.addAll(mDefaultTags);
         return s;
     }
     
