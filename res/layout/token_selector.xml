@@ -13,21 +13,22 @@
         android:gravity="right"
         android:orientation="vertical" >
 
-        <Button
+        <ImageButton
             android:id="@+id/token_category_selector_button"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:alpha="1"
-            android:text="^^^" >
-        </Button>
+            android:src="@drawable/filter"
+            android:contentDescription="Filter Tokens">       
+        </ImageButton>
 
-        <Button
+        <ImageButton
             android:id="@+id/token_manager_button"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:alpha="1"
-            android:text="..." >
-        </Button>
+            android:src="@drawable/tag"
+            android:contentDescription="Tag Manager">
+        </ImageButton>
     </LinearLayout>
 
     <HorizontalScrollView

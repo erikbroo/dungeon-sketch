@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.tbocek.android.combatmap.R;
@@ -35,12 +36,12 @@ public final class TokenSelectorView extends LinearLayout {
 	/**
 	 * Button that represents opening the tag selector.
 	 */
-    private Button mGroupSelector;
+    private ImageButton mGroupSelector;
 
     /**
      * Button that represents opening the token manager.
      */
-    private Button mTokenManager;
+    private ImageButton mTokenManager;
 
     /**
      * A factory that caches views already created for a given token.
@@ -90,10 +91,10 @@ public final class TokenSelectorView extends LinearLayout {
         ((HorizontalScrollView) findViewById(R.id.token_scroll_view))
         		.addView(mTokenLayout);
 
-        mGroupSelector = (Button) findViewById(
+        mGroupSelector = (ImageButton) findViewById(
         		R.id.token_category_selector_button);
         mGroupSelector.setAlpha(1.0f);
-        mTokenManager = (Button) findViewById(R.id.token_manager_button);
+        mTokenManager = (ImageButton) findViewById(R.id.token_manager_button);
         mTokenManager.setAlpha(1.0f);
         mTokenViewFactory = new TokenViewFactory(context);
     }
