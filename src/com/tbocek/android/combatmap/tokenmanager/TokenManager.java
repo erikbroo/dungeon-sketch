@@ -239,7 +239,7 @@ public final class TokenManager extends Activity {
 					mTokenDatabase.addEmptyTag(text);
 					mTagListView.setTagList(mTokenDatabase.getTags());
 				}
-			}, "New Tag", "Create");
+			}, getString(R.string.new_tag), getString(R.string.create));
     	default:
         	return null;
 
@@ -257,7 +257,7 @@ public final class TokenManager extends Activity {
       		if (customTokens > 0) {
       			String deleteText = "";
       			if (customTokens == 1) {
-      				deleteText = "Delete Token";
+      				deleteText = getString(R.string.delete_token);
       			} else {
       				deleteText = "Delete " + Integer.toString(customTokens)
       					+ " Tokens";
