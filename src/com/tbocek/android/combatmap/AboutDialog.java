@@ -17,6 +17,6 @@ public class AboutDialog extends Dialog {
     public AboutDialog(final Context context) {
         super(context);
         this.setContentView(R.layout.about_box);
-        this.setTitle("About Dungeon Sketch");
+        this.setTitle(context.getString(R.string.about));
     }
 }
