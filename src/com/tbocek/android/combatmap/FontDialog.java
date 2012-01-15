@@ -66,7 +66,7 @@ public class FontDialog extends Dialog {
             final Context context, final OnTextConfirmedListener listener) {
         super(context);
         this.setContentView(R.layout.draw_text);
-        this.setTitle("Draw Text");
+        this.setTitle(context.getString(R.string.draw_text));
         this.mListener = listener;
 
         mConfirmButton = (Button) this.findViewById(R.id.button_save);
