@@ -53,6 +53,7 @@ public final class BuiltInImageToken extends DrawableToken {
      * @param resourceId The resource to load for this token.
      * @param sortOrder Integer that will be used to specify a sort order for
      * 		this class.
+     * @param defaultTags Set of tags that this built in token loads with.
      */
     public BuiltInImageToken(final int resourceId, final int sortOrder,
     		final Set<String> defaultTags) {

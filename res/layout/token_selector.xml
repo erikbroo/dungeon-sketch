@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:src="@drawable/filter"
-            android:contentDescription="Filter Tokens">       
+            android:contentDescription="@string/filter_tokens">       
         </ImageButton>
 
         <ImageButton
@@ -27,7 +27,7 @@
             android:layout_height="40dp"
             android:alpha="1"
             android:src="@drawable/tag"
-            android:contentDescription="Tag Manager">
+            android:contentDescription="@string/token_manager">
         </ImageButton>
     </LinearLayout>
 

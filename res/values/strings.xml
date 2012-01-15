@@ -34,6 +34,8 @@
     <string name="map_preview">Map Preview</string>
     <string name="draw_text">Draw Text</string>
     <string name="create">Create</string>
+    <string name="filter_tokens">Filter Tokens</string>
+    <string name="token_manager">Token Manager</string>
     <string name="about_text">
         Dungeon Sketch Beta\n
         Written by Tim Bocek\n
