@@ -395,7 +395,8 @@ public final class DrawOptionsView extends LinearLayout {
     }
 
     /**
-     * Automatically loads the default tool.
+     * Automatically loads the default tool.  If a tool is already selected,
+     * re-selects it.
      */
     public void setDefault() {
         // Start out with the pan button selected.

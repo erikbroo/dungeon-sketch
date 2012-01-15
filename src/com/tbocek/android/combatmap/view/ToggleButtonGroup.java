@@ -56,11 +56,14 @@ public class ToggleButtonGroup {
     }
 	
 	/**
-	 * Select the default button if no button is already selected.
+	 * Select the default button if no button is already selected.  If a button
+	 * is selected, uses that as the default, but clicks it anyway to ensure
+	 * that a sane state is reached.
 	 */
 	public void maybeSelectDefault() {
 		for (ImageToggleButton b : mMembers) {
 			if (b.isToggled()) {
+				b.performClick();
 				return;
 			}
 		}
