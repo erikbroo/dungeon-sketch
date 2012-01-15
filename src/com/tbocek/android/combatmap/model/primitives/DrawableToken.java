@@ -64,9 +64,7 @@ public abstract class DrawableToken extends BaseToken {
     		final boolean isManipulatable) {
         Drawable d = getDrawable();
         if (d != null) {
-        	d.setColorFilter(new ColorMatrixColorFilter(new ColorMatrix(
-        			
-        	)));
+        	d.setColorFilter(BLOODIED_FILTER);
             draw(c, x, y, radius, false, isManipulatable);
             d.setColorFilter(null);
         } else {
