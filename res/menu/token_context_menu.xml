@@ -3,10 +3,10 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
   	<item
 		android:id="@+id/token_context_delete_token"
-		android:title="Delete Token"/>
+		android:title="@string/delete_token"/>
   	<item
 		android:id="@+id/token_context_resize_token"
-		android:title="Resize Token"/>
+		android:title="@string/resize_token"/>
 	<item
 		android:id="@+id/token_context_size_tenth"
 		android:title="1/10"/>
