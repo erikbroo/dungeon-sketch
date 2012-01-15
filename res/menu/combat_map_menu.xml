@@ -4,34 +4,34 @@
     <item android:id="@+id/menu_redo" android:icon="@drawable/redo" android:showAsAction="ifRoom" android:title="Redo"></item>
     <item
         android:id="@+id/save"
-        android:title="Save"
+        android:title="@string/save"
         android:icon="@drawable/document_save"
         android:showAsAction="ifRoom"/>
     <item
         android:id="@+id/load"
-        android:title="Load"
+        android:title="@string/load"
         android:icon="@drawable/document_open"
         android:showAsAction="ifRoom"/>
 	<item
 		android:id="@+id/clear_all_submenu"
-		android:title="New"
+		android:title="@string/new_map"
 		android:icon="@drawable/document_new"
 		android:showAsAction="ifRoom">
 		<menu>
 			<item
 				android:id="@+id/clear_all"
-				android:title="Confirm"/>
+				android:title="@string/confirm"/>
 		</menu>
 	</item>
 	<item
 		android:id="@+id/resize_grid"
-		android:title="Resize Grid"/>
+		android:title="@string/resize_grid"/>
 	<item
 	   android:id="@+id/snap_to_grid"
-	   android:title="Snap to grid"
+	   android:title="@string/snap_to_grid"
 	   android:checkable = "true"></item>
 	<item
 		android:id="@+id/settings"
-		android:title="Settings"/>
+		android:title="@string/settings"/>
 	
 </menu>
