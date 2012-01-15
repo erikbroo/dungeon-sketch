@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, CombatMap!</string>
     <string name="app_name">Dungeon Sketch</string>
     <string name="preferences">com.tbocek.combatmap_preferences</string>
     <string name="save">Save</string>
@@ -32,6 +31,7 @@
     <string name="fog_of_war_enabled">Fog of War Enabled</string>
     <string name="art_credits">Art Credits</string>
     <string name="about">About Dungeon Sketch</string>
+    <string name="map_preview">Map Preview</string>
     <string name="about_text">
         Dungeon Sketch Beta\n
         Written by Tim Bocek\n
