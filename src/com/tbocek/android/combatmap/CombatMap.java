@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -335,6 +336,7 @@ public final class CombatMap extends Activity {
                     mPopupFrame.setVisibility(View.INVISIBLE);
                 } else {
                     mPopupFrame.setVisibility(View.VISIBLE);
+                    mPopupFrame.performClick();
                 }
             }
         });
@@ -362,8 +364,8 @@ public final class CombatMap extends Activity {
         mainContentFrame.addView(mCombatView);
         mBottomControlFrame.addView(mTokenSelector);
 
-        final Button collapseButton =
-        	(Button) this.findViewById(R.id.bottomControlAreaExpandButton);
+        final ImageButton collapseButton =
+        	(ImageButton) this.findViewById(R.id.bottomControlAreaExpandButton);
         collapseButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View arg0) {
@@ -371,10 +373,12 @@ public final class CombatMap extends Activity {
 				if (mIsControlTrayExpanded) {
 					mBottomControlFrame.getLayoutParams().height =
 						RelativeLayout.LayoutParams.WRAP_CONTENT;
-					collapseButton.setText("v  v  v  v  v  v  v  v  v  v");
+					collapseButton.setImageResource(
+							R.drawable.vertical_contract);
 				} else {
 					mBottomControlFrame.getLayoutParams().height = 0;
-					collapseButton.setText("^  ^  ^  ^  ^  ^  ^  ^  ^  ^");
+					collapseButton.setImageResource(
+							R.drawable.vertical_expand);
 				}
 				findViewById(R.id.combatMapMainLayout).requestLayout();
 			}

@@ -31,15 +31,14 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
-    <Button
+    <ImageButton
         android:id="@+id/bottomControlAreaExpandButton"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_above="@+id/bottomControlAreaFrame"
         android:layout_centerHorizontal="true"
-        android:text="v  v  v  v  v  v  v  v  v  v"
-        android:textSize="10sp" >
-    </Button>
+        android:src="@drawable/vertical_contract">
+    </ImageButton>
 
     <HorizontalScrollView
         android:id="@+id/legacyActionBar"
