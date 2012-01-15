@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -40,11 +39,6 @@ import com.tbocek.android.combatmap.view.TokenLoadTask;
  *
  */
 public final class TokenManager extends Activity {
-	/**
-	 * The proportion of the screen that the token layout should take up.
-	 */
-	private static final float TOKEN_LAYOUT_RELATIVE_SIZE = .75f;
-
 	/**
 	 * The width and height of each token button.
 	 */
@@ -152,14 +146,6 @@ public final class TokenManager extends Activity {
 
     }
 
-	/**
-	 * @return Width of the activity for layout purposes.
-	 */
-	private int getWidth() {
-		return this.getWindowManager().getDefaultDisplay().getWidth();
-	}
-
-
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -186,9 +172,9 @@ public final class TokenManager extends Activity {
 	 */
 	private View getTokenButtonLayout(final Collection<BaseToken> tokens) {
 		GridLayout grid = new GridLayout(this);
-		int width =  (int) (TOKEN_LAYOUT_RELATIVE_SIZE * this.getWidth());
 		grid.setLayoutParams(new ViewGroup.LayoutParams(
-				width, ViewGroup.LayoutParams.WRAP_CONTENT));
+				ViewGroup.LayoutParams.MATCH_PARENT, 
+				ViewGroup.LayoutParams.WRAP_CONTENT));
 		int cellDimension = (int) (
 				TOKEN_BUTTON_SIZE * getResources().getDisplayMetrics().density);
 		grid.setCellDimensions(cellDimension, cellDimension);
