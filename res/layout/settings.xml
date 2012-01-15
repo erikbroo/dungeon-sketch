@@ -6,22 +6,22 @@
     android:layout_height="fill_parent"
 >
 	<ListPreference
-		android:title="Theme"
+		android:title="@string/theme"
 		android:key="theme"
 		android:entries="@array/themeNames"
 		android:entryValues="@array/themeValues"/>
 	<ListPreference
-		android:title="Grid Type"
+		android:title="@string/grid_type"
 		android:key="gridtype"
 		android:entries="@array/gridNames"
 		android:entryValues="@array/gridValues"/>
 	<CheckBoxPreference
-	    android:title="Fog of War Enabled"
+	    android:title="@string/fog_of_war_enabled"
 	    android:key="fogofwar"/>
 	<Preference
-	    android:title="About Dungeon Sketch"
+	    android:title="@string/about"
 	    android:key="about"/>
 	   <Preference
-        android:title="Art Credits"
+        android:title="@string/art_credits"
         android:key="artcredits"/>
 </PreferenceScreen>

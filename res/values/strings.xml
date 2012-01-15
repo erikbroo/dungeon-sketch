@@ -27,7 +27,12 @@
     <string name="remove_tag">Remove Tag</string>
     <string name="new_token">New Token</string>
     <string name="new_tag">New Tag</string>
-    <string name="about">
+    <string name="theme">Theme</string>
+    <string name="grid_type">Grid Type</string>
+    <string name="fog_of_war_enabled">Fog of War Enabled</string>
+    <string name="art_credits">Art Credits</string>
+    <string name="about">About Dungeon Sketch</string>
+    <string name="about_text">
         Dungeon Sketch Beta\n
         Written by Tim Bocek\n
         \n
