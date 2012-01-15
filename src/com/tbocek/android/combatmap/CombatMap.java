@@ -399,10 +399,10 @@ public final class CombatMap extends Activity {
         }
 
         if (mTabManager != null) {
-        	mTabManager.addTab("Background", MODE_DRAW_BACKGROUND);
-            mTabManager.addTab("GM Notes", MODE_DRAW_GM_NOTES);
-            mTabManager.addTab("Combat", MODE_TOKENS);
-            mTabManager.addTab("Annotations", MODE_DRAW_ANNOTATIONS);
+        	mTabManager.addTab(getString(R.string.background), MODE_DRAW_BACKGROUND);
+            mTabManager.addTab(getString(R.string.gm_notes), MODE_DRAW_GM_NOTES);
+            mTabManager.addTab(getString(R.string.combat), MODE_TOKENS);
+            mTabManager.addTab(getString(R.string.annotations), MODE_DRAW_ANNOTATIONS);
             mTabManager.setTabSelectedListener(mTabSelectedListener);
         }
 
@@ -705,7 +705,7 @@ public final class CombatMap extends Activity {
                 	setFilenamePreference(text);
                 	new MapSaver(text, getApplicationContext()).run();
                 }
-            }, "Save Map", "Save");
+            }, getString(R.string.save_map), getString(R.string.save));
         case DIALOG_ID_DRAW_TEXT:
         	
             FontDialog d = new FontDialog(this,
