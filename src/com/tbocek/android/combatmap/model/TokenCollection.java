@@ -234,6 +234,17 @@ public final class TokenCollection implements UndoRedoTarget {
     }
     
     /**
+     * Interrupts the current action that has been checkpointed, and restores
+     * the checkpointed token to its initial state.
+     */
+    public void restoreCheckpointedToken() {
+    	if (mBuildingCommand != null) {
+    		mBuildingCommand.undo();
+    		mBuildingCommand = null;
+    	}
+    }
+    
+    /**
      * Adds an entry to the command history based on the previously checkpointed
      * token.  The created command will swap the token's state between a copy
      * of the state when this method was called, and the checkpointed state.

@@ -2,6 +2,8 @@ package com.tbocek.android.combatmap.view.interaction;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +29,14 @@ public final class TokenManipulationInteractionMode
 	 * until it will snap.
 	 */
     private static final int GRID_SNAP_THRESHOLD = 20;
+    
+    /**
+     * Rectangle in which to draw the trash can.
+     */
+    //CHECKSTYLE:OFF
+    private static final Rect TRASH_CAN_RECT 
+    		= new Rect(16, 16, 128 + 16, 128 + 16);
+    //CHECKSTYLE:ON
 
     /**
      * The token currently being dragged around.
@@ -47,6 +57,27 @@ public final class TokenManipulationInteractionMode
      * Whether the current token has been moved.
      */
     private boolean mMoved;
+    
+    /**
+     * Cached drawable for a trash can to move tokens to.
+     */
+    private Drawable mTrashDrawable;
+    
+    /**
+     * Cached drawable for the trash can image when a token is dragged to it.
+     */
+    private Drawable mTrashHoverDrawable;
+    
+    /**
+     * True if the token is being hovered over the trash can.
+     */
+    private boolean mAboutToTrash;
+    
+    /**
+     * Cached value of whether drawing against a dark background.  Used to 
+     * detect theme changes.
+     */
+    private boolean mCachedDark;
     
     /**
      * Constructor.
@@ -87,6 +118,8 @@ public final class TokenManipulationInteractionMode
                 		transformer.screenSpaceToWorldSpace(
                 				currentPointScreenSpace));
             }
+            mAboutToTrash = TRASH_CAN_RECT.contains(
+            		(int) e2.getX(), (int) e2.getY());
         } else {
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
@@ -273,16 +306,54 @@ public final class TokenManipulationInteractionMode
     public void onUp(final MotionEvent ev) {
         mDown = false;
         getView().refreshMap();
-        if (mMoved) {
+        if (mAboutToTrash) {
+        	getView().getTokens().restoreCheckpointedToken();
+        	getView().getTokens().remove(mCurrentToken);
+        	getView().refreshMap();
+        } else if (mMoved) {
         	getView().getTokens().createCommandHistory();
         }
+        mCurrentToken = null;
     }
 
     @Override
     public void draw(final Canvas c) {
         if (mCurrentToken != null && mDown) {
+        	// Draw a ghost of the token at the location that it is being moved
+        	// from.
             mCurrentToken.drawGhost(
             		c, getView().getGridSpaceTransformer(), mOriginalLocation);
+            // Draw a trash can to drag tokens to.
+            ensureTrashCanDrawablesCreated();
+            
+            if (mAboutToTrash) {
+            	mTrashHoverDrawable.draw(c);
+            } else {
+            	mTrashDrawable.draw(c);
+            }
         }
     }
+
+	/**
+	 * Checks whether trash can drawables need to be created, and creates them
+	 * if needed.
+	 */
+	private void ensureTrashCanDrawablesCreated() {
+		if (mTrashDrawable == null 
+				|| mCachedDark != getView().getData().getGrid().isDark()) {
+			if (getView().getData().getGrid().isDark()) {
+				mTrashDrawable = getView().getResources().getDrawable(
+						R.drawable.trashcan);
+			} else {
+				mTrashDrawable = getView().getResources().getDrawable(
+						R.drawable.trashcan_dark);
+			}
+			
+			mCachedDark = getView().getData().getGrid().isDark();
+		    mTrashDrawable.setBounds(TRASH_CAN_RECT);
+		    mTrashHoverDrawable = getView().getResources().getDrawable(
+		    		R.drawable.trashcan_hover_over);
+		    mTrashHoverDrawable.setBounds(TRASH_CAN_RECT);
+		}
+	}
 }
