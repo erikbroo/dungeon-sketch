@@ -333,7 +333,7 @@ public final class CombatMap extends Activity {
             @Override
             public void onClick(final View arg0) {
                 if (mPopupFrame.getVisibility() == View.VISIBLE) {
-                    mPopupFrame.setVisibility(View.INVISIBLE);
+                    mPopupFrame.setVisibility(View.GONE);
                 } else {
                     mPopupFrame.setVisibility(View.VISIBLE);
                     mPopupFrame.performClick();
