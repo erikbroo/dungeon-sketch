@@ -74,8 +74,7 @@ public final class TokenCollection implements UndoRedoTarget {
      * @param t The token to add.
      */
     public void addToken(final BaseToken t) {
-    	AddOrDeleteTokenCommand c = new AddOrDeleteTokenCommand(this);
-    	c.addToken(t);
+    	AddTokenCommand c = new AddTokenCommand(this, t);
         mCommandHistory.execute(c);
     }
 
@@ -84,8 +83,7 @@ public final class TokenCollection implements UndoRedoTarget {
      * @param t The token to remove.
      */
     public void remove(final BaseToken t) {
-    	AddOrDeleteTokenCommand c = new AddOrDeleteTokenCommand(this);
-    	c.deleteToken(t);
+    	RemoveTokenCommand c = new RemoveTokenCommand(this, t);
         mCommandHistory.execute(c);
     }
 
@@ -363,71 +361,89 @@ public final class TokenCollection implements UndoRedoTarget {
 	}
     
 	/**
-	 * Represents a command that adds or deletes tokens.
+	 * Command that adds a token to the token collection.
 	 * @author Tim
 	 *
 	 */
-    private class AddOrDeleteTokenCommand implements CommandHistory.Command {
+	private class AddTokenCommand implements CommandHistory.Command {
 
-    	/**
-    	 * The token collection being modified.
-    	 */
-		private TokenCollection mTokenCollection;
+		/**
+		 * Token collection to modify.
+		 */
+		private TokenCollection mCollection;
 		
 		/**
-		 * List of tokens deleted in this operation.
+		 * Token to add to the collection.
 		 */
-    	private List<BaseToken> mTokensToDelete = Lists.newArrayList();
-    	
-    	/**
-    	 * List of tokens added in this operation.
-    	 */
-    	private List<BaseToken> mTokensToAdd = Lists.newArrayList();
-    	
-
-    	/**
-    	 * Constructor.
-    	 * @param c The token collection to modify.
-    	 */
-    	public AddOrDeleteTokenCommand(TokenCollection c) {
-    		mTokenCollection = c;
-    	}
-
-
-    	/**
-    	 * Adds a token to this operation's create list.
-    	 * @param t The token being created.
-    	 */
-    	public void addToken(BaseToken t) {
-    		mTokensToAdd.add(t);
-    	}
-    	
-    	/**
-    	 * Adds a token to this operation's delete list.
-    	 * @param t The token being deleted.
-    	 */
-    	public void deleteToken(BaseToken t) {
-			mTokensToDelete.add(t);
-    	}
-    	
+		private BaseToken mToAdd;
+		
+		/**
+		 * 
+		 * @param collection The token collection to modify.
+		 * @param toAdd The token to add.
+		 */
+		public AddTokenCommand(TokenCollection collection, BaseToken toAdd) {
+			mCollection = collection;
+			mToAdd = toAdd;
+		}
+		
 		@Override
 		public void execute() {
-			mTokenCollection.mTokens.addAll(mTokensToAdd);
-			mTokenCollection.mTokens.removeAll(mTokensToDelete);
+			mCollection.mTokens.add(mToAdd);
 		}
 
 		@Override
 		public void undo() {
-			mTokenCollection.mTokens.removeAll(mTokensToAdd);
-			mTokenCollection.mTokens.addAll(mTokensToDelete);
+			mCollection.mTokens.remove(mToAdd);
+			
 		}
 
 		@Override
 		public boolean isNoop() {
-			return mTokensToAdd.isEmpty() && mTokensToDelete.isEmpty();
+			return false;
 		}
-    	
+	}
+	
+	/**
+	 * Command that removes a token from the token collection.
+	 * @author Tim
+	 *
+	 */
+	private class RemoveTokenCommand implements CommandHistory.Command {
+		
+		/**
+		 * Token collection to modify.
+		 */
+		private TokenCollection mCollection;
+		
+		/**
+		 * Token to remove from the collection.
+		 */
+		private BaseToken mToRemove;
+		
+		/**
+		 * 
+		 * @param collection The token collection to modify.
+		 * @param toRemove The token to remove.
+		 */
+		public RemoveTokenCommand(TokenCollection collection, BaseToken toRemove) {
+			mCollection = collection;
+			mToRemove = toRemove;
+		}
+		
+		@Override
+		public void execute() {
+			mCollection.mTokens.remove(mToRemove);
+		}
 
-    }
+		@Override
+		public void undo() {
+			mCollection.mTokens.add(mToRemove);
+		}
 
+		@Override
+		public boolean isNoop() {
+			return false;
+		}
+	}
 }
