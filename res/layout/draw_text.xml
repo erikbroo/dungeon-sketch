@@ -5,7 +5,7 @@
 
     <EditText
         android:id="@+id/entered_text"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" >
     </EditText>
@@ -14,8 +14,8 @@
         android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/entered_text"
+        android:layout_below="@+id/entered_text"
+        android:layout_alignRight="@+id/entered_text"
         android:text="@string/save" />
 
     <TextView
