@@ -37,7 +37,7 @@
             android:label="Load" >
         </activity>
         <activity
-            android:name="com.tbocek.android.combatmap.ArtCredits"
+            android:name=".about.ArtCredits"
             android:label="Art Credits" >
         </activity>
         <activity

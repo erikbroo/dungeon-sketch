@@ -1,4 +1,4 @@
-package com.tbocek.android.combatmap;
+package com.tbocek.android.combatmap.about;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +21,11 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.google.common.collect.Lists;
-import com.tbocek.android.combatmap.view.ArtCreditsView;
+import com.tbocek.android.combatmap.CombatMap;
+import com.tbocek.android.combatmap.R;
+import com.tbocek.android.combatmap.R.id;
+import com.tbocek.android.combatmap.R.layout;
+import com.tbocek.android.combatmap.R.raw;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenLoadTask;
 

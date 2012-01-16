@@ -1,9 +1,11 @@
-package com.tbocek.android.combatmap.view;
+package com.tbocek.android.combatmap.about;
 
 import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
+import com.tbocek.android.combatmap.view.GridLayout;
+import com.tbocek.android.combatmap.view.TokenButton;
 
 import android.content.Context;
 import android.text.util.Linkify;
