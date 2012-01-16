@@ -32,6 +32,16 @@ public final class Util {
      * full when generating the palette.
      */
     private static final float SAT_LUM_ADJUST = .5f;
+    
+    /**
+     * Constant for full opacity alpha value.
+     */
+    public static int FULL_OPACITY = 255;
+    
+    /**
+     * Constant for half opacity alpha value.
+     */
+    public static int HALF_OPACITY = 128;
 
 
     /**

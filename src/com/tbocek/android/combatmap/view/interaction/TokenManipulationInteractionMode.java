@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.view.interaction;
 
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -35,8 +36,18 @@ public final class TokenManipulationInteractionMode
      */
     //CHECKSTYLE:OFF
     private static final Rect TRASH_CAN_RECT 
-    		= new Rect(16, 16, 128 + 16, 128 + 16);
+    		= new Rect(16, 16, 96 + 16, 96 + 16);
     //CHECKSTYLE:ON
+    
+    /**
+     * Length of the trash can fade in, in ms.
+     */
+    private static final int TRASH_FADE_IN_DURATION = 1000;
+    
+    /**
+     * Length of the trash can fade out, in ms.
+     */
+    private static final int TRASH_FADE_OUT_DURATION = 250;
 
     /**
      * The token currently being dragged around.
@@ -78,6 +89,30 @@ public final class TokenManipulationInteractionMode
      * detect theme changes.
      */
     private boolean mCachedDark;
+    
+    /**
+     * Animated alpha value to use for the trash can; allows it to fade in and 
+     * out.
+     */
+    private int mTrashCanAlpha;
+    
+    /**
+     * Animation object to fade the trash can.
+     */
+    private ValueAnimator mTrashCanAnimator;
+    
+    /**
+     * Animation update handler that changes the alpha value of the trash can.
+     */
+    private ValueAnimator.AnimatorUpdateListener mTrashCanFadeListener = 
+    		new ValueAnimator.AnimatorUpdateListener() {
+				
+				@Override
+				public void onAnimationUpdate(ValueAnimator animation) {
+					mTrashCanAlpha = (Integer) animation.getAnimatedValue();
+					getView().refreshMap();
+				}
+			};
     
     /**
      * Constructor.
@@ -138,13 +173,14 @@ public final class TokenManipulationInteractionMode
         	mMoved = false;
             mOriginalLocation = mCurrentToken.getLocation();
             getView().getTokens().checkpointToken(mCurrentToken);
+            fadeTrashCanIn();
         }
 
         mDown = true;
         return true;
     }
 
-    @Override
+	@Override
     public boolean onDoubleTap(final MotionEvent e) {
         if (mCurrentToken != null) {
         	getView().getTokens().checkpointToken(mCurrentToken);
@@ -306,12 +342,15 @@ public final class TokenManipulationInteractionMode
     public void onUp(final MotionEvent ev) {
         mDown = false;
         getView().refreshMap();
-        if (mAboutToTrash) {
-        	getView().getTokens().restoreCheckpointedToken();
-        	getView().getTokens().remove(mCurrentToken);
-        	getView().refreshMap();
-        } else if (mMoved) {
-        	getView().getTokens().createCommandHistory();
+        if (mCurrentToken != null) {
+		    if (mAboutToTrash) {
+		    	getView().getTokens().restoreCheckpointedToken();
+		    	getView().getTokens().remove(mCurrentToken);
+		    	getView().refreshMap();
+		    } else if (mMoved) {
+		    	getView().getTokens().createCommandHistory();
+		    }
+        	fadeTrashCanOut();
         }
         mCurrentToken = null;
     }
@@ -323,12 +362,17 @@ public final class TokenManipulationInteractionMode
         	// from.
             mCurrentToken.drawGhost(
             		c, getView().getGridSpaceTransformer(), mOriginalLocation);
+        }
+        
+        if (mTrashCanAlpha != 0) {
             // Draw a trash can to drag tokens to.
             ensureTrashCanDrawablesCreated();
             
             if (mAboutToTrash) {
+            	mTrashHoverDrawable.setAlpha(mTrashCanAlpha);
             	mTrashHoverDrawable.draw(c);
             } else {
+            	mTrashDrawable.setAlpha(mTrashCanAlpha);
             	mTrashDrawable.draw(c);
             }
         }
@@ -356,4 +400,32 @@ public final class TokenManipulationInteractionMode
 		    mTrashHoverDrawable.setBounds(TRASH_CAN_RECT);
 		}
 	}
+	
+	/**
+	 * Begins an animation to fade the trash can in.
+	 */
+    private void fadeTrashCanIn() {
+    	if (mTrashCanAnimator != null && mTrashCanAnimator.isRunning()) {
+    		mTrashCanAnimator.cancel();
+    	}
+		mTrashCanAnimator = ValueAnimator.ofInt(0, Util.FULL_OPACITY);
+		mTrashCanAnimator.setDuration(TRASH_FADE_IN_DURATION);
+		mTrashCanAnimator.addUpdateListener(mTrashCanFadeListener);
+		mTrashCanAnimator.start();
+	}
+    
+	/**
+	 * Begins an animation to fade the trash can out.
+	 */
+    private void fadeTrashCanOut() {
+    	if (mTrashCanAnimator != null && mTrashCanAnimator.isRunning()) {
+    		mTrashCanAnimator.cancel();
+    	}
+    	mTrashCanAnimator = ValueAnimator.ofInt(Util.FULL_OPACITY, 0);
+    	mTrashCanAnimator.setDuration(TRASH_FADE_OUT_DURATION);
+    	mTrashCanAnimator.addUpdateListener(mTrashCanFadeListener);
+    	mTrashCanAnimator.start();
+	}
+    
+
 }
