@@ -80,6 +80,11 @@ public final class CombatMap extends Activity {
     private static final int DIALOG_ID_DRAW_TEXT = 1;
     
     /**
+     * Maximum height of the popup tag selector.  Must be scaled.
+     */
+    private static final int POPUP_AREA_HEIGHT = 200;
+    
+    /**
      * The current map.
      */
     private static MapData mData;
@@ -329,14 +334,19 @@ public final class CombatMap extends Activity {
 
         mTokenSelector.setOnClickGroupSelectorListener(
                 new View.OnClickListener() {
+            /**
+             * Whether the tag selector is visible.
+             */
+            private boolean mVisible;
+            
             @Override
             public void onClick(final View arg0) {
-                if (mPopupFrame.getVisibility() == View.VISIBLE) {
-                    mPopupFrame.setVisibility(View.GONE);
-                } else {
-                    mPopupFrame.setVisibility(View.VISIBLE);
-                    mPopupFrame.performClick();
-                }
+            	mVisible = !mVisible;
+            	mPopupFrame.getLayoutParams().width = mVisible 
+            			? (int) (getResources().getDisplayMetrics().density 
+            					* POPUP_AREA_HEIGHT)
+            			: 0;
+            			findViewById(R.id.combatMapMainLayout).requestLayout();
             }
         });
 

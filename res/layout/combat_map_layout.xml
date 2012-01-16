@@ -20,11 +20,10 @@
 
     <FrameLayout
         android:id="@+id/popupControlAreaFrame"
-        android:layout_width="200dp"
+        android:layout_width="0dp"
         android:layout_height="350dp"
-        android:layout_above="@+id/bottomControlAreaFrame"
-        android:layout_alignRight="@+id/bottomControlAreaFrame"
-        android:visibility="invisible" >
+        android:layout_above="@+id/bottomControlAreaExpandButton"
+        android:layout_alignRight="@+id/bottomControlAreaFrame" >
 
         <Button
             android:layout_width="match_parent"
