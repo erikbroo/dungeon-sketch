@@ -42,9 +42,13 @@
         \n
         Licensed under the GNU Lesser General Public License, available at http://www.gnu.org/licenses/lgpl.html\n  
         \n
+        Uses the Android APIs, available at http://source.android.com.\n
+        Uses the Guava Google Core Library, available at http://http://code.google.com/p/guava-libraries/.\n
+        Licensed under Apache Software License 2.0, available at http://code.google.com/p/guava-libraries/.\n
+        \n
         Uses icons from the Oxygen, available at http://www.oxygen-icons.org.\n
         Licensed under Creative Commons BY-SA 3.0, available at http://creativecommons.org/licenses/by-sa/3.0/.\n
         \n
-        (TODO: Android and Guava lisences)
+        Not all token images are compatible with the LGPL.  They are provided for this distribution of the application only.  Please ensure that you have artist permission before redistributing these icons or including them in a commercial distribution of Dungeon Sketch.
     </string>
 </resources>
