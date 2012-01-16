@@ -58,6 +58,21 @@ public final class MapData {
     }
     
     /**
+     * Clears the currently loaded map data, forcing a reload next time map
+     * data is needed.
+     */
+    public static void invalidate() {
+    	instance = null;
+    }
+    
+    /**
+     * @return True if an instance of MapData has already been created.
+     */
+    public static boolean hasValidInstance() {
+    	return instance != null;
+    }
+    
+    /**
      * Loads the map data from an input stream.
      * @param input The stream to read from.
      * @param tokens Token database to use when creating tokens.

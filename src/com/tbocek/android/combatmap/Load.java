@@ -19,6 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.view.SaveFileButton;
 
 /**
@@ -203,6 +204,7 @@ public final class Load extends Activity {
         @Override
         public void onClick(final View v) {
             setFilenamePreference(mFilename);
+            MapData.invalidate();
             finish();
         }
     }
@@ -224,6 +226,7 @@ public final class Load extends Activity {
           if (mContextMenuTrigger.getFileName().equals(
         		  sharedPreferences.getString("filename", null))) {
               setFilenamePreference(null);
+              MapData.invalidate();
           }
 
           // Re-run the setup to remove the deleted file.

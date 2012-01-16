@@ -383,19 +383,7 @@ public final class CombatMap extends Activity {
 			}
         });
 
-        // Attempt to load map data.  If we can't load map data, create a new
-        // map.
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                    this.getApplicationContext());
-        String filename = sharedPreferences.getString("filename", null);
-        if (filename == null) {
-            MapData.clear();
-            mData = MapData.getInstance();
-            mCombatView.setData(mData);
-        } else {
-            loadMap(filename);
-        }
+        loadOrCreateMap();
 
         if (mTabManager != null) {
         	mTabManager.addTab(getString(R.string.background), MODE_DRAW_BACKGROUND);
@@ -410,27 +398,36 @@ public final class CombatMap extends Activity {
         mCombatView.refreshMap();
         mCombatView.requestFocus();
     }
+
+
+	/**
+	 * Attempts to load map data, or creates a new map if this fails.
+	 */
+	private void loadOrCreateMap() {
+		if (MapData.hasValidInstance()) {
+			mData = MapData.getInstance();
+			mCombatView.setData(mData);
+		} else {
+	        SharedPreferences sharedPreferences =
+	                PreferenceManager.getDefaultSharedPreferences(
+	                        this.getApplicationContext());
+	        String filename = sharedPreferences.getString("filename", null);
+	        if (filename == null) {
+	        	MapData.clear();
+	            mData = MapData.getInstance();
+	            mCombatView.setData(mData);
+	        } else {
+	            loadMap(filename);
+	        }			
+		}
+
+	}
     
 
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                this.getApplicationContext());
-
-        // Attempt to load map data.  If we can't load map data, create a new
-        // map.
-        // TODO: Only do so if the filename preference has changed or if the
-        // map data is null.
-        String filename = sharedPreferences.getString("filename", null);
-        if (filename == null) {
-            MapData.clear();
-            mData = MapData.getInstance();
-            mCombatView.setData(mData);
-        } else {
-            loadMap(filename);
-        }
+        loadOrCreateMap();
         
         reloadPreferences();
         
