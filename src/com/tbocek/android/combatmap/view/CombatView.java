@@ -427,7 +427,8 @@ public final class CombatView extends SurfaceView {
 
 		canvas.save();
 		getData().getWorldSpaceTransformer().setMatrix(canvas);
-		if (mFogOfWarMode == FogOfWarMode.CLIP) {
+		if (mFogOfWarMode == FogOfWarMode.CLIP 
+				&& !getData().getBackgroundFogOfWar().isEmpty()) {
 			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
 		getData().getBackgroundLines().drawAllLinesBelowGrid(canvas);
@@ -438,7 +439,8 @@ public final class CombatView extends SurfaceView {
 
 		canvas.save();
 		getData().getWorldSpaceTransformer().setMatrix(canvas);
-		if (mFogOfWarMode == FogOfWarMode.CLIP) {
+		if (mFogOfWarMode == FogOfWarMode.CLIP 
+				&& !getData().getBackgroundFogOfWar().isEmpty()) {
 			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
 		getData().getBackgroundLines().drawAllLinesAboveGrid(canvas);
@@ -470,7 +472,8 @@ public final class CombatView extends SurfaceView {
 		canvas.restore();
 
 		canvas.save();
-		if (mFogOfWarMode == FogOfWarMode.CLIP) {
+		if (mFogOfWarMode == FogOfWarMode.CLIP
+				&& !getData().getBackgroundFogOfWar().isEmpty()) {
 			getData().getWorldSpaceTransformer().setMatrix(canvas);
 			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
 			getData().getWorldSpaceTransformer().setInverseMatrix(canvas);
