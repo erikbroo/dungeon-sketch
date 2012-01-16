@@ -194,8 +194,6 @@ public final class TokenCollection implements UndoRedoTarget {
     		final Canvas canvas, final CoordinateTransformer transformer,
     		boolean isDark, boolean isManipulatable) {
         for (int i = 0; i < mTokens.size(); ++i) {
-        	// TODO: Take advantage of knowing whether we have a dark
-        	// background.
             mTokens.get(i).drawInPosition(canvas, transformer, isDark,
             		isManipulatable);
         }

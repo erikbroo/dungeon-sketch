@@ -175,8 +175,6 @@ public final class TokenCreatorView extends View {
      * @param canvas The canvas to draw on.
      */
     public void drawFullBrightnessCircle(final Canvas canvas) {
-        //TODO: Set the rect so that we only draw a small region of the screen
-    	// (not sure if this will actually get a benefit)
         canvas.save(Canvas.CLIP_SAVE_FLAG);
         Path p = new Path();
         p.addCircle(

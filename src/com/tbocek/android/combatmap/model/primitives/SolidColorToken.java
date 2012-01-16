@@ -33,6 +33,11 @@ public final class SolidColorToken extends BaseToken {
 	 * Stroke width to use for drawing a red border around bloodied tokens.
 	 */
 	private static final int BLOODIED_BORDER_STROKE_WIDTH = 8;
+	
+	/**
+	 * Alpha channel value to use for ghost tokens.
+	 */
+	private static final int GHOST_ALPHA = 128;
 
 	/**
      * This token's color.
@@ -66,9 +71,8 @@ public final class SolidColorToken extends BaseToken {
     @Override
     public void drawGhost(final Canvas c, final float x, final float y, final float radius) {
         Paint p = new Paint();
-        p.setStrokeWidth(2);
         p.setColor(mColor);
-        p.setStyle(Style.STROKE);
+        p.setAlpha(GHOST_ALPHA);
         c.drawCircle(x, y, radius, p);
     }
 
@@ -76,9 +80,11 @@ public final class SolidColorToken extends BaseToken {
     public void draw(final Canvas c, final float x, final float y,
     		final float radius, final boolean darkBackground,
     		final boolean isManipulatable) {
-    	// TODO: Respect whether the token is manipulatable.
         Paint p = new Paint();
         p.setColor(mColor);
+        if (!isManipulatable) {
+        	p.setAlpha(GHOST_ALPHA);
+        }
         c.drawCircle(x, y, radius, p);
     }
 

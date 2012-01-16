@@ -92,7 +92,6 @@ public final class LetterToken extends BaseToken {
     @Override
     public void drawGhost(final Canvas c, final float x, final float y,
     		final float radius) {
-        //TODO: Make this look different
         Paint p = new Paint();
         p.setColor(Color.GRAY);
         draw(c, x, y, radius, p);
