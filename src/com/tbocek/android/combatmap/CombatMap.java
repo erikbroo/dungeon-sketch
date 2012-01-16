@@ -404,6 +404,8 @@ public final class CombatMap extends Activity {
             mTabManager.addTab(getString(R.string.annotations), MODE_DRAW_ANNOTATIONS);
             mTabManager.setTabSelectedListener(mTabSelectedListener);
         }
+        
+        reloadPreferences();
 
         mCombatView.refreshMap();
         mCombatView.requestFocus();
@@ -419,6 +421,8 @@ public final class CombatMap extends Activity {
 
         // Attempt to load map data.  If we can't load map data, create a new
         // map.
+        // TODO: Only do so if the filename preference has changed or if the
+        // map data is null.
         String filename = sharedPreferences.getString("filename", null);
         if (filename == null) {
             MapData.clear();
@@ -427,10 +431,9 @@ public final class CombatMap extends Activity {
         } else {
             loadMap(filename);
         }
-
-
+        
         reloadPreferences();
-
+        
         mCombatView.refreshMap();
 
         mTokenDatabase = TokenDatabase.getInstance(
@@ -463,6 +466,11 @@ public final class CombatMap extends Activity {
 	        mTabManager.pickTab(sharedPreferences.getInt(
 	        		"manipulationmode", MODE_DRAW_BACKGROUND));
         }
+        
+        // We defer loading the manipulation mode until now, so that the correct
+        // item is disabled after the menu is loaded.
+        loadModePreference();
+
     }
 
     @Override
@@ -531,10 +539,6 @@ public final class CombatMap extends Activity {
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.combat_map_menu, menu);
-
-        // We defer loading the manipulation mode until now, so that the correct
-        // item is disabled after the menu is loaded.
-        loadModePreference();
 
         SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
