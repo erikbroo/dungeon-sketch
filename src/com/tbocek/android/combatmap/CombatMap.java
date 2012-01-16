@@ -176,7 +176,6 @@ public final class CombatMap extends Activity {
 
         @Override
         public void onChooseStrokeWidth(final float width) {
-        	mCombatView.setDrawMode();
             mCombatView.setNewLineStrokeWidth(width);
         }
 
