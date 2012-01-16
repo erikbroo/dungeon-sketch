@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap;
 
+import com.tbocek.android.combatmap.about.AboutDialog;
 import com.tbocek.android.combatmap.about.ArtCredits;
 
 import android.app.Dialog;
