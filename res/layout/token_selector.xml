@@ -15,7 +15,7 @@
 
         <ImageButton
             android:id="@+id/token_category_selector_button"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="40dp"
             android:src="@drawable/filter"
             android:contentDescription="@string/filter_tokens">       
@@ -23,7 +23,7 @@
 
         <ImageButton
             android:id="@+id/token_manager_button"
-            android:layout_width="match_parent"
+            android:layout_width="80dp"
             android:layout_height="40dp"
             android:alpha="1"
             android:src="@drawable/tag"
