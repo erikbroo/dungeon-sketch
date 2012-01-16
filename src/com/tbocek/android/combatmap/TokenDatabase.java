@@ -325,7 +325,8 @@ public final class TokenDatabase {
      * @return A new token cloned from the prototype for that Token ID.
      */
     public BaseToken createToken(String tokenId) {
-    	return this.mTokenForId.get(tokenId).clone();
+    	BaseToken prototype = this.mTokenForId.get(tokenId);
+    	return prototype.clone();
     }
 
     /**

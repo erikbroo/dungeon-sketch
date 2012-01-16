@@ -136,8 +136,9 @@ public class ArtCreditsView extends LinearLayout {
 	 * @param name Name of the artist who contributed the token.
 	 * @param resource Resource identifier for the contributed token.
 	 * @param url URL for the full version of the token, if provided.
+	 * @return The view created to display this token.
 	 */
-	public void addArtCredit(String name, int resource, String url) {
+	public TokenButton addArtCredit(String name, int resource, String url) {
 		TokenButton b = new TokenButton(
 				this.getContext(), new BuiltInImageToken(resource, 0, null));
 		b.allowDrag(false);
@@ -146,6 +147,7 @@ public class ArtCreditsView extends LinearLayout {
 				LinearLayout.LayoutParams.MATCH_PARENT));
 		b.setOnClickListener(new InnerTokenButtonClickListener(url));
 		mTokenViewsForArtist.get(name).addView(b);
+		return b;
 	}
 	
 	/**

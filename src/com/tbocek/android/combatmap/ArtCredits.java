@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -19,7 +20,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.view.ArtCreditsView;
+import com.tbocek.android.combatmap.view.TokenButton;
+import com.tbocek.android.combatmap.view.TokenLoadTask;
 
 /**
  * Activity that loads and displays art credits for each built-in token.
@@ -58,9 +62,14 @@ public class ArtCredits extends Activity {
         	SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
-			xr.setContentHandler(new ArtCreditHandler());
+			ArtCreditHandler handler = new ArtCreditHandler();
+			xr.setContentHandler(handler);
 			xr.parse(new InputSource(is));
 			is.close();
+			
+			// Load created token objects, in case this is the first time that
+			// that was done.
+			new TokenLoadTask(handler.getCreatedTokenButtons()).execute();
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,6 +110,12 @@ public class ArtCredits extends Activity {
 		 */
 		private String mCurrentArtist;
 		
+		/**
+		 * List that accumulates all token buttons created to display art
+		 * credits; can be used to load their images as a batch.
+		 */
+		private List<TokenButton> mCreatedTokenButtons = Lists.newArrayList();
+		
 		@Override
 		public void startElement(
 				String namespaceURI, String localName, String qName, 
@@ -116,9 +131,16 @@ public class ArtCredits extends Activity {
 						atts.getValue("res"), 
 						"drawable", 
 						"com.tbocek.android.combatmap");
-				mCreditsView.addArtCredit(
-						mCurrentArtist, id, atts.getValue("url"));
+				mCreatedTokenButtons.add(mCreditsView.addArtCredit(
+						mCurrentArtist, id, atts.getValue("url")));
 			}
 		} 
+		
+		/**
+		 * @return List of all token buttons created as a result of the walk.
+		 */
+		public List<TokenButton> getCreatedTokenButtons() {
+			return mCreatedTokenButtons;
+		}
 	}
 }
