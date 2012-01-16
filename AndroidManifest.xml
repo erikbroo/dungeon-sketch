@@ -23,6 +23,6 @@
 				  android:label="Token Creator"
 				  android:hardwareAccelerated="false"></activity>
         <activity android:name=".tokenmanager.TokenManager"
-				  android:label="Token Creator"></activity>
+				  android:label="Token Manager"></activity>
     </application>
 </manifest>
