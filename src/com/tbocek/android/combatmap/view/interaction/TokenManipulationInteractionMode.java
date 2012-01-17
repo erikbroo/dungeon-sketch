@@ -352,7 +352,6 @@ public final class TokenManipulationInteractionMode
 		    }
         	fadeTrashCanOut();
         }
-        mCurrentToken = null;
     }
 
     @Override
@@ -421,7 +420,7 @@ public final class TokenManipulationInteractionMode
     	if (mTrashCanAnimator != null && mTrashCanAnimator.isRunning()) {
     		mTrashCanAnimator.cancel();
     	}
-    	mTrashCanAnimator = ValueAnimator.ofInt(Util.FULL_OPACITY, 0);
+    	mTrashCanAnimator = ValueAnimator.ofInt(this.mTrashCanAlpha, 0);
     	mTrashCanAnimator.setDuration(TRASH_FADE_OUT_DURATION);
     	mTrashCanAnimator.addUpdateListener(mTrashCanFadeListener);
     	mTrashCanAnimator.start();
