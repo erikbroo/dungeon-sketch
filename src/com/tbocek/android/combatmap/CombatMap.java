@@ -140,6 +140,11 @@ public final class CombatMap extends Activity {
      * Saved because we need to listen for these events.
      */
     private MenuItem mSnapToGridMenuItem;
+    
+    /**
+     * Whether the tag selector is visible.
+     */
+    private boolean mTagSelectorVisible;
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -333,19 +338,11 @@ public final class CombatMap extends Activity {
 
         mTokenSelector.setOnClickGroupSelectorListener(
                 new View.OnClickListener() {
-            /**
-             * Whether the tag selector is visible.
-             */
-            private boolean mVisible;
+
             
             @Override
             public void onClick(final View arg0) {
-            	mVisible = !mVisible;
-            	mPopupFrame.getLayoutParams().width = mVisible 
-            			? (int) (getResources().getDisplayMetrics().density 
-            					* POPUP_AREA_HEIGHT)
-            			: 0;
-            			findViewById(R.id.combatMapMainLayout).requestLayout();
+            	setTagSelectorVisibility(!mTagSelectorVisible);
             }
         });
 
@@ -406,6 +403,15 @@ public final class CombatMap extends Activity {
 
         mCombatView.refreshMap();
         mCombatView.requestFocus();
+    }
+    
+    private void setTagSelectorVisibility(boolean visible) {
+    	mPopupFrame.getLayoutParams().width = visible 
+    			? (int) (getResources().getDisplayMetrics().density 
+    					* POPUP_AREA_HEIGHT)
+    			: 0;
+    	findViewById(R.id.combatMapMainLayout).requestLayout();
+    	this.mTagSelectorVisible = visible;
     }
 
 
@@ -628,10 +634,10 @@ public final class CombatMap extends Activity {
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
-            mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(true);
+            setTagSelectorVisibility(false);
 			return;
 		case MODE_DRAW_ANNOTATIONS:
             mCombatView.setAreTokensManipulatable(false);
@@ -639,10 +645,10 @@ public final class CombatMap extends Activity {
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
-            mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(false);
+            setTagSelectorVisibility(false);
 			return;
 		case MODE_DRAW_GM_NOTES:
             mCombatView.setAreTokensManipulatable(false);
@@ -650,10 +656,10 @@ public final class CombatMap extends Activity {
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.NOTHING);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
-            mPopupFrame.setVisibility(View.INVISIBLE);
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(true);
+            setTagSelectorVisibility(false);
 			return;
 		case MODE_TOKENS:
             mCombatView.setAreTokensManipulatable(true);
