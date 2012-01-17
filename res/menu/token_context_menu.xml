@@ -36,4 +36,5 @@
 	<item android:id="@+id/token_border_red"></item>
 	<item android:id="@+id/token_border_green"></item>
 	<item android:id="@+id/token_border_yellow"></item>
+	<item android:id="@+id/token_context_bloodied" android:checkable="true" android:checked="false" android:title="Bloodied"></item>
 </menu>

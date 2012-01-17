@@ -203,6 +203,11 @@ public final class TokenManipulationInteractionMode
         if (mCurrentToken != null) {
             menu.add(Menu.NONE, R.id.token_context_delete_token,
             		 Menu.NONE, "Delete Token");
+            menu.add(Menu.NONE, R.id.token_context_bloodied, 
+            		 Menu.NONE, "Bloodied");
+            menu.findItem(R.id.token_context_bloodied).setCheckable(true);
+            menu.findItem(R.id.token_context_bloodied).setChecked(
+            		mCurrentToken.isBloodied());
             
             SubMenu sm = menu.addSubMenu("Change Size");
             // CHECKSTYLE:OFF
@@ -331,6 +336,11 @@ public final class TokenManipulationInteractionMode
         case R.id.token_border_yellow:
         	getView().getTokens().checkpointToken(mCurrentToken);
         	mCurrentToken.setCustomBorder(Color.YELLOW);
+        	getView().getTokens().createCommandHistory();
+        	return true;
+        case R.id.token_context_bloodied:
+        	getView().getTokens().checkpointToken(mCurrentToken);
+        	mCurrentToken.setBloodied(!mCurrentToken.isBloodied());
         	getView().getTokens().createCommandHistory();
         	return true;
         default:
