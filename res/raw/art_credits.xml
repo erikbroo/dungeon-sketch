@@ -162,7 +162,7 @@
 		<token res="greed2" tags="goblinoid"/>
 		<token res="icemountain_ranger" tags="humanoid,male"/>
 		<token res="kampf2_02" tags="demon"/>
-		<token res="magnus_3" tags="humaoid,male"/>
+		<token res="magnus_3" tags="humanoid,male"/>
 		<token res="manticore3" tags="monster"/>
 		<token res="nyarlathotep" tags="demon"/>
 		<token res="ocean" tags="monster"/>
