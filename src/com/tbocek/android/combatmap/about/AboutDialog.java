@@ -1,8 +1,6 @@
 package com.tbocek.android.combatmap.about;
 
 import com.tbocek.android.combatmap.R;
-import com.tbocek.android.combatmap.R.layout;
-import com.tbocek.android.combatmap.R.string;
 
 import android.app.Dialog;
 import android.content.Context;
