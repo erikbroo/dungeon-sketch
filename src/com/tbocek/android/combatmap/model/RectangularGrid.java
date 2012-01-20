@@ -117,6 +117,14 @@ public final class RectangularGrid extends Grid {
     public PointF getNearestSnapPoint(
             final PointF currentLocation,
             final float tokenDiameter) {
+    	// Special case when snapping to a point instead of a region: round to
+    	// nearest grid location!
+    	if (tokenDiameter == 0) {
+    		return new PointF(
+    				Math.round(currentLocation.x),
+    				Math.round(currentLocation.y));
+    	}
+    	
         float previousGridLineX =
             (float) Math.floor((double) currentLocation.x);
         float previousGridLineY =
@@ -126,7 +134,7 @@ public final class RectangularGrid extends Grid {
 
         // If we have a token that is smaller than one grid line, find the
         // nearest subgrid line instead.
-        if (tokenDiameter < 1 && tokenDiameter != 0) {
+        if (tokenDiameter < 1) {
             previousGridLineX += (currentLocation.x - previousGridLineX)
                 - (currentLocation.x - previousGridLineX) % tokenDiameter;
             previousGridLineY += (currentLocation.y - previousGridLineY)
