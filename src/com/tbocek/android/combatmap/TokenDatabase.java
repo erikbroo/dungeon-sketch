@@ -28,6 +28,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.common.collect.Sets;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
@@ -326,6 +327,10 @@ public final class TokenDatabase {
      */
     public BaseToken createToken(String tokenId) {
     	BaseToken prototype = this.mTokenForId.get(tokenId);
+    	if (prototype == null) {
+    		Log.e("TokenDatabase", "Token did not exist for ID: " + tokenId);
+    		return new LetterToken("X");
+    	}
     	return prototype.clone();
     }
 
