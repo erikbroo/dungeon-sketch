@@ -27,6 +27,11 @@ public class TokenLoadTask
 	 * The list of token buttons that are being loaded.
 	 */
 	private Collection<TokenButton> mTokenButtons;
+	
+	/**
+	 * Combat view in which these tokens are being drawn.
+	 */
+	private CombatView mCombatView;
 
 	/**
 	 * Constructor.
@@ -35,6 +40,18 @@ public class TokenLoadTask
 	public TokenLoadTask(Collection<TokenButton> buttons) {
 		super();
 		mTokenButtons = buttons;
+	}
+	
+	/**
+	 * Constructor.
+	 * @param buttons The list of token buttons to load.
+	 * @param combatView CombatView to refresh when a token is loaded.
+	 */
+	public TokenLoadTask(
+			Collection<TokenButton> buttons, CombatView combatView) {
+		super();
+		mTokenButtons = buttons;
+		mCombatView = combatView;
 	}
 
 
@@ -68,6 +85,9 @@ public class TokenLoadTask
 		if (b != null) {
 			b.setVisibility(View.VISIBLE);
 			b.invalidate();
+		}
+		if (mCombatView != null) {
+			mCombatView.refreshMap();
 		}
 	}
 

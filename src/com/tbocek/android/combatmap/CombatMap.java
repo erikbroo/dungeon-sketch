@@ -243,7 +243,7 @@ public final class CombatMap extends Activity {
 
 			@Override
 			public void onChangeSelectedTag(final String newTag) {
-				mTokenSelector.setSelectedTag(newTag);
+				mTokenSelector.setSelectedTag(newTag, mCombatView);
 			}
 		};
 		
@@ -450,7 +450,7 @@ public final class CombatMap extends Activity {
 
         mTokenDatabase = TokenDatabase.getInstance(
         		this.getApplicationContext());
-        mTokenSelector.setTokenDatabase(mTokenDatabase);
+        mTokenSelector.setTokenDatabase(mTokenDatabase, mCombatView);
         mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
 
     }

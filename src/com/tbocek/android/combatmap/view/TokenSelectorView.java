@@ -97,8 +97,6 @@ public final class TokenSelectorView extends LinearLayout {
         mTokenManager.setAlpha(1.0f);
         mTokenViewFactory = new TokenViewFactory(context);
     }
-    
-
 
     /**
      * Creates a view that allows a token to be selected.
@@ -161,25 +159,31 @@ public final class TokenSelectorView extends LinearLayout {
     /**
      * Sets the token database to query for tokens.
      * @param database The token database.
+     * @param combatView The CombatView to refresh when tokens are loaded.
      */
-    public void setTokenDatabase(final TokenDatabase database) {
+    public void setTokenDatabase(
+    		final TokenDatabase database, final CombatView combatView) {
         this.mTokenDatabase = database;
-        setTokenList(mTokenDatabase.getAllTokens());
+        setTokenList(mTokenDatabase.getAllTokens(), combatView);
     }
 
     /**
      * Sets the tag currently being displayed.
      * @param checkedTag The tag currently being displayed.
+     * @param combatView The CombatView to refresh when tokens are loaded.
      */
-    public void setSelectedTag(final String checkedTag) {
-        setTokenList(mTokenDatabase.getTokensForTag(checkedTag));
+    public void setSelectedTag(
+    		final String checkedTag, final CombatView combatView) {
+        setTokenList(mTokenDatabase.getTokensForTag(checkedTag), combatView);
     }
 
     /**
      * Sets the list of tokens displayed to the given collection.
      * @param tokens Tokens to offer in the selector.
+     * @param combatView The CombatView to refresh when tokens are loaded.
      */
-    private void setTokenList(final Collection<BaseToken> tokens) {
+    private void setTokenList(
+    		final Collection<BaseToken> tokens, final CombatView combatView) {
         mTokenLayout.removeAllViews();
         Collection<TokenButton> buttons = new ArrayList<TokenButton>();
         for (BaseToken token : tokens) {
@@ -188,7 +192,7 @@ public final class TokenSelectorView extends LinearLayout {
             buttons.add(b);
             b.setShouldDrawDark(mDrawDark);
         }
-        new TokenLoadTask(buttons).execute();
+        new TokenLoadTask(buttons, combatView).execute();
     }
 
 
