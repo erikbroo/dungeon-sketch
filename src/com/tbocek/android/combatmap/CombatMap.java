@@ -416,14 +416,7 @@ public final class CombatMap extends Activity {
 			public void onRefresh() {
 				// When the map is refreshed, update the undo/redo status as
 				// well.
-				if (mUndoMenuItem != null) {
-					mUndoMenuItem.setEnabled(
-							mCombatView.getUndoRedoTarget().canUndo());
-				}
-				if (mRedoMenuItem != null) {
-					mRedoMenuItem.setEnabled(
-							mCombatView.getUndoRedoTarget().canRedo());
-				}
+				setUndoRedoEnabled();
 			}
 		});
 
@@ -431,6 +424,29 @@ public final class CombatMap extends Activity {
         mCombatView.requestFocus();
     }
     
+    /**
+     * Queries the undo/redo state and sets the enabled state for the menu
+     * items.
+     */
+    private void setUndoRedoEnabled() {
+    	if (mCombatView == null || mCombatView.getUndoRedoTarget() == null) {
+    		return;
+    	}
+    	
+		if (mUndoMenuItem != null) {
+			mUndoMenuItem.setEnabled(
+					mCombatView.getUndoRedoTarget().canUndo());
+		}
+		if (mRedoMenuItem != null) {
+			mRedoMenuItem.setEnabled(
+					mCombatView.getUndoRedoTarget().canRedo());
+		}    	
+    }
+    
+    /**
+     * Sets the visibility of the tag selector.
+     * @param visible The new visibility.
+     */
     private void setTagSelectorVisibility(boolean visible) {
     	mPopupFrame.getLayoutParams().width = visible 
     			? (int) (getResources().getDisplayMetrics().density 
@@ -461,6 +477,7 @@ public final class CombatMap extends Activity {
 	            loadMap(filename);
 	        }			
 		}
+		setUndoRedoEnabled();
 
 	}
     
@@ -588,6 +605,7 @@ public final class CombatMap extends Activity {
         
         mUndoMenuItem = menu.findItem(R.id.menu_undo);
         mRedoMenuItem = menu.findItem(R.id.menu_redo);
+        setUndoRedoEnabled();
         return true;
     }
 
