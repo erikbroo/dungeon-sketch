@@ -77,6 +77,13 @@ public class TokenLoadTask
 			}
 		}
 	}
+	
+	@Override
+	protected void onPostExecute(Void result) {
+		if (mCombatView != null) {
+			mCombatView.refreshMap();
+		}
+	}
 
 	@Override
 	protected void onProgressUpdate(String... progress) {
@@ -85,9 +92,6 @@ public class TokenLoadTask
 		if (b != null) {
 			b.setVisibility(View.VISIBLE);
 			b.invalidate();
-		}
-		if (mCombatView != null) {
-			mCombatView.refreshMap();
 		}
 	}
 
