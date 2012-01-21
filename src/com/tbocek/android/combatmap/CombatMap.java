@@ -223,6 +223,12 @@ public final class CombatMap extends Activity {
 			mCombatView.setTextMode();
 
 		}
+
+		@Override
+		public void onChooseRectangleTool() {
+			mCombatView.setDrawMode();
+			mCombatView.setNewLineStyle(CombatView.NewLineStyle.RECTANGLE);
+		}
     };
 
 

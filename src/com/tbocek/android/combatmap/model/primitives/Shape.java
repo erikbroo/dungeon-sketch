@@ -55,6 +55,8 @@ public abstract class Shape {
 			shape = new Circle(color, width);
 		} else if (shapeType.equals(Text.SHAPE_TYPE)) {
 			shape = new Text(color, width);
+		} else if (shapeType.equals(Rectangle.SHAPE_TYPE)){
+			shape = new Rectangle(color, width);
 		} else {
 			throw new IOException("Unrecognized shape type: " + shapeType);
 		}

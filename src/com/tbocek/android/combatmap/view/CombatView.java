@@ -201,7 +201,12 @@ public final class CombatView extends SurfaceView {
 		/**
 		 * Draw text.
 		 */
-		TEXT
+		TEXT, 
+		
+		/**
+		 * Draw rectangle.
+		 */
+		RECTANGLE
 	}
 
 	/**
@@ -556,6 +561,9 @@ public final class CombatView extends SurfaceView {
 					this.mNewLineStrokeWidth);
 		case CIRCLE:
 			return lines.createCircle(this.mNewLineColor,
+					this.mNewLineStrokeWidth);
+		case RECTANGLE:
+			return lines.createRectangle(this.mNewLineColor,
 					this.mNewLineStrokeWidth);
 		default:
 			throw new IllegalArgumentException("Invalid new line type.");

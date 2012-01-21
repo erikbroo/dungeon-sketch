@@ -170,6 +170,7 @@ public final class DrawOptionsView extends LinearLayout {
         createAndAddEraserButton();
         createAndAddStraightLineButton();
         createAndAddFreehandLineButton();
+        createAndAddRectangleButton();
         createAndAddCircleButton();
         createAndAddTextButton();
         mMaskButton = createAndAddMaskButton();
@@ -340,6 +341,11 @@ public final class DrawOptionsView extends LinearLayout {
 		 * Called when the circle draw tool is chosen.
 		 */
 		void onChooseCircleTool();
+		
+		/**
+		 * Called when the rectangle draw tool is chosen.
+		 */
+		void onChooseRectangleTool();
 
 		/**
 		 * Called when the text draw tool is chosen.
@@ -382,6 +388,9 @@ public final class DrawOptionsView extends LinearLayout {
 
 		@Override
 		public void onChooseTextTool() { }
+
+		@Override
+		public void onChooseRectangleTool() { }
     }
 
 
@@ -504,6 +513,29 @@ public final class DrawOptionsView extends LinearLayout {
             @Override
             public void onClick(final View v) {
                 mOnChangeDrawToolListener.onChooseCircleTool();
+                mToolsGroup.untoggle();
+                mColorGroup.setGroupVisibility(View.VISIBLE);
+                mLineWidthGroup.setGroupVisibility(View.VISIBLE);
+                button.setToggled(true);
+                mLineWidthGroup.maybeSelectDefault();
+                mColorGroup.maybeSelectDefault();
+            }
+        });
+        mLayout.addView(button);
+        mToolsGroup.add(button);
+	}
+	
+	/**
+	 * Creates a button to switch to draw rectangle mode and adds it to the view.
+	 */
+	protected void createAndAddRectangleButton() {
+		final ImageToggleButton button =
+			new ImageToggleButton(this.getContext());
+        button.setImageResource(R.drawable.rectangle);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mOnChangeDrawToolListener.onChooseRectangleTool();
                 mToolsGroup.untoggle();
                 mColorGroup.setGroupVisibility(View.VISIBLE);
                 mLineWidthGroup.setGroupVisibility(View.VISIBLE);

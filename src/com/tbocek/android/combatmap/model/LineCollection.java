@@ -19,6 +19,7 @@ import com.tbocek.android.combatmap.model.primitives.Circle;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.FreehandLine;
 import com.tbocek.android.combatmap.model.primitives.PointF;
+import com.tbocek.android.combatmap.model.primitives.Rectangle;
 import com.tbocek.android.combatmap.model.primitives.Shape;
 import com.tbocek.android.combatmap.model.primitives.StraightLine;
 import com.tbocek.android.combatmap.model.primitives.Text;
@@ -171,6 +172,20 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
         return l;
 	}
 	
+    /**
+     * Factory method that creates a rectangle, adds it to the list of
+     * lines, and returns the newly created line.
+     * @param newLineColor The new line's color.
+     * @param newLineStrokeWidth The new line's stroke width.
+     * @return The new line.
+     */
+	public Shape createRectangle(int newLineColor, float newLineStrokeWidth) {
+        Rectangle l = new Rectangle(newLineColor, newLineStrokeWidth);
+        Command c = new Command(this);
+        c.addCreatedShape(l);
+        mCommandHistory.execute(c);
+        return l;
+	}
 
 	/**
 	 * Creates a new text object with the given parameters in this line
@@ -481,5 +496,6 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	public boolean canRedo() {
 		return mCommandHistory.canRedo();
 	}
+
 
 }

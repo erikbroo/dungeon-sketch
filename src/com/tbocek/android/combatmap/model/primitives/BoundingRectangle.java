@@ -40,7 +40,7 @@ public final class BoundingRectangle {
     /**
      * Current right bounds.
      */
-    private float mXMax = Float.MIN_VALUE;
+    private float mXMax = Float.MIN_NORMAL;
 
     /**
      * Current top bounds.
@@ -50,7 +50,7 @@ public final class BoundingRectangle {
     /**
      * Current bottom bounds.
      */
-    private float mYMax = Float.MIN_VALUE;
+    private float mYMax = Float.MIN_NORMAL;
 
     /**
      * @return The left bounds.
@@ -192,9 +192,9 @@ public final class BoundingRectangle {
 	 */
 	public void clear() {
 		   mXMin = Float.MAX_VALUE;
-		   mXMax = Float.MIN_VALUE;
+		   mXMax = Float.MIN_NORMAL;
 		   mYMin = Float.MAX_VALUE;
-		   mYMax = Float.MIN_VALUE;
+		   mYMax = Float.MIN_NORMAL;
 	}
 
 }
