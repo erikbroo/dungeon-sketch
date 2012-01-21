@@ -436,10 +436,18 @@ public final class CombatMap extends Activity {
 		if (mUndoMenuItem != null) {
 			mUndoMenuItem.setEnabled(
 					mCombatView.getUndoRedoTarget().canUndo());
+			mUndoMenuItem.setIcon(
+					mUndoMenuItem.isEnabled() 
+						? R.drawable.undo 
+						: R.drawable.undo_greyscale);
 		}
 		if (mRedoMenuItem != null) {
 			mRedoMenuItem.setEnabled(
 					mCombatView.getUndoRedoTarget().canRedo());
+			mRedoMenuItem.setIcon(
+					mRedoMenuItem.isEnabled() 
+						? R.drawable.redo 
+						: R.drawable.redo_greyscale);
 		}    	
     }
     
