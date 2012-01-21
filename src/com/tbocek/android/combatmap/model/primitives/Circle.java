@@ -154,7 +154,7 @@ public class Circle extends Shape {
 	
 
 	@Override
-	public boolean shouldSerialize() {
+	public boolean isValid() {
 		return this.mRadius == this.mRadius && this.mCenter != null;
 	}
 

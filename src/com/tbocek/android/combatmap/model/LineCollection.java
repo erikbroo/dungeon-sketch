@@ -302,7 +302,9 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
     public void optimize() {
     	Command c = new Command(this);
         for (int i = 0; i < mLines.size(); ++i) {
-        	if (mLines.get(i).needsOptimization()) {
+        	if (!mLines.get(i).isValid()) {
+        		c.addDeletedShape(mLines.get(i));
+        	} else if (mLines.get(i).needsOptimization()) {
 	            List<Shape> optimizedLines = mLines.get(i).removeErasedPoints();
 	            c.addDeletedShape(mLines.get(i));
 	            c.addCreatedShapes(optimizedLines);
@@ -329,7 +331,9 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 	public void serialize(MapDataSerializer s) throws IOException {
 		s.startArray();
 		for (Shape shape: this.mLines) {
-			shape.serialize(s);
+			if (shape.isValid()) {
+				shape.serialize(s);
+			}
 		}
 		s.endArray();
 	}

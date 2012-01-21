@@ -234,5 +234,9 @@ public class Text extends Shape {
 	public PointF getLocation() {
 		return this.mLocation;
 	}
-
+	
+	@Override
+	public boolean isValid() {
+		return mText != null && mLocation != null;
+	}
 }

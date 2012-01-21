@@ -249,7 +249,7 @@ public class StraightLine extends Shape {
 	@Override
     public void serialize(MapDataSerializer s) throws IOException {
     	serializeBase(s, SHAPE_TYPE);
-    	
+
     	s.startObject();
     	s.serializeFloat(mStart.x);
     	s.serializeFloat(mStart.y);
@@ -269,5 +269,10 @@ public class StraightLine extends Shape {
 		mEnd.x = s.readFloat();
 		mEnd.y = s.readFloat();
 		s.expectObjectEnd();
+	}
+	
+	@Override
+	public boolean isValid() {
+		return mStart != null && mEnd != null;
 	}
 }

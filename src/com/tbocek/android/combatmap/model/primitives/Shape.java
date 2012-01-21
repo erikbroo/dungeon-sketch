@@ -323,14 +323,6 @@ public abstract class Shape {
 	public boolean shouldDrawBelowGrid() {
 		return this.getWidth() > 1.0f;
 	}
-
-	/**
-	 * @return Whether this shape should be saved.  Subclasses can override this
-	 * to avoid saving invalid states.
-	 */
-	public boolean shouldSerialize() {
-		return true;
-	}
 	
 	/**
 	 * Serializes this shape to the given stream.  Must call serializeBase()
@@ -347,14 +339,12 @@ public abstract class Shape {
 	 */
 	protected void serializeBase(MapDataSerializer s, String shapeType) 
 			throws IOException {
-		if (shouldSerialize()) {
-			s.serializeString(shapeType);
-			s.startObject();
-			s.serializeInt(this.mColor);
-			s.serializeFloat(this.getWidth());
-			this.mBoundingRectangle.serialize(s);
-			s.endObject();
-		}
+		s.serializeString(shapeType);
+		s.startObject();
+		s.serializeInt(this.mColor);
+		s.serializeFloat(this.getWidth());
+		this.mBoundingRectangle.serialize(s);
+		s.endObject();
 	}
 
 	/**
@@ -403,6 +393,16 @@ public abstract class Shape {
 		ensurePaintCreated();
 		return mPaint;
 	}
-
+    
+    /**
+     * Whether the shape is in a valid state.  Subclasses should override this
+     * with their own checks.  If returns false, the shape may be:
+     * - Removed from the line collection at any time.
+     * - Stopped from serializing.
+     * @return True if the shape is in a valid state, False otherwise.
+     */
+    public boolean isValid() {
+    	return true;
+    }
 
 }
