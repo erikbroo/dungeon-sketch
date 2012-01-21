@@ -36,6 +36,7 @@
     <string name="create">Create</string>
     <string name="filter_tokens">Filter Tokens</string>
     <string name="token_manager">Token Manager</string>
+    <string name="autosave">Auto-Save</string>
     <string name="about_text">
         Dungeon Sketch Beta\n
         Written by Tim Bocek\n
@@ -44,7 +45,8 @@
         \n
         Uses the Android APIs, available at http://source.android.com.\n
         Uses the Guava Google Core Library, available at http://code.google.com/p/guava-libraries/.\n
-        Android and Guava Libraries licensed under Apache Software License 2.0, available at http://code.google.com/p/guava-libraries/.\n
+        Uses the Apache Commons Library, available at http://commons.apache.org.\n
+        Android, Guava, and Apache Commons Libraries licensed under Apache Software License 2.0, available at http://code.google.com/p/guava-libraries/.\n
         \n
         Uses icons from the Oxygen, available at http://www.oxygen-icons.org.\n
         Licensed under Creative Commons BY-SA 3.0, available at http://creativecommons.org/licenses/by-sa/3.0/.\n

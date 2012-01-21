@@ -479,7 +479,7 @@ public final class CombatMap extends Activity {
 			mData = MapData.getInstance();
 			mCombatView.setData(mData);
 		} else {
-	        loadMap("tmp");		
+	        loadMap(DataManager.TEMP_MAP_NAME);		
 		}
 		setUndoRedoEnabled();
 
@@ -541,9 +541,13 @@ public final class CombatMap extends Activity {
 
         Editor editor = sharedPreferences.edit();
         editor.commit();
+        String filename = sharedPreferences.getString("filename", null);
+        if (filename == null 
+        		|| !sharedPreferences.getBoolean("autosave", false)) {
+        	filename = DataManager.TEMP_MAP_NAME;
+        }
 
-        // TODO: optionally copy saved map.
-        new MapSaver("tmp", this.getApplicationContext()).run();
+        new MapSaver(filename, this.getApplicationContext()).run();
     }
 
     /**
@@ -802,7 +806,8 @@ public final class CombatMap extends Activity {
     		 // Attempt to load map data.  If we can't load map data, create a 
     		 // new map.
     		 String filename = sharedPreferences.getString("filename", "");
-    		 if (filename.equals("tmp")) {
+    		 if (filename == null || filename.equals(
+    				 DataManager.TEMP_MAP_NAME)) {
     			 filename = "";
     		 }
     		 TextPromptDialog d = (TextPromptDialog) dialog;
@@ -860,10 +865,13 @@ public final class CombatMap extends Activity {
             try {
                 DataManager dm = new DataManager(mContext);
 	            dm.saveMapName(mFilename);
-	            Bitmap preview = mCombatView.getPreview();
-	            if (preview != null) {
-	            	dm.savePreviewImage(mFilename, preview);
-	            }
+	            // Only save preview if not saving to temp file.
+		        if (mFilename != DataManager.TEMP_MAP_NAME) {
+		            Bitmap preview = mCombatView.getPreview();
+		            if (preview != null) {
+		            	dm.savePreviewImage(mFilename, preview);
+		            }
+		        }
             } catch (Exception e) {
                 MapData.clear();
                 SharedPreferences sharedPreferences =

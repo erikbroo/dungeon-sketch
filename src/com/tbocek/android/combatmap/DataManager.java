@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import com.tbocek.android.combatmap.model.MapData;
 
 import android.content.Context;
@@ -37,6 +39,11 @@ public final class DataManager {
      * Tag to add to files that are map previews.
      */
     private static final String PREVIEW_TAG = ".preview";
+    
+    /**
+     * Name of the temporary map.
+     */
+    public static final String TEMP_MAP_NAME = "tmp";
 
     /**
      * JPEG compression to use when saving images.
@@ -84,9 +91,18 @@ public final class DataManager {
      * @throws IOException On write error.
      */
     public void saveMapName(final String name) throws IOException {
-        FileOutputStream s = new FileOutputStream(this.getSavedMapFile(name));
+    	// Save to temporary map.
+        FileOutputStream s = new FileOutputStream(
+        		this.getSavedMapFile(TEMP_MAP_NAME));
         MapData.saveToStream(s);
         s.close();
+        
+        // Copy temp to desired location
+        if (name != TEMP_MAP_NAME) {
+        	FileUtils.copyFile(
+        			this.getSavedMapFile(TEMP_MAP_NAME), 
+        			this.getSavedMapFile(name));
+        }
     }
 
     /**

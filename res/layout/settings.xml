@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
->
-	<ListPreference
-		android:title="@string/theme"
-		android:key="theme"
-		android:entries="@array/themeNames"
-		android:entryValues="@array/themeValues"/>
-	<ListPreference
-		android:title="@string/grid_type"
-		android:key="gridtype"
-		android:entries="@array/gridNames"
-		android:entryValues="@array/gridValues"/>
-	<CheckBoxPreference
-	    android:title="@string/fog_of_war_enabled"
-	    android:key="fogofwar"/>
-	<Preference
-	    android:title="@string/about"
-	    android:key="about"/>
-	   <Preference
-        android:title="@string/art_credits"
-        android:key="artcredits"/>
+    android:orientation="vertical" >
+
+    <ListPreference
+        android:entries="@array/themeNames"
+        android:entryValues="@array/themeValues"
+        android:key="theme"
+        android:title="@string/theme" />
+
+    <ListPreference
+        android:entries="@array/gridNames"
+        android:entryValues="@array/gridValues"
+        android:key="gridtype"
+        android:title="@string/grid_type" />
+
+    <CheckBoxPreference
+        android:key="fogofwar"
+        android:title="@string/fog_of_war_enabled" />
+    
+    <CheckBoxPreference
+        android:key="autosave"
+        android:title="@string/autosave" />
+
+    <Preference
+        android:key="about"
+        android:title="@string/about" />
+
+    <Preference
+        android:key="artcredits"
+        android:title="@string/art_credits" />
+
 </PreferenceScreen>
