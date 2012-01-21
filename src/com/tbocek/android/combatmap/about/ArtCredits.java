@@ -23,9 +23,6 @@ import android.widget.FrameLayout;
 import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.R;
-import com.tbocek.android.combatmap.R.id;
-import com.tbocek.android.combatmap.R.layout;
-import com.tbocek.android.combatmap.R.raw;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenLoadTask;
 

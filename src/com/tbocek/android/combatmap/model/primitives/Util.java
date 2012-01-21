@@ -36,12 +36,12 @@ public final class Util {
     /**
      * Constant for full opacity alpha value.
      */
-    public static int FULL_OPACITY = 255;
+    public static final int FULL_OPACITY = 255;
     
     /**
      * Constant for half opacity alpha value.
      */
-    public static int HALF_OPACITY = 128;
+    public static final int HALF_OPACITY = 128;
 
 
     /**

@@ -50,8 +50,10 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
 	 */
 	public void onProvideShadowMetrics(
 			final Point shadowSize, final Point shadowTouchPoint) {
+		// CHECKSTYLE:OFF
 		shadowSize.x = mTokenRadius * 4;
 		shadowSize.y = mTokenRadius * 4;
+		// CHECKSTYLE:ON
 		shadowTouchPoint.x = mTokenRadius;
 		shadowTouchPoint.y = mTokenRadius;
 	}
@@ -67,7 +69,7 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
 		// If one token, display it alone.  If two or three tokens, offset by
 		// half a radius.  Otherwise, crowd tokens until they fit.
 		int tokenOffset = 0;
-		if (displayedTokens < 4) {
+		if (displayedTokens < MAX_DISPLAYED_TOKENS - 1) {
 			tokenOffset = tokenDiameter / 2;
 		} else {
 			tokenOffset = tokenDiameter / displayedTokens - 1;
