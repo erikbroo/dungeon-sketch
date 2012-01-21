@@ -479,17 +479,7 @@ public final class CombatMap extends Activity {
 			mData = MapData.getInstance();
 			mCombatView.setData(mData);
 		} else {
-	        SharedPreferences sharedPreferences =
-	                PreferenceManager.getDefaultSharedPreferences(
-	                        this.getApplicationContext());
-	        String filename = sharedPreferences.getString("filename", null);
-	        if (filename == null) {
-	        	MapData.clear();
-	            mData = MapData.getInstance();
-	            mCombatView.setData(mData);
-	        } else {
-	            loadMap(filename);
-	        }			
+	        loadMap("tmp");		
 		}
 		setUndoRedoEnabled();
 
@@ -552,13 +542,8 @@ public final class CombatMap extends Activity {
         Editor editor = sharedPreferences.edit();
         editor.commit();
 
-        String filename = sharedPreferences.getString("filename", null);
-        if (filename == null) {
-            setFilenamePreference("tmp");
-            filename = "tmp";
-        }
-
-        new MapSaver(filename, this.getApplicationContext()).run();
+        // TODO: optionally copy saved map.
+        new MapSaver("tmp", this.getApplicationContext()).run();
     }
 
     /**

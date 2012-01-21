@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.view.SaveFileButton;
@@ -204,7 +205,7 @@ public final class Load extends Activity {
         @Override
         public void onClick(final View v) {
             setFilenamePreference(mFilename);
-            MapData.invalidate();
+            loadMap(mFilename);
             finish();
         }
     }
@@ -248,6 +249,31 @@ public final class Load extends Activity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    /**
+     * Loads the map with the given name (no extension), and replaces the
+     * currently loaded map with it.
+     * @param name Name of the map to load.
+     */
+    private void loadMap(final String name) {
+        try {
+            new DataManager(getApplicationContext()).loadMapName(name);
+            setFilenamePreference(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast toast = Toast.makeText(this.getApplicationContext(),
+                    "Could not load file.  Reason: " + e.toString(),
+                    Toast.LENGTH_LONG);
+            toast.show();
+
+            MapData.clear();
+            setFilenamePreference(null);
+            
+            if (DeveloperMode.DEVELOPER_MODE) { 
+            	throw new RuntimeException(e);
+            }
         }
     }
 }
