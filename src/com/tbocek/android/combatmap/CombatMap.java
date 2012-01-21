@@ -622,8 +622,8 @@ public final class CombatMap extends Activity {
             MapData.clear();
             setFilenamePreference(null);
             mData = MapData.getInstance();
-            reloadPreferences();
             mCombatView.setData(mData);
+            reloadPreferences();
             return true;
         case R.id.settings:
             startActivity(new Intent(this, Settings.class));
