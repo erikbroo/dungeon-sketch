@@ -468,4 +468,14 @@ public final class LineCollection implements Serializable, UndoRedoTarget {
 		mCommandHistory.redo();
 	}
 
+	@Override
+	public boolean canUndo() {
+		return mCommandHistory.canUndo();
+	}
+
+	@Override
+	public boolean canRedo() {
+		return mCommandHistory.canRedo();
+	}
+
 }

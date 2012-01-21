@@ -119,6 +119,11 @@ public final class CombatView extends SurfaceView {
 	 * operation requires a dialog, which the activity needs to open.
 	 */
 	private NewTextEntryListener mNewTextEntryListener;
+	
+	/**
+	 * Listener to publish refresh requests to.
+	 */
+	private OnRefreshListener mOnRefreshListener;
 
 	/**
 	 * Callback for the Android graphics surface management system.
@@ -413,6 +418,10 @@ public final class CombatView extends SurfaceView {
 		if (canvas != null) {
 			drawOnCanvas(canvas);
 			holder.unlockCanvasAndPost(canvas);
+		}
+		
+		if (mOnRefreshListener != null) {
+			mOnRefreshListener.onRefresh();
 		}
 	}
 
@@ -823,4 +832,26 @@ public final class CombatView extends SurfaceView {
 			NewTextEntryListener newTextEntryListener) {
 		this.mNewTextEntryListener = newTextEntryListener;
 	}
+	
+	/**
+	 * Sets the listener to publish refresh requests to.
+	 * @param onRefreshListener The listener to use.
+	 */
+	public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
+		mOnRefreshListener = onRefreshListener;
+	}
+	
+	/**
+	 * Called when this combat view is refreshed.
+	 * @author Tim
+	 *
+	 */
+	public interface OnRefreshListener {
+		/**
+		 * Called when this combat view is refreshed.
+		 */
+		void onRefresh();
+	}
+
+
 }

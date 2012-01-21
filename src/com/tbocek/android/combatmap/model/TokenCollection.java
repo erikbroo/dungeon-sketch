@@ -268,6 +268,16 @@ public final class TokenCollection implements UndoRedoTarget {
 		mCommandHistory.redo();
 	}
 	
+	@Override
+	public boolean canUndo() {
+		return mCommandHistory.canUndo();
+	}
+
+	@Override
+	public boolean canRedo() {
+		return mCommandHistory.canRedo();
+	}
+	
 	/**
 	 * Saves this token collection to the given serialization stream.
 	 * @param s The stream to save to.

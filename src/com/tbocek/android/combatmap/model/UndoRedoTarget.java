@@ -16,4 +16,14 @@ public interface UndoRedoTarget {
 	 * Redoes the action at the current position.
 	 */
 	void redo();
+	
+	/**
+	 * @return true if there is an action in the queue that can be undone.
+	 */
+	boolean canUndo();
+	
+	/**
+	 * @return true if there is an action in the queue that can be redone.
+	 */
+	boolean canRedo();
 }

@@ -142,6 +142,16 @@ public final class CombatMap extends Activity {
     private MenuItem mSnapToGridMenuItem;
     
     /**
+     * The saved menu item that performs the undo operation.
+     */
+    private MenuItem mUndoMenuItem;
+    
+    /**
+     * The saved menu item that performs the redo operation.
+     */
+    private MenuItem mRedoMenuItem;
+    
+    /**
      * Whether the tag selector is visible.
      */
     private boolean mTagSelectorVisible;
@@ -400,6 +410,22 @@ public final class CombatMap extends Activity {
         }
         
         reloadPreferences();
+        
+        mCombatView.setOnRefreshListener(new CombatView.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				// When the map is refreshed, update the undo/redo status as
+				// well.
+				if (mUndoMenuItem != null) {
+					mUndoMenuItem.setEnabled(
+							mCombatView.getUndoRedoTarget().canUndo());
+				}
+				if (mRedoMenuItem != null) {
+					mRedoMenuItem.setEnabled(
+							mCombatView.getUndoRedoTarget().canRedo());
+				}
+			}
+		});
 
         mCombatView.refreshMap();
         mCombatView.requestFocus();
@@ -559,6 +585,9 @@ public final class CombatMap extends Activity {
         mSnapToGridMenuItem = menu.findItem(R.id.snap_to_grid);
         mSnapToGridMenuItem.setChecked(
         		sharedPreferences.getBoolean("snaptogrid", true));
+        
+        mUndoMenuItem = menu.findItem(R.id.menu_undo);
+        mRedoMenuItem = menu.findItem(R.id.menu_redo);
         return true;
     }
 
