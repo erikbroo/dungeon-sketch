@@ -79,9 +79,14 @@ public final class DataManager {
      */
     public void loadMapName(final String name)
             throws IOException, ClassNotFoundException {
-        FileInputStream s  = new FileInputStream(this.getSavedMapFile(name));
-        MapData.loadFromStream(s, TokenDatabase.getInstance(this.mContext));
-        s.close();
+    	File f = this.getSavedMapFile(name);
+    	if (f.exists()) {
+	        FileInputStream s  = new FileInputStream(f);
+	        MapData.loadFromStream(s, TokenDatabase.getInstance(this.mContext));
+	        s.close();
+    	} else if (name.equals(TEMP_MAP_NAME)) {
+    		MapData.clear();
+    	}
     }
 
     /**
