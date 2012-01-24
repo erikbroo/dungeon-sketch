@@ -572,7 +572,6 @@ public final class CombatMap extends Activity {
     public void loadMap(final String name) {
         try {
             new DataManager(getApplicationContext()).loadMapName(name);
-            setFilenamePreference(name);
         } catch (Exception e) {
             e.printStackTrace();
             Toast toast = Toast.makeText(this.getApplicationContext(),
