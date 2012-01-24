@@ -629,9 +629,20 @@ public final class CombatMap extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(
+                        this.getApplicationContext());
         // Handle item selection
         switch (item.getItemId()) {
         case R.id.clear_all:
+        	// Save the current map, if autosave was requested.
+        	if (sharedPreferences.getBoolean("autosave", false)) {
+        		new MapSaver(
+        				sharedPreferences.getString("filename", ""), 
+        				this.getApplicationContext())
+        		.run();
+        	}
+        	
             MapData.clear();
             setFilenamePreference(null);
             mData = MapData.getInstance();
@@ -647,9 +658,6 @@ public final class CombatMap extends Activity {
             return true;
         case R.id.snap_to_grid:
         	mSnapToGridMenuItem.setChecked(!mSnapToGridMenuItem.isChecked());
-            SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(
-                        this.getApplicationContext());
             // Persist the filename that we saved to so that we can load from 
             // that file again.
             Editor editor = sharedPreferences.edit();
