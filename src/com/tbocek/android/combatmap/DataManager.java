@@ -150,6 +150,15 @@ public final class DataManager {
     public boolean isImageFileName(final String file) {
         return file.endsWith(IMAGE_EXTENSION);
     }
+    
+    /**
+     * Checks whether a saved map exists.
+     * @param file The map name to check.
+     * @return True if the map exists, False otherwise.
+     */
+    public boolean saveFileExists(final String file) {
+    	return this.getSavedMapFile(file).exists();
+    }
 
     /**
      * Opens a file for the given token image.

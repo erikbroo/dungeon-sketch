@@ -4,8 +4,10 @@ import java.util.Collection;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -78,6 +80,12 @@ public final class CombatMap extends Activity {
      * Dialog ID to use for the draw text dialog.
      */
     private static final int DIALOG_ID_DRAW_TEXT = 1;
+    
+    /**
+     * Dialog ID to use when confirming a save file name, in case the name would
+     * overwrite a different map file.
+     */
+    private static final int DIALOG_ID_SAVE_NAME_CONFIRM = 2;
     
     /**
      * Maximum height of the popup tag selector.  Must be scaled.
@@ -303,6 +311,12 @@ public final class CombatMap extends Activity {
 	 * Object to manage which mode is changed to when a new tab is selected.
 	 */
 	private TabManager mTabManager;
+	
+	/**
+	 * The attempted save name used when an extra saved prompt is needed (i.e.
+	 * when saving over a different map).
+	 */
+	private String mAttemptedMapName;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -759,7 +773,6 @@ public final class CombatMap extends Activity {
 	}
 
 
-
     @Override
     public Dialog onCreateDialog(final int id) {
         switch(id) {
@@ -767,8 +780,22 @@ public final class CombatMap extends Activity {
              return new TextPromptDialog(this,
                      new TextPromptDialog.OnTextConfirmedListener() {
                 public void onTextConfirmed(final String text) {
-                	setFilenamePreference(text);
-                	new MapSaver(text, getApplicationContext()).run();
+           		 	SharedPreferences sharedPreferences =
+           		 			PreferenceManager.getDefaultSharedPreferences(
+           		 					getApplicationContext());
+           		    
+           		 	// If the save file name exists and is not the current file,
+           		 	// warn about overwriting.
+           		    if (!text.equals(
+           		    			sharedPreferences.getString("filename", "")) 
+           		    		&& new DataManager(getApplicationContext())
+           		    				.saveFileExists(text)) {
+           		    	mAttemptedMapName = text;
+           		    	showDialog(CombatMap.DIALOG_ID_SAVE_NAME_CONFIRM);
+           		    } else {
+	                	setFilenamePreference(text);
+	                	new MapSaver(text, getApplicationContext()).run();
+           		    }
                 }
             }, getString(R.string.save_map), getString(R.string.save));
         case DIALOG_ID_DRAW_TEXT:
@@ -790,6 +817,22 @@ public final class CombatMap extends Activity {
            });  
 
             return d;
+        case DIALOG_ID_SAVE_NAME_CONFIRM:
+        	return new AlertDialog.Builder(CombatMap.this)
+        		.setMessage("Map already exists.  Save over it?")
+        		.setCancelable(false)
+        		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        			public void onClick(DialogInterface dialog, int id) {
+	                	setFilenamePreference(mAttemptedMapName);
+	                	new MapSaver(mAttemptedMapName, getApplicationContext()).run();
+        			}
+        		})
+        		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        			public void onClick(DialogInterface dialog, int id) {
+        				mAttemptedMapName = null;
+        			}
+        		})
+        		.create();
         default:
         	return null;
         }
@@ -823,6 +866,12 @@ public final class CombatMap extends Activity {
             	fd.clearText();
              }
              break;
+         case DIALOG_ID_SAVE_NAME_CONFIRM:
+        	 AlertDialog ad = (AlertDialog) dialog;
+        	 ad.setMessage(
+        			 "There is already a map named \"" 
+        			 + mAttemptedMapName + "\".  Save over it?");
+        	 break;
          default:
         	 super.onPrepareDialog(id, dialog);
          }
