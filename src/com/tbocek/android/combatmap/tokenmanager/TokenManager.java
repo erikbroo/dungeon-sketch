@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import android.app.Activity;
@@ -10,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
@@ -75,6 +76,16 @@ public final class TokenManager extends Activity {
      * scheme.
      */
     private MultiSelectTokenViewFactory mTokenViewFactory;
+	
+	/**
+	 * The action mode that was started to manage the selection.
+	 */
+	private ActionMode mMultiSelectActionMode;	
+	
+	/**
+	 * The list of token buttons that are managed by this activity.
+	 */
+	private Collection<TokenButton> mButtons = Lists.newArrayList();
 
     /**
      * Listener that reloads the token view when a new tag is selected, and
@@ -143,6 +154,43 @@ public final class TokenManager extends Activity {
 
     	mScrollView =
     		(ScrollView) this.findViewById(R.id.token_manager_scroll_view);
+    	
+    	mTokenViewFactory.getMultiSelectManager().setSelectionChangedListener(
+    			new MultiSelectManager.SelectionChangedListener() {
+		
+    		
+			@Override
+			public void selectionStarted() {
+				mMultiSelectActionMode = startActionMode(
+						new TokenSelectionActionModeCallback());
+			}
+
+			@Override
+			public void selectionEnded() {
+				if (mMultiSelectActionMode != null) {
+					ActionMode m = mMultiSelectActionMode;
+					mMultiSelectActionMode = null;
+					m.finish();
+				}
+				
+				for (TokenButton b: mButtons) {
+					MultiSelectTokenButton msb = (MultiSelectTokenButton) b;
+					msb.setSelected(false);
+				}
+			}
+
+			@Override
+			public void selectionChanged() {
+				int numTokens = mTokenViewFactory.getMultiSelectManager()
+						.getSelectedTokens().size();
+				if (mMultiSelectActionMode != null) {
+					mMultiSelectActionMode.setTitle(
+							Integer.toString(numTokens) 
+							+ (numTokens == 1 ? " Token " : " Tokens ")
+							+ "Selected.");
+				}
+			}
+		});
 
     }
 
@@ -179,11 +227,11 @@ public final class TokenManager extends Activity {
 				TOKEN_BUTTON_SIZE * getResources().getDisplayMetrics().density);
 		grid.setCellDimensions(cellDimension, cellDimension);
 		
-		ArrayList<TokenButton> allButtons = new ArrayList<TokenButton>();
+		mButtons = Lists.newArrayList();
 		for (BaseToken t : tokens) {
 			TokenButton b = (TokenButton) mTokenViewFactory.getTokenView(t);
 			b.setShouldDrawDark(true);
-			allButtons.add(b);
+			mButtons.add(b);
 
 			// Remove all views from the parent, if there is one.
 			// This is safe because we are totally replacing the view contents
@@ -199,7 +247,7 @@ public final class TokenManager extends Activity {
 							ViewGroup.LayoutParams.MATCH_PARENT));
 			grid.addView(b);
 		}
-		new TokenLoadTask(allButtons).execute();
+		new TokenLoadTask(mButtons).execute();
 		return grid;
 	}
 
@@ -336,5 +384,35 @@ public final class TokenManager extends Activity {
     	default:
     		return super.onContextItemSelected(item);
     	}
+    }
+    
+    /**
+     * Callback defining an action mode for selecting multiple tokens.
+     * @author Tim
+     *
+     */
+    private class TokenSelectionActionModeCallback 
+    		implements ActionMode.Callback {
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			return false;
+		}
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			return true;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mTokenViewFactory.getMultiSelectManager().selectNone();
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return true;
+		}
+    	
     }
 }

@@ -581,10 +581,6 @@ public final class CombatMap extends Activity {
 
             MapData.clear();
             setFilenamePreference(null);
-            
-            if (DeveloperMode.DEVELOPER_MODE) { 
-            	throw new RuntimeException(e);
-            }
         }
         mData = MapData.getInstance();
         mCombatView.setData(mData);

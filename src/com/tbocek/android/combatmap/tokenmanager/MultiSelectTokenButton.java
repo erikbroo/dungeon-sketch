@@ -96,4 +96,24 @@ public final class MultiSelectTokenButton extends TokenButton {
 	public void refreshSelectedState() {
 		this.mSelected = mMultiSelect.isTokenSelected(getTokenId());
 	}
+	
+	/**
+	 * Sets whether the button is selected.  This maintains consistent state,
+	 * so if a token is selected using this method it will be added to the
+	 * collection of selected tokens.
+	 * @param selected Whether the token should be selected.
+	 */
+	public void setSelected(boolean selected) {
+		boolean oldSelected = mSelected;
+		mSelected = selected;
+		if (!oldSelected && selected) {
+			mMultiSelect.addToken(getClone());
+		} else  if (oldSelected && !selected) {
+			mMultiSelect.removeToken(getTokenId());
+		}
+		
+		if (oldSelected != mSelected) {
+			invalidate();
+		}
+	}
 }
