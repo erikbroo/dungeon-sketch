@@ -1,4 +1,4 @@
-package com.tbocek.android.combatmap.tokenmanager;
+package com.tbocek.android.combatmap.model;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +41,7 @@ public final class MultiSelectManager {
 			mSelectionChangedListener.selectionStarted();
 		}
 		mSelection.put(t.getTokenId(), t);
+		t.setSelected(true);
 		if (mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionChanged();
 		}
@@ -51,6 +52,7 @@ public final class MultiSelectManager {
 	 * @param tokenId ID of the token to remove.
 	 */
 	public void removeToken(final String tokenId) {
+		mSelection.get(tokenId).setSelected(false);
 		mSelection.remove(tokenId);
 		if (mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionChanged();
@@ -81,6 +83,9 @@ public final class MultiSelectManager {
 	 * Clears the selection.
 	 */
 	public void selectNone() {
+		for (BaseToken t: mSelection.values()) {
+			t.setSelected(false);
+		}
 		mSelection.clear();
 		if (mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionEnded();

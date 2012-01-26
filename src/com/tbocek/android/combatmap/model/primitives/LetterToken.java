@@ -48,7 +48,7 @@ public final class LetterToken extends BaseToken {
     }
 
     @Override
-    public void drawBloodied(final Canvas c, final float x, final float y,
+    public void drawBloodiedImpl(final Canvas c, final float x, final float y,
     		final float radius, final boolean isManipulatable) {
         Paint p = new Paint();
         p.setColor(isManipulatable
@@ -58,7 +58,7 @@ public final class LetterToken extends BaseToken {
     }
 
     @Override
-    public void draw(final Canvas c, final float x, final float y,
+    public void drawImpl(final Canvas c, final float x, final float y,
     		final float radius, final boolean darkBackground,
     		final boolean isManipulatable) {
         Paint p = new Paint();

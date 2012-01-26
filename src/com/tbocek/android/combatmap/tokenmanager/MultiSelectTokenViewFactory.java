@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.tokenmanager;
 
 import android.content.Context;
 
+import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenViewFactory;

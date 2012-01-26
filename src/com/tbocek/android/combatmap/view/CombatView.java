@@ -861,5 +861,4 @@ public final class CombatView extends SurfaceView {
 		void onRefresh();
 	}
 
-
 }

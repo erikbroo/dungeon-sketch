@@ -59,13 +59,13 @@ public abstract class DrawableToken extends BaseToken {
     private transient Drawable mDrawable;
     
     @Override
-    public final void drawBloodied(
+    public final void drawBloodiedImpl(
     		final Canvas c, final float x, final float y, final float radius,
     		final boolean isManipulatable) {
         Drawable d = getDrawable();
         if (d != null) {
         	d.setColorFilter(BLOODIED_FILTER);
-            draw(c, x, y, radius, false, isManipulatable);
+            drawImpl(c, x, y, radius, false, isManipulatable);
             d.setColorFilter(null);
         } else {
         	drawPlaceholder(c, x, y, radius);
@@ -91,7 +91,7 @@ public abstract class DrawableToken extends BaseToken {
 	}
 
     @Override
-    public final void draw(
+    public final void drawImpl(
     		final Canvas c, final float x, final float y, final  float radius,
     		final boolean darkBackground, final boolean isManipulatable) {
         Drawable d = getDrawable();
@@ -134,7 +134,7 @@ public abstract class DrawableToken extends BaseToken {
         Drawable d = getDrawable();
         if (d != null) {
             d.setAlpha(HALF_OPACITY);
-            draw(c, x, y, radius, false, true);
+            drawImpl(c, x, y, radius, false, true);
             d.setAlpha(FULL_OPACITY);
         }
     }

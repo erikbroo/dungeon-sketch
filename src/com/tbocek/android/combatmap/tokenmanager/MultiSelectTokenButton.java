@@ -1,14 +1,12 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
 import java.util.ArrayList;
+
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.view.View;
 
+import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
-import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenButton;
 
 /**
@@ -19,11 +17,6 @@ import com.tbocek.android.combatmap.view.TokenButton;
  *
  */
 public final class MultiSelectTokenButton extends TokenButton {
-
-    /**
-     * Stroke width to use when drawing a border around selected tokens.
-     */
-    private static final int SELECTION_BORDER_STROKE_WIDTH = 4;
     
 	/**
 	 * Whether this token is currently selected.
@@ -54,35 +47,22 @@ public final class MultiSelectTokenButton extends TokenButton {
 			@Override
 			public void onClick(final View arg0) {
 				mSelected = !mSelected;
-				invalidate();
 				if (mSelected) {
-					mMultiSelect.addToken(getClone());
+					mMultiSelect.addToken(getPrototype());
 				} else {
 					mMultiSelect.removeToken(getTokenId());
 				}
+				invalidate();
 			}
         });
 	}
-
-    @Override
-    public void onDraw(final Canvas c) {
-    	super.onDraw(c);
-	    if (mSelected) {
-	    	float radius = this.getTokenRadius();
-	    	Paint p = new Paint();
-	    	p.setColor(TagListView.DRAG_HIGHLIGHT_COLOR);
-	    	p.setStyle(Style.STROKE);
-	    	p.setStrokeWidth(SELECTION_BORDER_STROKE_WIDTH);
-	    	c.drawCircle(this.getWidth() / 2, this.getHeight() / 2, radius, p);
-    	}
-    }
 
     @Override
     protected void onStartDrag() {
        	// Add this token to the selection, so we are at least dragging it.    
     	ArrayList<BaseToken> tokens = new ArrayList<BaseToken>(this.mMultiSelect.getSelectedTokens());
     	if (!this.mSelected) {
-    		tokens.add(0, getClone());
+    		tokens.add(0, getPrototype());
     	}
         startDrag(
         		null,
@@ -107,7 +87,7 @@ public final class MultiSelectTokenButton extends TokenButton {
 		boolean oldSelected = mSelected;
 		mSelected = selected;
 		if (!oldSelected && selected) {
-			mMultiSelect.addToken(getClone());
+			mMultiSelect.addToken(getPrototype());
 		} else  if (oldSelected && !selected) {
 			mMultiSelect.removeToken(getTokenId());
 		}

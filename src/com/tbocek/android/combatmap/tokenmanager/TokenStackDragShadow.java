@@ -82,7 +82,11 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
 			}
 
 			int center = tokenDiameter / 2 + tokenOffset * (i - 1);
+			// Force tokens into not being selected.
+			boolean cachedSelected = t.isSelected();
+			t.setSelected(false);
 			t.draw(canvas, center, center, tokenDiameter / 2, true, true);
+			t.setSelected(cachedSelected);
 			i--;
 		}
 	}

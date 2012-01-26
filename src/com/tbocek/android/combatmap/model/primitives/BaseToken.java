@@ -6,6 +6,7 @@ import java.util.Set;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
+import com.tbocek.android.combatmap.view.TagListView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -28,6 +29,11 @@ public abstract class BaseToken  {
      * Stroke width to use for the custom token border if one is specified.
      */
     private static final float CUSTOM_BORDER_STROKE_WIDTH = 3;
+    
+    /**
+     * Stroke width to use for the selection border.
+     */
+    private static final float SELECTION_STROKE_WIDTH = 4;
 
     /**
      * OPTIMIZATION: Shared, preallocated StringBuffer used to concatenate
@@ -99,6 +105,11 @@ public abstract class BaseToken  {
      * mCachedTokenId;
      */
     private String mCachedSortOrder;
+    
+    /**
+     * Whether this token is part of a selection.
+     */
+    private boolean mSelected;
 
     /**
      * Sets a custom border color for the token.
@@ -164,7 +175,7 @@ public abstract class BaseToken  {
      * 		this case.
      * @param isManipulatable Whether the token can currently be manipulated.
      */
-    public abstract void draw(Canvas c, float x, float y, float radius,
+    protected abstract void drawImpl(Canvas c, float x, float y, float radius,
     		final boolean darkBackground, boolean isManipulatable);
 
     /**
@@ -176,7 +187,7 @@ public abstract class BaseToken  {
      * @param radius The radius of the token in screen space.
      * @param isManipulatable Whether the token can currently be manipulated.
      */
-    public abstract void drawBloodied(Canvas c, float x, float y,
+    protected abstract void drawBloodiedImpl(Canvas c, float x, float y,
             float radius, boolean isManipulatable);
 
     /**
@@ -222,14 +233,61 @@ public abstract class BaseToken  {
                 this.getSize() * TOKEN_SIZE_TWEAK / 2);
 
         if (isBloodied()) {
-            drawBloodied(c, center.x, center.y, radius, isManipulatable);
+            drawBloodiedImpl(c, center.x, center.y, radius, isManipulatable);
         } else {
-            draw(c, center.x, center.y, radius, darkBackground,
+            drawImpl(c, center.x, center.y, radius, darkBackground,
             		isManipulatable);
         }
         
         if (mHasCustomBorder) {
         	 c.drawCircle(center.x, center.y, radius, getCustomBorderPaint());
+        }
+        
+        if (mSelected) {
+        	// TODO: Cache this.
+    		Paint selectPaint = new Paint();
+    		selectPaint.setStrokeWidth(SELECTION_STROKE_WIDTH);
+    		selectPaint.setColor(TagListView.DRAG_HIGHLIGHT_COLOR);
+    		selectPaint.setStyle(Style.STROKE);
+    		c.drawCircle(center.x, center.y, radius + SELECTION_STROKE_WIDTH, 
+    				selectPaint);
+        }
+    }
+    
+
+    /**
+     * Draw the token at the given coordinates and size.
+     * Everything in screen space.
+     * @param c Canvas to draw on.
+     * @param x The x coordinate in screen space to draw the token at.
+     * @param y The y coordinate in screen space to draw the token at.
+     * @param radius The radius of the token in screen space.
+     * @param darkBackground Whether the token is drawn against a dark
+     * 		background.  The token can try to make its self more visible in
+     * 		this case.
+     * @param isManipulatable Whether the token can currently be manipulated.
+     */
+    public void draw(Canvas c, float x, float y, float radius,
+    		final boolean darkBackground, boolean isManipulatable) {
+        if (isBloodied()) {
+            drawBloodiedImpl(c, x, y, radius, isManipulatable);
+        } else {
+            drawImpl(c, x, y, radius, darkBackground,
+            		isManipulatable);
+        }
+        
+        if (mHasCustomBorder) {
+        	 c.drawCircle(x, y, radius, getCustomBorderPaint());
+        }
+        
+        if (mSelected) {
+        	// TODO: Cache this.
+    		Paint selectPaint = new Paint();
+    		selectPaint.setStrokeWidth(SELECTION_STROKE_WIDTH);
+    		selectPaint.setColor(TagListView.DRAG_HIGHLIGHT_COLOR);
+    		selectPaint.setStyle(Style.STROKE);
+    		c.drawCircle(x, y, radius + SELECTION_STROKE_WIDTH, 
+    				selectPaint);
         }
     }
 
@@ -246,6 +304,21 @@ public abstract class BaseToken  {
      */
     public final boolean isBloodied() {
         return mBloodied;
+    }
+    
+    /**
+     * Sets whether this token is currently selected.
+     * @param selected Whether token is selected.
+     */
+    public final void setSelected(final boolean selected) {
+    	this.mSelected = selected;
+    }
+    
+    /**
+     * @return True if this token is part of a selection.
+     */
+    public final boolean isSelected() {
+    	return mSelected;
     }
 
     /**

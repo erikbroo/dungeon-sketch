@@ -107,6 +107,13 @@ public class TokenButton extends ImageView {
     public final BaseToken getClone() {
         return mPrototype.clone();
     }
+    
+    /**
+     * @return The original prototype token.
+     */
+    public final BaseToken getPrototype() {
+    	return mPrototype;
+    }
 
     /**
      * Gets the token ID of the managed token.
