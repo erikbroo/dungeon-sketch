@@ -372,7 +372,7 @@ public abstract class BaseToken  {
     public final String getTokenId() {
         if (mCachedTokenId == null) {
             CONCAT_BUFFER.setLength(0);
-            CONCAT_BUFFER.append(this.getClass().getName());
+            CONCAT_BUFFER.append(this.getClass().getSimpleName());
             CONCAT_BUFFER.append(getTokenClassSpecificId());
             mCachedTokenId = CONCAT_BUFFER.toString();
         }
@@ -396,7 +396,7 @@ public abstract class BaseToken  {
     public final String getSortOrder() {
         if (mCachedSortOrder == null) {
             CONCAT_BUFFER.setLength(0);
-            CONCAT_BUFFER.append(this.getClass().getName());
+            CONCAT_BUFFER.append(this.getClass().getSimpleName());
             CONCAT_BUFFER.append(getTokenClassSpecificSortOrder());
             mCachedSortOrder = CONCAT_BUFFER.toString();
         }
