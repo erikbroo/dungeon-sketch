@@ -62,9 +62,10 @@ public final class TagListView extends ScrollView {
     private static final int DEFAULT_TEXT_SIZE = 30;
 
     /**
-     * Color to highlight text with when a token is being dragged to it.
+     * Color to highlight text with when a token is being dragged to it.  
+     * Should match Android's Holo light blue.
      */
-    public static final int DRAG_HIGHLIGHT_COLOR = Color.rgb(41, 162, 255);
+    public static final int DRAG_HIGHLIGHT_COLOR = Color.rgb(44, 169, 210);
 
     /**
      * The layout that contains the list of tags.
