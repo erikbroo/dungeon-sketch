@@ -50,7 +50,7 @@ public final class MultiSelectTokenButton extends TokenButton {
 				if (mSelected) {
 					mMultiSelect.addToken(getPrototype());
 				} else {
-					mMultiSelect.removeToken(getTokenId());
+					mMultiSelect.removeToken(getPrototype());
 				}
 				invalidate();
 			}
@@ -74,7 +74,7 @@ public final class MultiSelectTokenButton extends TokenButton {
      * Reloads whether this token is selected from the token database.
      */
 	public void refreshSelectedState() {
-		this.mSelected = mMultiSelect.isTokenSelected(getTokenId());
+		this.mSelected = getPrototype().isSelected();
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public final class MultiSelectTokenButton extends TokenButton {
 		if (!oldSelected && selected) {
 			mMultiSelect.addToken(getPrototype());
 		} else  if (oldSelected && !selected) {
-			mMultiSelect.removeToken(getTokenId());
+			mMultiSelect.removeToken(getPrototype());
 		}
 		
 		if (oldSelected != mSelected) {

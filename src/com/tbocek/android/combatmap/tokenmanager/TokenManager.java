@@ -414,6 +414,5 @@ public final class TokenManager extends Activity {
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 			return true;
 		}
-    	
     }
 }

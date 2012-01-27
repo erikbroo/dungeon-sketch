@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Set;
 
 import com.tbocek.android.combatmap.TokenDatabase;
@@ -57,12 +58,67 @@ public abstract class BaseToken  {
 		t.mLocation.x = s.readFloat();
 		t.mLocation.y = s.readFloat();
 		t.mHasCustomBorder = s.readBoolean();
-		t.mCustomBorderColor = s.readInt();
+		t.setCustomBorderColor(s.readInt());
 		t.mBloodied = s.readBoolean();
 		s.expectObjectEnd();
 		return t;
 	}
 	
+	/**
+	 * Checks whether all tokens in the given collection are bloodied.
+	 * @param tokens Collection of tokens to check.
+	 * @return True if every token is bloodied, False if at least one isn't.
+	 */
+	public static boolean allBloodied(Collection<BaseToken> tokens) {
+		for (BaseToken t: tokens) {
+			if (!t.isBloodied()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks whether all tokens in the given collection are the same size.
+	 * @param tokens The list of tokens to check.
+	 * @return True if the tokens are the same size, False otherwise.
+	 */
+	public static boolean areTokenSizesSame(Collection<BaseToken> tokens) {
+		float commonSize = Float.NaN;
+		for (BaseToken t: tokens) {
+			if (commonSize == Float.NaN) {
+				commonSize = t.getSize();
+			} else if (Math.abs(commonSize - t.getSize()) 
+					> Util.FP_COMPARE_ERROR) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks whether all tokens in the collection have the same custom border.
+	 * @param tokens The collection to check.
+	 * @return True if all tokens have no custom border or the same custom
+	 * 		border.  False if custom border options differ in the collection.
+	 */
+	public static boolean areTokenBordersSame(Collection<BaseToken> tokens) {
+		boolean seenOne = false;
+		boolean hasCustomBorder = false;
+		int customBorderColor = 0;
+		for (BaseToken t: tokens) {
+			if (!seenOne) {
+				seenOne = true;
+				hasCustomBorder = t.mHasCustomBorder;
+				customBorderColor = t.getCustomBorderColor();
+			} else if (t.mHasCustomBorder != hasCustomBorder 
+					|| t.getCustomBorderColor() == customBorderColor) {
+				return false;
+			}
+		}
+		return true;
+	}
+
     /**
      * The token's location in grid space.
      */
@@ -117,7 +173,7 @@ public abstract class BaseToken  {
      */
     public void setCustomBorder(int color) {
     	mHasCustomBorder = true;
-    	mCustomBorderColor = color;
+    	setCustomBorderColor(color);
     	mCachedCustomBorderPaint = null;
     }
     
@@ -139,7 +195,7 @@ public abstract class BaseToken  {
     	if (mCachedCustomBorderPaint == null && mHasCustomBorder) {
     		mCachedCustomBorderPaint = new Paint();
     		mCachedCustomBorderPaint.setStrokeWidth(CUSTOM_BORDER_STROKE_WIDTH);
-    		mCachedCustomBorderPaint.setColor(mCustomBorderColor);
+    		mCachedCustomBorderPaint.setColor(getCustomBorderColor());
     		
     		mCachedCustomBorderPaint.setStyle(Style.STROKE);
     		
@@ -423,6 +479,8 @@ public abstract class BaseToken  {
         return getTokenId().hashCode();
     }
 
+    
+    
     /**
      * @return A set of tags to apply to this token by default.
      */
@@ -466,7 +524,7 @@ public abstract class BaseToken  {
      */
     public BaseToken copyAttributesTo(BaseToken clone) {
     	clone.mBloodied = mBloodied;
-    	clone.mCustomBorderColor = mCustomBorderColor;
+    	clone.setCustomBorderColor(mCustomBorderColor);
     	clone.mHasCustomBorder = mHasCustomBorder;
     	clone.mLocation = new PointF(mLocation.x, mLocation.y);
     	clone.mSize = mSize;
@@ -485,8 +543,30 @@ public abstract class BaseToken  {
     	s.serializeFloat(this.mLocation.x);
     	s.serializeFloat(this.mLocation.y);
     	s.serializeBoolean(this.mHasCustomBorder);
-    	s.serializeInt(this.mCustomBorderColor);
+    	s.serializeInt(this.getCustomBorderColor());
     	s.serializeBoolean(this.mBloodied);
     	s.endObject();
     }
+
+	/**
+	 * @return The color of this token's custom border.
+	 */
+	public int getCustomBorderColor() {
+		return mCustomBorderColor;
+	}
+
+	/**
+	 * Sets the color of this token's custom border.
+	 * @param customBorderColor the new color.
+	 */
+	public void setCustomBorderColor(int customBorderColor) {
+		mCustomBorderColor = customBorderColor;
+	}
+
+	/**
+	 * @return Whether this token uses a custom border.
+	 */
+	public boolean hasCustomBorder() {
+		return mHasCustomBorder;
+	}
 }

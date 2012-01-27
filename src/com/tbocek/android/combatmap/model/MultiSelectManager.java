@@ -1,9 +1,9 @@
 package com.tbocek.android.combatmap.model;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 /**
@@ -14,10 +14,11 @@ import com.tbocek.android.combatmap.model.primitives.BaseToken;
  */
 public final class MultiSelectManager {
 	/**
-	 * The selected tokens.  Maps token ID to token.
+	 * The selected tokens.  Maps original object hash code to token (the
+	 * default token implementation hashes on TokenID, which isn't good enough
+	 * for us).
 	 */
-	private Map<String, BaseToken> mSelection 
-			= new HashMap<String, BaseToken>();
+	private Map<Integer, BaseToken> mSelection = Maps.newHashMap();
 
 	/**
 	 * The callback to use when the selection is modified.
@@ -40,7 +41,7 @@ public final class MultiSelectManager {
 		if (mSelection.isEmpty() && mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionStarted();
 		}
-		mSelection.put(t.getTokenId(), t);
+		mSelection.put(System.identityHashCode(t), t);
 		t.setSelected(true);
 		if (mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionChanged();
@@ -49,16 +50,28 @@ public final class MultiSelectManager {
 
 	/**
 	 * Removes the token with the given ID from the current selection.
-	 * @param tokenId ID of the token to remove.
+	 * @param token The token to remove.
 	 */
-	public void removeToken(final String tokenId) {
-		mSelection.get(tokenId).setSelected(false);
-		mSelection.remove(tokenId);
+	public void removeToken(final BaseToken token) {
+		token.setSelected(false);
+		mSelection.remove(System.identityHashCode(token));
 		if (mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionChanged();
 			if (mSelection.isEmpty()) {
 				mSelectionChangedListener.selectionEnded();
 			}
+		}
+	}
+	
+	/**
+	 * Toggles the selected state of the given token.
+	 * @param token The token to toggle.
+	 */
+	public void toggleToken(BaseToken token) {
+		if (token.isSelected()) {
+			removeToken(token);
+		} else {
+			addToken(token);
 		}
 	}
 
@@ -68,15 +81,6 @@ public final class MultiSelectManager {
 	 */
 	public Collection<BaseToken> getSelectedTokens() {
 		return mSelection.values();
-	}
-
-	/**
-	 * Checks whether a token is selected.
-	 * @param tokenId Token ID to check.
-	 * @return Whether the token ID is currently selected.
-	 */
-	public boolean isTokenSelected(final String tokenId) {
-		return mSelection.containsKey(tokenId);
 	}
 
 	/**

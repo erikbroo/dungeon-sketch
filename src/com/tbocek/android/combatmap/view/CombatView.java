@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.tbocek.android.combatmap.model.LineCollection;
 import com.tbocek.android.combatmap.model.MapData;
+import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.TokenCollection;
 import com.tbocek.android.combatmap.model.UndoRedoTarget;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
@@ -32,6 +33,7 @@ import com.tbocek.android.combatmap.view.interaction.FingerDrawInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.GridRepositioningInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.MaskDrawInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.TokenManipulationInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.TokenMultiSelectInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
 
 /**
@@ -124,6 +126,11 @@ public final class CombatView extends SurfaceView {
 	 * Listener to publish refresh requests to.
 	 */
 	private OnRefreshListener mOnRefreshListener;
+
+	/**
+	 * Object to manage a selection of multiple tokens.
+	 */
+    private MultiSelectManager mTokenSelection = new MultiSelectManager();
 
 	/**
 	 * Callback for the Android graphics surface management system.
@@ -277,6 +284,14 @@ public final class CombatView extends SurfaceView {
 		if (mData != null) {
 			mUndoRedoTarget = mData.getTokens();
 		}
+	}
+	
+
+	/**
+	 * Sets the interaction mode to selecting multiple tokens.
+	 */
+	public void setMultiTokenMode() {
+		setInteractionMode(new TokenMultiSelectInteractionMode(this));
 	}
 
 	/**
@@ -737,6 +752,14 @@ public final class CombatView extends SurfaceView {
 	public NewLineStyle getNewLineStyle() {
 		return mNewLineStyle;
 	}
+	
+	/**
+	 * @return The multi-select manager used to select multiple tokens in this
+	 * 		view.
+	 */
+    public MultiSelectManager getMultiSelect() {
+    	return mTokenSelection;
+    }
 
 	
 	/**
@@ -860,5 +883,6 @@ public final class CombatView extends SurfaceView {
 		 */
 		void onRefresh();
 	}
+
 
 }

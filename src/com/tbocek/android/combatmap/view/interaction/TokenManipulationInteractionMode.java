@@ -194,7 +194,8 @@ public final class TokenManipulationInteractionMode
     @Override
     public void onLongPress(final MotionEvent e) {
         if (mCurrentToken != null) {
-            getView().showContextMenu();
+            getView().getMultiSelect().addToken(mCurrentToken);
+            getView().refreshMap();
         }
     }
 

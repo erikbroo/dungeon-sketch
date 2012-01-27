@@ -12,10 +12,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.preference.PreferenceManager;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,10 +30,12 @@ import android.widget.Toast;
 
 import com.tbocek.android.combatmap.model.Grid;
 import com.tbocek.android.combatmap.model.MapData;
+import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Text;
+import com.tbocek.android.combatmap.model.primitives.Util;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
@@ -163,6 +167,11 @@ public final class CombatMap extends Activity {
      * Whether the tag selector is visible.
      */
     private boolean mTagSelectorVisible;
+    
+	/**
+	 * The action mode that was started to manage the selection.
+	 */
+	private ActionMode mMultiSelectActionMode;
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -439,7 +448,9 @@ public final class CombatMap extends Activity {
 				setUndoRedoEnabled();
 			}
 		});
-
+        
+        mCombatView.getMultiSelect().setSelectionChangedListener(new SelectionChangedListener());
+        
         mCombatView.refreshMap();
         mCombatView.requestFocus();
     }
@@ -696,6 +707,7 @@ public final class CombatMap extends Activity {
 
 		switch (manipulationMode) {
 		case MODE_DRAW_BACKGROUND:
+			mCombatView.getMultiSelect().selectNone();
             mCombatView.setAreTokensManipulatable(false);
             mCombatView.useBackgroundLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
@@ -707,6 +719,7 @@ public final class CombatMap extends Activity {
             setTagSelectorVisibility(false);
 			return;
 		case MODE_DRAW_ANNOTATIONS:
+			mCombatView.getMultiSelect().selectNone();
             mCombatView.setAreTokensManipulatable(false);
             mCombatView.useAnnotationLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
@@ -718,6 +731,7 @@ public final class CombatMap extends Activity {
             setTagSelectorVisibility(false);
 			return;
 		case MODE_DRAW_GM_NOTES:
+			mCombatView.getMultiSelect().selectNone();
             mCombatView.setAreTokensManipulatable(false);
             mCombatView.useGmNotesLayer();
             mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.NOTHING);
@@ -949,4 +963,150 @@ public final class CombatMap extends Activity {
             }
         }
     }
+    
+    /**
+     * Callback defining an action mode for selecting multiple tokens.
+     * @author Tim
+     *
+     */
+    private class TokenSelectionActionModeCallback 
+    		implements ActionMode.Callback {
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			return false;
+		}
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			mode.getMenuInflater().inflate(R.menu.token_action_mode_menu, menu);
+			return true;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mCombatView.getMultiSelect().selectNone();
+			mCombatView.refreshMap();
+			// Return to token manipulation mode.
+            mCombatView.setTokenManipulationMode();
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			mCombatView.setMultiTokenMode();
+			return true;
+		}
+    }
+    
+    /**
+     * Listener for actions to take when the multi-token select managed by this
+     * activity's main view changes.
+     * @author Tim
+     *
+     */
+    private class SelectionChangedListener 
+    		implements MultiSelectManager.SelectionChangedListener {
+		
+		@Override
+		public void selectionStarted() {
+			// TODO Auto-generated method stub
+			mMultiSelectActionMode = startActionMode(
+					new TokenSelectionActionModeCallback());
+		}
+		
+		@Override
+		public void selectionEnded() {
+			if (mMultiSelectActionMode != null) {
+				ActionMode m = mMultiSelectActionMode;
+				mMultiSelectActionMode = null;
+				m.finish();
+			}	
+		}
+		
+		@Override
+		public void selectionChanged() {
+			Collection<BaseToken> selected = mCombatView.getMultiSelect()
+					.getSelectedTokens();
+			BaseToken[] selectedArr = selected.toArray(new BaseToken[0]);
+			int numTokens = selected.size();
+			if (mMultiSelectActionMode != null && selected.size() > 0) {
+				Menu m = mMultiSelectActionMode.getMenu();
+				mMultiSelectActionMode.setTitle(
+						Integer.toString(numTokens) 
+						+ (numTokens == 1 ? " Token " : " Tokens ")
+						+ "Selected.");
+			
+			
+				// Modify the currently checked menu items based on the property
+				// of the tokens selected.
+				m.findItem(R.id.token_action_mode_bloodied).setChecked(BaseToken.allBloodied(selected));
+			
+				// Modify the currently checked border color.
+				if (BaseToken.areTokenBordersSame(selected)) {
+					if (selectedArr[0].hasCustomBorder()) {
+						switch(selectedArr[0].getCustomBorderColor()) {
+						case Color.WHITE:
+							m.findItem(R.id.token_action_mode_border_color_white).setChecked(true);
+							break;
+						case Color.BLUE:
+							m.findItem(R.id.token_action_mode_border_color_blue).setChecked(true);
+							break;
+						case Color.BLACK:
+							m.findItem(R.id.token_action_mode_border_color_black).setChecked(true);
+							break;
+						case Color.RED:
+							m.findItem(R.id.token_action_mode_border_color_red).setChecked(true);
+							break;
+						case Color.GREEN:
+							m.findItem(R.id.token_action_mode_border_color_green).setChecked(true);
+							break;
+						case Color.YELLOW:
+							m.findItem(R.id.token_action_mode_border_color_yellow).setChecked(true);
+							break;
+						default:
+							break;
+						}
+						
+					} else {
+						m.findItem(R.id.token_action_mode_border_color_none).setChecked(true);
+					}
+				}
+				
+				if (BaseToken.areTokenSizesSame(selected)) {
+					float size = selectedArr[0].getSize();
+					// CHECKSTYLE:OFF
+					if (Math.abs(size - .1) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_tenth)
+							.setChecked(true);
+					} else if (Math.abs(size - .25) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_quarter)
+							.setChecked(true);
+					} else if (Math.abs(size - .5) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_half)
+							.setChecked(true);
+					} else if (Math.abs(size - 1) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_1)
+							.setChecked(true);
+					} else if (Math.abs(size - 2) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_2)
+							.setChecked(true);
+					} else if (Math.abs(size - 3) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_3)
+							.setChecked(true);
+					} else if (Math.abs(size - 4) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_4)
+							.setChecked(true);
+					} else if (Math.abs(size - 5) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_5)
+							.setChecked(true);
+					} else if (Math.abs(size - 6) < Util.FP_COMPARE_ERROR) {
+						m.findItem(R.id.token_action_mode_size_6)
+							.setChecked(true);
+					}
+					//CHECKSTYLE:ON
+				}
+			}
+		}
+    }
+			
 }
