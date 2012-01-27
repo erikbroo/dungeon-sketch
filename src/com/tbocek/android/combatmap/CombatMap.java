@@ -1,6 +1,8 @@
 package com.tbocek.android.combatmap;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -974,7 +976,138 @@ public final class CombatMap extends Activity {
 
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			return false;
+			// Get a *list* of the selected tokens.
+			List<BaseToken> tokens = new ArrayList<BaseToken>(
+					mCombatView.getMultiSelect().getSelectedTokens());
+			
+			switch (item.getItemId()) {
+			case R.id.token_action_mode_bloodied:
+				item.setChecked(!item.isChecked());
+				mData.getTokens().checkpointTokens(tokens);
+				for (BaseToken t: tokens) {
+					t.setBloodied(item.isChecked());
+				}
+				mData.getTokens().createCommandHistory();
+				break;
+			case R.id.token_action_mode_border_color_none:
+				item.setChecked(true);
+				mData.getTokens().checkpointTokens(tokens);
+				for (BaseToken t: tokens) {
+					t.clearCustomBorderColor();
+				}
+				mData.getTokens().createCommandHistory();
+				break;
+			case R.id.token_action_mode_border_color_white:
+				item.setChecked(true);
+				setTokenBorderColor(tokens, Color.WHITE);
+				break;
+			case R.id.token_action_mode_border_color_blue:
+				item.setChecked(true);
+				setTokenBorderColor(tokens, Color.BLUE);
+				break;
+			case R.id.token_action_mode_border_color_black:
+				item.setChecked(true);
+				setTokenBorderColor(tokens, Color.BLACK);
+				break;
+			case R.id.token_action_mode_border_color_red:
+				item.setChecked(true);
+				setTokenBorderColor(tokens, Color.RED);
+				break;
+			case R.id.token_action_mode_border_color_green:
+				item.setChecked(true);
+				setTokenBorderColor(tokens, Color.GREEN);
+				break;
+			case R.id.token_action_mode_border_color_yellow:
+				item.setChecked(true);
+				setTokenBorderColor(tokens, Color.YELLOW);
+				break;
+			case R.id.token_action_mode_size_tenth:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 0.1f);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_quarter:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 0.25f);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_half:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 0.5f);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_1:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 1);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_2:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 2);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_3:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 3);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_4:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 4);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_5:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 5);
+				//CHECKSTYLE:ON
+				break;
+			case R.id.token_action_mode_size_6:
+				//CHECKSTYLE:OFF
+				item.setChecked(true);
+				setTokenSize(tokens, 6);
+				//CHECKSTYLE:ON
+				break;
+			default:
+				break;
+			}
+			mCombatView.refreshMap();
+			return true;
+		}
+		
+		/**
+		 * Sets the size of all tokens in the given list, properly checkpointing
+		 * for undo/redo.
+		 * @param tokens The list of tokens to change.
+		 * @param size The new token size.
+		 */
+		private void setTokenSize(List<BaseToken> tokens, float size) {
+			mData.getTokens().checkpointTokens(tokens);
+			for (BaseToken t: tokens) {
+				t.setSize(size);
+			}
+			mData.getTokens().createCommandHistory();
+		}
+		
+		/**
+		 * Sets the border color for all tokens in the given list, properly
+		 * checkpointing for undo/redo.
+		 * @param tokens The list of tokens to change.
+		 * @param color Color of the border to apply.
+		 */
+		private void setTokenBorderColor(List<BaseToken> tokens, int color) {
+			mData.getTokens().checkpointTokens(tokens);
+			for (BaseToken t: tokens) {
+				t.setCustomBorder(color);
+			}
+			mData.getTokens().createCommandHistory();
 		}
 
 		@Override

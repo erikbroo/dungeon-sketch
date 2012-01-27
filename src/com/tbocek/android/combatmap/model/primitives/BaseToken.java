@@ -58,7 +58,7 @@ public abstract class BaseToken  {
 		t.mLocation.x = s.readFloat();
 		t.mLocation.y = s.readFloat();
 		t.mHasCustomBorder = s.readBoolean();
-		t.setCustomBorderColor(s.readInt());
+		t.mCustomBorderColor = s.readInt();
 		t.mBloodied = s.readBoolean();
 		s.expectObjectEnd();
 		return t;
@@ -173,7 +173,7 @@ public abstract class BaseToken  {
      */
     public void setCustomBorder(int color) {
     	mHasCustomBorder = true;
-    	setCustomBorderColor(color);
+    	mCustomBorderColor = color;
     	mCachedCustomBorderPaint = null;
     }
     
@@ -524,7 +524,7 @@ public abstract class BaseToken  {
      */
     public BaseToken copyAttributesTo(BaseToken clone) {
     	clone.mBloodied = mBloodied;
-    	clone.setCustomBorderColor(mCustomBorderColor);
+    	clone.mCustomBorderColor = mCustomBorderColor;
     	clone.mHasCustomBorder = mHasCustomBorder;
     	clone.mLocation = new PointF(mLocation.x, mLocation.y);
     	clone.mSize = mSize;
@@ -553,14 +553,6 @@ public abstract class BaseToken  {
 	 */
 	public int getCustomBorderColor() {
 		return mCustomBorderColor;
-	}
-
-	/**
-	 * Sets the color of this token's custom border.
-	 * @param customBorderColor the new color.
-	 */
-	public void setCustomBorderColor(int customBorderColor) {
-		mCustomBorderColor = customBorderColor;
 	}
 
 	/**

@@ -355,7 +355,7 @@ public final class TokenManipulationInteractionMode
         getView().refreshMap();
         if (mCurrentToken != null) {
 		    if (mAboutToTrash) {
-		    	getView().getTokens().restoreCheckpointedToken();
+		    	getView().getTokens().restoreCheckpointedTokens();
 		    	getView().getTokens().remove(mCurrentToken);
 		    	getView().refreshMap();
 		    } else if (mMoved) {
