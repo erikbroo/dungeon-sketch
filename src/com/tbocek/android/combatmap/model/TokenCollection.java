@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
@@ -224,7 +225,19 @@ public final class TokenCollection implements UndoRedoTarget {
      * @param t The token to checkpoint.
      */
     public void checkpointToken(BaseToken t) {
-    	mBuildingCommand = new ModifyTokenCommand(t);
+    	ArrayList<BaseToken> l = Lists.newArrayList();
+    	l.add(t);
+    	checkpointTokens(l);
+    }
+    
+    /**
+     * Sets up this TokenCollection to create a command that modifies the given
+     * list of tokens.  The current state of these tokens will be duplicated and
+     * saved for undo purposes.
+     * @param l List of tokens to checkpoint.
+     */
+    public void checkpointTokens(List<BaseToken> l) {
+    	mBuildingCommand = new ModifyTokenCommand(l);
     	mBuildingCommand.checkpointBeforeState();
     }
     
@@ -232,7 +245,7 @@ public final class TokenCollection implements UndoRedoTarget {
      * Interrupts the current action that has been checkpointed, and restores
      * the checkpointed token to its initial state.
      */
-    public void restoreCheckpointedToken() {
+    public void restoreCheckpointedTokens() {
     	if (mBuildingCommand != null) {
     		mBuildingCommand.undo();
     		mBuildingCommand = null;
@@ -316,50 +329,56 @@ public final class TokenCollection implements UndoRedoTarget {
 		 * The token that this command modifies.  Should always be the "live"
 		 * version of the token.
 		 */
-		private BaseToken mTokenToModify;
+		private List<BaseToken> mTokensToModify;
 		
 		/**
 		 * State of the token before modification.
 		 */
-		private BaseToken mBeforeState;
+		private List<BaseToken> mBeforeState = Lists.newArrayList();
 		
 		/**
 		 * State of the token after modification.
 		 */
-		private BaseToken mAfterState;
+		private List<BaseToken> mAfterState = Lists.newArrayList();
 		
 		/**
 		 * Constructor.
-		 * @param token The token that this command modifies.
+		 * @param tokens List of tokens that this command modifies.
 		 */
-		public ModifyTokenCommand(BaseToken token) {
-			mTokenToModify = token;
+		public ModifyTokenCommand(List<BaseToken> tokens) {
+			mTokensToModify = tokens;
 		}
 		
 		/**
 		 * Saves the initial state of the token being modified.
 		 */
 		public void checkpointBeforeState() {
-			mBeforeState = mTokenToModify.clone();
+			for (BaseToken t: mTokensToModify) {
+				mBeforeState.add(t.clone());
+			}
 		}
 		
 		/**
 		 * Saves the final state of the token being modified.
 		 */
 		public void checkpointAfterState() {
-			mAfterState = mTokenToModify.clone();
+			for (BaseToken t: mTokensToModify) {
+				mAfterState.add(t.clone());
+			}
 		}
 		
 		@Override
 		public void execute() {
-			mAfterState.copyAttributesTo(mTokenToModify);
-			
+			for (int i = 0; i < mTokensToModify.size(); ++i) {
+				mAfterState.get(i).copyAttributesTo(mTokensToModify.get(i));
+			}
 		}
 
 		@Override
 		public void undo() {
-			mBeforeState.copyAttributesTo(mTokenToModify);
-			
+			for (int i = 0; i < mTokensToModify.size(); ++i) {
+				mBeforeState.get(i).copyAttributesTo(mTokensToModify.get(i));
+			}
 		}
 
 		@Override
