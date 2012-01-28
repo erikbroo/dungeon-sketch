@@ -54,7 +54,7 @@ public final class MultiSelectManager {
 	 */
 	public void removeToken(final BaseToken token) {
 		token.setSelected(false);
-		mSelection.remove(System.identityHashCode(token));
+		mSelection.remove(token);
 		if (mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionChanged();
 			if (mSelection.isEmpty()) {
