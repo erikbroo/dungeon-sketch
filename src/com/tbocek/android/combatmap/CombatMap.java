@@ -1075,6 +1075,10 @@ public final class CombatMap extends Activity {
 				setTokenSize(tokens, 6);
 				//CHECKSTYLE:ON
 				break;
+			case R.id.token_action_mode_delete:
+				mData.getTokens().removeAll(tokens);
+				// We just deleted all the tokens, select none.
+				mCombatView.getMultiSelect().selectNone();
 			default:
 				break;
 			}

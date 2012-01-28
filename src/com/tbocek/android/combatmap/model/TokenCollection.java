@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -83,8 +84,17 @@ public final class TokenCollection implements UndoRedoTarget {
      * @param t The token to remove.
      */
     public void remove(final BaseToken t) {
-    	RemoveTokenCommand c = new RemoveTokenCommand(this, t);
+    	RemoveTokensCommand c = new RemoveTokensCommand(this, t);
         mCommandHistory.execute(c);
+    }
+    
+    /**
+     * Removes a collection of tokens from the collection.
+     * @param tokens The tokens to remove.
+     */
+    public void removeAll(final Collection<BaseToken> tokens) {
+    	RemoveTokensCommand c = new RemoveTokensCommand(this, tokens);
+    	mCommandHistory.execute(c);
     }
 
     /**
@@ -437,7 +447,7 @@ public final class TokenCollection implements UndoRedoTarget {
 	 * @author Tim
 	 *
 	 */
-	private class RemoveTokenCommand implements CommandHistory.Command {
+	private class RemoveTokensCommand implements CommandHistory.Command {
 		
 		/**
 		 * Token collection to modify.
@@ -447,26 +457,41 @@ public final class TokenCollection implements UndoRedoTarget {
 		/**
 		 * Token to remove from the collection.
 		 */
-		private BaseToken mToRemove;
+		private Collection<BaseToken> mToRemove;
 		
 		/**
-		 * 
+		 * Constructor.
 		 * @param collection The token collection to modify.
-		 * @param toRemove The token to remove.
+		 * @param toRemove Collection of tokens to remove.
 		 */
-		public RemoveTokenCommand(TokenCollection collection, BaseToken toRemove) {
+		public RemoveTokensCommand(
+				TokenCollection collection, Collection<BaseToken> toRemove) {
 			mCollection = collection;
 			mToRemove = toRemove;
 		}
 		
+		/**
+		 * Constructor.
+		 * @param collection The token collection to modify.
+		 * @param toRemove Single token to remove.
+		 */
+		public RemoveTokensCommand(
+				TokenCollection collection, BaseToken toRemove) {
+			Collection<BaseToken> arr = Lists.newArrayList();
+			mCollection = collection;
+			mToRemove = arr;
+		}
+		
 		@Override
 		public void execute() {
-			mCollection.mTokens.remove(mToRemove);
+			for (BaseToken t: mToRemove) {
+				mCollection.mTokens.remove(t);
+			}
 		}
 
 		@Override
 		public void undo() {
-			mCollection.mTokens.add(mToRemove);
+			mCollection.mTokens.addAll(mToRemove);
 		}
 
 		@Override
