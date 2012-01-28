@@ -467,20 +467,6 @@ public abstract class BaseToken  {
     	return getTokenClassSpecificId();
     }
     
-    @Override
-    public final boolean equals(final Object other) {
-        if (this == other) { return true; }
-        if (!(other instanceof BaseToken)) { return false; }
-        return ((BaseToken) other).getTokenId().equals(getTokenId());
-    }
-
-    @Override
-    public final int hashCode() {
-        return getTokenId().hashCode();
-    }
-
-    
-    
     /**
      * @return A set of tags to apply to this token by default.
      */
