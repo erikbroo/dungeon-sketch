@@ -1,9 +1,9 @@
 package com.tbocek.android.combatmap.model;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.Set;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 /**
@@ -18,7 +18,7 @@ public final class MultiSelectManager {
 	 * default token implementation hashes on TokenID, which isn't good enough
 	 * for us).
 	 */
-	private Map<Integer, BaseToken> mSelection = Maps.newHashMap();
+	private Set<BaseToken> mSelection = Sets.newHashSet();
 
 	/**
 	 * The callback to use when the selection is modified.
@@ -41,7 +41,7 @@ public final class MultiSelectManager {
 		if (mSelection.isEmpty() && mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionStarted();
 		}
-		mSelection.put(System.identityHashCode(t), t);
+		mSelection.add(t);
 		t.setSelected(true);
 		if (mSelectionChangedListener != null) {
 			mSelectionChangedListener.selectionChanged();
@@ -80,14 +80,14 @@ public final class MultiSelectManager {
 	 * @return The tokens.
 	 */
 	public Collection<BaseToken> getSelectedTokens() {
-		return mSelection.values();
+		return mSelection;
 	}
 
 	/**
 	 * Clears the selection.
 	 */
 	public void selectNone() {
-		for (BaseToken t: mSelection.values()) {
+		for (BaseToken t: mSelection) {
 			t.setSelected(false);
 		}
 		mSelection.clear();
