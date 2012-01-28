@@ -30,6 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
@@ -92,17 +93,19 @@ public final class TokenDatabase {
     		throws IOException {
         TokenDatabase d = new TokenDatabase();
         d.populate(context);
-
+        
         FileInputStream input = context.openFileInput("token_database");
         BufferedReader dataIn =
         	new BufferedReader(new InputStreamReader(input));
         d.load(dataIn);
         dataIn.close();
+        
+        d.removeDeletedBuiltins();
 
         return d;
     }
-    
-    /**
+
+	/**
      * Mapping from a string representing a token ID to a set of tags that that
      * token has.
      */
@@ -113,14 +116,17 @@ public final class TokenDatabase {
      * Mapping from a string representing a tag to a set of token IDs that have
      * that tag.
      */
-    private Map<String, Set<String>> mTagsForToken
-            = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> mTagsForToken = Maps.newHashMap();
 
     /**
      * Mapping from a Token ID to an instantiated token object that has that ID.
      */
-    private transient Map<String, BaseToken> mTokenForId
-            = new HashMap<String, BaseToken>();
+    private transient Map<String, BaseToken> mTokenForId = Maps.newHashMap();
+    
+    /**
+     * Built in tokens that have been deleted.
+     */
+    private Set<String> mDeletedBuiltInTokens = Sets.newHashSet();
 
     /**
      * Whether tags need to be pre-populated during the loading step.  By
@@ -304,6 +310,9 @@ public final class TokenDatabase {
         }
         mTagsForToken.remove(token.getTokenId());
         mTokenForId.remove(token.getTokenId());
+        if (token.isBuiltIn()) {
+        	mDeletedBuiltInTokens.add(token.getTokenId());
+        }
     }
 
     /**
@@ -504,6 +513,16 @@ public final class TokenDatabase {
      * @throws IOException on write error.
      */
     private void save(final BufferedWriter output) throws IOException {
+    	// Start by writing a single line containing the deleted custom tokens
+    	output.write("DELETED_TOKENS");
+    	output.write(FILE_DELIMITER);
+    	for (String tokenName: this.mDeletedBuiltInTokens) {
+    		output.write(tokenName);
+    		output.write(FILE_DELIMITER);
+    	}
+    	output.newLine();
+    	
+    	// Write tags for each token.
         for (String tokenName : this.mTagsForToken.keySet()) {
             output.write(tokenName);
             output.write(FILE_DELIMITER);
@@ -526,12 +545,26 @@ public final class TokenDatabase {
         while ((line = dataIn.readLine()) != null) {
             String[] tokens = line.split(FILE_DELIMITER);
             String tokenId = tokens[0];
-            ArrayList<String> tags = new ArrayList<String>();
-            for (int i = 1; i < tokens.length; ++i) {
-                tags.add(tokens[i]);
+            if (tokenId.equals("DELETED_TOKENS")) {
+            	for (int i = 1; i < tokens.length; ++i) {
+            		mDeletedBuiltInTokens.add(tokens[i]);
+            	}
+            } else {
+                ArrayList<String> tags = new ArrayList<String>();
+                for (int i = 1; i < tokens.length; ++i) {
+                    tags.add(tokens[i]);
+                }
+                this.tagToken(tokenId, tags);
             }
-            this.tagToken(tokenId, tags);
         }
     }
-
+    
+    /**
+     * Remove all built-in tokens that the user has previously deleted.
+     */
+    private void removeDeletedBuiltins() {
+		for (String removedBuiltin: mDeletedBuiltInTokens) {
+			this.mTokenForId.remove(removedBuiltin);
+		}
+	}
 }

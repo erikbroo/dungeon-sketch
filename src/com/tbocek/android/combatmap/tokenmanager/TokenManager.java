@@ -301,23 +301,15 @@ public final class TokenManager extends Activity {
                                     final ContextMenuInfo menuInfo) {
       	if (v == this.mTrashButton) {
       		Collection<BaseToken> tokens = this.mTrashButton.getManagedTokens();
-      		int builtInTokens = countBuiltInTokens(tokens);
-      		int customTokens = tokens.size() - builtInTokens;
-      		if (customTokens > 0) {
+      		if (tokens.size() > 0) {
       			String deleteText = "";
-      			if (customTokens == 1) {
+      			if (tokens.size() == 1) {
       				deleteText = getString(R.string.delete_token);
       			} else {
-      				deleteText = "Delete " + Integer.toString(customTokens)
+      				deleteText = "Delete " + Integer.toString(tokens.size())
       					+ " Tokens";
       			}
 
-      			if (builtInTokens == 1) {
-      				deleteText += " (1 token can't be deleted)";
-      			} else if (builtInTokens > 1) {
-      				deleteText += " (" + Integer.toString(builtInTokens)
-      					+ " tokens can't be deleted)";
-      			}
 	      		menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
 	      				deleteText);
       		}
@@ -335,21 +327,6 @@ public final class TokenManager extends Activity {
       	}
     }
 
-    /**
-     * Given a list of tokens, provides a count of the number that are built in.
-     * @param tokens The tokens to examine.
-     * @return The number of tokens that are built in.
-     */
-    private int countBuiltInTokens(Collection<BaseToken> tokens) {
-    	int count = 0;
-    	for (BaseToken t : tokens) {
-    		if (t.isBuiltIn()) {
-    			count++;
-    		}
-    	}
-    	return count;
-    }
-
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
     	//TODO: Move more of this functionality into TokenDeleteButton.
@@ -357,20 +334,18 @@ public final class TokenManager extends Activity {
     	case R.id.token_delete_entire_token:
     		Collection<BaseToken> tokens = this.mTrashButton.getManagedTokens();
     		for (BaseToken token : tokens) {
-    			if (!token.isBuiltIn()) {
-		    		this.mTokenDatabase.removeToken(token);
-		    		try {
-		    			token.maybeDeletePermanently();
-		    		} catch (IOException e) {
-		    			Toast toast = Toast.makeText(
-		    					this.getApplicationContext(),
-		    					"Did not delete the token, probably because "
-		    					+ "the external storage isn't writable."
-		    					+ e.toString(),
-		    					Toast.LENGTH_LONG);
-		    			toast.show();
-		    		}
-    			}
+		    	this.mTokenDatabase.removeToken(token);
+	    		try {
+	    			token.maybeDeletePermanently();
+	    		} catch (IOException e) {
+	    			Toast toast = Toast.makeText(
+	    					this.getApplicationContext(),
+	    					"Did not delete the token, probably because "
+	    					+ "the external storage isn't writable."
+	    					+ e.toString(),
+	    					Toast.LENGTH_LONG);
+	    			toast.show();
+	    		}
     		}
     		setScrollViewTag(this.mTagListView.getTag());
     		return true;
