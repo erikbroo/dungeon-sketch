@@ -72,8 +72,10 @@ public class TextPromptDialog extends Dialog {
             @Override
             public void onClick(final View v) {
                 String name = mNameText.getText().toString();
-                dismiss();
-                TextPromptDialog.this.mListener.onTextConfirmed(name);
+                if (!"".equals(name)) {
+                	dismiss();
+                	TextPromptDialog.this.mListener.onTextConfirmed(name);
+                }
             }
         });
     }
