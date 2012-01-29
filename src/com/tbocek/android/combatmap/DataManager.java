@@ -103,7 +103,7 @@ public final class DataManager {
         s.close();
         
         // Copy temp to desired location
-        if (name != TEMP_MAP_NAME) {
+        if (!name.equals(TEMP_MAP_NAME)) {
         	FileUtils.copyFile(
         			this.getSavedMapFile(TEMP_MAP_NAME), 
         			this.getSavedMapFile(name));

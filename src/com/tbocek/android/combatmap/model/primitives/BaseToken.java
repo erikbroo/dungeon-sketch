@@ -86,7 +86,7 @@ public abstract class BaseToken  {
 	public static boolean areTokenSizesSame(Collection<BaseToken> tokens) {
 		float commonSize = Float.NaN;
 		for (BaseToken t: tokens) {
-			if (commonSize == Float.NaN) {
+			if (Float.isNaN(commonSize)) {
 				commonSize = t.getSize();
 			} else if (Math.abs(commonSize - t.getSize()) 
 					> Util.FP_COMPARE_ERROR) {

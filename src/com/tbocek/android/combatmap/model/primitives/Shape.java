@@ -253,10 +253,11 @@ public abstract class Shape {
 	public void drawFogOfWar(final Canvas c) {
 		// Ensure the static fog of war pen is created.
 		if (fogOfWarPaint == null) {
-			fogOfWarPaint = new Paint();
-			fogOfWarPaint.setColor(Color.RED);
-			fogOfWarPaint.setAlpha(FOG_OF_WAR_ALPHA);
-			fogOfWarPaint.setStyle(Paint.Style.FILL);
+			Paint p = new Paint();
+			p.setColor(Color.RED);
+			p.setAlpha(FOG_OF_WAR_ALPHA);
+			p.setStyle(Paint.Style.FILL);
+			fogOfWarPaint = p;
 		}
 
 		ensurePathCreated();

@@ -1,7 +1,6 @@
 package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -30,12 +29,7 @@ import com.tbocek.android.combatmap.model.primitives.Text;
  * a thick line can be used to paint an area bounded by a thin line.
  * @author Tim Bocek
  */
-public final class LineCollection implements Serializable, UndoRedoTarget {
-
-	/**
-     * ID for serialization.
-     */
-    private static final long serialVersionUID = 3807015512261579274L;
+public final class LineCollection implements UndoRedoTarget {
 
     /**
      * The internal list of lines.

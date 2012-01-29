@@ -120,7 +120,7 @@ public class Circle extends Shape {
 
 	@Override
 	protected Path createPath() {
-		if (mCenter == null || mRadius == Float.NaN) {
+		if (mCenter == null || Float.isNaN(mRadius)) {
 			return null;
 		}
 

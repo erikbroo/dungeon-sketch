@@ -221,7 +221,7 @@ public final class TagListView extends ScrollView {
      * @param v The text view to change.
      */
     private void setTextViewColorToCorrectHighlight(final TextView v) {
-        if (v.getText() == mHighlightedTag) {
+        if (v.getText().equals(mHighlightedTag)) {
             v.setTextColor(Color.WHITE);
         } else {
             v.setTextColor(Color.GRAY);
