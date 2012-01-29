@@ -17,7 +17,7 @@ public class MapDataDeserializer {
 	 * @author Tim
 	 *
 	 */
-	public class SyncException extends IOException {
+	public static class SyncException extends IOException {
 		/**
 		 * 
 		 */

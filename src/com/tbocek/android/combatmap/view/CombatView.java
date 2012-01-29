@@ -599,8 +599,8 @@ public final class CombatView extends SurfaceView {
 	 * @param t The token to place.
 	 */
 	public void placeToken(final BaseToken t) {
-		PointF attemptedLocationScreenSpace = new PointF(this.getWidth() / 2,
-				this.getHeight() / 2);
+		PointF attemptedLocationScreenSpace = new PointF(this.getWidth() / 2.0f,
+				this.getHeight() / 2.0f);
 		PointF attemptedLocationGridSpace =
 				this.getGridSpaceTransformer().screenSpaceToWorldSpace(
 						attemptedLocationScreenSpace);

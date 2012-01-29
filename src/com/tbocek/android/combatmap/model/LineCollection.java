@@ -376,7 +376,7 @@ public final class LineCollection implements UndoRedoTarget {
      * @author Tim Bocek
      *
      */
-    private class Command implements CommandHistory.Command {
+    private static class Command implements CommandHistory.Command {
     	/**
     	 * Lines created in this operation.
     	 */

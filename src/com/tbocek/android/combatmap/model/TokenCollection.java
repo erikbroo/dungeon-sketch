@@ -333,7 +333,7 @@ public final class TokenCollection implements UndoRedoTarget {
 	 * @author Tim
 	 *
 	 */
-	private class ModifyTokenCommand implements CommandHistory.Command {
+	private static class ModifyTokenCommand implements CommandHistory.Command {
 
 		/**
 		 * The token that this command modifies.  Should always be the "live"
@@ -403,7 +403,7 @@ public final class TokenCollection implements UndoRedoTarget {
 	 * @author Tim
 	 *
 	 */
-	private class AddTokenCommand implements CommandHistory.Command {
+	private static class AddTokenCommand implements CommandHistory.Command {
 
 		/**
 		 * Token collection to modify.
@@ -447,7 +447,7 @@ public final class TokenCollection implements UndoRedoTarget {
 	 * @author Tim
 	 *
 	 */
-	private class RemoveTokensCommand implements CommandHistory.Command {
+	private static class RemoveTokensCommand implements CommandHistory.Command {
 		
 		/**
 		 * Token collection to modify.

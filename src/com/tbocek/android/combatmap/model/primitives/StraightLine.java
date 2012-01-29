@@ -150,14 +150,14 @@ public class StraightLine extends Shape {
 		if (segmentStartInsertion < 0) {
 			segmentStartInsertion = -segmentStartInsertion - 1;
 		}
-		boolean startInDrawnRegion = segmentStartInsertion % 2 == 1;
+		boolean startInDrawnRegion = segmentStartInsertion % 2 != 0;
 
 		// Location in the array before which to insert the last segment.
 		int segmentEndInsertion = -Collections.binarySearch(mLineToggleParameterization, segmentEnd) - 1;
 		if (segmentEndInsertion < 0) {
 			segmentEndInsertion = -segmentEndInsertion - 1;
 		}
-		boolean endInDrawnRegion = segmentEndInsertion % 2 == 1;
+		boolean endInDrawnRegion = segmentEndInsertion % 2 != 0;
 
 		// Remove all segment starts or ends between the insertion points.
 		// If we were to run the binary search again, segmentStartInsertion should
