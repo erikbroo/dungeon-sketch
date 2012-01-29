@@ -3,6 +3,8 @@ package com.tbocek.android.combatmap.model.primitives;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tbocek.android.combatmap.DeveloperMode;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -11,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 /**
  * Base class for tokens that display some sort of drawable.  Provides standard
@@ -145,15 +148,19 @@ public abstract class DrawableToken extends BaseToken {
      * @return The drawable.
      */
     private Drawable getDrawable() {
-        if (drawableCache.containsKey(getTokenId())) {
-            return drawableCache.get(getTokenId());
-        }
-        return mDrawable;
+    	synchronized (drawableCache) {
+	        if (drawableCache.containsKey(getTokenId())) {
+	            return drawableCache.get(getTokenId());
+	        }
+	        return mDrawable;
+    	}
     }
 
     @Override
     public final boolean needsLoad() {
-    	return !drawableCache.containsKey(getTokenId());
+    	synchronized (drawableCache) {
+    		return !drawableCache.containsKey(getTokenId());
+    	}
     }
 
     @Override
@@ -163,7 +170,12 @@ public abstract class DrawableToken extends BaseToken {
         }
 
         if (mDrawable != null) {
-            drawableCache.put(getTokenId(), mDrawable);
+        	synchronized (drawableCache) {
+        		drawableCache.put(getTokenId(), mDrawable);
+        	}
+        } else if (DeveloperMode.DEVELOPER_MODE) {
+        	Log.d(DrawableToken.class.getName(), 
+        			"Drawable object failed to load for " + this.getTokenId());
         }
     }
 
