@@ -104,9 +104,12 @@ public final class TokenCollection implements UndoRedoTarget {
      * @param attemptedPoint The location where this token should try to be
      * 		placed.
      * @param grid The grid to snap to.
+     * @param tokensSnapToIntersections  Whether to place new tokens on line
+     * 		intersections as opposed to grid spaces.
      */
     public void placeTokenNearby(
-    		final BaseToken t, final PointF attemptedPoint, final Grid grid) {
+    		final BaseToken t, final PointF attemptedPoint, final Grid grid, 
+    		boolean tokensSnapToIntersections) {
         int attemptedDistance = 0;
         PointF point = attemptedPoint;
         // Continually increment the attempted distance until an open grid space
@@ -114,7 +117,8 @@ public final class TokenCollection implements UndoRedoTarget {
         // inefficiencies here (the center point is tried four times, each
         // corner of a square is tried twice, etc).  I don't care.  This runs
         // fast enough for reasonable token collections on screen.
-        point = grid.getNearestSnapPoint(point, t.getSize());
+        point = grid.getNearestSnapPoint(point, 
+        		tokensSnapToIntersections ? 0 : t.getSize());
         while (true) {
             // Go clockwise around the size of a square centered on the
         	// originally attempted point and with sized of

@@ -221,6 +221,12 @@ public final class CombatView extends SurfaceView {
 	 */
 	private NewLineStyle mNewLineStyle = NewLineStyle.FREEHAND;
 
+	/**
+	 * Whether tokens snap to the intersections of grid lines rather 
+	 * than the spaces between them.
+	 */
+	private boolean mTokensSnapToIntersections;
+
 
 	/**
 	 * Constructor.
@@ -606,7 +612,7 @@ public final class CombatView extends SurfaceView {
 						attemptedLocationScreenSpace);
 
 		getData().getTokens().placeTokenNearby(t, attemptedLocationGridSpace,
-				getData().getGrid());
+				getData().getGrid(), this.mTokensSnapToIntersections);
 		this.getData().getTokens().addToken(t);
 		refreshMap();
 	}
@@ -707,6 +713,24 @@ public final class CombatView extends SurfaceView {
 	 */
 	public boolean shouldSnapToGrid() {
 		return mSnapToGrid;
+	}
+	
+	/**
+	 * Sets whether tokens snap to the intersections of grid lines rather than
+	 * the spaces between them.
+	 * @param shouldSnap True if should snap to intersections.
+	 */
+	public void setTokensSnapToIntersections(boolean shouldSnap) {
+		mTokensSnapToIntersections = shouldSnap;
+		
+	}
+	
+	/**
+	 * @return Whether tokens snap to the intersections of grid lines rather 
+	 * than the spaces between them.
+	 */
+	public boolean tokensSnapToIntersections() {
+		return mTokensSnapToIntersections;
 	}
 
 	/**
@@ -883,6 +907,8 @@ public final class CombatView extends SurfaceView {
 		 */
 		void onRefresh();
 	}
+
+
 
 
 }

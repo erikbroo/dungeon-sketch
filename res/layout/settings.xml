@@ -24,6 +24,19 @@
         android:key="autosave"
         android:title="@string/autosave" />
 
+    <CheckBoxPreference
+        android:key="snapdrawing"
+        android:title="Snap drawing to grid" />
+      
+    <CheckBoxPreference
+        android:key="snaptokens"
+        android:title="Snap tokens to grid" />
+    
+    <CheckBoxPreference
+        android:key="tokenssnaptogridlines"
+        android:title="Snap tokens to grid lines" 
+        android:summary="Tokens snap to intersections of grid lines instead of the spaces between grid lines."/>
+    
     <Preference
         android:key="about"
         android:title="@string/about" />

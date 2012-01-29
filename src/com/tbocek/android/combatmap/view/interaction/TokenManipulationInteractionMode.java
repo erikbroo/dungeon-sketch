@@ -131,7 +131,8 @@ public final class TokenManipulationInteractionMode
                 	getView().getData().getGrid().getNearestSnapPoint(
                         transformer.screenSpaceToWorldSpace(
                                 currentPointScreenSpace),
-                        mCurrentToken.getSize());
+                                getView().tokensSnapToIntersections() 
+                        			? 0 : mCurrentToken.getSize());
                 // Snap to that point if it is less than a threshold
                 float distanceToSnapPoint = Util.distance(
                         transformer.worldSpaceToScreenSpace(

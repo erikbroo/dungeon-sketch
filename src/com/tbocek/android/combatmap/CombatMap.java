@@ -573,6 +573,8 @@ public final class CombatMap extends Activity {
         		getModeSpecificSnapPreferenceName(manipulationMode), true);
         
     	mCombatView.setShouldSnapToGrid(shouldSnap);
+    	mCombatView.setTokensSnapToIntersections(
+    			sharedPreferences.getBoolean("tokenssnaptogridlines", false));
     	
     	if (mSnapToGridMenuItem != null) {
     		mSnapToGridMenuItem.setChecked(shouldSnap);

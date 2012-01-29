@@ -130,7 +130,8 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
                 PointF nearestSnapPointWorldSpace = 
                     	getView().getData().getGrid().getNearestSnapPoint(
                             currentPointWorldSpace,
-                            mCurrentToken.getSize());
+                            getView().tokensSnapToIntersections() 
+                    			? 0 : mCurrentToken.getSize());
                 
                 // Snap to that point if it is less than a threshold
                 float distanceToSnapPoint = Util.distance(
