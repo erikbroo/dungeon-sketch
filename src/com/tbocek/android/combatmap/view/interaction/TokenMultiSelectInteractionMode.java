@@ -63,7 +63,9 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
         				e.getX(), e.getY()), 
         				getView().getGridSpaceTransformer());
 
-        if (currentToken != null) {
+        if (currentToken != null 
+        		&&  !getView().getMultiSelect().getSelectedTokens().contains(
+        				currentToken)) {
         	mMoved = false;
         	mDragging = true;
             getView().getTokens().checkpointTokens(new ArrayList<BaseToken>(
