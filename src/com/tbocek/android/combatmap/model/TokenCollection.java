@@ -478,6 +478,7 @@ public final class TokenCollection implements UndoRedoTarget {
 		public RemoveTokensCommand(
 				TokenCollection collection, BaseToken toRemove) {
 			Collection<BaseToken> arr = Lists.newArrayList();
+			arr.add(toRemove);
 			mCollection = collection;
 			mToRemove = arr;
 		}
