@@ -360,7 +360,7 @@ public final class DrawOptionsView extends LinearLayout {
      * @author Tim
      *
      */
-    public class NullChangeDrawToolListener
+    public static class NullChangeDrawToolListener
     		implements OnChangeDrawToolListener {
         @Override
         public void onChooseEraser() { }
