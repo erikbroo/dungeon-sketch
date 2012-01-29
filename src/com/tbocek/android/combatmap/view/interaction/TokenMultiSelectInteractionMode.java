@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
+import com.tbocek.android.combatmap.model.primitives.Util;
 import com.tbocek.android.combatmap.view.CombatView;
 
 /**
@@ -18,7 +19,12 @@ import com.tbocek.android.combatmap.view.CombatView;
  *
  */
 public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
-
+	/**
+	 * Distance in screen space that a token needs to be away from a snap point
+	 * until it will snap.
+	 */
+    private static final int GRID_SNAP_THRESHOLD = 20;
+    
 	/**
 	 * Whether the current scroll operation should drag the selected tokens
 	 * or scroll the screen.
@@ -34,6 +40,18 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
      * Collection of ghost tokens to draw when moving a group of tokens.
      */
     private Collection<BaseToken> mUnmovedTokens = Lists.newArrayList();
+    
+    /**
+     * The token that the user clicked on to start a drag operation.  Will be
+     * used to determine snapping to grid.
+     */
+    private BaseToken mCurrentToken;
+    
+    /**
+     * When moving tokens with snap to grid enabled, this is the last point that
+     * was snapped to.
+     */
+    private PointF mLastSnappedLocation;
 	
 	/**
 	 * Constructor.
@@ -58,14 +76,14 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
     
     @Override
     public boolean onDown(final MotionEvent e) {
-        BaseToken currentToken = getView().getTokens().getTokenUnderPoint(
+        mCurrentToken = getView().getTokens().getTokenUnderPoint(
         		new PointF(
         				e.getX(), e.getY()), 
         				getView().getGridSpaceTransformer());
 
-        if (currentToken != null 
-        		&&  !getView().getMultiSelect().getSelectedTokens().contains(
-        				currentToken)) {
+        if (mCurrentToken != null 
+        		&&  getView().getMultiSelect().getSelectedTokens().contains(
+        				mCurrentToken)) {
         	mMoved = false;
         	mDragging = true;
             getView().getTokens().checkpointTokens(new ArrayList<BaseToken>(
@@ -73,6 +91,7 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
             for (BaseToken t: getView().getMultiSelect().getSelectedTokens()) {
     			this.mUnmovedTokens.add(t.clone());
     		}
+            mLastSnappedLocation = mCurrentToken.getLocation();
         } else {
         	mDragging = false;
         }
@@ -96,11 +115,45 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
     		mMoved = true;
     		CoordinateTransformer transformer 
     			= getView().getGridSpaceTransformer();
-    		float deltaX = transformer.screenSpaceToWorldSpace(distanceX);
-    		float deltaY = transformer.screenSpaceToWorldSpace(distanceY);
+    		float deltaX;
+    		float deltaY;
+    		
+    		// If snap to grid is enabled, change the world space movement
+    		// deltas to compensate for distance between the real point and
+    		// the snap to grid point.
+    		if (getView().shouldSnapToGrid()) {
+    			PointF currentPointScreenSpace =
+    					new PointF(e2.getX(), e2.getY());
+    			PointF currentPointWorldSpace = 
+    					transformer.screenSpaceToWorldSpace(
+    							currentPointScreenSpace);
+                PointF nearestSnapPointWorldSpace = 
+                    	getView().getData().getGrid().getNearestSnapPoint(
+                            currentPointWorldSpace,
+                            mCurrentToken.getSize());
+                
+                // Snap to that point if it is less than a threshold
+                float distanceToSnapPoint = Util.distance(
+                        transformer.worldSpaceToScreenSpace(
+                        		nearestSnapPointWorldSpace),
+                        currentPointScreenSpace);
+
+                PointF newLocationWorldSpace = 
+                		distanceToSnapPoint < GRID_SNAP_THRESHOLD
+                		? nearestSnapPointWorldSpace
+                		: currentPointWorldSpace;
+                
+                deltaX = mLastSnappedLocation.x - newLocationWorldSpace.x;
+                deltaY = mLastSnappedLocation.y - newLocationWorldSpace.y;
+                mLastSnappedLocation = newLocationWorldSpace;
+                
+    		} else {
+    			deltaX = transformer.screenSpaceToWorldSpace(distanceX);
+        		deltaY = transformer.screenSpaceToWorldSpace(distanceY);
+    		}
     		for (BaseToken t: getView().getMultiSelect().getSelectedTokens()) {
     			t.move(deltaX, deltaY);
-    		}
+    		} 
     	} else {
     		return super.onScroll(e1, e2, distanceX, distanceY);
     	}
