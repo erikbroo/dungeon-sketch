@@ -540,8 +540,7 @@ public final class CombatMap extends Activity {
                     this.getApplicationContext());
         String colorScheme = sharedPreferences.getString("theme", "graphpaper");
         String gridType = sharedPreferences.getString("gridtype", "rect");
-        mCombatView.setShouldSnapToGrid(
-        		sharedPreferences.getBoolean("snaptogrid", true));
+        
         mData.setGrid(Grid.createGrid(
                 gridType, colorScheme,
                 mData.getGrid().gridSpaceToWorldSpaceTransformer()));
@@ -557,6 +556,58 @@ public final class CombatMap extends Activity {
         // item is disabled after the menu is loaded.
         loadModePreference();
 
+    }
+    
+    /**
+     * Loads the snap preference associated with the current combat map mode.
+     */
+    private void loadModeSpecificSnapPreference() {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(
+                        this.getApplicationContext());
+    	
+    	int manipulationMode = sharedPreferences.getInt(
+    			"manipulationmode", MODE_TOKENS);
+    	
+        boolean shouldSnap = sharedPreferences.getBoolean(
+        		getModeSpecificSnapPreferenceName(manipulationMode), true);
+        
+    	mCombatView.setShouldSnapToGrid(shouldSnap);
+    	
+    	if (mSnapToGridMenuItem != null) {
+    		mSnapToGridMenuItem.setChecked(shouldSnap);
+    	}
+    }
+    
+    /**
+     * Sets the snap preference associated with the current combat map mode.
+     * @param shouldSnap True if should snap, false otherwise.
+     */
+    private void setModeSpecificSnapPreference(final boolean shouldSnap) {
+    	SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(
+                        this.getApplicationContext());
+    	
+    	int manipulationMode = sharedPreferences.getInt(
+    			"manipulationmode", MODE_TOKENS);
+    	
+        Editor editor = sharedPreferences.edit();
+        editor.putBoolean(
+        		getModeSpecificSnapPreferenceName(manipulationMode),
+        		mSnapToGridMenuItem.isChecked());
+        editor.commit();
+        
+    	mCombatView.setShouldSnapToGrid(shouldSnap);
+    }
+    
+    /**
+     * Given a combat mode, returns the snap to grid preference name associated
+     * with that combat mode.
+     * @param mode The combat mode to check.
+     * @return Name of the snap preference associated with that combat mode.
+     */
+    private String getModeSpecificSnapPreferenceName(final int mode) {
+    	return mode == MODE_TOKENS ? "snaptokens" : "snapdrawing";
     }
 
     @Override
@@ -620,13 +671,8 @@ public final class CombatMap extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.combat_map_menu, menu);
 
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                    this.getApplicationContext());
-
         mSnapToGridMenuItem = menu.findItem(R.id.snap_to_grid);
-        mSnapToGridMenuItem.setChecked(
-        		sharedPreferences.getBoolean("snaptogrid", true));
+        loadModeSpecificSnapPreference();
         
         mUndoMenuItem = menu.findItem(R.id.menu_undo);
         mRedoMenuItem = menu.findItem(R.id.menu_redo);
@@ -667,12 +713,7 @@ public final class CombatMap extends Activity {
             return true;
         case R.id.snap_to_grid:
         	mSnapToGridMenuItem.setChecked(!mSnapToGridMenuItem.isChecked());
-            // Persist the filename that we saved to so that we can load from 
-            // that file again.
-            Editor editor = sharedPreferences.edit();
-            editor.putBoolean("snaptogrid", mSnapToGridMenuItem.isChecked());
-            editor.commit();
-            mCombatView.setShouldSnapToGrid(mSnapToGridMenuItem.isChecked());
+            this.setModeSpecificSnapPreference(mSnapToGridMenuItem.isChecked());
         	return true;
         case R.id.save:
             showDialog(DIALOG_ID_SAVE);
@@ -719,6 +760,7 @@ public final class CombatMap extends Activity {
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(true);
             setTagSelectorVisibility(false);
+            loadModeSpecificSnapPreference();
 			return;
 		case MODE_DRAW_ANNOTATIONS:
 			mCombatView.getMultiSelect().selectNone();
@@ -731,6 +773,7 @@ public final class CombatMap extends Activity {
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(false);
             setTagSelectorVisibility(false);
+            loadModeSpecificSnapPreference();
 			return;
 		case MODE_DRAW_GM_NOTES:
 			mCombatView.getMultiSelect().selectNone();
@@ -743,6 +786,7 @@ public final class CombatMap extends Activity {
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(true);
             setTagSelectorVisibility(false);
+            loadModeSpecificSnapPreference();
 			return;
 		case MODE_TOKENS:
             mCombatView.setAreTokensManipulatable(true);
@@ -754,6 +798,7 @@ public final class CombatMap extends Activity {
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(mTokenSelector);
             setModePreference(manipulationMode);
+            loadModeSpecificSnapPreference();
 			return;
 		default:
 			throw new IllegalArgumentException(
