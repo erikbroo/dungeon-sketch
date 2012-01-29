@@ -332,34 +332,50 @@ public final class TokenManager extends Activity {
     	//TODO: Move more of this functionality into TokenDeleteButton.
     	switch (item.getItemId()) {
     	case R.id.token_delete_entire_token:
-    		Collection<BaseToken> tokens = this.mTrashButton.getManagedTokens();
-    		for (BaseToken token : tokens) {
-		    	this.mTokenDatabase.removeToken(token);
-	    		try {
-	    			token.maybeDeletePermanently();
-	    		} catch (IOException e) {
-	    			Toast toast = Toast.makeText(
-	    					this.getApplicationContext(),
-	    					"Did not delete the token, probably because "
-	    					+ "the external storage isn't writable."
-	    					+ e.toString(),
-	    					Toast.LENGTH_LONG);
-	    			toast.show();
-	    		}
-    		}
-    		setScrollViewTag(this.mTagListView.getTag());
+    		deleteTokens(this.mTrashButton.getManagedTokens());
     		return true;
     	case R.id.token_delete_from_tag:
-    		tokens = this.mTrashButton.getManagedTokens();
-    		String tag = this.mTagListView.getTag();
-    		for (BaseToken token : tokens) {
-	    		this.mTokenDatabase.removeTagFromToken(token.getTokenId(), tag);
-	    		setScrollViewTag(tag);
-    		}
+    		removeTagFromTokens(
+    				this.mTrashButton.getManagedTokens(),
+    				this.mTagListView.getTag());
 	    	return true;
     	default:
     		return super.onContextItemSelected(item);
     	}
+    }
+    
+    /**
+     * Removes the given tag from the given tokens.
+     * @param tokens Tokens to remove the tag from.
+     * @param tag The tag to remove.
+     */
+    private void removeTagFromTokens(Collection<BaseToken> tokens, String tag) {
+		for (BaseToken token : tokens) {
+    		this.mTokenDatabase.removeTagFromToken(token.getTokenId(), tag);
+    		setScrollViewTag(tag);
+		}
+    }
+    
+    /**
+     * Deletes the given list of tokens.
+     * @param tokens The tokens to delete.
+     */
+    private void deleteTokens(Collection<BaseToken> tokens) {
+		for (BaseToken token : tokens) {
+	    	this.mTokenDatabase.removeToken(token);
+    		try {
+    			token.maybeDeletePermanently();
+    		} catch (IOException e) {
+    			Toast toast = Toast.makeText(
+    					this.getApplicationContext(),
+    					"Did not delete the token, probably because "
+    					+ "the external storage isn't writable."
+    					+ e.toString(),
+    					Toast.LENGTH_LONG);
+    			toast.show();
+    		}
+		}
+		setScrollViewTag(this.mTagListView.getTag());
     }
     
     /**
@@ -372,11 +388,27 @@ public final class TokenManager extends Activity {
 
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			Collection<BaseToken> tokens =
+					mTokenViewFactory.getMultiSelectManager()
+							.getSelectedTokens();
+			switch(item.getItemId()) {
+			case R.id.token_manager_action_mode_remove_tag:
+	    		removeTagFromTokens(tokens, mTagListView.getTag());
+		    	return true;
+			case R.id.token_manager_action_mode_delete:
+				deleteTokens(tokens);
+	    		return true;
+			default:
+				break;
+				
+			}
 			return false;
 		}
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			mode.getMenuInflater().inflate(
+					R.menu.token_manager_action_mode, menu);
 			return true;
 		}
 
@@ -387,6 +419,11 @@ public final class TokenManager extends Activity {
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			MenuItem removeTag = menu.findItem(
+					R.id.token_manager_action_mode_remove_tag);
+			removeTag.setVisible(
+					!mTagListView.getTag().equals(TokenDatabase.ALL));
+			removeTag.setTitle("Remove tag '" + mTagListView.getTag() + "'");
 			return true;
 		}
     }
