@@ -567,4 +567,16 @@ public final class TokenDatabase {
 			this.mTokenForId.remove(removedBuiltin);
 		}
 	}
+
+
+    /**
+     * Deletes the given tag from the database.
+     * @param toDelete The tag to remove from the database.
+     */
+	public void deleteTag(String toDelete) {
+		this.mTokensForTag.remove(toDelete);
+		for (String tokenId: mTagsForToken.keySet()) {
+			mTagsForToken.get(tokenId).remove(toDelete);
+		}
+	}
 }

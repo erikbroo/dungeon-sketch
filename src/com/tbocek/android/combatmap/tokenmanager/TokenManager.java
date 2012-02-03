@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.collect.Lists;
@@ -87,6 +88,12 @@ public final class TokenManager extends Activity {
 	 * The list of token buttons that are managed by this activity.
 	 */
 	private Collection<TokenButton> mButtons = Lists.newArrayList();
+	
+	/**
+	 * When a context menu for a tag is opened, stores the tag that the menu
+	 * opened on.
+	 */
+	private String mContextMenuTag;
 
     /**
      * Listener that reloads the token view when a new tag is selected, and
@@ -105,7 +112,6 @@ public final class TokenManager extends Activity {
 			for (BaseToken t : tokens) {
 				mTokenDatabase.tagToken(t.getTokenId(), tag);
 			}
-
 		}
     };
 
@@ -139,6 +145,7 @@ public final class TokenManager extends Activity {
 
     	mTagListView = new TagListView(this);
     	mTagListView.setOnTagListActionListener(mOnTagListActionListener);
+    	mTagListView.setRegisterChildrenForContextMenu(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 	    	mTrashButton = new TokenDeleteButton(this);
@@ -299,6 +306,11 @@ public final class TokenManager extends Activity {
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v,
                                     final ContextMenuInfo menuInfo) {
+    	if (mTagListView.isViewAChild(v)) {
+    		TextView tv = (TextView) v;
+    		this.mContextMenuTag = tv.getText().toString();
+    		this.getMenuInflater().inflate(R.menu.tag_context_menu, menu);
+    	}
       	if (v == this.mTrashButton) {
       		Collection<BaseToken> tokens = this.mTrashButton.getManagedTokens();
       		if (tokens.size() > 0) {
@@ -339,6 +351,13 @@ public final class TokenManager extends Activity {
     				this.mTrashButton.getManagedTokens(),
     				this.mTagListView.getTag());
 	    	return true;
+    	case R.id.tag_context_menu_delete:
+    		if (mTagListView.getTag().equals(mContextMenuTag)) {
+    			mTagListView.setHighlightedTag(TokenDatabase.ALL);
+    		}
+    		this.mTokenDatabase.deleteTag(this.mContextMenuTag);
+    		mTagListView.setTagList(mTokenDatabase.getTags());
+    		return true;
     	default:
     		return super.onContextItemSelected(item);
     	}

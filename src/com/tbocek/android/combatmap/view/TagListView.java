@@ -7,6 +7,7 @@ import java.util.List;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -98,6 +99,11 @@ public final class TagListView extends ScrollView {
     private View.OnDragListener mOnDrag;
     
     /**
+     * Whether children of this view should be registered for a context menu.
+     */
+    private boolean mRegisterChildrenForContextMenu;
+    
+    /**
      * Constructor.
      * @param context The context that this view is constructed in.
      */
@@ -161,6 +167,13 @@ public final class TagListView extends ScrollView {
                 }
             }
         });
+        
+        if (mRegisterChildrenForContextMenu 
+        		&& !text.equals(TokenDatabase.ALL)) {
+        	Activity activity = (Activity) this.getContext();
+        	activity.registerForContextMenu(v);
+        }
+        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
         	mOnDrag = new View.OnDragListener() {
                 @Override
@@ -208,7 +221,7 @@ public final class TagListView extends ScrollView {
      * Sets the tag that is currently highlighted.
      * @param tag The highlighted tag.
      */
-    private void setHighlightedTag(final String tag) {
+    public void setHighlightedTag(final String tag) {
         mHighlightedTag = tag;
         for (TextView v : mTextViews) {
             setTextViewColorToCorrectHighlight(v);
@@ -233,6 +246,23 @@ public final class TagListView extends ScrollView {
      */
     public String getTag() {
         return this.mHighlightedTag;
+    }
+    
+    /**
+     * Sets whether to register children for a context menu.
+     * @param register Whether to register children.
+     */
+    public void setRegisterChildrenForContextMenu(boolean register) {
+    	this.mRegisterChildrenForContextMenu = register;
+    }
+    
+    /**
+     * Checks whether the given view is managed by this view.
+     * @param v The child view to check.
+     * @return True if the view is managed by this view, false otherwise
+     */
+    public boolean isViewAChild(View v) {
+    	return this.mTextViews.contains(v);
     }
 
 }
