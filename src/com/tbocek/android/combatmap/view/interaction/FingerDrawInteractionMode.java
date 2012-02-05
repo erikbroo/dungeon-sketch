@@ -43,6 +43,11 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
      * Whether a zoom operation is in progress.
      */
     private boolean mZooming;
+    
+    /**
+     * Whether a draw operation is in progress.
+     */
+    private boolean mDrawing;
 
 
 	/**
@@ -56,7 +61,11 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     @Override
     public boolean onScale(final ScaleGestureDetector detector) {
     	mZooming = true;
-    	return super.onScale(detector);
+    	if (!mDrawing) {
+    		return super.onScale(detector);
+    	} else {
+    		return true;
+    	}
     }
 
 
@@ -72,6 +81,8 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
             return true;
         }
 
+    	mDrawing = true;
+    	
         if (shouldAddPoint(e2.getX(), e2.getY())) {
             addLinePoint(e2);
         }
@@ -137,6 +148,7 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     public void onUp(final MotionEvent e) {
     	if (getNumberOfFingers() == 0) {
     		mZooming = false;
+    		mDrawing = false;
     	}
     }
     
