@@ -74,6 +74,9 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
             final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
     	if (mZooming) {
+            getView().getWorldSpaceTransformer().moveOrigin(
+            		-distanceX, -distanceY);
+            getView().refreshMap();
     		return true;
     	}
     	
