@@ -7,6 +7,7 @@ import com.tbocek.android.combatmap.model.primitives.Util;
 import com.tbocek.android.combatmap.view.CombatView;
 
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 /**
  * Interaction mode that allows the user to draw a line on the CombatView.
@@ -37,6 +38,11 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
      * this line.
      */
     private Shape mCurrentLine;
+    
+    /**
+     * Whether a zoom operation is in progress.
+     */
+    private boolean mZooming;
 
 
 	/**
@@ -46,12 +52,22 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     public FingerDrawInteractionMode(final CombatView view) {
         super(view);
     }
+    
+    @Override
+    public boolean onScale(final ScaleGestureDetector detector) {
+    	mZooming = true;
+    	return super.onScale(detector);
+    }
 
 
     @Override
     public boolean onScroll(
             final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
+    	if (mZooming) {
+    		return true;
+    	}
+    	
         if (mCurrentLine == null) {
             return true;
         }
@@ -116,6 +132,14 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
         mLastPointY = p.y;
         return true;
     }
+    
+    @Override
+    public void onUp(final MotionEvent e) {
+    	if (getNumberOfFingers() == 0) {
+    		mZooming = false;
+    	}
+    }
+    
 
     /**
      * Creates a line in the data tied to the manipulated view, and returns it.

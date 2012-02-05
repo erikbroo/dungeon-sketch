@@ -30,11 +30,38 @@ public class CombatViewInteractionMode
     private CombatView mView;
     
     /**
+     * Number of fingers currently down.
+     */
+    private int mFingers;
+    
+    
+    /**
      * Constructor.
      * @param view The CombatView that this interaction mode manipulates.
      */
       public CombatViewInteractionMode(final CombatView view) {
           this.mView = view;
+      }
+      
+      /**
+       * Increments the number of fingers.
+       */
+      public final void addFinger() {
+    	  mFingers++;
+      }
+      
+      /**
+       * Decrements the number of fingers.
+       */
+      public final void removeFinger() {
+    	  mFingers--;
+      }
+    
+      /**
+       * @return Gets the number of fingers currently down.
+       */
+      protected int getNumberOfFingers() {
+    	  return mFingers;
       }
       
       /**

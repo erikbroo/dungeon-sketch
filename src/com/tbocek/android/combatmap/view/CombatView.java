@@ -421,12 +421,17 @@ public final class CombatView extends SurfaceView {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent ev) {
+		if (ev.getAction() == MotionEvent.ACTION_UP) {
+			this.mInteractionMode.addFinger();
+		}
+		
 		this.mGestureDetector.onTouchEvent(ev);
 		this.mScaleDetector.onTouchEvent(ev);
 
 		// If a finger was removed, optimize the lines by removing unused
 		// points.
 		if (ev.getAction() == MotionEvent.ACTION_UP) {
+			this.mInteractionMode.removeFinger();
 			this.mInteractionMode.onUp(ev);
 		}
 		return true;
