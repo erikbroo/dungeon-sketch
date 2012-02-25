@@ -332,13 +332,13 @@ public final class CombatMap extends Activity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
     	DeveloperMode.strictMode();
-    	android.os.Debug.startMethodTracing("main_activity_load");
+    	// android.os.Debug.startMethodTracing("main_activity_load");
         super.onCreate(savedInstanceState);
 
         BuiltInImageToken.registerResources(
                 this.getApplicationContext().getResources());
-
-
+        
+        PreferenceManager.setDefaultValues(this, R.layout.settings, false);
 
         // Set up the tabs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -526,7 +526,7 @@ public final class CombatMap extends Activity {
         		this.getApplicationContext());
         mTokenSelector.setTokenDatabase(mTokenDatabase, mCombatView);
         mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
-        android.os.Debug.stopMethodTracing();
+        // android.os.Debug.stopMethodTracing();
     }
 
 
@@ -553,7 +553,7 @@ public final class CombatMap extends Activity {
 
         if (mTabManager != null) {
 	        mTabManager.pickTab(sharedPreferences.getInt(
-	        		"manipulationmode", MODE_DRAW_BACKGROUND));
+	        		"manipulation_mode", MODE_DRAW_BACKGROUND));
         }
         
         // We defer loading the manipulation mode until now, so that the correct
@@ -571,7 +571,7 @@ public final class CombatMap extends Activity {
                         this.getApplicationContext());
     	
     	int manipulationMode = sharedPreferences.getInt(
-    			"manipulationmode", MODE_TOKENS);
+    			"manipulation_mode", MODE_TOKENS);
     	
         boolean shouldSnap = sharedPreferences.getBoolean(
         		getModeSpecificSnapPreferenceName(manipulationMode), true);
@@ -595,7 +595,7 @@ public final class CombatMap extends Activity {
                         this.getApplicationContext());
     	
     	int manipulationMode = sharedPreferences.getInt(
-    			"manipulationmode", MODE_TOKENS);
+    			"manipulation_mode", MODE_TOKENS);
     	
         Editor editor = sharedPreferences.edit();
         editor.putBoolean(
@@ -627,7 +627,7 @@ public final class CombatMap extends Activity {
         editor.commit();
         String filename = sharedPreferences.getString("filename", null);
         if (filename == null 
-        		|| !sharedPreferences.getBoolean("autosave", false)) {
+        		|| !sharedPreferences.getBoolean("autosave", true)) {
         	filename = DataManager.TEMP_MAP_NAME;
         }
 
@@ -697,7 +697,7 @@ public final class CombatMap extends Activity {
         switch (item.getItemId()) {
         case R.id.clear_all:
         	// Save the current map, if autosave was requested.
-        	if (sharedPreferences.getBoolean("autosave", false)) {
+        	if (sharedPreferences.getBoolean("autosave", true)) {
         		new MapSaver(
         				sharedPreferences.getString("filename", ""), 
         				this.getApplicationContext())
@@ -751,7 +751,7 @@ public final class CombatMap extends Activity {
                     this.getApplicationContext());
 
         Editor editor = sharedPreferences.edit();
-        editor.putInt("manipulationmode", manipulationMode);
+        editor.putInt("manipulation_mode", manipulationMode);
         editor.commit();
 
 		switch (manipulationMode) {

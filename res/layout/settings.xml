@@ -18,31 +18,44 @@
 
     <CheckBoxPreference
         android:key="fogofwar"
-        android:title="@string/fog_of_war_enabled" />
+        android:title="@string/fog_of_war_enabled" 
+        android:defaultValue="true"
+        android:summary="Use this to temporarily disable fog of war if you need to.  Note that the entire map will draw if no fog of war regions have been added yet."/>
     
     <CheckBoxPreference
         android:key="autosave"
-        android:title="@string/autosave" />
+        android:title="@string/autosave" 
+        android:defaultValue="true"
+        android:summary="If set, will save the latest version of your map when you exit."/>
 
-    <CheckBoxPreference
-        android:key="snapdrawing"
-        android:title="Snap drawing to grid" />
-      
-    <CheckBoxPreference
-        android:key="snaptokens"
-        android:title="Snap tokens to grid" />
-    
-    <CheckBoxPreference
-        android:key="tokenssnaptogridlines"
-        android:title="Snap tokens to grid lines" 
-        android:summary="Tokens snap to intersections of grid lines instead of the spaces between grid lines."/>
-    
-    <Preference
-        android:key="about"
-        android:title="@string/about" />
+    <PreferenceCategory
+        android:title="Snap to Grid" >
+	    <CheckBoxPreference
+	        android:key="snapdrawing"
+	        android:defaultValue="true"
+	        android:title="Snap drawing to grid" />
+	      
+	    <CheckBoxPreference
+	        android:key="snaptokens"
+	        android:defaultValue="true"
+	        android:title="Snap tokens to grid" />
+	    
+	    <CheckBoxPreference
+	        android:key="tokenssnaptogridlines"
+	        android:title="Snap tokens to grid lines"
+	        android:defaultValue="false" 
+	        android:summary="Tokens snap to intersections of grid lines instead of the spaces between grid lines."/>
+	</PreferenceCategory>
 
-    <Preference
-        android:key="artcredits"
-        android:title="@string/art_credits" />
+	<PreferenceCategory
+	    android:title="App Info">    
+	    <Preference
+	        android:key="about"
+	        android:title="@string/about" />
+	
+	    <Preference
+	        android:key="artcredits"
+	        android:title="@string/art_credits" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
