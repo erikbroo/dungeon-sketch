@@ -207,7 +207,13 @@ public final class MapData {
      * The grid to draw.
      */
     private Grid mGrid = new RectangularGrid();
-
+    
+    /**
+     * Whether map attributes such as color scheme and grid type should be
+     * updated in response to loading preferences.  Set to true if this map
+     * is newly loaded.
+     */
+    private boolean mMapAttributesLocked;
 	
     /**
      * Private constructor - singleton pattern.
@@ -318,5 +324,21 @@ public final class MapData {
 	 */
 	public CoordinateTransformer getWorldSpaceTransformer() {
 		return mTransformer;
+	}
+	
+	/**
+	 * 
+	 * @return Whether map attributes are locked.
+	 */
+	public boolean areMapAttributesLocked() {
+		return this.mMapAttributesLocked;
+	}
+	
+	/**
+	 * Sets whether to lock map attributes.
+     * @param locked True if map attributes are locked, False otherwise.
+	 */
+	public void setMapAttributesLocked(boolean locked) {
+		this.mMapAttributesLocked = locked;
 	}
 }

@@ -332,7 +332,7 @@ public final class CombatMap extends Activity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
     	DeveloperMode.strictMode();
-
+    	android.os.Debug.startMethodTracing("main_activity_load");
         super.onCreate(savedInstanceState);
 
         BuiltInImageToken.registerResources(
@@ -526,7 +526,7 @@ public final class CombatMap extends Activity {
         		this.getApplicationContext());
         mTokenSelector.setTokenDatabase(mTokenDatabase, mCombatView);
         mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
-
+        android.os.Debug.stopMethodTracing();
     }
 
 
@@ -538,13 +538,17 @@ public final class CombatMap extends Activity {
         SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
                     this.getApplicationContext());
-        String colorScheme = sharedPreferences.getString("theme", "graphpaper");
-        String gridType = sharedPreferences.getString("gridtype", "rect");
+        if (!mData.areMapAttributesLocked()) {
+        	String colorScheme = sharedPreferences.getString(
+        			"theme", "graphpaper");
+        	String gridType = sharedPreferences.getString("gridtype", "rect");
         
-        mData.setGrid(Grid.createGrid(
-                gridType, colorScheme,
-                mData.getGrid().gridSpaceToWorldSpaceTransformer()));
-
+	        mData.setGrid(Grid.createGrid(
+	                gridType, colorScheme,
+	                mData.getGrid().gridSpaceToWorldSpaceTransformer()));
+	        mData.setMapAttributesLocked(true);
+        }
+        
         this.mTokenSelector.setShouldDrawDark(mData.getGrid().isDark());
 
         if (mTabManager != null) {

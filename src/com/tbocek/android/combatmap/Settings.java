@@ -2,11 +2,13 @@ package com.tbocek.android.combatmap;
 
 import com.tbocek.android.combatmap.about.AboutDialog;
 import com.tbocek.android.combatmap.about.ArtCredits;
+import com.tbocek.android.combatmap.model.MapData;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
@@ -51,6 +53,30 @@ public final class Settings extends PreferenceActivity {
 					return true;
 				}
         		
+        	});
+        
+        Preference themePref = (Preference) findPreference("theme");
+        themePref.setOnPreferenceChangeListener(
+        	new OnPreferenceChangeListener() {
+        		
+				@Override
+				public boolean onPreferenceChange(Preference preference,
+						Object newValue) {
+					MapData.getInstance().setMapAttributesLocked(false);
+					return true;
+				}
+        	});
+        
+        Preference gridTypePref = (Preference) findPreference("gridtype");
+        gridTypePref.setOnPreferenceChangeListener(
+        	new OnPreferenceChangeListener() {
+        		
+				@Override
+				public boolean onPreferenceChange(Preference preference,
+						Object newValue) {
+					MapData.getInstance().setMapAttributesLocked(false);
+					return true;
+				}
         	});
     }
     

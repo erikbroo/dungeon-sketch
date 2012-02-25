@@ -60,6 +60,7 @@ public final class DataManager {
      * The context that this data manager goes through to read and write data.
      */
     private Context mContext;
+    
 
     /**
      * Constructor.
@@ -84,8 +85,10 @@ public final class DataManager {
 	        FileInputStream s  = new FileInputStream(f);
 	        MapData.loadFromStream(s, TokenDatabase.getInstance(this.mContext));
 	        s.close();
+    		MapData.getInstance().setMapAttributesLocked(true);
     	} else if (name.equals(TEMP_MAP_NAME)) {
     		MapData.clear();
+    		MapData.getInstance().setMapAttributesLocked(false);
     	}
     }
 
@@ -297,6 +300,5 @@ public final class DataManager {
     public void deleteTokenImage(final String fileName) {
         getTokenImageFile(fileName).delete();
     }
-
 
 }
