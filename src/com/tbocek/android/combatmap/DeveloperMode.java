@@ -34,6 +34,25 @@ public final class DeveloperMode {
 	}
 	
 	/**
+	 * Starts the profiler only if deveoper mode is active.
+	 * @param name
+	 */
+	public static void startProfiler(String name) {
+		if (DEVELOPER_MODE) {
+			android.os.Debug.startMethodTracing(name);
+		}
+	}
+	
+	/**
+	 * Stops profiling.
+	 */
+	public static void stopProfiler() {
+		if (DEVELOPER_MODE) {
+			android.os.Debug.stopMethodTracing();
+		}
+	}
+	
+	/**
 	 * Private constructor because this is a utility class.
 	 */
 	private DeveloperMode() { }
