@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -521,11 +522,7 @@ public final class CombatMap extends Activity {
         reloadPreferences();
         
         mCombatView.refreshMap();
-
-        mTokenDatabase = TokenDatabase.getInstance(
-        		this.getApplicationContext());
-        mTokenSelector.setTokenDatabase(mTokenDatabase, mCombatView);
-        mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
+        new TokenDatabaseLoadTask().execute();
         // android.os.Debug.stopMethodTracing();
     }
 
@@ -1296,5 +1293,30 @@ public final class CombatMap extends Activity {
 			}
 		}
     }
+    
+    /**
+     * Task that loads the token database off the UI thread, and populates
+     * everything that needs the database when on the UI thread again.
+     * @author Tim
+     *
+     */
+    class TokenDatabaseLoadTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			TokenDatabase.getInstance(getApplicationContext());
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			mTokenDatabase = TokenDatabase.getInstance(
+	        		getApplicationContext());
+			mData.getTokens().deplaceholderize(mTokenDatabase);
+			mTokenSelector.setTokenDatabase(mTokenDatabase, mCombatView);
+			mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
+		}
 			
+    	
+    }
 }

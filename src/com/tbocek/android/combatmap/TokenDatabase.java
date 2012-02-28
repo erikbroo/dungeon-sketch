@@ -81,6 +81,16 @@ public final class TokenDatabase {
         return instance;
     }
     
+    
+    /**
+     * Returns an instance of the token database, or null if it hasn't been
+     * created.
+     * @return The token database.
+     */
+    public static TokenDatabase getInstanceOrNull() {
+    	return instance;
+    }
+    
 
     /**
      * Loads a token database from internal storage, and replaces the current

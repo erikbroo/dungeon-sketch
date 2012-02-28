@@ -35,7 +35,7 @@ public final class DeveloperMode {
 	
 	/**
 	 * Starts the profiler only if deveoper mode is active.
-	 * @param name
+	 * @param name The name of the profiler to write to.
 	 */
 	public static void startProfiler(String name) {
 		if (DEVELOPER_MODE) {

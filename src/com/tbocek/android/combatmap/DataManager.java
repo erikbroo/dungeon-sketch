@@ -83,7 +83,7 @@ public final class DataManager {
     	File f = this.getSavedMapFile(name);
     	if (f.exists()) {
 	        FileInputStream s  = new FileInputStream(f);
-	        MapData.loadFromStream(s, TokenDatabase.getInstance(this.mContext));
+	        MapData.loadFromStream(s, TokenDatabase.getInstanceOrNull());
 	        s.close();
     		MapData.getInstance().setMapAttributesLocked(true);
     	} else if (name.equals(TEMP_MAP_NAME)) {

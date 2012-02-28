@@ -333,6 +333,21 @@ public final class TokenCollection implements UndoRedoTarget {
 	}
 	
 	/**
+	 * Replace all placeholder tokens with actual tokens.
+	 * @param tokenDatabase The database to load new tokens from.
+	 */
+	public void deplaceholderize(TokenDatabase tokenDatabase) {
+		for (int i = 0; i < this.mTokens.size(); ++i) {
+			BaseToken realToken =
+					this.mTokens.get(i).deplaceholderize(tokenDatabase);
+			if (realToken != mTokens.get(i)) {
+				mTokens.get(i).copyAttributesTo(realToken);
+				mTokens.set(i, realToken);
+			}
+		}
+	}
+	
+	/**
 	 * Represents a command that modifies a token.
 	 * @author Tim
 	 *

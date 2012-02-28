@@ -53,7 +53,15 @@ public abstract class BaseToken  {
 			TokenDatabase tokenDatabase) throws IOException {
 		s.expectObjectStart();
 		String tokenId = s.readString();
-		BaseToken t = tokenDatabase.createToken(tokenId);
+		BaseToken t;
+		
+		try {
+			// TODO: make tokenDatabase not create tokens for placeholders.
+			t = tokenDatabase.createToken(tokenId);
+		} catch (Exception e) {
+			t = new PlaceholderToken(tokenId);
+		}
+		
 		t.mSize = s.readFloat();
 		t.mLocation.x = s.readFloat();
 		t.mLocation.y = s.readFloat();
@@ -546,5 +554,14 @@ public abstract class BaseToken  {
 	 */
 	public boolean hasCustomBorder() {
 		return mHasCustomBorder;
+	}
+	
+	/**
+	 * Loads and returns a token that this placeholder represents.
+	 * @param database Token database to load from.
+	 * @return A fully loaded token if this token is a placeholder.
+	 */
+	public BaseToken deplaceholderize(TokenDatabase database) {
+		return this;
 	}
 }
