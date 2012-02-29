@@ -46,11 +46,17 @@
         Uses the Android APIs, available at http://source.android.com.\n
         Uses the Guava Google Core Library, available at http://code.google.com/p/guava-libraries/.\n
         Uses the Apache Commons Library, available at http://commons.apache.org.\n
-        Android, Guava, and Apache Commons Libraries licensed under Apache Software License 2.0, available at http://code.google.com/p/guava-libraries/.\n
+        Uses Attenzione\'s ColorPickerPreference, available at https://github.com/attenzione/android-ColorPickerPreference/downloads.\n
+        All libraries above licensed under Apache Software License 2.0, available at http://code.google.com/p/guava-libraries/.\n
         \n
         Uses icons from the Oxygen, available at http://www.oxygen-icons.org.\n
         Licensed under Creative Commons BY-SA 3.0, available at http://creativecommons.org/licenses/by-sa/3.0/.\n
         \n
         Not all token images are compatible with the LGPL.  They are provided for this distribution of the application only.  Please ensure that you have artist permission before redistributing these icons or including them in a commercial distribution of Dungeon Sketch.
     </string>
+       
+    <!-- Color Picker -->
+    <string name="dialog_color_picker">Color Picker</string>
+    <string name="press_color_to_apply">Press on Color to apply</string>    
+    
 </resources>
