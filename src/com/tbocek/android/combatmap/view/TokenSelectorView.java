@@ -2,17 +2,28 @@ package com.tbocek.android.combatmap.view;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.tokenmanager.TokenStackDragShadow;
 
 /**
  * Provides a horizontally scrolling list of tokens, allowing the user to
@@ -21,12 +32,12 @@ import com.tbocek.android.combatmap.model.primitives.BaseToken;
  *
  */
 public final class TokenSelectorView extends LinearLayout {
-
+	
 	/**
-	 * Dimensions of the square token views.
+	 * Percentage to scale the radius.
 	 */
-	private static final int TOKEN_VIEW_SIZE = 80;
-
+	private static final float RADIUS_SCALE = .9f;
+	
 	/**
      * The inner layout that contains the tokens.
      */
@@ -43,28 +54,25 @@ public final class TokenSelectorView extends LinearLayout {
     private ImageButton mTokenManager;
 
     /**
-     * A factory that caches views already created for a given token.
-     */
-    private TokenViewFactory mTokenViewFactory;
-
-    /**
      * Whether this control is being superimposed over a dark background.
      */
     private boolean mDrawDark;
-
+    
     /**
-     * Listener that fires when an individual token is clicked.  This forwards
-     * the call on.
+     * Bitmap containing the current list of tokens.
      */
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            TokenButton clicked = (TokenButton) v;
-            if (mOnTokenSelectedListener != null) {
-                mOnTokenSelectedListener.onTokenSelected(clicked.getClone());
-            }
-        }
-    };
+    private Bitmap mBitmap;
+    
+    /**
+     * The current list of tokens.  Must correspond to the order they appear in
+     * mBitmap.
+     */
+    private List<BaseToken> mTokens;
+    
+    /**
+     * Gesture detector for tapping or long pressing the list of tokens.
+     */
+    private GestureDetector mGestureDetector;
 
     /**
      * Listener that fires when a token is selected.
@@ -85,7 +93,7 @@ public final class TokenSelectorView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.token_selector, this);
         //Create and add the child layout, which will be a linear layout of
         // tokens.
-
+        this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mTokenLayout = new LinearLayout(context);
         ((HorizontalScrollView) findViewById(R.id.token_scroll_view))
         		.addView(mTokenLayout);
@@ -95,23 +103,10 @@ public final class TokenSelectorView extends LinearLayout {
         mGroupSelector.setAlpha(1.0f);
         mTokenManager = (ImageButton) findViewById(R.id.token_manager_button);
         mTokenManager.setAlpha(1.0f);
-        mTokenViewFactory = new TokenViewFactory(context);
+        
+        mGestureDetector = new GestureDetector(getContext(), new TouchTokenListener());
     }
-
-    /**
-     * Creates a view that allows a token to be selected.
-     * @param prototype  The token prototype this view will represent.
-     * @return The view.
-     */
-    private View createTokenView(final BaseToken prototype) {
-        View b = this.mTokenViewFactory.getTokenView(prototype);
-        b.setOnClickListener(mOnClickListener);
-        b.setLayoutParams(new LinearLayout.LayoutParams(
-        		(int) (TOKEN_VIEW_SIZE * getResources().getDisplayMetrics().density),
-        		(int) (TOKEN_VIEW_SIZE * getResources().getDisplayMetrics().density)));
-        return b;
-    }
-
+    
     /**
      * Listener that fires when a token is selected.
      * @author Tim Bocek
@@ -182,17 +177,165 @@ public final class TokenSelectorView extends LinearLayout {
      * @param tokens Tokens to offer in the selector.
      * @param combatView The CombatView to refresh when tokens are loaded.
      */
-    private void setTokenList(
+    @SuppressWarnings("unchecked")
+	private void setTokenList(
     		final Collection<BaseToken> tokens, final CombatView combatView) {
-        mTokenLayout.removeAllViews();
-        Collection<TokenButton> buttons = new ArrayList<TokenButton>();
-        for (BaseToken token : tokens) {
-        	TokenButton b = (TokenButton) createTokenView(token);
-            mTokenLayout.addView(b);
-            buttons.add(b);
-            b.setShouldDrawDark(mDrawDark);
-        }
-        new TokenLoadTask(buttons, combatView).execute();
+    	if (tokens instanceof List<?>) {
+    		mTokens = (List<BaseToken>) tokens;
+    	} else {
+    		this.mTokens = new ArrayList<BaseToken>(tokens);
+    	}
+    	new CreateImageTask(this.getHeight(), this.mDrawDark, combatView)
+    			.execute(mTokens);
+    }
+    
+    /**
+     * Async task to create the image used.
+     * @author Tim
+     *
+     */
+    private class CreateImageTask 
+    		extends AsyncTask<Collection<BaseToken>, Integer, Bitmap> {
+    	
+
+    	
+    	/**
+    	 * Height of the view.
+    	 */
+    	private int mHeight;
+    	
+    	/**
+    	 * Whether drawn on a dark background.
+    	 */
+    	private boolean mDrawDark;
+
+    	/**
+    	 * The combat view to refresh when loading is finished.
+    	 */
+    	private CombatView mCombatView;
+    	
+    	/**
+    	 * Progress bar to show when loading.
+    	 */
+    	private ProgressBar mProgressBar;
+    	
+    	/**
+    	 * Constructor.
+    	 * @param height Height of the control (width will be determined by the
+    	 * 		number of tokens loaded).
+    	 * @param drawDark Whether there is a dark background.
+    	 * @param toRefresh The CombatView to refresh when loading is finished.
+    	 */
+    	public CreateImageTask(
+    			int height, boolean drawDark, CombatView toRefresh) {
+    		mHeight = height;
+    		mDrawDark = drawDark;
+    		mCombatView = toRefresh;
+    	}
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		mTokenLayout.removeAllViews();
+    		
+    		TextView explanation = new TextView(getContext());
+    		explanation.setText("Loading Tokens");
+    		mTokenLayout.addView(explanation);
+    		
+    		mProgressBar = new ProgressBar(getContext());
+    		mTokenLayout.addView(mProgressBar);
+    	}
+    	
+    	@Override
+    	protected void onProgressUpdate(Integer... args) {
+    		int progress = args[0];
+    		int max = args[1];
+    		
+    		mProgressBar.setMax(max);
+    		mProgressBar.setProgress(progress);
+    	}
+    	
+		@Override
+		protected Bitmap doInBackground(Collection<BaseToken>... args) {
+			Collection<BaseToken> tokens = args[0];
+	        mBitmap = Bitmap.createBitmap(mHeight * tokens.size(), mHeight, Bitmap.Config.ARGB_4444);
+	        
+	        int drawY = mHeight / 2;
+	        int drawX = mHeight / 2;
+	        
+	        mBitmap.eraseColor(Color.TRANSPARENT);
+	        Canvas c = new Canvas(mBitmap);
+	        int i = 0;
+	        for (BaseToken t: tokens) {
+	        	t.load();
+	        	t.draw(c, drawX, drawY, RADIUS_SCALE * mHeight / 2, 
+	        		   mDrawDark, true);
+	        	drawX += mHeight;
+	        	i += 1;
+	        	publishProgress(i, tokens.size());
+	        }
+	        
+	        return mBitmap;
+		}
+		
+		@Override
+		protected void onPostExecute(Bitmap b) {
+	        mTokenLayout.removeAllViews();
+	        ImageView v = new ImageView(getContext());
+	        v.setImageBitmap(mBitmap);
+	        
+	        v.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					mGestureDetector.onTouchEvent(event);
+					return true;
+				}
+			});
+	        
+	        mTokenLayout.addView(v);
+	        mCombatView.refreshMap();
+	        
+		}
+    }
+    
+    /**
+     * Gesture listener for tapping and long pressing the token list.
+     * @author Tim
+     *
+     */
+    private class TouchTokenListener 
+    		extends GestureDetector.SimpleOnGestureListener {
+    	@Override
+    	public void onLongPress(MotionEvent e) {
+    		if (android.os.Build.VERSION.SDK_INT
+        			>= android.os.Build.VERSION_CODES.HONEYCOMB) {
+	    		BaseToken t = getTouchedToken(e.getX());
+	    		List<BaseToken> stack = new ArrayList<BaseToken>();
+	    		stack.add(t);
+	            startDrag(null, 
+	            		  new TokenStackDragShadow(stack, 
+	            				(int) (RADIUS_SCALE * getHeight() / 2)),
+	            		 t , 0);
+    		}
+    	}
+    	
+    	@Override
+    	public boolean onSingleTapUp(MotionEvent e) {
+    		if (mOnTokenSelectedListener != null) {
+    			mOnTokenSelectedListener.onTokenSelected(getTouchedToken(e.getX()));
+    		}
+    		return true;
+    	}
+    	
+    	/**
+    	 * Returns the token touched in the token list given an X coordinate.
+    	 * @param x The coordinate touched.
+    	 * @return Clone of the token touched.
+    	 */
+    	private BaseToken getTouchedToken(float x) {
+    		int tokenIndex = ((int) x) / getHeight();
+    		
+    		return mTokens.get(tokenIndex).clone();
+    	}
     }
 
 
