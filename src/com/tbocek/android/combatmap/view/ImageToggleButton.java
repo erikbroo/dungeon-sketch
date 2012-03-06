@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.util.AttributeSet;
 import android.widget.ImageButton;
 
 /**
@@ -36,6 +37,15 @@ public final class ImageToggleButton extends ImageButton {
      */
     public ImageToggleButton(final Context context) {
         super(context);
+    }
+    
+    public ImageToggleButton(Context context, AttributeSet attrs) {
+    	super(context, attrs);
+    }
+    
+    public ImageToggleButton(
+    		Context context, AttributeSet attrs, int defStyle) {
+    	super(context, attrs, defStyle);
     }
 
     /**

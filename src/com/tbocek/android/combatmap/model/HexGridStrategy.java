@@ -13,7 +13,7 @@ import android.graphics.Paint;
  *
  * @author Tim Bocek
  */
-public final class HexGrid extends Grid {
+public final class HexGridStrategy extends GridDrawStrategy {
     /**
      * Cached result for the tan(30 degrees).
      */
@@ -60,13 +60,11 @@ public final class HexGrid extends Grid {
 
     @Override
     public void drawGrid(final Canvas canvas,
-            final CoordinateTransformer worldToScreenTransformer) {
+            final CoordinateTransformer transformer,
+            final GridColorScheme colorScheme) {
         Paint paint = new Paint();
-        paint.setColor(getLineColor());
-
-        CoordinateTransformer transformer =
-            gridSpaceToScreenSpaceTransformer(worldToScreenTransformer);
-
+        paint.setColor(colorScheme.getLineColor());
+        
         int width = canvas.getWidth();
         int height = canvas.getHeight();
 
@@ -108,5 +106,10 @@ public final class HexGrid extends Grid {
             }
         }
     }
+
+	@Override
+	public String getTypeString() {
+		return "rect";
+	}
 
 }

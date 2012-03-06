@@ -474,8 +474,7 @@ public final class CombatView extends SurfaceView {
 		getData().getBackgroundLines().drawAllLinesBelowGrid(canvas);
 		canvas.restore();
 
-		getData().getGrid().drawGrid(
-				canvas, getData().getWorldSpaceTransformer());
+		getData().getGrid().draw(canvas, getData().getWorldSpaceTransformer());
 
 		canvas.save();
 		getData().getWorldSpaceTransformer().setMatrix(canvas);

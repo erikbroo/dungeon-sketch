@@ -94,6 +94,8 @@ public final class CombatMap extends Activity {
      */
     private static final int DIALOG_ID_SAVE_NAME_CONFIRM = 2;
     
+	private static final int DIALOG_ID_GRID_PROPERTIES = 3;
+    
     /**
      * Maximum height of the popup tag selector.  Must be scaled.
      */
@@ -732,6 +734,9 @@ public final class CombatMap extends Activity {
         	mCombatView.getUndoRedoTarget().redo();
         	mCombatView.refreshMap();
         	return true;
+        case R.id.menu_grid_properties:
+        	showDialog(DIALOG_ID_GRID_PROPERTIES);
+        	return true;
         default:
         	return false;
         }
@@ -900,6 +905,8 @@ public final class CombatMap extends Activity {
         			}
         		})
         		.create();
+        case DIALOG_ID_GRID_PROPERTIES:
+        	return new GridPropertiesDialog(this);
         default:
         	return null;
         }
@@ -938,6 +945,10 @@ public final class CombatMap extends Activity {
         	 ad.setMessage(
         			 "There is already a map named \"" 
         			 + mAttemptedMapName + "\".  Save over it?");
+        	 break;
+         case DIALOG_ID_GRID_PROPERTIES:
+        	 GridPropertiesDialog gpd = (GridPropertiesDialog) dialog;
+        	 gpd.setMapData(this.mData);
         	 break;
          default:
         	 super.onPrepareDialog(id, dialog);

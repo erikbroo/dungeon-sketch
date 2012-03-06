@@ -4,20 +4,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <ListPreference
-        android:entries="@array/themeNames"
-        android:entryValues="@array/themeValues"
-        android:key="theme"
-        android:title="@string/theme" 
-        android:summary="Change the color scheme used for the background color and grid lines."/>
-
-    <ListPreference
-        android:entries="@array/gridNames"
-        android:entryValues="@array/gridValues"
-        android:key="gridtype"
-        android:title="@string/grid_type" 
-        android:summary="Switch between rectangular and hex grids."/>
-
     <CheckBoxPreference
         android:key="fogofwar"
         android:title="@string/fog_of_war_enabled" 

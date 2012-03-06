@@ -206,7 +206,7 @@ public final class MapData {
     /**
      * The grid to draw.
      */
-    private Grid mGrid = new RectangularGrid();
+    private Grid mGrid = new Grid();
     
     /**
      * Whether map attributes such as color scheme and grid type should be

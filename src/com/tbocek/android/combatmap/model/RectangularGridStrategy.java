@@ -10,7 +10,7 @@ import android.graphics.Paint;
  * Represents a grid of squares that will draw as virtual "graph paper".
  * @author Tim Bocek
  */
-public final class RectangularGrid extends Grid {
+public final class RectangularGridStrategy extends GridDrawStrategy {
 
 	/**
      * Every MAJOR_GRID_LINE_FREQUENCYth line will be a major grid line.
@@ -40,12 +40,10 @@ public final class RectangularGrid extends Grid {
     @Override
     public void drawGrid(
             final Canvas canvas,
-            final CoordinateTransformer worldToScreenTransformer) {
+            final CoordinateTransformer transformer,
+            final GridColorScheme colorScheme) {
         Paint paint = new Paint();
-        paint.setColor(getLineColor());
-
-        CoordinateTransformer transformer =
-            gridSpaceToScreenSpaceTransformer(worldToScreenTransformer);
+        paint.setColor(colorScheme.getLineColor());
 
         int width = canvas.getWidth();
         int height = canvas.getHeight();
@@ -144,4 +142,9 @@ public final class RectangularGrid extends Grid {
         return new PointF(
                 previousGridLineX + offset, previousGridLineY + offset);
     }
+
+	@Override
+	public String getTypeString() {
+		return "rect";
+	}
 }

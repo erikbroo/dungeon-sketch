@@ -82,25 +82,25 @@ public final class GridColorScheme {
         if (name.equals("graphpaper")) {
         	return GRAPH_PAPER;
         }
-        if (name.equals("grass")) {
+        if (name.equals("Graph Paper")) {
         	return GRASS;
         }
-        if (name.equals("ice")) {
+        if (name.equals("Ice")) {
         	return ICE;
         }
-        if (name.equals("forest")) {
+        if (name.equals("Forest")) {
         	return FOREST;
         }
-        if (name.equals("night")) {
+        if (name.equals("Night")) {
         	return NIGHT;
         }
-        if (name.equals("dungeon")) {
+        if (name.equals("Dungeon")) {
         	return DUNGEON;
         }
-        if (name.equals("hologram")) {
+        if (name.equals("Hologram")) {
         	return HOLOGRAM;
         }
-        if (name.equals("console")) {
+        if (name.equals("Console")) {
         	return CONSOLE;
         }
         return STANDARD;
@@ -153,14 +153,14 @@ public final class GridColorScheme {
     /**
      * @return The color to draw in the background.
      */
-    int getBackgroundColor() {
+    public int getBackgroundColor() {
         return mBackgroundColor;
     }
 
     /**
      * @return The color to draw grid lines with.
      */
-    int getLineColor() {
+    public int getLineColor() {
         return mLineColor;
     }
 

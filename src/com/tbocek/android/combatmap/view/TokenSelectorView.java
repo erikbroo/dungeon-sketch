@@ -185,8 +185,11 @@ public final class TokenSelectorView extends LinearLayout {
     	} else {
     		this.mTokens = new ArrayList<BaseToken>(tokens);
     	}
-    	new CreateImageTask(this.getHeight(), this.mDrawDark, combatView)
-    			.execute(mTokens);
+    	if (this.getHeight() > 0) {
+    		// TODO: Make this work if height is then changed.
+	    	new CreateImageTask(this.getHeight(), this.mDrawDark, combatView)
+	    			.execute(mTokens);
+    	}
     }
     
     /**

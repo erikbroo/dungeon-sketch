@@ -14,11 +14,11 @@ import com.tbocek.android.combatmap.model.primitives.PointF;
  * @author Tim Bocek
  *
  */
-public abstract class Grid {
+public class Grid {
 
-    /**
+	/**
      * Factory method that creates a grid with the given parameters.
-     * @param gridStyle The style of the grid, either "hex" or "rectangular".
+     * @param gridStyle The style of the grid, either "hex" or "rectangular".q
      * @param colorScheme The color scheme of the grid.  Valid color schemes
      * 		are defined in GridColorScheme.
      * @param transformer A grid space to world space transformation to use
@@ -28,12 +28,12 @@ public abstract class Grid {
     public static Grid createGrid(
     		final String gridStyle, final String colorScheme,
     		final CoordinateTransformer transformer) {
-        Grid g = gridStyle.equals("hex")
-    		? new HexGrid()
-    		: new RectangularGrid();
+    	Grid g = new Grid();
+        g.setDrawStrategy(gridStyle.equals(new HexGridStrategy().getTypeString())
+    		? new HexGridStrategy()
+    		: new RectangularGridStrategy());
     	g.mColorScheme = GridColorScheme.fromNamedScheme(colorScheme);
         g.mGridToWorldTransformer = transformer;
-        g.mType = gridStyle;
         return g;
     }
     
@@ -48,12 +48,12 @@ public abstract class Grid {
     public static Grid createGrid(
     		final String gridStyle, final GridColorScheme colorScheme,
     		final CoordinateTransformer transformer) {
-        Grid g = gridStyle.equals("hex")
-    		? new HexGrid()
-    		: new RectangularGrid();
+    	Grid g = new Grid();
+        g.setDrawStrategy(gridStyle.equals(new HexGridStrategy().getTypeString())
+    		? new HexGridStrategy()
+    		: new RectangularGridStrategy());
     	g.mColorScheme = colorScheme;
         g.mGridToWorldTransformer = transformer;
-        g.mType = gridStyle;
         return g;
     }
     
@@ -76,11 +76,6 @@ public abstract class Grid {
      * The color scheme to use when drawing this grid.
      */
     private GridColorScheme mColorScheme = GridColorScheme.GRAPH_PAPER;
-    
-    /**
-     * Saved string that lead to this style of grid, for serialization.
-     */
-    private String mType;
 
     /**
      * The transformation from grid space to world space.  We track this
@@ -90,25 +85,7 @@ public abstract class Grid {
     private CoordinateTransformer mGridToWorldTransformer =
     	new CoordinateTransformer(0, 0, 1);
 
-    /**
-     * Given a point, returns a the point nearest to that point that will draw
-     * a circle of the given diameter snapped to the grid.
-     * @param currentLocation The candidate point in grid space.
-     * @param tokenDiameter Diameter of the token that will be drawn.
-     * @return A point that is snapped to the grid.
-     */
-    public abstract PointF getNearestSnapPoint(
-    		final PointF currentLocation, final float tokenDiameter);
-
-    /**
-     * Draws the grid lines.
-     * @param canvas Canvas to draw on.
-     * @param worldToScreenTransformer Transformation from world space to
-     * 		screen space.
-     */
-    public abstract void drawGrid(
-    		final Canvas canvas,
-    		final CoordinateTransformer worldToScreenTransformer);
+    private GridDrawStrategy mDrawStrategy;
 
     /**
      * @return The color to use when drawing grid lines.
@@ -140,8 +117,9 @@ public abstract class Grid {
      */
     public final void draw(
     		final Canvas canvas, final CoordinateTransformer transformer) {
-        drawBackground(canvas);
-        drawGrid(canvas, transformer);
+        CoordinateTransformer transformer2 =
+            gridSpaceToScreenSpaceTransformer(transformer);
+        mDrawStrategy.drawGrid(canvas, transformer2, mColorScheme);
     }
 
     /**
@@ -179,9 +157,41 @@ public abstract class Grid {
      */
     public void serialize(MapDataSerializer s) throws IOException {
     	s.startObject();
-    	s.serializeString(mType);
+    	s.serializeString(mDrawStrategy.getTypeString());
     	this.mColorScheme.serialize(s);
     	this.mGridToWorldTransformer.serialize(s);
     	s.endObject();
     }
+    
+    public GridColorScheme getColorScheme() {
+    	return mColorScheme;
+    }
+    
+    public GridDrawStrategy getDrawStrategy() {
+    	return mDrawStrategy;
+    }
+    
+    public void setDrawStrategy(GridDrawStrategy s) {
+    	mDrawStrategy = s;
+    }
+    
+    /**
+     * Given a point, returns a the point nearest to that point that will draw
+     * a circle of the given diameter snapped to the grid.
+     * @param currentLocation The candidate point in grid space.
+     * @param tokenDiameter Diameter of the token that will be drawn.
+     * @return A point that is snapped to the grid.
+     */
+    public PointF getNearestSnapPoint(
+    		final PointF currentLocation, final float tokenDiameter) {
+    	return mDrawStrategy.getNearestSnapPoint(
+    			currentLocation, tokenDiameter);
+    }
+
+	public void setColorScheme(GridColorScheme scheme) {
+		this.mColorScheme = scheme;
+		
+	}
+    
+    
 }
