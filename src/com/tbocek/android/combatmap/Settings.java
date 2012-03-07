@@ -54,30 +54,6 @@ public final class Settings extends PreferenceActivity {
 				}
         		
         	});
-        
-        Preference themePref = (Preference) findPreference("theme");
-        themePref.setOnPreferenceChangeListener(
-        	new OnPreferenceChangeListener() {
-        		
-				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
-					MapData.getInstance().setMapAttributesLocked(false);
-					return true;
-				}
-        	});
-        
-        Preference gridTypePref = (Preference) findPreference("gridtype");
-        gridTypePref.setOnPreferenceChangeListener(
-        	new OnPreferenceChangeListener() {
-        		
-				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
-					MapData.getInstance().setMapAttributesLocked(false);
-					return true;
-				}
-        	});
     }
     
     @Override
