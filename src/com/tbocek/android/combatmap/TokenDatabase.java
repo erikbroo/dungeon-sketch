@@ -36,6 +36,7 @@ import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
 import com.tbocek.android.combatmap.model.primitives.LetterToken;
+import com.tbocek.android.combatmap.model.primitives.PlaceholderToken;
 import com.tbocek.android.combatmap.model.primitives.SolidColorToken;
 import com.tbocek.android.combatmap.model.primitives.Util;
 
@@ -348,7 +349,7 @@ public final class TokenDatabase {
     	BaseToken prototype = this.mTokenForId.get(tokenId);
     	if (prototype == null) {
     		Log.e("TokenDatabase", "Token did not exist for ID: " + tokenId);
-    		return new LetterToken("X");
+    		return new PlaceholderToken(tokenId);
     	}
     	return prototype.clone();
     }

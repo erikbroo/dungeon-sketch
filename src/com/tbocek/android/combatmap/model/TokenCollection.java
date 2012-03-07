@@ -338,8 +338,7 @@ public final class TokenCollection implements UndoRedoTarget {
 	 */
 	public void deplaceholderize(TokenDatabase tokenDatabase) {
 		for (int i = 0; i < this.mTokens.size(); ++i) {
-			BaseToken realToken =
-					this.mTokens.get(i).deplaceholderize(tokenDatabase);
+			BaseToken realToken = mTokens.get(i).deplaceholderize(tokenDatabase);
 			if (realToken != mTokens.get(i)) {
 				mTokens.get(i).copyAttributesTo(realToken);
 				mTokens.set(i, realToken);

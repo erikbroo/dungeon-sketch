@@ -71,6 +71,6 @@ public class PlaceholderToken extends BaseToken {
 	
 	@Override
 	public BaseToken deplaceholderize(TokenDatabase database) {
-		return database.createToken(this.mReplaceWith);
+		return database.createToken(this.mReplaceWith.replace(this.getClass().getSimpleName(), ""));
 	}
 }
