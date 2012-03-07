@@ -537,17 +537,7 @@ public final class CombatMap extends Activity {
         SharedPreferences sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(
                     this.getApplicationContext());
-        if (!mData.areMapAttributesLocked()) {
-        	String colorScheme = sharedPreferences.getString(
-        			"theme", "graphpaper");
-        	String gridType = sharedPreferences.getString("gridtype", "rect");
-        
-	        mData.setGrid(Grid.createGrid(
-	                gridType, colorScheme,
-	                mData.getGrid().gridSpaceToWorldSpaceTransformer()));
-	        mData.setMapAttributesLocked(true);
-        }
-        
+
         this.mTokenSelector.setShouldDrawDark(mData.getGrid().isDark());
 
         if (mTabManager != null) {
@@ -703,9 +693,13 @@ public final class CombatMap extends Activity {
         		.run();
         	}
         	
+        	Grid g = mData.getGrid();
+        	
             MapData.clear();
             setFilenamePreference(null);
             mData = MapData.getInstance();
+            // Make sure the new map data has the same grid.
+            mData.setGrid(g);
             mCombatView.setData(mData);
             reloadPreferences();
             return true;
