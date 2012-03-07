@@ -109,7 +109,7 @@ public final class HexGridStrategy extends GridDrawStrategy {
 
 	@Override
 	public String getTypeString() {
-		return "rect";
+		return "hex";
 	}
 
 }
