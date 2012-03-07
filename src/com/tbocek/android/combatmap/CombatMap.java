@@ -906,7 +906,15 @@ public final class CombatMap extends Activity {
         		})
         		.create();
         case DIALOG_ID_GRID_PROPERTIES:
-        	return new GridPropertiesDialog(this);
+        	GridPropertiesDialog gpd = new GridPropertiesDialog(this);
+        	gpd.setOnPropertiesChangedListener(new GridPropertiesDialog.PropertiesChangedListener() {
+				
+				@Override
+				public void onPropertiesChanged() {
+					mCombatView.refreshMap();
+				}
+			});
+        	return gpd;
         default:
         	return null;
         }

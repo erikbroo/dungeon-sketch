@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
 
+import com.tbocek.android.combatmap.GridPropertiesDialog.PropertiesChangedListener;
 import com.tbocek.android.combatmap.model.GridColorScheme;
 import com.tbocek.android.combatmap.model.HexGridStrategy;
 import com.tbocek.android.combatmap.model.MapData;
@@ -24,6 +25,11 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 
 public class GridPropertiesDialog extends Dialog{
+	
+	public interface PropertiesChangedListener {
+		void onPropertiesChanged();
+	}
+	
 	private ImageButton mForegroundColor;
 	private ImageButton mBackgroundColor;
 	private ImageToggleButton mHexGridButton;
@@ -31,6 +37,8 @@ public class GridPropertiesDialog extends Dialog{
 	private Button mThemePresetButton;
 	private MapData mData;
 	private ArrayAdapter<CharSequence> mPresetAdapter;
+	
+	private PropertiesChangedListener mPropertyListener;
 	
 	private ToggleButtonGroup mGridTypeToggles = new ToggleButtonGroup();
 	
@@ -104,6 +112,7 @@ public class GridPropertiesDialog extends Dialog{
 		    public void onClick(DialogInterface dialog, int which) {
 		    	colorThemeSelected(mPresetAdapter.getItem(which).toString());
 		    	dialog.dismiss();
+		    	propertiesChanged();
 		    }
 		  }).create().show();
 	}
@@ -112,12 +121,14 @@ public class GridPropertiesDialog extends Dialog{
 		mGridTypeToggles.untoggle();
 		mHexGridButton.setToggled(true);
 		mData.getGrid().setDrawStrategy(new HexGridStrategy());
+		propertiesChanged();
 	}
 	
 	private void rectGridButtonClick() {
 		mGridTypeToggles.untoggle();
 		mRectGridButton.setToggled(true);
 		mData.getGrid().setDrawStrategy(new RectangularGridStrategy());
+		propertiesChanged();
 	}
 	
 	private void colorThemeSelected(String colorTheme) {
@@ -125,6 +136,7 @@ public class GridPropertiesDialog extends Dialog{
 		this.mForegroundColor.setImageBitmap(getPreviewBitmap(scheme.getLineColor()));
 		this.mBackgroundColor.setImageBitmap(getPreviewBitmap(scheme.getBackgroundColor()));
 		this.mData.getGrid().setColorScheme(scheme);
+		propertiesChanged();
 	}
 	
 	ColorPickerDialog picker;
@@ -138,6 +150,7 @@ public class GridPropertiesDialog extends Dialog{
 				mForegroundColor.setImageBitmap(getPreviewBitmap(color));
 				mData.getGrid().setColorScheme(new GridColorScheme(mData.getGrid().getColorScheme().getBackgroundColor(), color, false));
 				picker.dismiss();
+				propertiesChanged();
 			}
 		});
 		picker.show();
@@ -152,6 +165,7 @@ public class GridPropertiesDialog extends Dialog{
 				mBackgroundColor.setImageBitmap(getPreviewBitmap(color));
 				mData.getGrid().setColorScheme( new GridColorScheme(color, mData.getGrid().getColorScheme().getLineColor(), false));
 				picker.dismiss();
+				propertiesChanged();
 			}
 		});
 		picker.show();
@@ -189,6 +203,18 @@ public class GridPropertiesDialog extends Dialog{
 		}
 
 		return bm;
+	}
+	
+	private void propertiesChanged() {
+		if (mPropertyListener != null) {
+			mPropertyListener.onPropertiesChanged();
+		}
+	}
+
+	public void setOnPropertiesChangedListener(
+			PropertiesChangedListener propertiesChangedListener) {
+		mPropertyListener = propertiesChangedListener;
+		
 	}
 
 }
