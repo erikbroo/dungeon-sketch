@@ -79,10 +79,10 @@ public final class GridColorScheme {
      * @return The color scheme.
      */
     public static GridColorScheme fromNamedScheme(final String name) {
-        if (name.equals("graphpaper")) {
+        if (name.equals("Graph Paper")) {
         	return GRAPH_PAPER;
         }
-        if (name.equals("Graph Paper")) {
+        if (name.equals("Grass")) {
         	return GRASS;
         }
         if (name.equals("Ice")) {
