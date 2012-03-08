@@ -95,6 +95,8 @@ public final class CombatMap extends Activity {
     private static final int DIALOG_ID_SAVE_NAME_CONFIRM = 2;
     
 	private static final int DIALOG_ID_GRID_PROPERTIES = 3;
+	
+	private static final int DIALOG_ID_EXPORT = 4;
     
     /**
      * Maximum height of the popup tag selector.  Must be scaled.
@@ -731,6 +733,9 @@ public final class CombatMap extends Activity {
         case R.id.menu_grid_properties:
         	showDialog(DIALOG_ID_GRID_PROPERTIES);
         	return true;
+        case R.id.menu_export:
+        	showDialog(DIALOG_ID_EXPORT);
+        	return true;
         default:
         	return false;
         }
@@ -909,6 +914,8 @@ public final class CombatMap extends Activity {
 				}
 			});
         	return gpd;
+        case DIALOG_ID_EXPORT:
+        	return new ExportImageDialog(this);
         default:
         	return null;
         }

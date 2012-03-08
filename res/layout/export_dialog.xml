@@ -11,12 +11,12 @@
         <RadioButton
             android:id="@+id/radio_export_full_map"
             android:text="Entire Map"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <RadioButton
             android:id="@+id/radio_export_current_view"
             android:text="Current View"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>        
     </RadioGroup>
     <CheckBox
