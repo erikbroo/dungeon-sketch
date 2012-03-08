@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
@@ -70,7 +71,7 @@ public class ExportImageDialog extends Dialog {
 		this.setContentView(R.layout.export_dialog);
 		
 		mRadioExportFullMap = (RadioButton) this.findViewById(R.id.radio_export_full_map);
-		mRadioExportCurrentView = (RadioButton) this.findViewById(R.id.radio_export_full_map);
+		mRadioExportCurrentView = (RadioButton) this.findViewById(R.id.radio_export_current_view);
 	    mCheckGridLines = (CheckBox) this.findViewById(R.id.checkbox_export_grid_lines);
 		mCheckGmNotes = (CheckBox) this.findViewById(R.id.checkbox_export_gm_notes); 
 		mCheckTokens = (CheckBox) this.findViewById(R.id.checkbox_export_tokens);
@@ -119,10 +120,25 @@ public class ExportImageDialog extends Dialog {
 	}
 	
 	private void export() throws IOException {
-		Bitmap bitmap = Bitmap.createBitmap(mExportWidth, mExportHeight,
+		int width;
+		int height;
+		
+		RectF wholeMapRect = mData.getScreenSpaceBoundingRect(30);
+		if (this.mRadioExportCurrentView.isChecked()) {
+			width = mExportWidth;
+			height = mExportHeight;
+		} else {
+			width = (int) wholeMapRect.width();
+			height = (int) wholeMapRect.height();
+		}
+		Bitmap bitmap = Bitmap.createBitmap(width, height,
 				Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 
+		if (!mRadioExportCurrentView.isChecked()) {
+			canvas.translate(-wholeMapRect.left, -wholeMapRect.top);
+		}
+		
 		new MapDrawer()
 			.drawGridLines(this.mCheckGridLines.isChecked())
 			.drawGmNotes(this.mCheckGmNotes.isChecked())
@@ -130,9 +146,13 @@ public class ExportImageDialog extends Dialog {
 			.areTokensManipulable(true)
 			.drawAnnotations(this.mCheckAnnotations.isChecked())
 			.gmNotesFogOfWar(FogOfWarMode.NOTHING)
-			.backgroundFogOfWar(this.mCheckFogOfWar.isChecked() ? FogOfWarMode.CLIP : FogOfWarMode.NOTHING)
+			.backgroundFogOfWar(this.mCheckFogOfWar.isChecked() 
+					? FogOfWarMode.CLIP 
+							: FogOfWarMode.NOTHING)
 			.draw(canvas, mData);
 		
-		new DataManager(getContext()).exportImage(mEditExportName.getText().toString(), bitmap);
+		new DataManager(getContext()).exportImage(
+				mEditExportName.getText().toString(), bitmap, 
+				Bitmap.CompressFormat.PNG);
 	}
 }

@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import android.graphics.PointF;
+import android.graphics.RectF;
+
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
@@ -340,5 +343,22 @@ public final class MapData {
 	 */
 	public void setMapAttributesLocked(boolean locked) {
 		this.mMapAttributesLocked = locked;
+	}
+	
+	/**
+	 * Gets the screen space bounding rectangle of the entire map based on the
+	 * current screen space transformation.
+	 * @param marginsPx Margin to apply to each edge.
+	 * @return The bounding rectangle.
+	 */
+	public RectF getScreenSpaceBoundingRect(int marginsPx) {
+		BoundingRectangle worldSpaceRect = getBoundingRectangle();
+		PointF ul = this.mTransformer.worldSpaceToScreenSpace(
+				worldSpaceRect.getXMin(), worldSpaceRect.getYMin());
+		PointF lr = this.mTransformer.worldSpaceToScreenSpace(
+				worldSpaceRect.getXMax(), worldSpaceRect.getYMax());
+		return new RectF(
+				ul.x - marginsPx, ul.y - marginsPx, 
+				lr.x + marginsPx, lr.y + marginsPx);
 	}
 }

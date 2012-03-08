@@ -226,7 +226,7 @@ public final class DataManager {
     
     private File getExportedImageFileName(String mapName) {
     	File sdcard = getExportedImageDir();
-    	return new File(sdcard, mapName + IMAGE_EXTENSION);
+    	return new File(sdcard, mapName);
     }
 
     /**
@@ -276,16 +276,20 @@ public final class DataManager {
 
     /**
      * Saves a preview of a map.
-     * @param name The name of the map, without the extension.
+     * @param name Filename to export, without extension.
      * @param preview Preview image for the map.
+     * @param format Format to export in.
      * @throws IOException On write error.
      */
-    public void exportImage(final String name, final Bitmap preview)
+    public void exportImage(final String name, final Bitmap preview,
+    		final Bitmap.CompressFormat format)
             throws IOException {
+    	String filename = name + (format == Bitmap.CompressFormat.JPEG 
+    			? ".jpg" : ".png");
         FileOutputStream s = new FileOutputStream(
-        		this.getExportedImageFileName(name));
+        		this.getExportedImageFileName(filename));
         BufferedOutputStream buf = new BufferedOutputStream(s);
-        preview.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION, buf);
+        preview.compress(format, JPEG_COMPRESSION, buf);
         buf.close();
         s.close();
     }
