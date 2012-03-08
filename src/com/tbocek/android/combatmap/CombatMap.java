@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.tbocek.android.combatmap.model.Grid;
 import com.tbocek.android.combatmap.model.MapData;
+import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
@@ -760,7 +761,7 @@ public final class CombatMap extends Activity {
 			mCombatView.getMultiSelect().selectNone();
             mCombatView.setAreTokensManipulatable(false);
             mCombatView.useBackgroundLayer();
-            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.DRAW);
+            mCombatView.setFogOfWarMode(FogOfWarMode.DRAW);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
             setModePreference(manipulationMode);
@@ -773,7 +774,7 @@ public final class CombatMap extends Activity {
 			mCombatView.getMultiSelect().selectNone();
             mCombatView.setAreTokensManipulatable(false);
             mCombatView.useAnnotationLayer();
-            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.CLIP);
+            mCombatView.setFogOfWarMode(FogOfWarMode.CLIP);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
             setModePreference(manipulationMode);
@@ -786,7 +787,7 @@ public final class CombatMap extends Activity {
 			mCombatView.getMultiSelect().selectNone();
             mCombatView.setAreTokensManipulatable(false);
             mCombatView.useGmNotesLayer();
-            mCombatView.setFogOfWarMode(CombatView.FogOfWarMode.NOTHING);
+            mCombatView.setFogOfWarMode(FogOfWarMode.NOTHING);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(this.mDrawOptionsView);
             setModePreference(manipulationMode);
@@ -800,8 +801,8 @@ public final class CombatMap extends Activity {
             mCombatView.setTokenManipulationMode();
             mCombatView.setFogOfWarMode(
             		sharedPreferences.getBoolean("fogofwar", true)
-            				? CombatView.FogOfWarMode.CLIP
-            				: CombatView.FogOfWarMode.NOTHING);
+            				? FogOfWarMode.CLIP
+            				: FogOfWarMode.NOTHING);
             mBottomControlFrame.removeAllViews();
             mBottomControlFrame.addView(mTokenSelector);
             setModePreference(manipulationMode);

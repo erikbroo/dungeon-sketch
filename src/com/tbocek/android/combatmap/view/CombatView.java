@@ -18,6 +18,8 @@ import android.view.View;
 
 import com.tbocek.android.combatmap.model.LineCollection;
 import com.tbocek.android.combatmap.model.MapData;
+import com.tbocek.android.combatmap.model.MapDrawer;
+import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.TokenCollection;
 import com.tbocek.android.combatmap.model.UndoRedoTarget;
@@ -157,32 +159,9 @@ public final class CombatView extends SurfaceView {
 	};
 
 	/**
-	 * Options for what to do with the fog of war.
-	 *
-	 * @author Tim
-	 *
-	 */
-	public enum FogOfWarMode {
-		/**
-		 * Ignore the fog of war.
-		 */
-		NOTHING,
-
-		/**
-		 * Draw the fog of war as an overlay.
-		 */
-		DRAW,
-
-		/**
-		 * Use the fog of war to clip the background.
-		 */
-		CLIP
-	}
-
-	/**
 	 * What to do with the fog of war when drawing.
 	 */
-	private FogOfWarMode mFogOfWarMode;
+	private MapDrawer.FogOfWarMode mFogOfWarMode;
 
 	/**
 	 * The style that new lines should have.
@@ -463,64 +442,16 @@ public final class CombatView extends SurfaceView {
 	 *            The canvas to draw on.
 	 */
 	private void drawOnCanvas(final Canvas canvas) {
-		getData().getGrid().drawBackground(canvas);
-
-		canvas.save();
-		getData().getWorldSpaceTransformer().setMatrix(canvas);
-		if (mFogOfWarMode == FogOfWarMode.CLIP 
-				&& !getData().getBackgroundFogOfWar().isEmpty()) {
-			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
-		}
-		getData().getBackgroundLines().drawAllLinesBelowGrid(canvas);
-		canvas.restore();
-
-		getData().getGrid().draw(canvas, getData().getWorldSpaceTransformer());
-
-		canvas.save();
-		getData().getWorldSpaceTransformer().setMatrix(canvas);
-		if (mFogOfWarMode == FogOfWarMode.CLIP 
-				&& !getData().getBackgroundFogOfWar().isEmpty()) {
-			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
-		}
-		getData().getBackgroundLines().drawAllLinesAboveGrid(canvas);
-		if (mFogOfWarMode == FogOfWarMode.DRAW) {
-			getData().getBackgroundFogOfWar().drawFogOfWar(canvas);
-		}
-		canvas.restore();
-
-		canvas.save();
-		getData().getWorldSpaceTransformer().setMatrix(canvas);
-		
-		// Either draw all GM notes, or draw only the ones not covered by 
-		// fog of war.
-		if (!this.mShouldDrawGmNotes) {
-			canvas.save();
-			getData().getGmNotesFogOfWar().clipFogOfWar(canvas);
-		}
-		getData().getGmNoteLines().drawAllLines(canvas);
-		if (!this.mShouldDrawGmNotes) {
-			canvas.restore();
-		} else {
-			getData().getGmNotesFogOfWar().drawFogOfWar(canvas);
-		}
-		
-		if (this.mShouldDrawAnnotations) {
-
-			getData().getAnnotationLines().drawAllLines(canvas);
-		}
-		canvas.restore();
-
-		canvas.save();
-		if (mFogOfWarMode == FogOfWarMode.CLIP
-				&& !getData().getBackgroundFogOfWar().isEmpty()) {
-			getData().getWorldSpaceTransformer().setMatrix(canvas);
-			getData().getBackgroundFogOfWar().clipFogOfWar(canvas);
-			getData().getWorldSpaceTransformer().setInverseMatrix(canvas);
-		}
-
-		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
-				getData().getGrid().isDark(), mAreTokensManipulatable);
-		canvas.restore();
+		new MapDrawer()
+			.drawGridLines(true)
+			.drawGmNotes(this.mShouldDrawGmNotes)
+			.drawTokens(true)
+			.areTokensManipulable(mAreTokensManipulatable)
+			.drawAnnotations(this.mShouldDrawAnnotations)
+			.gmNotesFogOfWar(this.mActiveLines == getData().getGmNoteLines()
+							 ? FogOfWarMode.DRAW : FogOfWarMode.CLIP)
+			.backgroundFogOfWar(mFogOfWarMode)
+			.draw(canvas, getData());
 
 		this.mInteractionMode.draw(canvas);
 	}
@@ -537,16 +468,16 @@ public final class CombatView extends SurfaceView {
 		Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(),
 				Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
-		getData().getGrid().drawBackground(canvas);
 
-		canvas.save();
-		getData().getWorldSpaceTransformer().setMatrix(canvas);
-		getData().getBackgroundLines().drawAllLines(canvas);
-		getData().getAnnotationLines().drawAllLines(canvas);
-		canvas.restore();
-
-		getData().getTokens().drawAllTokens(canvas, getGridSpaceTransformer(),
-				getData().getGrid().isDark(), true);
+		new MapDrawer()
+			.drawGridLines(false)
+			.drawGmNotes(false)
+			.drawTokens(true)
+			.areTokensManipulable(true)
+			.drawAnnotations(false)
+			.gmNotesFogOfWar(FogOfWarMode.NOTHING)
+			.backgroundFogOfWar(mFogOfWarMode)
+			.draw(canvas, getData());
 
 		return bitmap;
 	}
@@ -871,7 +802,7 @@ public final class CombatView extends SurfaceView {
 	 * @return Whether one of the fog of war layers is visible.
 	 */
 	public boolean isAFogOfWarLayerVisible() {
-		return  getFogOfWarMode() == CombatView.FogOfWarMode.DRAW 
+		return  getFogOfWarMode() == FogOfWarMode.DRAW 
 				|| this.mShouldDrawGmNotes;
 	}
 	
