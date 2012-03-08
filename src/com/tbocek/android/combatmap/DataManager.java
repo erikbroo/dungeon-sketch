@@ -15,6 +15,7 @@ import com.tbocek.android.combatmap.model.MapData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -193,6 +194,16 @@ public final class DataManager {
     }
     
     /**
+     * @return File object representing the directory containing exported 
+     * 		images.
+     */
+    private File getExportedImageDir() {
+    	File imageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+    	File dir = new File(imageDir, "DungeonSketch");
+    	return dir;
+    }
+    
+    /**
      * Gets a file object representing a saved map with the given name.
      * @param mapName Name of the map, without extension.
      * @return The saved map's file object.
@@ -212,6 +223,11 @@ public final class DataManager {
     	File sdcard = getSavedMapDir();
     	return new File(sdcard, mapName +  PREVIEW_EXTENSION);
     }
+    
+    private File getExportedImageFileName(String mapName) {
+    	File sdcard = getExportedImageDir();
+    	return new File(sdcard, mapName + IMAGE_EXTENSION);
+    }
 
     /**
      * Creates the directory that contains external token images, if it has
@@ -220,6 +236,7 @@ public final class DataManager {
     private void ensureExternalDirectoriesCreated() {
         getTokenImageDir().mkdirs();
         getSavedMapDir().mkdirs();
+        getExportedImageDir().mkdirs();
     }
 
     /**
@@ -255,6 +272,24 @@ public final class DataManager {
         buf.close();
         s.close();
     }
+    
+
+    /**
+     * Saves a preview of a map.
+     * @param name The name of the map, without the extension.
+     * @param preview Preview image for the map.
+     * @throws IOException On write error.
+     */
+    public void exportImage(final String name, final Bitmap preview)
+            throws IOException {
+        FileOutputStream s = new FileOutputStream(
+        		this.getExportedImageFileName(name));
+        BufferedOutputStream buf = new BufferedOutputStream(s);
+        preview.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION, buf);
+        buf.close();
+        s.close();
+    }
+
 
     /**
      * Loads the given token image.

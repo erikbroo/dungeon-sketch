@@ -960,6 +960,21 @@ public final class CombatMap extends Activity {
         	 GridPropertiesDialog gpd = (GridPropertiesDialog) dialog;
         	 gpd.setMapData(this.mData);
         	 break;
+         case DIALOG_ID_EXPORT:
+    		 sharedPreferences =
+          		PreferenceManager.getDefaultSharedPreferences(
+          			this.getApplicationContext());
+
+    		 // Attempt to load map data.  If we can't load map data, create a 
+    		 // new map.
+    		 filename = sharedPreferences.getString("filename", "");
+    		 if (filename == null || filename.equals(
+ 				 DataManager.TEMP_MAP_NAME)) {
+    			 filename = "";
+    		 }
+         	ExportImageDialog ed = (ExportImageDialog) dialog;
+         	ed.prepare(filename, mData, mCombatView.getWidth(), 
+         			mCombatView.getHeight());
          default:
         	 super.onPrepareDialog(id, dialog);
          }
