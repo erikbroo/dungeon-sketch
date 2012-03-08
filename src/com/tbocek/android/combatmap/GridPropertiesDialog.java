@@ -44,6 +44,7 @@ public class GridPropertiesDialog extends Dialog{
 	
 	public GridPropertiesDialog(Context context) {
 		super(context);
+		this.setTitle("Grid Properties");
 		this.setContentView(R.layout.grid_background_properties);
 		mForegroundColor = (ImageButton) this.findViewById(R.id.button_foreground_color);
 		mBackgroundColor = (ImageButton) this.findViewById(R.id.button_background_color);
