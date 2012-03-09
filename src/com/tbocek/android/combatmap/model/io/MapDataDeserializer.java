@@ -155,17 +155,15 @@ public class MapDataDeserializer {
 	 */
 	private String nextToken() throws IOException {
 		String s;
-		do {
-			if (mPeekBuffer.size() == 0) {
-				s = mReader.readLine();
-			} else {
-				s = mPeekBuffer.remove();
-			}
+		if (mPeekBuffer.size() == 0) {
+			s = mReader.readLine();
+		} else {
+			s = mPeekBuffer.remove();
+		}
 			
-			if (s == null) {
-				return null;
-			}
-		} while (s.equals(""));
+		if (s == null) {
+			return null;
+		}
 		return s;
 	}
 	
@@ -184,9 +182,7 @@ public class MapDataDeserializer {
 	 */
 	private String peek() throws IOException {
 		String s;
-		do {
-			s = mReader.readLine();
-		} while (s != null && s.equals(""));
+		s = mReader.readLine();
 		if (s != null) {
 			mPeekBuffer.add(s);
 		}
