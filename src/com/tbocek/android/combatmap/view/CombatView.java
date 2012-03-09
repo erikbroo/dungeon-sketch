@@ -28,6 +28,7 @@ import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Shape;
 import com.tbocek.android.combatmap.model.primitives.Text;
+import com.tbocek.android.combatmap.view.interaction.BackgroundImageInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.CombatViewInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.DrawTextInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.EraserInteractionMode;
@@ -313,6 +314,14 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void setResizeGridMode() {
 		setInteractionMode(new GridRepositioningInteractionMode(this));
+	}
+	
+	/**
+	 * Sets the interaction mode to creating and manipulating background
+	 * images.
+	 */
+	public void setBackgroundImageMode() {
+		setInteractionMode(new BackgroundImageInteractionMode(this));
 	}
 
 	/**
@@ -842,6 +851,7 @@ public final class CombatView extends SurfaceView {
 		 */
 		void onRefresh();
 	}
+
 
 
 

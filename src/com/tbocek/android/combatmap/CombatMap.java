@@ -254,6 +254,11 @@ public final class CombatMap extends Activity {
 			mCombatView.setDrawMode();
 			mCombatView.setNewLineStyle(CombatView.NewLineStyle.RECTANGLE);
 		}
+
+		@Override
+		public void onChooseImageTool() {
+			mCombatView.setBackgroundImageMode();
+		}
     };
 
 
@@ -767,6 +772,7 @@ public final class CombatMap extends Activity {
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(true);
+            mDrawOptionsView.setBackgroundImageButtonVisibility(true);
             setTagSelectorVisibility(false);
             loadModeSpecificSnapPreference();
 			return;
@@ -780,6 +786,7 @@ public final class CombatMap extends Activity {
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(false);
+            mDrawOptionsView.setBackgroundImageButtonVisibility(false);
             setTagSelectorVisibility(false);
             loadModeSpecificSnapPreference();
 			return;
@@ -793,6 +800,7 @@ public final class CombatMap extends Activity {
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(true);
+            mDrawOptionsView.setBackgroundImageButtonVisibility(false);
             setTagSelectorVisibility(false);
             loadModeSpecificSnapPreference();
 			return;

@@ -86,6 +86,12 @@ public final class DrawOptionsView extends LinearLayout {
     private ToggleButtonGroup mLineWidthRegionGroup = new ToggleButtonGroup();
     
     /**
+     * Button that loads images onto the background.  Should only show in
+     * background mode.
+     */
+    private ImageToggleButton mBackgroundImageButton;
+    
+    /**
      * OnClickListener for when a button representing a color is clicked.
      * @author Tim Bocek
      */
@@ -174,6 +180,8 @@ public final class DrawOptionsView extends LinearLayout {
         createAndAddCircleButton();
         createAndAddTextButton();
         mMaskButton = createAndAddMaskButton();
+        
+        mBackgroundImageButton = createAndAddBackgroundImageButton();
 
         createAndAddSeperator();
 
@@ -189,6 +197,38 @@ public final class DrawOptionsView extends LinearLayout {
             addColorButton(color);
         }
     }
+
+    /**
+     * Creates a button to enter background image mode.
+     * @return The created button.
+     */
+	private ImageToggleButton createAndAddBackgroundImageButton() {
+		ImageToggleButton b = new ImageToggleButton(this.getContext());
+		b.setImageResource(R.drawable.add_image);
+		mLayout.addView(b);
+		mToolsGroup.add(b);
+		b.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mLineWidthGroup.setGroupVisibility(View.GONE);
+				mOnChangeDrawToolListener.onChooseImageTool();
+			}
+		});
+		return b;
+	}
+	
+	/**
+	 * Sets whether the image toggle button was visible.
+	 * @param visible Whether the button is visible.
+	 */
+	public void setBackgroundImageButtonVisibility(boolean visible) {
+		this.mBackgroundImageButton.setVisibility(
+				visible ? View.VISIBLE : View.GONE);
+		if (!visible && mBackgroundImageButton.isToggled()) {
+			this.mToolsGroup.forceDefault();
+		}
+	}
 
 
 	/**
@@ -305,6 +345,11 @@ public final class DrawOptionsView extends LinearLayout {
         void onChooseEraser();
 
         /**
+         * Fired when the image tool is selected.
+         */
+        void onChooseImageTool();
+
+		/**
          * Fired when the mask took is selected.
          */
         void onChooseMaskTool();
@@ -391,6 +436,9 @@ public final class DrawOptionsView extends LinearLayout {
 
 		@Override
 		public void onChooseRectangleTool() { }
+
+		@Override
+		public void onChooseImageTool() { }
     }
 
 
