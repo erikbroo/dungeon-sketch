@@ -138,6 +138,11 @@ public final class TokenDatabase {
      * Built in tokens that have been deleted.
      */
     private Set<String> mDeletedBuiltInTokens = Sets.newHashSet();
+    
+    /**
+     * Mapping from deprecated token IDs to their replacements.
+     */
+    private Map<String, String> mOldIdMapping = Maps.newHashMap();
 
     /**
      * Whether tags need to be pre-populated during the loading step.  By
@@ -169,7 +174,8 @@ public final class TokenDatabase {
      * @param tokenId ID of the token to tag.
      * @param tags Tags to add to the token.
      */
-    public void tagToken(final String tokenId, final Collection<String> tags) {
+    public void tagToken(String tokenId, final Collection<String> tags) {
+    	tokenId = this.getNonDeprecatedTokenId(tokenId);
         for (String tag : tags) {
             if (!mTokensForTag.containsKey(tag)) {
                 mTokensForTag.put(tag, new HashSet<String>());
@@ -268,6 +274,7 @@ public final class TokenDatabase {
         List<BaseToken> tokens = new ArrayList<BaseToken>();
 
         for (String tokenId : tokenIds) {
+        	tokenId = this.getNonDeprecatedTokenId(tokenId);
             // Add the token for this ID.
             // No worries if the token doesn't exist - by design the database
             // could include tokens that don't exist anymore since it connects a
@@ -304,7 +311,8 @@ public final class TokenDatabase {
      * @param tokenId ID of the token to remove the tag from.
      * @param tag The tag to remove.
      */
-    public void removeTagFromToken(final String tokenId, final String tag) {
+    public void removeTagFromToken(String tokenId, final String tag) {
+    	tokenId = this.getNonDeprecatedTokenId(tokenId);
         this.mTagsForToken.get(tokenId).remove(tag);
         this.mTokensForTag.get(tag).remove(tokenId);
 
@@ -346,6 +354,7 @@ public final class TokenDatabase {
      * @return A new token cloned from the prototype for that Token ID.
      */
     public BaseToken createToken(String tokenId) {
+    	tokenId = this.getNonDeprecatedTokenId(tokenId);
     	BaseToken prototype = this.mTokenForId.get(tokenId);
     	if (prototype == null) {
     		Log.e("TokenDatabase", "Token did not exist for ID: " + tokenId);
@@ -441,7 +450,9 @@ public final class TokenDatabase {
 						defaultTags.add(s);
 					}
 				}
-				addBuiltin(id, mCurrentSortOrder, defaultTags);
+				addBuiltin(
+						atts.getValue("res"), id, mCurrentSortOrder, 
+						defaultTags);
 				mCurrentSortOrder++;
 			}
 		} 
@@ -450,18 +461,46 @@ public final class TokenDatabase {
     /**
      * Adds a built-in image token with the given resource ID to the token
      * database.
+     * @param resourceName The name of the drawable resource to add.
      * @param resourceId The ID of the drawable resource to add.
-     * @param sortOrder The sort order to use.
+     * @param sortOrder The sort order to use. 
      * @param defaultTags Tags that this built in token should be in by default.
      */
     private void addBuiltin(
-    		final int resourceId, final int sortOrder,
-    		Set<String> defaultTags) {
-        addTokenPrototype(new BuiltInImageToken(
-        		resourceId, sortOrder, defaultTags));
+    		final String resourceName, final int resourceId, 
+    		final int sortOrder, Set<String> defaultTags) {
+    	BuiltInImageToken t = new BuiltInImageToken(
+        		resourceName, sortOrder, defaultTags); 
+        addTokenPrototype(t);
+        mapOldId(t.getTokenId(), 
+        		"BuiltInImageToken" + Integer.toString(resourceId));
     }
 
     /**
+     * Adds a note that the given old ID is deprecated in favor of the given
+     * new ID.
+     * @param newId The new ID.
+     * @param oldId The deprecated ID.
+     */
+    private void mapOldId(String newId, String oldId) {
+		mOldIdMapping.put(oldId, newId);
+	}
+    
+    /**
+     * Gets a TokenId, dereferencing a deprecated ID into the new ID if 
+     * necessary.
+     * @param tokenId The ID to possibly dereference.
+     * @return The dereferenced TokenID.
+     */
+    private String getNonDeprecatedTokenId(String tokenId) {
+    	if (mOldIdMapping.containsKey(tokenId)) {
+    		return mOldIdMapping.get(tokenId);
+    	}
+    	return tokenId;
+    }
+
+
+	/**
      * Populates the database with solid-colored tokens.
      */
     private void loadColorTokens() {
@@ -558,7 +597,8 @@ public final class TokenDatabase {
             String tokenId = tokens[0];
             if (tokenId.equals("DELETED_TOKENS")) {
             	for (int i = 1; i < tokens.length; ++i) {
-            		mDeletedBuiltInTokens.add(tokens[i]);
+            		mDeletedBuiltInTokens.add(
+            				getNonDeprecatedTokenId(tokens[i]));
             	}
             } else {
                 ArrayList<String> tags = new ArrayList<String>();

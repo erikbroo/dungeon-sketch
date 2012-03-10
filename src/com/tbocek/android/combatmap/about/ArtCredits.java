@@ -128,12 +128,9 @@ public class ArtCredits extends Activity {
 						atts.getValue("copyright"),
 						atts.getValue("url"));
 			} else if (localName.equalsIgnoreCase("token")) {
-				int id = getResources().getIdentifier(
-						atts.getValue("res"), 
-						"drawable", 
-						"com.tbocek.android.combatmap");
 				mCreatedTokenButtons.add(mCreditsView.addArtCredit(
-						mCurrentArtist, id, atts.getValue("url")));
+						mCurrentArtist, atts.getValue("res"), 
+						atts.getValue("url")));
 			}
 		} 
 		

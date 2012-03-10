@@ -32,11 +32,11 @@ public final class BuiltInImageToken extends DrawableToken {
     public static void registerResources(final Resources resources) {
         res = resources;
     }
-
+    
     /**
-     * The resource to load for this token.
+     * The name of the resource to load for this token.
      */
-    private int mResourceId;
+    private String mResourceName;
     
     /**
      * Relative order to sort this token in.
@@ -50,32 +50,38 @@ public final class BuiltInImageToken extends DrawableToken {
 
     /**
      * Constructor from resource ID.
-     * @param resourceId The resource to load for this token.
+     * @param resourceName The resource to load for this token.
      * @param sortOrder Integer that will be used to specify a sort order for
      * 		this class.
      * @param defaultTags Set of tags that this built in token loads with.
      */
-    public BuiltInImageToken(final int resourceId, final int sortOrder,
+    public BuiltInImageToken(final String resourceName, final int sortOrder,
     		final Set<String> defaultTags) {
-        mResourceId = resourceId;
+        mResourceName = resourceName;
         mSortOrder = sortOrder;
         mDefaultTags = defaultTags;
     }
     
     @Override
     protected Drawable createDrawable() {
-        return res != null ? res.getDrawable(mResourceId) : null;
+    	if (res == null) { return null; }
+    	
+    	int id = res.getIdentifier(
+				mResourceName, 
+				"drawable", 
+				"com.tbocek.android.combatmap");
+        return res.getDrawable(id);
     }
 
     @Override
     public BaseToken clone() {
         return copyAttributesTo(new BuiltInImageToken(
-        		mResourceId, mSortOrder, mDefaultTags));
+        		mResourceName, mSortOrder, mDefaultTags));
     }
 
     @Override
     protected String getTokenClassSpecificId() {
-        return Integer.toString(mResourceId);
+        return mResourceName;
     }
 
     @Override

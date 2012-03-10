@@ -226,5 +226,4 @@ public final class CoordinateTransformer {
     	s.serializeFloat(this.mZoomLevel);
     	s.endObject();
     }
-
 }

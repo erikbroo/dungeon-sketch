@@ -140,7 +140,7 @@ public class ArtCreditsView extends LinearLayout {
 	 * @param url URL for the full version of the token, if provided.
 	 * @return The view created to display this token.
 	 */
-	public TokenButton addArtCredit(String name, int resource, String url) {
+	public TokenButton addArtCredit(String name, String resource, String url) {
 		TokenButton b = new TokenButton(
 				this.getContext(), new BuiltInImageToken(resource, 0, null));
 		b.allowDrag(false);
