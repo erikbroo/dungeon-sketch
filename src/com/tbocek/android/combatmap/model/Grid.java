@@ -85,7 +85,7 @@ public class Grid {
     private CoordinateTransformer mGridToWorldTransformer =
     	new CoordinateTransformer(0, 0, 1);
 
-    private GridDrawStrategy mDrawStrategy;
+    private GridDrawStrategy mDrawStrategy = new RectangularGridStrategy();
 
     /**
      * @return The color to use when drawing grid lines.
