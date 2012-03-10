@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer;
 import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
+import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -136,7 +137,8 @@ public class ExportImageDialog extends Dialog {
 		Canvas canvas = new Canvas(bitmap);
 
 		if (!mRadioExportCurrentView.isChecked()) {
-			canvas.translate(-wholeMapRect.left, -wholeMapRect.top);
+			mData.getWorldSpaceTransformer().moveOrigin(
+					-wholeMapRect.left, -wholeMapRect.top);
 		}
 		
 		new MapDrawer()
@@ -154,5 +156,10 @@ public class ExportImageDialog extends Dialog {
 		new DataManager(getContext()).exportImage(
 				mEditExportName.getText().toString(), bitmap, 
 				Bitmap.CompressFormat.PNG);
+		
+		if (!mRadioExportCurrentView.isChecked()) {
+			mData.getWorldSpaceTransformer().moveOrigin(
+					wholeMapRect.left, wholeMapRect.top);
+		}
 	}
 }
