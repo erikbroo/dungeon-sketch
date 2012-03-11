@@ -1356,7 +1356,8 @@ public final class CombatMap extends Activity {
 		protected void onPostExecute(Void result) {
 			mTokenDatabase = TokenDatabase.getInstance(
 	        		getApplicationContext());
-			mData.getTokens().deplaceholderize(mTokenDatabase);
+			MapData d = MapData.getInstance();
+			d.getTokens().deplaceholderize(mTokenDatabase);
 			mTokenSelector.setTokenDatabase(mTokenDatabase, mCombatView);
 			mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
 		}

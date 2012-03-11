@@ -185,10 +185,16 @@ public final class TokenSelectorView extends LinearLayout {
     	} else {
     		this.mTokens = new ArrayList<BaseToken>(tokens);
     	}
-    	if (this.getHeight() > 0) {
-    		// TODO: Make this work if height is then changed.
-	    	new CreateImageTask(this.getHeight(), this.mDrawDark, combatView)
-	    			.execute(mTokens);
+    	// TODO: Make this work if height is then changed.
+	    new CreateImageTask(this.getHeight(), this.mDrawDark, combatView)
+	    	.execute(mTokens);
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+    	if (h != oldh && mTokens != null) {
+    		new CreateImageTask(h, this.mDrawDark, null).execute(mTokens);
     	}
     }
     
@@ -260,25 +266,31 @@ public final class TokenSelectorView extends LinearLayout {
 		@Override
 		protected Bitmap doInBackground(Collection<BaseToken>... args) {
 			Collection<BaseToken> tokens = args[0];
-	        mBitmap = Bitmap.createBitmap(mHeight * tokens.size(), mHeight, Bitmap.Config.ARGB_4444);
+	        mBitmap = mHeight > 0 ? Bitmap.createBitmap(mHeight * tokens.size(), mHeight, Bitmap.Config.ARGB_4444) : null;
 	        
 	        int drawY = mHeight / 2;
 	        int drawX = mHeight / 2;
 	        
-	        mBitmap.eraseColor(Color.TRANSPARENT);
-	        Canvas c = new Canvas(mBitmap);
+	        if (mBitmap != null) {
+	        	mBitmap.eraseColor(Color.TRANSPARENT);
+	        }
+	        
+	        Canvas c = mBitmap != null ? new Canvas(mBitmap) : null;
 	        int i = 0;
 	        for (BaseToken t: tokens) {
 	        	t.load();
-	        	t.draw(c, drawX, drawY, RADIUS_SCALE * mHeight / 2, 
-	        		   mDrawDark, true);
-	        	drawX += mHeight;
+	        	if (mBitmap != null) {
+		        	t.draw(c, drawX, drawY, RADIUS_SCALE * mHeight / 2, 
+		        		   mDrawDark, true);
+		        	drawX += mHeight;
+	        	}
 	        	i += 1;
 	        	publishProgress(i, tokens.size());
 	        }
 	        
 	        return mBitmap;
 		}
+
 		
 		@Override
 		protected void onPostExecute(Bitmap b) {
@@ -295,7 +307,9 @@ public final class TokenSelectorView extends LinearLayout {
 			});
 	        
 	        mTokenLayout.addView(v);
-	        mCombatView.refreshMap();
+	        if (mCombatView != null) {
+	        	mCombatView.refreshMap();
+	        }
 	        
 		}
     }

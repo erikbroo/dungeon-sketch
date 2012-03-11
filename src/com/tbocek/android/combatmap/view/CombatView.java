@@ -432,6 +432,7 @@ public final class CombatView extends SurfaceView {
 		if (!mSurfaceReady) {
 			return;
 		}
+
 		SurfaceHolder holder = getHolder();
 		Canvas canvas = holder.lockCanvas();
 		if (canvas != null) {
