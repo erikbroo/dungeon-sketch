@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -30,7 +32,13 @@ import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
  *
  */
 public final class TokenCreator extends Activity {
-
+	
+	/**
+	 * Maximum dimension allowed in any image before the image starts being
+	 * downsampled on load.
+	 */
+	private static final int MAX_IMAGE_DIMENSION = 1280;
+	
 	/**
 	 * Request ID that is passed to the image gallery activity; this is returned
 	 * by the image gallery to let us know that a new image was picked.
@@ -148,8 +156,8 @@ public final class TokenCreator extends Activity {
     	if (requestCode == PICK_IMAGE_REQUEST) {
         	if (resultCode == Activity.RESULT_OK) {
 	            try {
-	                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-	                        this.getContentResolver(), data.getData());
+	            	Uri selectedImage = data.getData();
+	            	Bitmap bitmap = decodeUri(selectedImage);
 	                mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
 	                
 	                Toast t = Toast.makeText(
@@ -171,5 +179,40 @@ public final class TokenCreator extends Activity {
         		}
         	}
         }
+    }
+    
+    /**
+     * Find a correct scale factor and decode the bitmap from the given URI.
+     * See:
+     * http://stackoverflow.com/questions/2507898/how-to-pick-a-image-from-gallery-sd-card-for-my-app-in-android
+     * @param selectedImage Path to the image.
+     * @return Decoded image.
+     * @throws FileNotFoundException If image couldn't be found.
+     */
+    private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
+
+        // Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
+
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < MAX_IMAGE_DIMENSION
+               || height_tmp / 2 < MAX_IMAGE_DIMENSION) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
+
     }
 }
