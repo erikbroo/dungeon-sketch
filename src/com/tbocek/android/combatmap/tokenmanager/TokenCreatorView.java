@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * This view is the main rendering and manipulation logic for the token creator
@@ -127,10 +128,57 @@ public final class TokenCreatorView extends View {
         mCurrentImage = image;
         // New image, so clear the circle.
         mHasCircle = false;
+	    if (this.getWidth() > 0) {
+	    	setCircleToDefault(this.getWidth(), this.getHeight());
+	    } else {
+	    	mHasCircle = false; // Defer until the widget is sized into the layout.
+	    }
+	        
         invalidate();
     }
 
-
+    @SuppressWarnings("unchecked")
+	@Override
+    protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+    	if (!mHasCircle && w > 0 && h > 0) {
+    		setCircleToDefault(w,h);
+    	}
+    }
+    
+    /**
+     * Sets the currently cut out circle to a default.
+     * @param width The width of the view
+     * @param height The height of the view
+     */
+    private void setCircleToDefault(float width, float height) {
+    	if (width > 0 && height > 0 && this.mCurrentImage != null && this.mCurrentImage.getIntrinsicWidth() > 0) {
+    		this.mCircleCenterX = width / 2;
+    		this.mCircleCenterY = height / 2;
+    		
+    		float imgWidth = this.mCurrentImage.getIntrinsicWidth();
+    		float imgHeight = this.mCurrentImage.getIntrinsicHeight();
+    		
+    		// Check the aspect ratio to see if width or height will be
+    		// the limiting factor
+    		if (width / height > imgWidth / imgHeight) {
+    			// Image is thinner than the current view, height will be the
+    			// limiting factor.
+    			if (imgWidth / imgHeight < 1) {
+    				this.mCircleRadius = .5f * imgWidth * (height / imgHeight);
+    			} else {
+    				this.mCircleRadius = height / 2;
+    			}
+    		} else {
+    			if (imgWidth / imgHeight < 1) {
+    				this.mCircleRadius = width / 2;
+    			} else {
+    				this.mCircleRadius = .5f * imgHeight * (width / imgWidth);
+    			}
+    		}
+    		this.mHasCircle = true;
+    	}
+    }
+    
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
     	// Forward touch events to the gesture detectors.

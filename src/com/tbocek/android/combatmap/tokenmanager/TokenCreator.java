@@ -6,6 +6,7 @@ import java.util.Date;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -150,6 +151,12 @@ public final class TokenCreator extends Activity {
 	                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
 	                        this.getContentResolver(), data.getData());
 	                mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
+	                
+	                Toast t = Toast.makeText(
+	                		this.getApplicationContext(), 
+	                		"Pinch to change the cut out region", 
+	                		Toast.LENGTH_LONG);
+	                t.show();	
 	            } catch (Exception e) {
 	                e.printStackTrace();
 	                Toast toast = Toast.makeText(
