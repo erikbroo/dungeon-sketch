@@ -106,7 +106,7 @@ public class GridPropertiesDialog extends Dialog{
 	private void presetButtonClick() {
 
 		  new AlertDialog.Builder(this.getContext())
-		  .setTitle("the prompt")
+		  .setTitle("Grid Theme Presets")
 		  .setAdapter(mPresetAdapter, new DialogInterface.OnClickListener() {
 
 		    @Override
