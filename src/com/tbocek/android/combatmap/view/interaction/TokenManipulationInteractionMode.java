@@ -2,6 +2,8 @@ package com.tbocek.android.combatmap.view.interaction;
 
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
@@ -96,6 +98,8 @@ public final class TokenManipulationInteractionMode
      */
     private ValueAnimator mTrashCanAnimator;
     
+    PointF debugSnapPoint = null;
+    
     /**
      * Animation update handler that changes the alpha value of the trash can.
      */
@@ -138,6 +142,9 @@ public final class TokenManipulationInteractionMode
                         transformer.worldSpaceToScreenSpace(
                         		nearestSnapPointWorldSpace),
                         currentPointScreenSpace);
+                
+                debugSnapPoint = transformer.worldSpaceToScreenSpace(
+                		nearestSnapPointWorldSpace);
 
                 mCurrentToken.setLocation(
                 		distanceToSnapPoint < GRID_SNAP_THRESHOLD
@@ -231,6 +238,15 @@ public final class TokenManipulationInteractionMode
             	mTrashDrawable.setAlpha(mTrashCanAlpha);
             	mTrashDrawable.draw(c);
             }
+        }
+        
+        if (debugSnapPoint != null && mDown) {
+        	Paint p = new Paint();
+        	p.setColor(Color.BLACK);
+        	p.setStyle(Paint.Style.STROKE);
+        	
+        	c.drawCircle(debugSnapPoint.x, debugSnapPoint.y, 3, p);
+        	
         }
     }
 
