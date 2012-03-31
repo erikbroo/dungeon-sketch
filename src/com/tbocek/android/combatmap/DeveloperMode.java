@@ -12,7 +12,7 @@ public final class DeveloperMode {
 	/**
 	 * Whether developer/debug mode is enabled.
 	 */
-	public static final boolean DEVELOPER_MODE = true;
+	public static final boolean DEVELOPER_MODE = BuildConfig.DEBUG;
 
 	/**
 	 * If in developer mode and the SDK supports it, run in strict mode.
