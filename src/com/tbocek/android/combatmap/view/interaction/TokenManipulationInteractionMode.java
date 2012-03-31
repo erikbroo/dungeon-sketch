@@ -205,6 +205,7 @@ public final class TokenManipulationInteractionMode
     @Override
     public void onUp(final MotionEvent ev) {
         mDown = false;
+        this.debugSnapPoint = null;
         getView().refreshMap();
         if (mCurrentToken != null) {
 		    if (mAboutToTrash) {
