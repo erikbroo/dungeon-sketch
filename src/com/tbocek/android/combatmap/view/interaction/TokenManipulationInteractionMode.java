@@ -242,7 +242,9 @@ public final class TokenManipulationInteractionMode
         
         if (debugSnapPoint != null && mDown) {
         	Paint p = new Paint();
-        	p.setColor(Color.BLACK);
+        	p.setColor(
+        			getView().getData().getGrid().getColorScheme()
+        			.getLineColor());
         	p.setStyle(Paint.Style.STROKE);
         	
         	c.drawCircle(debugSnapPoint.x, debugSnapPoint.y, 3, p);
