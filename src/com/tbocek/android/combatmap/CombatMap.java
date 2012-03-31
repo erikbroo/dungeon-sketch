@@ -772,7 +772,7 @@ public final class CombatMap extends Activity {
             setModePreference(manipulationMode);
             mDrawOptionsView.setDefault();
             mDrawOptionsView.setMaskToolVisibility(true);
-            mDrawOptionsView.setBackgroundImageButtonVisibility(true);
+            mDrawOptionsView.setBackgroundImageButtonVisibility(false);
             setTagSelectorVisibility(false);
             loadModeSpecificSnapPreference();
 			return;
