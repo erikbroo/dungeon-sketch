@@ -63,8 +63,9 @@ public final class HexGridStrategy extends GridDrawStrategy {
         
         float previousGridLineX =
             (float) Math.floor((double) rescaledX) + h / 2;
+        
         float previousGridLineY;
-        if (((int) previousGridLineX) % 2 == 0) {
+        if ((previousGridLineX > 0) == (((int) previousGridLineX) % 2 == 0)) {
             previousGridLineY =
                     (float) Math.floor((double) currentLocation.y + .5) - .5f;
         } else {
