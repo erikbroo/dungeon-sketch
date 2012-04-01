@@ -205,6 +205,12 @@ public final class MapData {
      */
     private TokenCollection mTokens =
     		new TokenCollection(mTokenCollectionCommandHistory);
+    
+    /**
+     * Collection of background images.
+     */
+    private BackgroundImageCollection mBackgroundImages = 
+    		new BackgroundImageCollection(mBackgroundCommandHistory);
 
     /**
      * The grid to draw.
@@ -360,5 +366,12 @@ public final class MapData {
 		return new RectF(
 				ul.x - marginsPx, ul.y - marginsPx, 
 				lr.x + marginsPx, lr.y + marginsPx);
+	}
+
+	/**
+	 * @return The collection of background images.
+	 */
+	public BackgroundImageCollection getBackgroundImages() {
+		return this.mBackgroundImages;
 	}
 }

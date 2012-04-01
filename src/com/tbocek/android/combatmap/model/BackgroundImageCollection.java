@@ -50,9 +50,9 @@ public class BackgroundImageCollection implements UndoRedoTarget {
 		mImages.add(backgroundImage);
 	}
 
-	public void draw(Canvas canvas, float pxPerUnit) {
+	public void draw(Canvas canvas) {
 		for (BackgroundImage i: mImages) {
-			//i.draw(canvas, pxPerUnit);
+			i.draw(canvas);
 		}
 	}
 	
