@@ -36,4 +36,27 @@ public class BackgroundImage {
 		PointF p2 = new PointF(mOriginWorldSpace.x + mWidthWorldSpace, mOriginWorldSpace.y + mHeightWorldSpace);
 		return new BoundingRectangle(p1, p2);
 	}
+	
+	public void moveTop(float delta) {
+		this.mOriginWorldSpace.y += delta;
+		this.mHeightWorldSpace -= delta;
+	}
+	
+	public void moveBottom(float delta) {
+		this.mHeightWorldSpace += delta;
+	}
+	
+	public void moveLeft(float delta) {
+		this.mOriginWorldSpace.x += delta;
+		this.mWidthWorldSpace -= delta;
+	}
+	
+	public void moveRight(float delta) {
+		this.mWidthWorldSpace += delta;
+	}
+	
+	public void moveImage(float deltaX, float deltaY) {
+		this.mOriginWorldSpace = new PointF(this.mOriginWorldSpace.x + deltaX,
+		                                    this.mOriginWorldSpace.y + deltaY);
+	}
 }
