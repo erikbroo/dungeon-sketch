@@ -311,7 +311,7 @@ public abstract class BaseToken  {
         	// TODO: Cache this.
     		Paint selectPaint = new Paint();
     		selectPaint.setStrokeWidth(SELECTION_STROKE_WIDTH);
-    		selectPaint.setColor(TagListView.DRAG_HIGHLIGHT_COLOR);
+    		selectPaint.setColor(Util.ICS_BLUE);
     		selectPaint.setStyle(Style.STROKE);
     		c.drawCircle(center.x, center.y, radius + SELECTION_STROKE_WIDTH, 
     				selectPaint);
@@ -348,7 +348,7 @@ public abstract class BaseToken  {
         	// TODO: Cache this.
     		Paint selectPaint = new Paint();
     		selectPaint.setStrokeWidth(SELECTION_STROKE_WIDTH);
-    		selectPaint.setColor(TagListView.DRAG_HIGHLIGHT_COLOR);
+    		selectPaint.setColor(Util.ICS_BLUE);
     		selectPaint.setStyle(Style.STROKE);
     		c.drawCircle(x, y, radius + SELECTION_STROKE_WIDTH, 
     				selectPaint);

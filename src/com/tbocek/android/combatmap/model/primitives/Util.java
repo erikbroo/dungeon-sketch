@@ -42,7 +42,12 @@ public final class Util {
      * Constant for half opacity alpha value.
      */
     public static final int HALF_OPACITY = 128;
-
+    
+    /**
+     * Color to highlight text with when a token is being dragged to it.  
+     * Should match Android's Holo light blue.
+     */
+    public static final int ICS_BLUE = Color.rgb(44, 169, 210);
 
     /**
      * Compute the distance between two PointFs.

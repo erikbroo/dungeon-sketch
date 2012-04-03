@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.Util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -61,12 +62,6 @@ public final class TagListView extends ScrollView {
      * Default text size to use in child views.
      */
     private static final int DEFAULT_TEXT_SIZE = 30;
-
-    /**
-     * Color to highlight text with when a token is being dragged to it.  
-     * Should match Android's Holo light blue.
-     */
-    public static final int DRAG_HIGHLIGHT_COLOR = Color.rgb(44, 169, 210);
 
     /**
      * The layout that contains the list of tags.
@@ -191,7 +186,7 @@ public final class TagListView extends ScrollView {
                         setTextViewColorToCorrectHighlight(tv);
                         return true;
                     } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-                        tv.setTextColor(DRAG_HIGHLIGHT_COLOR);
+                        tv.setTextColor(Util.ICS_BLUE);
                         return true;
                     } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
                         setTextViewColorToCorrectHighlight(tv);
