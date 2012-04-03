@@ -30,4 +30,10 @@ public class BackgroundImage {
 		mDrawable.setBounds((int)mOriginWorldSpace.x, (int)mOriginWorldSpace.y, (int)(mOriginWorldSpace.x + mWidthWorldSpace), (int)(mOriginWorldSpace.y + mHeightWorldSpace));
 		mDrawable.draw(c);
 	}
+
+	public BoundingRectangle getBoundingRectangle() {
+		PointF p1 = mOriginWorldSpace;
+		PointF p2 = new PointF(mOriginWorldSpace.x + mWidthWorldSpace, mOriginWorldSpace.y + mHeightWorldSpace);
+		return new BoundingRectangle(p1, p2);
+	}
 }

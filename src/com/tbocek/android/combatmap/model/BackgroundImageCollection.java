@@ -63,9 +63,9 @@ public class BackgroundImageCollection implements UndoRedoTarget {
 	 */
 	public BackgroundImage getImageOnPoint(PointF point) {
 		for (BackgroundImage i: mImages) {
-		/*	if (i.getBoundingRectangle().contains(point)) {
+			if (i.getBoundingRectangle().contains(point)) {
 				return i;
-			} */
+			}
 		}
 		return null;
 	}

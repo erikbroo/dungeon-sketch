@@ -17,6 +17,24 @@ import android.graphics.RectF;
 public final class BoundingRectangle {
 	
 	/**
+	 * Constructs a bounding rectangle that uses the given points as bounds.
+	 * @param p1 First point.
+	 * @param p2 Second point.
+	 */
+	public BoundingRectangle(PointF p1, PointF p2) {
+		mXMin = p1.x;
+		mXMax = p1.x;
+		mYMin = p1.y;
+		mYMax = p1.y;
+		updateBounds(p2);
+	}
+	
+	/**
+	 * Default ctor.
+	 */
+	public BoundingRectangle() {}
+
+	/**
 	 * Creates a new BoundingRectangle by reading from the given stream.
 	 * @param s The deserialization object to load from.
 	 * @return The loaded BoundingRectangle.
