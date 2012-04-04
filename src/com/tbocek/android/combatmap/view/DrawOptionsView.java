@@ -203,7 +203,7 @@ public final class DrawOptionsView extends LinearLayout {
      * @return The created button.
      */
 	private ImageToggleButton createAndAddBackgroundImageButton() {
-		ImageToggleButton b = new ImageToggleButton(this.getContext());
+		final ImageToggleButton b = new ImageToggleButton(this.getContext());
 		b.setImageResource(R.drawable.add_image);
 		mLayout.addView(b);
 		mToolsGroup.add(b);
@@ -212,6 +212,9 @@ public final class DrawOptionsView extends LinearLayout {
 			@Override
 			public void onClick(View v) {
 				mLineWidthGroup.setGroupVisibility(View.GONE);
+				mColorGroup.setGroupVisibility(View.GONE);
+				mToolsGroup.untoggle();
+				b.setToggled(true);
 				mOnChangeDrawToolListener.onChooseImageTool();
 			}
 		});

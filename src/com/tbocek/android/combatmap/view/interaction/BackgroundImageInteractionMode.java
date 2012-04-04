@@ -81,7 +81,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 		}
 		
 		public PointF getTop() {
-			return new PointF((mXmin + mYmin) / 2, mYmin);
+			return new PointF((mXmin + mXmax) / 2, mYmin);
 		}
 		
 		public PointF getRight() {
@@ -89,7 +89,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 		}
 		
 		public PointF getBottom() {
-			return new PointF((mXmin + mYmin) / 2, mYmax);
+			return new PointF((mXmin + mXmax) / 2, mYmax);
 		}
 		
 		public HandleMode getHandleMode(PointF p) {
@@ -126,20 +126,68 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 		PointF locationWorldSpace = getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
 	
 		mSelectedImage = getView().getData().getBackgroundImages().getImageOnPoint(locationWorldSpace);
-		
-		// Select a handle mode based on what part of the image was touched.
-		BoundingRectangle r = mSelectedImage.getBoundingRectangle();
-		// Convert bounding rectangle bounds to screen space.
-		float xmin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMin());
-		float xmax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMax());
-		float ymin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMin());
-		float ymax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMax());
-		
-		mHandleMode = new HandleSet(xmin, xmax, ymin, ymax).getHandleMode(new PointF(e.getX(), e.getY()));
+		if (mSelectedImage != null) {
+			// Select a handle mode based on what part of the image was touched.
+			BoundingRectangle r = mSelectedImage.getBoundingRectangle();
+			// Convert bounding rectangle bounds to screen space.
+			float xmin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMin());
+			float xmax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMax());
+			float ymin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMin());
+			float ymax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMax());
+			
+			mHandleMode = new HandleSet(xmin, xmax, ymin, ymax).getHandleMode(new PointF(e.getX(), e.getY()));
+		}
 		
 		getView().refreshMap();
 		return true;
 	}
+	
+    @Override
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+  		  final float distanceX, final float distanceY) {
+        if (mSelectedImage != null) {
+        	float wsDistX = -getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceX);
+        	float wsDistY = -getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceY);
+        	switch(mHandleMode) {
+        	case LEFT:
+        		mSelectedImage.moveLeft(wsDistX);
+        		break;
+        	case RIGHT:
+        		mSelectedImage.moveRight(wsDistX);
+        		break;
+        	case TOP:
+        		mSelectedImage.moveTop(wsDistY);
+        		break;
+        	case BOTTOM:
+        		mSelectedImage.moveBottom(wsDistY);
+        		break;
+        	case UPPER_LEFT:
+        		mSelectedImage.moveLeft(wsDistX);
+        		mSelectedImage.moveTop(wsDistY);
+        		break;
+        	case LOWER_LEFT:
+        		mSelectedImage.moveLeft(wsDistX);
+        		mSelectedImage.moveBottom(wsDistY);
+        		break;
+        	case UPPER_RIGHT:
+        		mSelectedImage.moveRight(wsDistX);
+        		mSelectedImage.moveTop(wsDistY);
+        		break;
+        	case LOWER_RIGHT:
+        		mSelectedImage.moveRight(wsDistX);
+        		mSelectedImage.moveBottom(wsDistY);
+        		break;
+        	default:
+        		mSelectedImage.moveImage(wsDistX, wsDistY);
+        		break;
+        	}
+        	getView().refreshMap();
+        } else {
+        	super.onScroll(e1, e2, distanceX, distanceY);
+        }
+    
+    	return true;
+    }
 	
     @Override
     public boolean onSingleTapConfirmed(final MotionEvent e) {
@@ -151,8 +199,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 	    	BackgroundImage i = new BackgroundImage(getView().getResources().getDrawable(R.drawable.add_image));
 	        i.setLocation(locationWorldSpace);
 	    	getView().getData().getBackgroundImages().addImage(i);
-	    	getView().refreshMap();
     	}
+    	getView().refreshMap();
         return true;
     }
     
