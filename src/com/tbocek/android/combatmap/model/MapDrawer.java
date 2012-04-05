@@ -81,7 +81,7 @@ public class MapDrawer {
 			m.getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
 		m.getBackgroundLines().drawAllLinesBelowGrid(canvas);
-		m.getBackgroundImages().draw(canvas);
+		m.getBackgroundImages().draw(canvas, m.getWorldSpaceTransformer());
 		canvas.restore();
 
 		if (mDrawGridLines) {

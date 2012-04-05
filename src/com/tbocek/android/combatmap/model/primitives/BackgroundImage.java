@@ -26,8 +26,19 @@ public class BackgroundImage {
 		mOriginWorldSpace = location;
 	}
 	
-	public void draw(Canvas c) {
-		mDrawable.setBounds((int)mOriginWorldSpace.x, (int)mOriginWorldSpace.y, (int)(mOriginWorldSpace.x + mWidthWorldSpace), (int)(mOriginWorldSpace.y + mHeightWorldSpace));
+	/**
+	 * Draws the background image.  Needs to assume an untransformed coordinate
+	 * space, UNLIKE other draw commands.  The coordinate transformer is passed
+	 * in instead.  This is because setBounds is retarded and takes integers.
+	 * @param c Canvas to draw on.
+	 * @param transformer The screen to world space transformer.
+	 */
+	public void draw(Canvas c, CoordinateTransformer transformer) {
+		int left = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.x);
+		int top = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.y);
+		int right = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.x + mWidthWorldSpace);
+		int bottom = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.y + mHeightWorldSpace);
+		mDrawable.setBounds(left, top, right, bottom);
 		mDrawable.draw(c);
 	}
 

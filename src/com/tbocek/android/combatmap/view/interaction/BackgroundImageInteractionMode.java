@@ -18,7 +18,7 @@ import com.tbocek.android.combatmap.view.CombatView;
  */
 public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 
-	private static final int HANDLE_CIRCLE_RADIUS = 4;
+	private static final int HANDLE_CIRCLE_RADIUS = 6;
 	
 	private BackgroundImage mSelectedImage;
 	
@@ -217,8 +217,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 	    	Paint borderHandlePaint = new Paint();
 	    	borderHandlePaint.setColor(Util.ICS_BLUE);
 	    	borderHandlePaint.setStrokeWidth(2);
-	    	
-	    	// TODO: add border segments such that they don't overlap the circles.
+	    	borderHandlePaint.setStyle(Paint.Style.STROKE);
 	    	
 	    	HandleSet handles = new HandleSet(xmin, xmax, ymin, ymax);
 	    	drawHandle(c, handles.getLeft(), borderHandlePaint);

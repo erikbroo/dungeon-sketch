@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.model.primitives.BackgroundImage;
+import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 
 import android.graphics.Canvas;
@@ -50,10 +51,18 @@ public class BackgroundImageCollection implements UndoRedoTarget {
 		mImages.add(backgroundImage);
 	}
 
-	public void draw(Canvas canvas) {
+	public void draw(Canvas canvas, CoordinateTransformer transformer) {
+		// Because of the way image drawing works, we need to be able to make
+		// the assumption that the canvas is *untransformed*.  But, we still
+		// want to respect the fog of war.  So, we let the calling code assume
+		// that the canvas is transformed, and undo the transformation here.
+		canvas.save();
+		transformer.setInverseMatrix(canvas);
+		
 		for (BackgroundImage i: mImages) {
-			i.draw(canvas);
+			i.draw(canvas, transformer);
 		}
+		canvas.restore();
 	}
 	
 	/**
