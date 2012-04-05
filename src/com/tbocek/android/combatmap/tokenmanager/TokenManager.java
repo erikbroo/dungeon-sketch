@@ -3,9 +3,13 @@ package com.tbocek.android.combatmap.tokenmanager;
 import java.io.IOException;
 import java.util.Collection;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -94,6 +98,11 @@ public final class TokenManager extends Activity {
 	 * opened on.
 	 */
 	private String mContextMenuTag;
+	
+	/**
+	 * Whether token tags are loaded into the action bar as tabs.
+	 */
+	private boolean mTagsInActionBar = false;
 
     /**
      * Listener that reloads the token view when a new tag is selected, and
@@ -155,11 +164,18 @@ public final class TokenManager extends Activity {
 	    			.addView(mTrashButton);
         }
 
-
-    	FrameLayout tagListFrame =
-    		(FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
-    	tagListFrame.addView(mTagListView);
-
+        // On large screens, set up a seperate column of token tags.
+        // Otherwise, use tabs in the action bar to display & select token tags.
+        if (isLargeScreen()) {
+	    	FrameLayout tagListFrame =
+	    		(FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
+	    	tagListFrame.addView(mTagListView);
+        } else {
+        	this.mTagsInActionBar = true;
+        	getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        	getActionBar().setDisplayShowTitleEnabled(false);
+        }
+        
     	mScrollView =
     		(ScrollView) this.findViewById(R.id.token_manager_scroll_view);
     	
@@ -201,13 +217,34 @@ public final class TokenManager extends Activity {
 		});
 
     }
+	
+	private boolean isLargeScreen() {
+		int layout = getResources().getConfiguration().screenLayout;
+		int layoutSize = layout & Configuration.SCREENLAYOUT_SIZE_MASK;
+		return false;
+		//return layoutSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
+		//	   layoutSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+	}
+
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		mTokenDatabase = TokenDatabase.getInstance(this.getApplicationContext());
-		mTagListView.setTagList(mTokenDatabase.getTags());
-    	Debug.stopMethodTracing();
+		updateTagList();
+		Debug.stopMethodTracing();
+	}
+	
+	private void updateTagList() {
+		if (this.mTagsInActionBar) {
+			ActionBar bar = this.getActionBar(); // bar bar bar..
+			bar.addTab(bar.newTab().setText("All Tokens").setTabListener(new TagSelectingTabListener(TokenDatabase.ALL)), true);
+			for (String tag : mTokenDatabase.getTags()) {
+				bar.addTab(bar.newTab().setText(tag).setTabListener(new TagSelectingTabListener(tag)));
+			}
+		} else {
+			mTagListView.setTagList(mTokenDatabase.getTags());
+		}
 	}
 
 	@Override
@@ -239,6 +276,7 @@ public final class TokenManager extends Activity {
 		for (BaseToken t : tokens) {
 			TokenButton b = (TokenButton) mTokenViewFactory.getTokenView(t);
 			b.setShouldDrawDark(true);
+			b.allowDrag(!this.mTagsInActionBar);
 			mButtons.add(b);
 
 			// Remove all views from the parent, if there is one.
@@ -293,7 +331,7 @@ public final class TokenManager extends Activity {
     				 new TextPromptDialog.OnTextConfirmedListener() {
 				public void onTextConfirmed(final String text) {
 					mTokenDatabase.addEmptyTag(text);
-					mTagListView.setTagList(mTokenDatabase.getTags());
+					updateTagList();
 				}
 			}, getString(R.string.new_tag), getString(R.string.create));
     	default:
@@ -356,7 +394,7 @@ public final class TokenManager extends Activity {
     			mTagListView.setHighlightedTag(TokenDatabase.ALL);
     		}
     		this.mTokenDatabase.deleteTag(this.mContextMenuTag);
-    		mTagListView.setTagList(mTokenDatabase.getTags());
+    		updateTagList();
     		return true;
     	default:
     		return super.onContextItemSelected(item);
@@ -412,7 +450,7 @@ public final class TokenManager extends Activity {
 							.getSelectedTokens();
 			switch(item.getItemId()) {
 			case R.id.token_manager_action_mode_remove_tag:
-	    		removeTagFromTokens(tokens, mTagListView.getTag());
+	    		removeTagFromTokens(tokens, getActiveTag());
 		    	return true;
 			case R.id.token_manager_action_mode_delete:
 				deleteTokens(tokens);
@@ -441,9 +479,53 @@ public final class TokenManager extends Activity {
 			MenuItem removeTag = menu.findItem(
 					R.id.token_manager_action_mode_remove_tag);
 			removeTag.setVisible(
-					!mTagListView.getTag().equals(TokenDatabase.ALL));
-			removeTag.setTitle("Remove tag '" + mTagListView.getTag() + "'");
+					!getActiveTag().equals(TokenDatabase.ALL));
+			removeTag.setTitle("Remove tag '" + getActiveTag() + "'");
 			return true;
 		}
+
     }
+    
+	/**
+	 * @return
+	 */
+	private String getActiveTag() {
+		if (this.mTagsInActionBar) {
+			return tagFromActionBar;
+		} else {
+			return mTagListView.getTag();
+		}
+	}
+	
+	private String tagFromActionBar = null;
+	
+	/**
+	 * TabListener for the ActionBar that selects tags.
+	 * @author Tim
+	 *
+	 */
+	private class TagSelectingTabListener implements ActionBar.TabListener {
+		public TagSelectingTabListener(String tag) {
+			mTag = tag;
+		}
+		private String mTag;
+		
+		@Override
+		public void onTabReselected(Tab tab, FragmentTransaction ft) {
+			
+		}
+
+		@Override
+		public void onTabSelected(Tab tab, FragmentTransaction ft) {
+			setScrollViewTag(mTag);
+			tagFromActionBar = mTag;
+		}
+
+		@Override
+		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 }
