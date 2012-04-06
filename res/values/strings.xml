@@ -54,6 +54,14 @@
         \n
         Not all token images are compatible with the LGPL.  They are provided for this distribution of the application only.  Please ensure that you have artist permission before redistributing these icons or including them in a commercial distribution of Dungeon Sketch.
     </string>
+    
+    <string name="gm_screen_warning">
+This is a low-security feature intended to guard against accidental peeking - like a real GM screen.\n\n
+
+It will not encrypt your data.  It is easily circumvented.  It will not thwart players determined to find out where your diabolical traps are.\n\n
+
+Please do not use GM Screen to protect anything actually important, like banking credentials, nuclear secrets, or your totally secret diary.
+    </string>
        
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
