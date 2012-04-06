@@ -3,29 +3,28 @@ package com.tbocek.android.combatmap.tokenmanager;
 import java.io.IOException;
 import java.util.Collection;
 
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
-import android.view.ActionMode;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
 import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DeveloperMode;
@@ -45,7 +44,7 @@ import com.tbocek.android.combatmap.view.TokenLoadTask;
  * @author Tim Bocek
  *
  */
-public final class TokenManager extends Activity {
+public final class TokenManager extends SherlockActivity {
 	/**
 	 * The width and height of each token button.
 	 */
@@ -172,8 +171,8 @@ public final class TokenManager extends Activity {
 	    	tagListFrame.addView(mTagListView);
         } else {
         	this.mTagsInActionBar = true;
-        	getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        	getActionBar().setDisplayShowTitleEnabled(false);
+        	getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        	getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         
     	mScrollView =
@@ -237,7 +236,7 @@ public final class TokenManager extends Activity {
 	
 	private void updateTagList() {
 		if (this.mTagsInActionBar) {
-			ActionBar bar = this.getActionBar(); // bar bar bar..
+			ActionBar bar = this.getSupportActionBar(); // bar bar bar..
 			bar.addTab(bar.newTab().setText("All Tokens").setTabListener(new TagSelectingTabListener(TokenDatabase.ALL)), true);
 			for (String tag : mTokenDatabase.getTags()) {
 				bar.addTab(bar.newTab().setText(tag).setTabListener(new TagSelectingTabListener(tag)));
@@ -299,7 +298,7 @@ public final class TokenManager extends Activity {
 
 	@Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
+    	MenuInflater inflater = getSupportMenuInflater();
     	inflater.inflate(R.menu.token_manager_menu, menu);
     	return true;
     }
@@ -378,7 +377,7 @@ public final class TokenManager extends Activity {
     }
 
     @Override
-    public boolean onContextItemSelected(final MenuItem item) {
+    public boolean onContextItemSelected(final android.view.MenuItem item) {
     	//TODO: Move more of this functionality into TokenDeleteButton.
     	switch (item.getItemId()) {
     	case R.id.token_delete_entire_token:

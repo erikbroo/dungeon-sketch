@@ -3,9 +3,11 @@ package com.tbocek.android.combatmap;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentTransaction;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+
 
 /**
  * Tab manager implementation that uses tabs natively shown in Honeycomb and

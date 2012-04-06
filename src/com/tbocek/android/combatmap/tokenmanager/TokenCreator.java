@@ -12,11 +12,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DataManager;
 import com.tbocek.android.combatmap.DeveloperMode;
@@ -31,7 +35,7 @@ import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
  * @author Tim Bocek
  *
  */
-public final class TokenCreator extends Activity {
+public final class TokenCreator extends SherlockActivity {
 	
 	/**
 	 * Maximum dimension allowed in any image before the image starts being
@@ -71,7 +75,7 @@ public final class TokenCreator extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.token_image_creator, menu);
         return true;
     }

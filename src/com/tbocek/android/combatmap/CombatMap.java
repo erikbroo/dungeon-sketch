@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,17 +19,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.preference.PreferenceManager;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
 import com.tbocek.android.combatmap.model.Grid;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
@@ -53,7 +53,7 @@ import com.tbocek.android.combatmap.view.TokenSelectorView;
  *
  * @author Tim Bocek
  */
-public final class CombatMap extends Activity {
+public final class CombatMap extends SherlockActivity {
 	/**
 	 * Identifier for the draw background mode.
 	 */
@@ -354,7 +354,7 @@ public final class CombatMap extends Activity {
         // Set up the tabs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setContentView(R.layout.combat_map_layout);
-        	ActionBar actionBar = getActionBar();
+        	ActionBar actionBar = getSupportActionBar();
         	mTabManager = new ActionBarTabManager(actionBar);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             // Clear the title on the action bar, since we want to leave more 
@@ -671,7 +671,7 @@ public final class CombatMap extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.combat_map_menu, menu);
 
         mSnapToGridMenuItem = menu.findItem(R.id.snap_to_grid);
@@ -988,12 +988,6 @@ public final class CombatMap extends Activity {
         	 super.onPrepareDialog(id, dialog);
          }
     }
-
-    @Override
-    public boolean onContextItemSelected(final MenuItem item) {
-        return mCombatView.onContextItemSelected(item);
-    }
-
 
     /**
      * This helper class allows a map to be saved asynchronously.
