@@ -216,7 +216,7 @@ public final class Load extends Activity {
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
       switch (item.getItemId()) {
-      case R.id.delete_save_file:
+      case R.id.save_file_context_delete:
           mDataMgr.deleteSaveFile(mContextMenuTrigger.getFileName());
           SharedPreferences sharedPreferences =
               PreferenceManager.getDefaultSharedPreferences(

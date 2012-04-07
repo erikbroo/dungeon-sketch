@@ -66,6 +66,8 @@ Please do not use GM Screen to protect anything actually important, like banking
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on Color to apply</string>
-    <string name="grid_appearence">Grid Appearence</string>    
+    <string name="grid_appearence">Grid Appearence</string>
+    <string name="add_to_tag">Add to tag</string>
+    <string name="delete_tag">Delete Tag</string>    
     
 </resources>

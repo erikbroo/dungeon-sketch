@@ -11,5 +11,6 @@
         android:showAsAction="ifRoom|withText"
         android:title="@string/new_tag">
     </item>
+    <item android:id="@+id/token_manager_delete_tag" android:title="@string/delete_tag" android:showAsAction="ifRoom|withText"></item>
 
 </menu>

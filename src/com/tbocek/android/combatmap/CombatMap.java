@@ -674,7 +674,7 @@ public final class CombatMap extends SherlockActivity {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.combat_map_menu, menu);
 
-        mSnapToGridMenuItem = menu.findItem(R.id.snap_to_grid);
+        mSnapToGridMenuItem = menu.findItem(R.id.menu_snap_to_grid);
         loadModeSpecificSnapPreference();
         
         mUndoMenuItem = menu.findItem(R.id.menu_undo);
@@ -692,7 +692,7 @@ public final class CombatMap extends SherlockActivity {
                         this.getApplicationContext());
         // Handle item selection
         switch (item.getItemId()) {
-        case R.id.clear_all:
+        case R.id.menu_clear_all:
         	// Save the current map, if autosave was requested.
         	if (sharedPreferences.getBoolean("autosave", true)) {
         		new MapSaver(
@@ -711,21 +711,21 @@ public final class CombatMap extends SherlockActivity {
             mCombatView.setData(mData);
             reloadPreferences();
             return true;
-        case R.id.settings:
+        case R.id.menu_settings:
             startActivity(new Intent(this, Settings.class));
             return true;
-        case R.id.resize_grid:
+        case R.id.menu_resize_grid:
             mCombatView.setResizeGridMode();
             mBottomControlFrame.removeAllViews();
             return true;
-        case R.id.snap_to_grid:
+        case R.id.menu_snap_to_grid:
         	mSnapToGridMenuItem.setChecked(!mSnapToGridMenuItem.isChecked());
             this.setModeSpecificSnapPreference(mSnapToGridMenuItem.isChecked());
         	return true;
-        case R.id.save:
+        case R.id.menu_save:
             showDialog(DIALOG_ID_SAVE);
             return true;
-        case R.id.load:
+        case R.id.menu_load:
             startActivity(new Intent(this, Load.class));
             return true;
         case R.id.menu_undo:
