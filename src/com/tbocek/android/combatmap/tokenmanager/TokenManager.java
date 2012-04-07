@@ -3,8 +3,11 @@ package com.tbocek.android.combatmap.tokenmanager;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -28,6 +31,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuInflater;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
@@ -135,9 +139,11 @@ public final class TokenManager extends SherlockActivity {
 		if (tag.equals(TokenDatabase.ALL)) {
 			mScrollView.addView(
 					getTokenButtonLayout(mTokenDatabase.getAllTokens()));
+			this.mDeleteTagMenuItem.setVisible(false);
 		} else {
 			mScrollView.addView(
 					getTokenButtonLayout(mTokenDatabase.getTokensForTag(tag)));
+			this.mDeleteTagMenuItem.setVisible(true);
 		}
 	}
 
@@ -305,10 +311,13 @@ public final class TokenManager extends SherlockActivity {
 		return grid;
 	}
 
+	private MenuItem mDeleteTagMenuItem;
+	
 	@Override
     public boolean onCreateOptionsMenu(final Menu menu) {
     	MenuInflater inflater = getSupportMenuInflater();
     	inflater.inflate(R.menu.token_manager_menu, menu);
+    	mDeleteTagMenuItem = menu.findItem(R.id.token_manager_delete_tag);
     	return true;
     }
 
@@ -320,6 +329,8 @@ public final class TokenManager extends SherlockActivity {
     		return true;
     	case R.id.token_manager_new_tag:
     		showDialog(DIALOG_ID_NEW_TAG);
+    		return true;
+    	case R.id.token_manager_delete_tag:
     		return true;
         case android.R.id.home:
             // app icon in action bar clicked; go home
@@ -453,7 +464,7 @@ public final class TokenManager extends SherlockActivity {
 
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			Collection<BaseToken> tokens =
+			final Collection<BaseToken> tokens =
 					mTokenViewFactory.getMultiSelectManager()
 							.getSelectedTokens();
 			switch(item.getItemId()) {
@@ -463,6 +474,24 @@ public final class TokenManager extends SherlockActivity {
 			case R.id.token_manager_action_mode_delete:
 				deleteTokens(tokens);
 	    		return true;
+			case R.id.token_manager_action_mode_add_to_tag:
+				List<String> tags = mTokenDatabase.getTags();
+				
+				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(TokenManager.this, android.R.layout.simple_spinner_item);
+				adapter.addAll(tags);
+				new AlertDialog.Builder(TokenManager.this)
+					.setTitle("Select a Tag")
+					.setAdapter(adapter, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Set<String> tags = Sets.newHashSet(adapter.getItem(which));
+
+							for (BaseToken token: tokens) {
+								mTokenDatabase.tagToken(token, tags);
+							}
+						}
+					}).create().show();
+				return true;
 			default:
 				break;
 				
@@ -524,35 +553,5 @@ public final class TokenManager extends SherlockActivity {
 			}
 			return true;
 		}
-	}
-
-	
-	/**
-	 * TabListener for the ActionBar that selects tags.
-	 * @author Tim
-	 *
-	 */
-	private class TagSelectingTabListener implements ActionBar.TabListener {
-		public TagSelectingTabListener(String tag) {
-			mTag = tag;
-		}
-		private String mTag;
-		
-		@Override
-		public void onTabReselected(Tab tab, FragmentTransaction ft) {
-			
-		}
-
-		@Override
-		public void onTabSelected(Tab tab, FragmentTransaction ft) {
-			
-		}
-
-		@Override
-		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-			// TODO Auto-generated method stub
-			
-		}
-		
 	}
 }
