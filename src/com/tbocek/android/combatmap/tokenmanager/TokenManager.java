@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.tokenmanager;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -177,8 +179,8 @@ public final class TokenManager extends SherlockActivity {
 	    	tagListFrame.addView(mTagListView);
         } else {
         	this.mTagsInActionBar = true;
-        	getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        	getSupportActionBar().setDisplayShowTitleEnabled(false);
+        	getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        	getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
         
     	mScrollView =
@@ -242,10 +244,12 @@ public final class TokenManager extends SherlockActivity {
 	private void updateTagList() {
 		if (this.mTagsInActionBar) {
 			ActionBar bar = this.getSupportActionBar(); // bar bar bar..
-			bar.addTab(bar.newTab().setText("All Tokens").setTabListener(new TagSelectingTabListener(TokenDatabase.ALL)), true);
-			for (String tag : mTokenDatabase.getTags()) {
-				bar.addTab(bar.newTab().setText(tag).setTabListener(new TagSelectingTabListener(tag)));
-			}
+			List<String> tags = mTokenDatabase.getTags();
+			
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+			adapter.add("All Tokens");
+			adapter.addAll(tags);
+			bar.setListNavigationCallbacks(adapter, new TagNavigationListener(tags));
 		} else {
 			mTagListView.setTagList(mTokenDatabase.getTags());
 		}
@@ -503,6 +507,26 @@ public final class TokenManager extends SherlockActivity {
 	
 	private String tagFromActionBar = null;
 	
+	private class TagNavigationListener implements ActionBar.OnNavigationListener {
+		List<String> mTags;
+		public TagNavigationListener(List<String> tags) {
+			this.mTags = tags;
+		}
+		
+		@Override
+		public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+			if (itemPosition == 0) {
+				setScrollViewTag(TokenDatabase.ALL);
+				tagFromActionBar = TokenDatabase.ALL;
+			} else {
+				setScrollViewTag(mTags.get(itemPosition - 1));
+				setScrollViewTag(mTags.get(itemPosition - 1));
+			}
+			return true;
+		}
+	}
+
+	
 	/**
 	 * TabListener for the ActionBar that selects tags.
 	 * @author Tim
@@ -521,8 +545,7 @@ public final class TokenManager extends SherlockActivity {
 
 		@Override
 		public void onTabSelected(Tab tab, FragmentTransaction ft) {
-			setScrollViewTag(mTag);
-			tagFromActionBar = mTag;
+			
 		}
 
 		@Override

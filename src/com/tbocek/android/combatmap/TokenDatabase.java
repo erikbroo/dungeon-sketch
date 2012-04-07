@@ -215,7 +215,7 @@ public final class TokenDatabase {
      * and case-insensitively.
      * @return The sorted tags.
      */
-    public Collection<String> getTags() {
+    public List<String> getTags() {
         ArrayList<String> l = new ArrayList<String>(mTokensForTag.keySet());
         Collections.sort(l, new Comparator<String>() {
             @Override
