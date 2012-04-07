@@ -155,17 +155,23 @@ public final class TokenManager extends SherlockActivity {
     	mTagListView.setOnTagListActionListener(mOnTagListActionListener);
     	mTagListView.setRegisterChildrenForContextMenu(true);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-	    	mTrashButton = new TokenDeleteButton(this);
-	    	this.registerForContextMenu(mTrashButton);
-	    	((FrameLayout) this.findViewById(
-	    			R.id.token_manager_delete_button_frame))
-	    			.addView(mTrashButton);
-        }
 
-        // On large screens, set up a seperate column of token tags.
+        // On large screens, set up a seperate column of token tags and possibly
+    	// set up a trash can to drag tokens too if drag&drop is an option on
+    	// the platform.
         // Otherwise, use tabs in the action bar to display & select token tags.
         if (isLargeScreen()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    	    	mTrashButton = new TokenDeleteButton(this);
+    	    	this.registerForContextMenu(mTrashButton);
+    	    	((FrameLayout) this.findViewById(
+    	    			R.id.token_manager_delete_button_frame))
+    	    			.addView(mTrashButton);
+            } else {
+            	// If not Honeycomb, no need for the trash button.
+            	this.findViewById(R.id.token_manager_delete_button_frame).setVisibility(View.GONE);
+            }
+            
 	    	FrameLayout tagListFrame =
 	    		(FrameLayout) this.findViewById(R.id.token_manager_taglist_frame);
 	    	tagListFrame.addView(mTagListView);
