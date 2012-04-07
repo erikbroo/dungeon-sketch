@@ -226,9 +226,8 @@ public final class TokenManager extends SherlockActivity {
 	private boolean isLargeScreen() {
 		int layout = getResources().getConfiguration().screenLayout;
 		int layoutSize = layout & Configuration.SCREENLAYOUT_SIZE_MASK;
-		return false;
-		//return layoutSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
-		//	   layoutSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+		return layoutSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
+			   layoutSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
 	}
 
 
