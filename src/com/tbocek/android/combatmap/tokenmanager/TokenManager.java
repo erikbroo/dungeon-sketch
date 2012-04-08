@@ -541,7 +541,6 @@ public final class TokenManager extends SherlockActivity {
 				return true;
 			default:
 				break;
-				
 			}
 			return false;
 		}

@@ -62,6 +62,9 @@ It will not encrypt your data.  It is easily circumvented.  It will not thwart p
 
 Please do not use GM Screen to protect anything actually important, like banking credentials, nuclear secrets, or your totally secret diary.
     </string>
+    
+    <string name="gm_screen_explanation_picking">To reset the GM Screen PIN in the future, simply turn this feature off and on again.</string>
+    <string name="gm_screen_explanation_entering">Please enter the GM Screen PIN to see the background or GM Notes views.</string>
        
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
