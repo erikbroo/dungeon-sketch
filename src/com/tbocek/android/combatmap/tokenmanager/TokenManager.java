@@ -358,6 +358,16 @@ public final class TokenManager extends SherlockActivity {
 
     	}
     }
+    
+    @Override
+    public void onPrepareDialog(int id, Dialog dialog) {
+    	switch(id) {
+    	case DIALOG_ID_NEW_TAG:
+    		 ((TextPromptDialog) dialog).fillText("");
+    	default:
+        	break;
+    	}
+    }
 
 
     @Override
