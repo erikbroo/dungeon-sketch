@@ -188,7 +188,7 @@ public final class TokenManager extends SherlockActivity {
         } else {
         	this.mTagsInActionBar = true;
         	getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        	getSupportActionBar().setDisplayShowTitleEnabled(true);
+        	getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         
     	mScrollView =
@@ -345,13 +345,13 @@ public final class TokenManager extends SherlockActivity {
     	case R.id.token_manager_delete_tag:
     		// Confirm the tag deletion.
     		new AlertDialog.Builder(this)
-    			.setMessage("Really delete the " + this.tagFromActionBar + "tag?  This won't delete any tokens.")
+    			.setMessage("Really delete the " + getActiveTag() + " tag?  This won't delete any tokens.")
     			.setCancelable(false)
     			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						mTokenDatabase.deleteTag(tagFromActionBar);
+						mTokenDatabase.deleteTag(getActiveTag());
 						updateTagList();
 					}
 				})
@@ -591,7 +591,7 @@ public final class TokenManager extends SherlockActivity {
 				tagFromActionBar = TokenDatabase.ALL;
 			} else {
 				setScrollViewTag(mTags.get(itemPosition - 1));
-				setScrollViewTag(mTags.get(itemPosition - 1));
+				tagFromActionBar = mTags.get(itemPosition - 1);
 			}
 			return true;
 		}
