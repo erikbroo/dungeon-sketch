@@ -134,16 +134,18 @@ public final class TokenManager extends SherlockActivity {
      * @param tag The new tag to display tokens for.
      */
 	private void setScrollViewTag(final String tag) {
-		mTokenViewFactory.getMultiSelectManager().selectNone();
-		mScrollView.removeAllViews();
-		if (tag.equals(TokenDatabase.ALL)) {
-			mScrollView.addView(
-					getTokenButtonLayout(mTokenDatabase.getAllTokens()));
-			this.mDeleteTagMenuItem.setVisible(false);
-		} else {
-			mScrollView.addView(
-					getTokenButtonLayout(mTokenDatabase.getTokensForTag(tag)));
-			this.mDeleteTagMenuItem.setVisible(true);
+		if (!this.mSuspendViewUpdates) {
+			mTokenViewFactory.getMultiSelectManager().selectNone();
+			mScrollView.removeAllViews();
+			if (tag.equals(TokenDatabase.ALL)) {
+				mScrollView.addView(
+						getTokenButtonLayout(mTokenDatabase.getAllTokens()));
+				this.mDeleteTagMenuItem.setVisible(false);
+			} else {
+				mScrollView.addView(
+						getTokenButtonLayout(mTokenDatabase.getTokensForTag(tag)));
+				this.mDeleteTagMenuItem.setVisible(true);
+			}
 		}
 	}
 
@@ -255,10 +257,20 @@ public final class TokenManager extends SherlockActivity {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 			adapter.add("All Tokens");
 			adapter.addAll(tags);
+			int oldIndex = tags.indexOf(this.tagFromActionBar) + 1; // If not found, will result in "All Tokens" which is just what we want.
 			bar.setListNavigationCallbacks(adapter, new TagNavigationListener(tags));
+			this.setSuspendViewUpdates(oldIndex > 0); // If we are staying on the same tag (i.e. not changing back to "All Tokens" because of a deleted tag), do not refresh the view so we don't lose the scroll position.
+			bar.setSelectedNavigationItem(oldIndex);
+			this.setSuspendViewUpdates(false);
 		} else {
 			mTagListView.setTagList(mTokenDatabase.getTags());
 		}
+	}
+
+	boolean mSuspendViewUpdates = false;
+	private void setSuspendViewUpdates(boolean b) {
+		mSuspendViewUpdates = b;
+		
 	}
 
 	@Override
@@ -368,7 +380,6 @@ public final class TokenManager extends SherlockActivity {
         	break;
     	}
     }
-
 
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v,
