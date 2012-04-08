@@ -294,8 +294,13 @@ public final class TokenManager extends SherlockActivity {
 		grid.setLayoutParams(new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT, 
 				ViewGroup.LayoutParams.WRAP_CONTENT));
-		int cellDimension = (int) (
-				TOKEN_BUTTON_SIZE * getResources().getDisplayMetrics().density);
+		
+		int smallerDimension = Math.min(this.getWindowManager().getDefaultDisplay().getWidth(), this.getWindowManager().getDefaultDisplay().getHeight());
+		
+		// Make tokens at most TOKEN_BUTTON_SIZE DiP large, but fit at least
+		// three across the smallest screen dimension.
+		int cellDimension = Math.min(smallerDimension / 3, (int) (
+				TOKEN_BUTTON_SIZE * getResources().getDisplayMetrics().density));
 		grid.setCellDimensions(cellDimension, cellDimension);
 		
 		mButtons = Lists.newArrayList();
