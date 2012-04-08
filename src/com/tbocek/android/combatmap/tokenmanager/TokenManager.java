@@ -343,6 +343,27 @@ public final class TokenManager extends SherlockActivity {
     		showDialog(DIALOG_ID_NEW_TAG);
     		return true;
     	case R.id.token_manager_delete_tag:
+    		// Confirm the tag deletion.
+    		new AlertDialog.Builder(this)
+    			.setMessage("Really delete the " + this.tagFromActionBar + "tag?  This won't delete any tokens.")
+    			.setCancelable(false)
+    			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						mTokenDatabase.deleteTag(tagFromActionBar);
+						updateTagList();
+					}
+				})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+						
+					}
+				})
+				.create().show();
     		return true;
         case android.R.id.home:
             // app icon in action bar clicked; go home
