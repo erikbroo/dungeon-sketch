@@ -9,140 +9,3217 @@ package com.tbocek.android.combatmap;
 
 public final class R {
     public static final class array {
-        public static final int gridNames=0x7f050002;
-        public static final int gridValues=0x7f050003;
-        public static final int themeNames=0x7f050000;
-        public static final int themeValues=0x7f050001;
+        public static final int text_size_values=0x7f0c0000;
+        public static final int themeNames=0x7f0c0001;
     }
     public static final class attr {
+        /**  Specified if we are forcing an action item overflow menu. 
+         <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int absForceOverflow=0x7f010039;
+        /**  Custom divider drawable to use for elements in the action bar. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarDivider=0x7f01000e;
+        /**  Custom item state list drawable background for action bar items. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarItemBackground=0x7f01000f;
+        /**  Size of the Action Bar, including the contextual
+             bar used to present Action Modes. 
+         <p>May be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+<p>May be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>wrap_content</code></td><td>0</td><td></td></tr>
+</table>
+         */
+        public static final int actionBarSize=0x7f01000d;
+        /**  Reference to a style for the split Action Bar. This style
+             controls the split component that holds the menu/action
+             buttons. actionBarStyle is still used for the primary
+             bar. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarSplitStyle=0x7f01000b;
+        /**  Reference to a style for the Action Bar 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarStyle=0x7f01000a;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarTabBarStyle=0x7f010007;
+        /**  Default style for tabs within an action bar 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarTabStyle=0x7f010006;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarTabTextStyle=0x7f010008;
+        /**  Reference to a theme that should be used to inflate widgets
+             and layouts destined for the action bar. Most of the time
+             this will be a reference to the current theme, but when
+             the action bar has a significantly different contrast
+             profile than the rest of the activity the difference
+             can become important. If this is set to @null the current
+             theme will be used.
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionBarWidgetTheme=0x7f01000c;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionButtonStyle=0x7f01002b;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionDropDownStyle=0x7f01002a;
+        /**  TextAppearance style that will be applied to text that
+             appears within action menu items. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionMenuTextAppearance=0x7f010010;
+        /**  Color for text that appears within action menu items. 
+         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int actionMenuTextColor=0x7f010011;
+        /**  Background drawable to use for action mode UI 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionModeBackground=0x7f010014;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionModeCloseButtonStyle=0x7f010013;
+        /**  Drawable to use for the close action mode button 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionModeCloseDrawable=0x7f010016;
+        /**  PopupWindow style to use for action modes when showing as a window overlay. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionModePopupWindowStyle=0x7f010018;
+        /**  Drawable to use for the Share action button in WebView selection action modes 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionModeShareDrawable=0x7f010017;
+        /**  Background drawable to use for action mode UI in the lower split bar 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionModeSplitBackground=0x7f010015;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionModeStyle=0x7f010012;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionOverflowButtonStyle=0x7f010009;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int actionSpinnerItemStyle=0x7f010030;
+        /**  Drawable used as a background for activated items. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int activatedBackgroundIndicator=0x7f010038;
+        /**  Default ActivityChooserView style. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int activityChooserViewStyle=0x7f010037;
+        /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int background=0x7f010002;
+        /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int backgroundSplit=0x7f010003;
+        /**  Specifies a background drawable for a second stacked row of the action bar. 
+         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int backgroundStacked=0x7f010040;
+        /**  Small Button style. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int buttonStyleSmall=0x7f010019;
+        /**  Specifies a layout for custom navigation. Overrides navigationMode. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int customNavigationLayout=0x7f010041;
+        /**  Options affecting how the action bar is displayed. 
+         <p>Must be one or more (separated by '|') of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>useLogo</code></td><td>0x1</td><td></td></tr>
+<tr><td><code>showHome</code></td><td>0x2</td><td></td></tr>
+<tr><td><code>homeAsUp</code></td><td>0x4</td><td></td></tr>
+<tr><td><code>showTitle</code></td><td>0x8</td><td></td></tr>
+<tr><td><code>showCustom</code></td><td>0x10</td><td></td></tr>
+<tr><td><code>disableHome</code></td><td>0x20</td><td></td></tr>
+</table>
+         */
+        public static final int displayOptions=0x7f01003b;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int divider=0x7f010005;
+        /**  Drawable to use for generic vertical dividers. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int dividerVertical=0x7f010029;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int dropDownListViewStyle=0x7f01002d;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int dropdownListPreferredItemHeight=0x7f01002f;
+        /**  The drawable to show in the button for expanding the activities overflow popup.
+             <strong>Note:</strong> Clients would like to set this drawable
+             as a clue about the action the chosen activity will perform. For
+             example, if share activity is to be chosen the drawable should
+             give a clue that sharing is to be performed.
+         
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int expandActivityOverflowButtonDrawable=0x7f010050;
+        /**  Default background for the menu header. 
+         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int headerBackground=0x7f01004a;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int height=0x7f010004;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int homeAsUpIndicator=0x7f01002c;
+        /**  Specifies a layout to use for the "home" section of the action bar. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int homeLayout=0x7f010042;
+        /**  Default horizontal divider between rows of menu items. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int horizontalDivider=0x7f010048;
+        /**  Specifies the drawable used for the application icon. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int icon=0x7f01003e;
+        /**  Specifies a style resource to use for an indeterminate progress spinner. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int indeterminateProgressStyle=0x7f010044;
+        /**  The maximal number of items initially shown in the activity list. 
+         <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int initialActivityCount=0x7f01004f;
+        /**  Default background for each menu item. 
+         <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int itemBackground=0x7f01004b;
+        /**  Default disabled icon alpha for each menu item that shows an icon. 
+         <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int itemIconDisabledAlpha=0x7f01004d;
+        /**  Specifies padding that should be applied to the left and right sides of
+             system-provided items in the bar. 
+         <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int itemPadding=0x7f010046;
+        /**  Default appearance of menu item text. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int itemTextAppearance=0x7f010047;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int listPopupWindowStyle=0x7f010036;
+        /**  A smaller, sleeker list item height. 
+         <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int listPreferredItemHeightSmall=0x7f010023;
+        /**  The preferred padding along the left edge of list items. 
+         <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int listPreferredItemPaddingLeft=0x7f010024;
+        /**  The preferred padding along the right edge of list items. 
+         <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int listPreferredItemPaddingRight=0x7f010025;
+        /**  Specifies the drawable used for the application logo. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int logo=0x7f01003f;
+        /**  The type of navigation to use. 
+         <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>normal</code></td><td>0</td><td> Normal static title text </td></tr>
+<tr><td><code>listMode</code></td><td>1</td><td> The action bar will use a selection list for navigation. </td></tr>
+<tr><td><code>tabMode</code></td><td>2</td><td> The action bar will use a series of horizontal tabs for navigation. </td></tr>
+</table>
+         */
+        public static final int navigationMode=0x7f01003a;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int popupMenuStyle=0x7f01002e;
+        /**  Whether space should be reserved in layout when an icon is missing. 
+         <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int preserveIconSpacing=0x7f01004e;
+        /**  Specifies the horizontal padding on either end for an embedded progress bar. 
+         <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int progressBarPadding=0x7f010045;
+        /**  Specifies a style resource to use for an embedded progress bar. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int progressBarStyle=0x7f010043;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int spinnerDropDownItemStyle=0x7f010022;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int spinnerItemStyle=0x7f010021;
+        /**  Specifies subtitle text used for navigationMode="normal" 
+         <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int subtitle=0x7f01003d;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int subtitleTextStyle=0x7f010001;
+        /**  Text color, typeface, size, and style for the text inside of a popup menu. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int textAppearanceLargePopupMenu=0x7f01001b;
+        /**  The preferred TextAppearance for the primary text of small list items. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int textAppearanceListItemSmall=0x7f010026;
+        /**  Text color, typeface, size, and style for "small" text. Defaults to secondary text color. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int textAppearanceSmall=0x7f01001d;
+        /**  Text color, typeface, size, and style for small text inside of a popup menu. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int textAppearanceSmallPopupMenu=0x7f01001c;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int textColorPrimary=0x7f01001e;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int textColorPrimaryDisableOnly=0x7f01001f;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int textColorPrimaryInverse=0x7f010020;
+        /**  Specifies title text used for navigationMode="normal" 
+         <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int title=0x7f01003c;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int titleTextStyle=0x7f010000;
+        /**  Default vertical divider between menu items. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int verticalDivider=0x7f010049;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int windowActionBar=0x7f010032;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int windowActionBarOverlay=0x7f010033;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int windowActionModeOverlay=0x7f010034;
+        /**  Default animations for the menu. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int windowAnimationStyle=0x7f01004c;
+        /**  This Drawable is overlaid over the foreground of the Window's content area, usually
+             to place a shadow below the title.  
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int windowContentOverlay=0x7f01001a;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int windowMinWidthMajor=0x7f010027;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int windowMinWidthMinor=0x7f010028;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int windowNoTitle=0x7f010031;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int windowSplitActionBar=0x7f010035;
+    }
+    public static final class bool {
+        public static final int abs__action_bar_embed_tabs=0x7f060000;
+        public static final int abs__action_bar_expanded_action_views_exclusive=0x7f060002;
+        /**  Whether action menu items should be displayed in ALLCAPS or not.
+         Defaults to true. If this is not appropriate for specific locales
+         it should be disabled in that locale's resources. 
+         */
+        public static final int abs__config_actionMenuItemAllCaps=0x7f060004;
+        /**  Whether action menu items should obey the "withText" showAsAction
+         flag. This may be set to false for situations where space is
+         extremely limited. 
+ Whether action menu items should obey the "withText" showAsAction
+         flag. This may be set to false for situations where space is
+         extremely limited. 
+         */
+        public static final int abs__config_allowActionMenuItemTextWithIcon=0x7f060005;
+        /**  Sets whether menu shortcuts should be displayed on panel menus when
+         a keyboard is present. 
+         */
+        public static final int abs__config_showMenuShortcutsWhenKeyboardPresent=0x7f060003;
+        public static final int abs__split_action_bar_is_narrow=0x7f060001;
+    }
+    public static final class color {
+        public static final int abs__background_holo_dark=0x7f070000;
+        public static final int abs__background_holo_light=0x7f070001;
+        public static final int abs__bright_foreground_disabled_holo_dark=0x7f070004;
+        public static final int abs__bright_foreground_disabled_holo_light=0x7f070005;
+        public static final int abs__bright_foreground_holo_dark=0x7f070002;
+        public static final int abs__bright_foreground_holo_light=0x7f070003;
+        public static final int abs__bright_foreground_inverse_holo_dark=0x7f070006;
+        public static final int abs__bright_foreground_inverse_holo_light=0x7f070007;
+        public static final int abs__holo_blue_light=0x7f070008;
+        public static final int abs__primary_text_disable_only_holo_dark=0x7f070009;
+        public static final int abs__primary_text_disable_only_holo_light=0x7f07000a;
+        public static final int abs__primary_text_holo_dark=0x7f07000b;
+        public static final int abs__primary_text_holo_light=0x7f07000c;
+    }
+    public static final class dimen {
+        /**  Default height of an action bar. 
+ Default height of an action bar. 
+ Default height of an action bar. 
+ Default height of an action bar. 
+ Default height of an action bar. 
+ Default height of an action bar. 
+ Default height of an action bar. 
+ Default height of an action bar. 
+         */
+        public static final int abs__action_bar_default_height=0x7f080001;
+        /**  Vertical padding around action bar icons. 
+ Vertical padding around action bar icons. 
+ Vertical padding around action bar icons. 
+ Vertical padding around action bar icons. 
+ Vertical padding around action bar icons. 
+ Vertical padding around action bar icons. 
+ Vertical padding around action bar icons. 
+ Vertical padding around action bar icons. 
+         */
+        public static final int abs__action_bar_icon_vertical_padding=0x7f080002;
+        /**  Bottom margin for action bar subtitles 
+ Bottom margin for action bar subtitles 
+ Bottom margin for action bar subtitles 
+ Bottom margin for action bar subtitles 
+ Bottom margin for action bar subtitles 
+ Bottom margin for action bar subtitles 
+ Bottom margin for action bar subtitles 
+ Bottom margin for action bar subtitles 
+         */
+        public static final int abs__action_bar_subtitle_bottom_margin=0x7f080006;
+        /**  Text size for action bar subtitles 
+ Text size for action bar subtitles 
+ Text size for action bar subtitles 
+ Text size for action bar subtitles 
+ Text size for action bar subtitles 
+ Text size for action bar subtitles 
+ Text size for action bar subtitles 
+ Text size for action bar subtitles 
+         */
+        public static final int abs__action_bar_subtitle_text_size=0x7f080004;
+        /**  Top margin for action bar subtitles 
+ Top margin for action bar subtitles 
+ Top margin for action bar subtitles 
+ Top margin for action bar subtitles 
+ Top margin for action bar subtitles 
+ Top margin for action bar subtitles 
+ Top margin for action bar subtitles 
+ Top margin for action bar subtitles 
+         */
+        public static final int abs__action_bar_subtitle_top_margin=0x7f080005;
+        /**  Text size for action bar titles 
+ Text size for action bar titles 
+ Text size for action bar titles 
+ Text size for action bar titles 
+ Text size for action bar titles 
+ Text size for action bar titles 
+ Text size for action bar titles 
+ Text size for action bar titles 
+         */
+        public static final int abs__action_bar_title_text_size=0x7f080003;
+        /**  Minimum width for an action button in the menu area of an action bar 
+ Minimum width for an action button in the menu area of an action bar 
+         */
+        public static final int abs__action_button_min_width=0x7f080007;
+        /**  Dialog title height 
+         */
+        public static final int abs__alert_dialog_title_height=0x7f080008;
+        /**  The maximum width we would prefer dialogs to be.  0 if there is no
+         maximum (let them grow as large as the screen).  Actual values are
+         specified for -large and -xlarge configurations. 
+         */
+        public static final int abs__config_prefDialogWidth=0x7f080000;
+        /**  The platform's desired minimum size for a dialog's width when it
+         is along the major axis (that is the screen is landscape).  This may
+         be either a fraction or a dimension. 
+ The platform's desired minimum size for a dialog's width when it
+         is along the major axis (that is the screen is landscape).  This may
+         be either a fraction or a dimension. 
+ The platform's desired minimum size for a dialog's width when it
+         is along the major axis (that is the screen is landscape).  This may
+         be either a fraction or a dimension. 
+         */
+        public static final int abs__dialog_min_width_major=0x7f080009;
+        /**  The platform's desired minimum size for a dialog's width when it
+         is along the minor axis (that is the screen is portrait).  This may
+         be either a fraction or a dimension. 
+ The platform's desired minimum size for a dialog's width when it
+         is along the minor axis (that is the screen is portrait).  This may
+         be either a fraction or a dimension. 
+ The platform's desired minimum size for a dialog's width when it
+         is along the minor axis (that is the screen is portrait).  This may
+         be either a fraction or a dimension. 
+         */
+        public static final int abs__dialog_min_width_minor=0x7f08000a;
+        /**  Minimum width for an action button in the menu area of an action bar 
+ Minimum width for an action button in the menu area of an action bar 
+         */
+        public static final int action_button_min_width=0x7f08000b;
     }
     public static final class drawable {
-        public static final int cheetah=0x7f020000;
-        public static final int circle=0x7f020001;
-        public static final int cougar=0x7f020002;
-        public static final int cute_horses=0x7f020003;
-        public static final int document_new=0x7f020004;
-        public static final int document_open=0x7f020005;
-        public static final int document_save=0x7f020006;
-        public static final int dog=0x7f020007;
-        public static final int dogs=0x7f020008;
-        public static final int douchy_guy=0x7f020009;
-        public static final int dragongirl_dragontigernight=0x7f02000a;
-        public static final int editdelete=0x7f02000b;
-        public static final int eraser=0x7f02000c;
-        public static final int fox=0x7f02000d;
-        public static final int freehand_shape=0x7f02000e;
-        public static final int gorgon=0x7f02000f;
-        public static final int icon=0x7f020010;
-        public static final int inktube=0x7f020011;
-        public static final int lamb=0x7f020012;
-        public static final int line_freehand=0x7f020013;
-        public static final int line_straight=0x7f020014;
-        public static final int lion=0x7f020015;
-        public static final int mask=0x7f020016;
-        public static final int orc2_libmed=0x7f020017;
-        public static final int orc_libmed=0x7f020018;
-        public static final int paintbrush=0x7f020019;
-        public static final int pen=0x7f02001a;
-        public static final int pencil=0x7f02001b;
-        public static final int pencilbw=0x7f02001c;
-        public static final int perseus=0x7f02001d;
-        public static final int pig=0x7f02001e;
-        public static final int rad_stag=0x7f02001f;
-        public static final int redo=0x7f020020;
-        public static final int stag2=0x7f020021;
-        public static final int swan=0x7f020022;
-        public static final int tiger1=0x7f020023;
-        public static final int tiger2=0x7f020024;
-        public static final int transform_move=0x7f020025;
-        public static final int trashcan=0x7f020026;
-        public static final int trashcan_hover_over=0x7f020027;
-        public static final int undo=0x7f020028;
+        public static final int abs__ab_bottom_solid_dark_holo=0x7f020000;
+        public static final int abs__ab_bottom_solid_inverse_holo=0x7f020001;
+        public static final int abs__ab_bottom_solid_light_holo=0x7f020002;
+        public static final int abs__ab_bottom_transparent_dark_holo=0x7f020003;
+        public static final int abs__ab_bottom_transparent_light_holo=0x7f020004;
+        public static final int abs__ab_share_pack_holo_dark=0x7f020005;
+        public static final int abs__ab_share_pack_holo_light=0x7f020006;
+        public static final int abs__ab_solid_dark_holo=0x7f020007;
+        public static final int abs__ab_solid_light_holo=0x7f020008;
+        public static final int abs__ab_solid_shadow_holo=0x7f020009;
+        public static final int abs__ab_stacked_solid_dark_holo=0x7f02000a;
+        public static final int abs__ab_stacked_solid_inverse_holo=0x7f02000b;
+        public static final int abs__ab_stacked_solid_light_holo=0x7f02000c;
+        public static final int abs__ab_stacked_transparent_dark_holo=0x7f02000d;
+        public static final int abs__ab_stacked_transparent_light_holo=0x7f02000e;
+        public static final int abs__ab_transparent_dark_holo=0x7f02000f;
+        public static final int abs__ab_transparent_light_holo=0x7f020010;
+        public static final int abs__activated_background_holo_dark=0x7f020011;
+        public static final int abs__activated_background_holo_light=0x7f020012;
+        public static final int abs__btn_cab_done_default_holo_dark=0x7f020013;
+        public static final int abs__btn_cab_done_default_holo_light=0x7f020014;
+        public static final int abs__btn_cab_done_focused_holo_dark=0x7f020015;
+        public static final int abs__btn_cab_done_focused_holo_light=0x7f020016;
+        public static final int abs__btn_cab_done_holo_dark=0x7f020017;
+        public static final int abs__btn_cab_done_holo_light=0x7f020018;
+        public static final int abs__btn_cab_done_pressed_holo_dark=0x7f020019;
+        public static final int abs__btn_cab_done_pressed_holo_light=0x7f02001a;
+        public static final int abs__cab_background_bottom_holo_dark=0x7f02001b;
+        public static final int abs__cab_background_bottom_holo_light=0x7f02001c;
+        public static final int abs__cab_background_top_holo_dark=0x7f02001d;
+        public static final int abs__cab_background_top_holo_light=0x7f02001e;
+        public static final int abs__dialog_bottom_holo_dark=0x7f02001f;
+        public static final int abs__dialog_bottom_holo_light=0x7f020020;
+        public static final int abs__dialog_full_holo_dark=0x7f020021;
+        public static final int abs__dialog_full_holo_light=0x7f020022;
+        public static final int abs__ic_ab_back_holo_dark=0x7f020023;
+        public static final int abs__ic_ab_back_holo_light=0x7f020024;
+        public static final int abs__ic_cab_done_holo_dark=0x7f020025;
+        public static final int abs__ic_cab_done_holo_light=0x7f020026;
+        public static final int abs__ic_menu_moreoverflow_holo_dark=0x7f020027;
+        public static final int abs__ic_menu_moreoverflow_holo_light=0x7f020028;
+        public static final int abs__ic_menu_moreoverflow_normal_holo_dark=0x7f020029;
+        public static final int abs__ic_menu_moreoverflow_normal_holo_light=0x7f02002a;
+        public static final int abs__ic_menu_share_holo_dark=0x7f02002b;
+        public static final int abs__ic_menu_share_holo_light=0x7f02002c;
+        public static final int abs__item_background_holo_dark=0x7f02002d;
+        public static final int abs__item_background_holo_light=0x7f02002e;
+        public static final int abs__list_activated_holo=0x7f02002f;
+        public static final int abs__list_divider_holo_dark=0x7f020030;
+        public static final int abs__list_divider_holo_light=0x7f020031;
+        public static final int abs__list_focused_holo=0x7f020032;
+        public static final int abs__list_longpressed_holo=0x7f020033;
+        public static final int abs__list_pressed_holo_dark=0x7f020034;
+        public static final int abs__list_pressed_holo_light=0x7f020035;
+        public static final int abs__list_selector_background_transition_holo_dark=0x7f020036;
+        public static final int abs__list_selector_background_transition_holo_light=0x7f020037;
+        public static final int abs__list_selector_disabled_holo_dark=0x7f020038;
+        public static final int abs__list_selector_disabled_holo_light=0x7f020039;
+        public static final int abs__list_selector_holo_dark=0x7f02003a;
+        public static final int abs__list_selector_holo_light=0x7f02003b;
+        public static final int abs__menu_dropdown_panel_holo_dark=0x7f02003c;
+        public static final int abs__menu_dropdown_panel_holo_light=0x7f02003d;
+        public static final int abs__progress_bg_holo_dark=0x7f02003e;
+        public static final int abs__progress_bg_holo_light=0x7f02003f;
+        public static final int abs__progress_horizontal_holo_dark=0x7f020040;
+        public static final int abs__progress_horizontal_holo_light=0x7f020041;
+        public static final int abs__progress_medium_holo=0x7f020042;
+        public static final int abs__progress_primary_holo_dark=0x7f020043;
+        public static final int abs__progress_primary_holo_light=0x7f020044;
+        public static final int abs__progress_secondary_holo_dark=0x7f020045;
+        public static final int abs__progress_secondary_holo_light=0x7f020046;
+        public static final int abs__spinner_20_inner_holo=0x7f020047;
+        public static final int abs__spinner_20_outer_holo=0x7f020048;
+        public static final int abs__spinner_48_inner_holo=0x7f020049;
+        public static final int abs__spinner_48_outer_holo=0x7f02004a;
+        public static final int abs__spinner_ab_default_holo_dark=0x7f02004b;
+        public static final int abs__spinner_ab_default_holo_light=0x7f02004c;
+        public static final int abs__spinner_ab_disabled_holo_dark=0x7f02004d;
+        public static final int abs__spinner_ab_disabled_holo_light=0x7f02004e;
+        public static final int abs__spinner_ab_focused_holo_dark=0x7f02004f;
+        public static final int abs__spinner_ab_focused_holo_light=0x7f020050;
+        public static final int abs__spinner_ab_holo_dark=0x7f020051;
+        public static final int abs__spinner_ab_holo_light=0x7f020052;
+        public static final int abs__spinner_ab_pressed_holo_dark=0x7f020053;
+        public static final int abs__spinner_ab_pressed_holo_light=0x7f020054;
+        public static final int abs__tab_indicator_ab_holo=0x7f020055;
+        public static final int abs__tab_indicator_holo=0x7f020056;
+        public static final int abs__tab_selected_focused_holo=0x7f020057;
+        public static final int abs__tab_selected_holo=0x7f020058;
+        public static final int abs__tab_selected_pressed_holo=0x7f020059;
+        public static final int abs__tab_unselected_focused_holo=0x7f02005a;
+        public static final int abs__tab_unselected_holo=0x7f02005b;
+        public static final int abs__tab_unselected_pressed_holo=0x7f02005c;
+        public static final int add_image=0x7f02005d;
+        public static final int algrim=0x7f02005e;
+        public static final int ancient_troll2=0x7f02005f;
+        public static final int angel_of_death=0x7f020060;
+        public static final int angel_of_pain=0x7f020061;
+        public static final int aquatic_evil=0x7f020062;
+        public static final int archmage_3=0x7f020063;
+        public static final int athanasius_weirman=0x7f020064;
+        public static final int aurak=0x7f020065;
+        public static final int avalanche=0x7f020066;
+        public static final int baltar=0x7f020067;
+        public static final int battlemage=0x7f020068;
+        public static final int beastmaster=0x7f020069;
+        public static final int beastmaster_dragon=0x7f02006a;
+        public static final int becar=0x7f02006b;
+        public static final int berwyn=0x7f02006c;
+        public static final int black_daggers=0x7f02006d;
+        public static final int black_duke=0x7f02006e;
+        public static final int blade_dancer=0x7f02006f;
+        public static final int blade_wizard=0x7f020070;
+        public static final int boy_and_monster=0x7f020071;
+        public static final int chaos_warlord=0x7f020072;
+        public static final int cheetah=0x7f020073;
+        public static final int circelo=0x7f020074;
+        public static final int circle=0x7f020075;
+        public static final int col_blinky=0x7f020076;
+        public static final int conall=0x7f020077;
+        public static final int cougar=0x7f020078;
+        public static final int cullin=0x7f020079;
+        public static final int cute_horses=0x7f02007a;
+        public static final int cyclops=0x7f02007b;
+        public static final int damisk=0x7f02007c;
+        public static final int dark_chimaira_=0x7f02007d;
+        public static final int deathangel=0x7f02007e;
+        public static final int deep_one2=0x7f02007f;
+        public static final int dehna=0x7f020080;
+        public static final int dirk_centipede=0x7f020081;
+        public static final int document_new=0x7f020082;
+        public static final int document_open=0x7f020083;
+        public static final int document_save=0x7f020084;
+        public static final int dog=0x7f020085;
+        public static final int dogs=0x7f020086;
+        public static final int douchy_guy=0x7f020087;
+        public static final int dr_ranger=0x7f020088;
+        public static final int dragon_furioso=0x7f020089;
+        public static final int dragon_hurlant=0x7f02008a;
+        public static final int dragon_roncke=0x7f02008b;
+        public static final int dragon_throne=0x7f02008c;
+        public static final int dragongirl_dragontigernight=0x7f02008d;
+        public static final int draw_text=0x7f02008e;
+        public static final int dreadknight_klein=0x7f02008f;
+        public static final int e_mist=0x7f020090;
+        public static final int editdelete=0x7f020091;
+        public static final int el_vago_ill=0x7f020092;
+        public static final int elbenkrieger2=0x7f020093;
+        public static final int elvira=0x7f020094;
+        public static final int eraser=0x7f020095;
+        public static final int fawn=0x7f020096;
+        public static final int female_dragon=0x7f020097;
+        public static final int ferdinand=0x7f020098;
+        public static final int filter=0x7f020099;
+        public static final int flagron=0x7f02009a;
+        public static final int flamebeard=0x7f02009b;
+        public static final int flamesandshadows=0x7f02009c;
+        public static final int fox=0x7f02009d;
+        public static final int freehand_shape=0x7f02009e;
+        public static final int frostgiant_2=0x7f02009f;
+        public static final int gerymn=0x7f0200a0;
+        public static final int ghostrider_in_the_sky_1=0x7f0200a1;
+        public static final int ghostrider_in_the_sky_2=0x7f0200a2;
+        public static final int ghouls2=0x7f0200a3;
+        public static final int glimnor=0x7f0200a4;
+        public static final int goblinportrait2=0x7f0200a5;
+        public static final int goren=0x7f0200a6;
+        public static final int gorgon=0x7f0200a7;
+        public static final int greed2=0x7f0200a8;
+        public static final int green_dragon=0x7f0200a9;
+        public static final int grid_hex=0x7f0200aa;
+        public static final int grid_rect=0x7f0200ab;
+        public static final int griffon=0x7f0200ac;
+        public static final int gyrlang=0x7f0200ad;
+        public static final int halfskull=0x7f0200ae;
+        public static final int heretic=0x7f0200af;
+        public static final int herugrim=0x7f0200b0;
+        public static final int icebarb=0x7f0200b1;
+        public static final int icebarb2=0x7f0200b2;
+        public static final int icemountain_ranger=0x7f0200b3;
+        public static final int icon=0x7f0200b4;
+        public static final int ikomalo=0x7f0200b5;
+        public static final int inktube=0x7f0200b6;
+        public static final int iseedeath=0x7f0200b7;
+        public static final int isobelle=0x7f0200b8;
+        public static final int johnaemeth=0x7f0200b9;
+        public static final int kal=0x7f0200ba;
+        public static final int kampf2_02=0x7f0200bb;
+        public static final int kateri=0x7f0200bc;
+        public static final int ken_invoke=0x7f0200bd;
+        public static final int kragger=0x7f0200be;
+        public static final int la_nuit_des_lumieres=0x7f0200bf;
+        public static final int lady_dread=0x7f0200c0;
+        public static final int lamb=0x7f0200c1;
+        public static final int line_freehand=0x7f0200c2;
+        public static final int line_straight=0x7f0200c3;
+        public static final int lion=0x7f0200c4;
+        public static final int lioness=0x7f0200c5;
+        public static final int lohman=0x7f0200c6;
+        public static final int luloah=0x7f0200c7;
+        public static final int magian=0x7f0200c8;
+        public static final int magnus_3=0x7f0200c9;
+        public static final int manticore=0x7f0200ca;
+        public static final int manticore3=0x7f0200cb;
+        public static final int martial=0x7f0200cc;
+        public static final int mask=0x7f0200cd;
+        public static final int melvs=0x7f0200ce;
+        public static final int minotaur=0x7f0200cf;
+        public static final int moi=0x7f0200d0;
+        public static final int mostin=0x7f0200d1;
+        public static final int mothmans_lair=0x7f0200d2;
+        public static final int mpillar=0x7f0200d3;
+        public static final int musashi=0x7f0200d4;
+        public static final int necro=0x7f0200d5;
+        public static final int nereid=0x7f0200d6;
+        public static final int nimbus=0x7f0200d7;
+        public static final int nocturne=0x7f0200d8;
+        public static final int northern_winds=0x7f0200d9;
+        public static final int nyarlathotep=0x7f0200da;
+        public static final int o_o_oooooo=0x7f0200db;
+        public static final int oaken_man=0x7f0200dc;
+        public static final int ocean=0x7f0200dd;
+        public static final int ogre=0x7f0200de;
+        public static final int ogre_sketch=0x7f0200df;
+        public static final int ogreportrait3=0x7f0200e0;
+        public static final int orcportrait3=0x7f0200e1;
+        public static final int orcshaman=0x7f0200e2;
+        public static final int ork_krieger=0x7f0200e3;
+        public static final int owlbear=0x7f0200e4;
+        public static final int paintbrush=0x7f0200e5;
+        public static final int pastandpresent=0x7f0200e6;
+        public static final int pax=0x7f0200e7;
+        public static final int pen=0x7f0200e8;
+        public static final int pencil=0x7f0200e9;
+        public static final int pencilbw=0x7f0200ea;
+        public static final int penny=0x7f0200eb;
+        public static final int perseus=0x7f0200ec;
+        public static final int persuasion=0x7f0200ed;
+        public static final int pieter=0x7f0200ee;
+        public static final int pig=0x7f0200ef;
+        public static final int planetary_misfortune=0x7f0200f0;
+        public static final int puma=0x7f0200f1;
+        public static final int rad_stag=0x7f0200f2;
+        public static final int raek=0x7f0200f3;
+        public static final int rakshase=0x7f0200f4;
+        public static final int rascal=0x7f0200f5;
+        public static final int rauce=0x7f0200f6;
+        public static final int rectangle=0x7f0200f7;
+        public static final int redo=0x7f0200f8;
+        public static final int redo_greyscale=0x7f0200f9;
+        public static final int reilo=0x7f0200fa;
+        public static final int rencontre_imprevue=0x7f0200fb;
+        public static final int roar=0x7f0200fc;
+        public static final int sag=0x7f0200fd;
+        public static final int scrollo=0x7f0200fe;
+        public static final int sea_serpent=0x7f0200ff;
+        public static final int secrets=0x7f020100;
+        public static final int seraph=0x7f020101;
+        public static final int shadowsaber=0x7f020102;
+        public static final int shark_thing=0x7f020103;
+        public static final int she_devil=0x7f020104;
+        public static final int shoggoth2=0x7f020105;
+        public static final int siren2=0x7f020106;
+        public static final int sister_eden=0x7f020107;
+        public static final int smilodon=0x7f020108;
+        public static final int snow=0x7f020109;
+        public static final int sothoth=0x7f02010a;
+        public static final int stag2=0x7f02010b;
+        public static final int stargazer2=0x7f02010c;
+        public static final int stjya=0x7f02010d;
+        public static final int sunset_dragon=0x7f02010e;
+        public static final int suspicious=0x7f02010f;
+        public static final int swamp_trollop_2=0x7f020110;
+        public static final int swan=0x7f020111;
+        public static final int tag=0x7f020112;
+        public static final int tai=0x7f020113;
+        public static final int tarot_the_devil=0x7f020114;
+        public static final int taste_the_unexpected=0x7f020115;
+        public static final int terma=0x7f020116;
+        public static final int tetaclak=0x7f020117;
+        public static final int thargad=0x7f020118;
+        public static final int thor=0x7f020119;
+        public static final int thorin=0x7f02011a;
+        public static final int thorn=0x7f02011b;
+        public static final int tiger1=0x7f02011c;
+        public static final int tiger2=0x7f02011d;
+        public static final int titan=0x7f02011e;
+        public static final int titan2=0x7f02011f;
+        public static final int transform_move=0x7f020120;
+        public static final int trashcan=0x7f020121;
+        public static final int trashcan_dark=0x7f020122;
+        public static final int trashcan_hover_over=0x7f020123;
+        public static final int tricky_troll=0x7f020124;
+        public static final int trollconcept2=0x7f020125;
+        public static final int undo=0x7f020126;
+        public static final int undo_greyscale=0x7f020127;
+        public static final int urolka=0x7f020128;
+        public static final int vampire_soldier=0x7f020129;
+        public static final int vanya_altea=0x7f02012a;
+        public static final int vasnetsov1=0x7f02012b;
+        public static final int vasnetsov2=0x7f02012c;
+        public static final int vasnetsov3=0x7f02012d;
+        public static final int veranesse=0x7f02012e;
+        public static final int vertical_contract=0x7f02012f;
+        public static final int vertical_expand=0x7f020130;
+        public static final int vesten=0x7f020131;
+        public static final int vogcore=0x7f020132;
+        public static final int void_walker=0x7f020133;
+        public static final int wolfman=0x7f020134;
+        public static final int yenkii_albing=0x7f020135;
+        public static final int zanth=0x7f020136;
+        public static final int zoidmonster=0x7f020137;
+        public static final int zombie_warrior=0x7f020138;
     }
     public static final class id {
-        public static final int black_pencil=0x7f07000c;
-        public static final int bottomControlAreaExpandButton=0x7f070004;
-        public static final int bottomControlAreaFrame=0x7f070002;
-        public static final int button_save=0x7f070010;
-        public static final int clear_all=0x7f07001f;
-        public static final int clear_all_submenu=0x7f07001e;
-        public static final int combatMapMainLayout=0x7f070000;
-        public static final int combatMapTabHost=0x7f070007;
-        public static final int delete_save_file=0x7f070024;
-        public static final int delete_token=0x7f070016;
-        public static final int eraser=0x7f07000b;
-        public static final int fog_context_delete=0x7f070023;
-        public static final int legacyActionBar=0x7f070005;
-        public static final int legacyActionBarLayout=0x7f070006;
-        public static final int legacyBackgroundButton=0x7f070008;
-        public static final int legacyGmNotesButton=0x7f070009;
-        public static final int linearLayout1=0x7f07000a;
-        public static final int load=0x7f07001d;
-        public static final int mainContentFrame=0x7f070001;
-        public static final int popupControlAreaFrame=0x7f070003;
-        public static final int resize_grid=0x7f070020;
-        public static final int save=0x7f07001c;
-        public static final int save_file_name=0x7f07000f;
-        public static final int saved_map_file_name=0x7f070012;
-        public static final int saved_map_preview=0x7f070011;
-        public static final int settings=0x7f070022;
-        public static final int snap_to_grid=0x7f070021;
-        public static final int textView1=0x7f07000e;
-        public static final int textView2=0x7f07000d;
-        public static final int token_category_selector_button=0x7f070019;
-        public static final int token_context_delete_token=0x7f070025;
-        public static final int token_context_resize_token=0x7f070026;
-        public static final int token_context_size_five=0x7f07002e;
-        public static final int token_context_size_four=0x7f07002d;
-        public static final int token_context_size_half=0x7f070029;
-        public static final int token_context_size_one=0x7f07002a;
-        public static final int token_context_size_quarter=0x7f070028;
-        public static final int token_context_size_six=0x7f07002f;
-        public static final int token_context_size_tenth=0x7f070027;
-        public static final int token_context_size_three=0x7f07002c;
-        public static final int token_context_size_two=0x7f07002b;
-        public static final int token_delete_entire_token=0x7f070031;
-        public static final int token_delete_from_tag=0x7f070030;
-        public static final int token_image_creator_accept=0x7f070032;
-        public static final int token_image_creator_pick=0x7f070033;
-        public static final int token_manager_button=0x7f07001a;
-        public static final int token_manager_delete_button_frame=0x7f070013;
-        public static final int token_manager_new_tag=0x7f070035;
-        public static final int token_manager_new_token=0x7f070034;
-        public static final int token_manager_scroll_view=0x7f070015;
-        public static final int token_manager_taglist_frame=0x7f070014;
-        public static final int token_scroll_view=0x7f070018;
-        public static final int token_selector_button_tray=0x7f070017;
-        public static final int zoom_to_fit=0x7f07001b;
+        public static final int abs__action_bar=0x7f050023;
+        public static final int abs__action_bar_container=0x7f050022;
+        public static final int abs__action_bar_subtitle=0x7f050012;
+        public static final int abs__action_bar_title=0x7f050011;
+        public static final int abs__action_context_bar=0x7f050024;
+        public static final int abs__action_menu_divider=0x7f05000c;
+        public static final int abs__action_menu_presenter=0x7f05000d;
+        public static final int abs__action_mode_bar=0x7f050027;
+        public static final int abs__action_mode_bar_stub=0x7f050026;
+        public static final int abs__action_mode_close_button=0x7f050015;
+        public static final int abs__activity_chooser_view_content=0x7f050016;
+        public static final int abs__checkbox=0x7f05001f;
+        public static final int abs__content=0x7f05001e;
+        public static final int abs__default_activity_button=0x7f050019;
+        public static final int abs__expand_activities_button=0x7f050017;
+        public static final int abs__home=0x7f05000a;
+        public static final int abs__icon=0x7f05001b;
+        public static final int abs__image=0x7f050018;
+        public static final int abs__imageButton=0x7f050013;
+        public static final int abs__list_item=0x7f05001a;
+        public static final int abs__progress_circular=0x7f05000e;
+        public static final int abs__progress_horizontal=0x7f05000f;
+        public static final int abs__radio=0x7f050021;
+        public static final int abs__shortcut=0x7f050020;
+        public static final int abs__split_action_bar=0x7f050025;
+        public static final int abs__textButton=0x7f050014;
+        public static final int abs__title=0x7f05001c;
+        public static final int abs__titleDivider=0x7f05001d;
+        public static final int abs__up=0x7f05000b;
+        public static final int art_credits_frame=0x7f050028;
+        public static final int bottomControlAreaExpandButton=0x7f05002d;
+        public static final int bottomControlAreaFrame=0x7f05002b;
+        public static final int button_background_color=0x7f050057;
+        public static final int button_export=0x7f05003e;
+        public static final int button_foreground_color=0x7f050058;
+        public static final int button_save=0x7f050034;
+        public static final int button_theme_presets=0x7f05005a;
+        public static final int button_toggle_hex_grid=0x7f050055;
+        public static final int button_toggle_rect_grid=0x7f050054;
+        public static final int checkbox_export_annotations=0x7f05003c;
+        public static final int checkbox_export_fog_of_war=0x7f05003d;
+        public static final int checkbox_export_gm_notes=0x7f05003a;
+        public static final int checkbox_export_grid_lines=0x7f050039;
+        public static final int checkbox_export_tokens=0x7f05003b;
+        public static final int color_picker_view=0x7f050030;
+        public static final int combatMapMainLayout=0x7f050029;
+        public static final int disableHome=0x7f050009;
+        public static final int edit_export_name=0x7f050036;
+        public static final int entered_text=0x7f050033;
+        public static final int fog_context_delete=0x7f050070;
+        public static final int gm_screen_0=0x7f05004f;
+        public static final int gm_screen_1=0x7f050042;
+        public static final int gm_screen_2=0x7f050043;
+        public static final int gm_screen_3=0x7f050044;
+        public static final int gm_screen_4=0x7f050046;
+        public static final int gm_screen_5=0x7f050047;
+        public static final int gm_screen_6=0x7f050048;
+        public static final int gm_screen_7=0x7f05004a;
+        public static final int gm_screen_8=0x7f05004b;
+        public static final int gm_screen_9=0x7f05004c;
+        public static final int gm_screen_bksp=0x7f05004e;
+        public static final int gm_screen_cancel=0x7f050051;
+        public static final int gm_screen_ok=0x7f050052;
+        public static final int gm_screen_pin_display=0x7f050040;
+        public static final int gm_screen_title_text=0x7f05003f;
+        public static final int homeAsUp=0x7f050006;
+        public static final int legacyActionBar=0x7f05002e;
+        public static final int legacyActionBarLayout=0x7f05002f;
+        public static final int listMode=0x7f050002;
+        public static final int mainContentFrame=0x7f05002a;
+        public static final int menu_clear_all=0x7f05006a;
+        public static final int menu_clear_all_submenu=0x7f050069;
+        public static final int menu_export=0x7f05006d;
+        public static final int menu_grid_properties=0x7f05006e;
+        public static final int menu_load=0x7f050068;
+        public static final int menu_redo=0x7f050066;
+        public static final int menu_resize_grid=0x7f05006b;
+        public static final int menu_save=0x7f050067;
+        public static final int menu_settings=0x7f05006f;
+        public static final int menu_snap_to_grid=0x7f05006c;
+        public static final int menu_undo=0x7f050065;
+        public static final int new_color_panel=0x7f050032;
+        public static final int normal=0x7f050001;
+        public static final int old_color_panel=0x7f050031;
+        public static final int popupControlAreaFrame=0x7f05002c;
+        public static final int radio_export_current_view=0x7f050038;
+        public static final int radio_export_full_map=0x7f050037;
+        public static final int save_file_context_delete=0x7f050071;
+        public static final int save_file_name=0x7f05005b;
+        public static final int saved_map_file_name=0x7f05005d;
+        public static final int saved_map_preview=0x7f05005c;
+        public static final int showCustom=0x7f050008;
+        public static final int showHome=0x7f050005;
+        public static final int showTitle=0x7f050007;
+        public static final int spinner_font_size=0x7f050035;
+        public static final int tabMode=0x7f050003;
+        public static final int tableRow1=0x7f050050;
+        public static final int tableRow2=0x7f050053;
+        public static final int tableRow3=0x7f050059;
+        public static final int tableRow5=0x7f050041;
+        public static final int tableRow6=0x7f050045;
+        public static final int tableRow7=0x7f050049;
+        public static final int tableRow8=0x7f05004d;
+        public static final int tag_context_menu_delete=0x7f050072;
+        public static final int textView1=0x7f050010;
+        public static final int textView2=0x7f050056;
+        public static final int token_action_mode_bloodied=0x7f050073;
+        public static final int token_action_mode_border_color=0x7f050080;
+        public static final int token_action_mode_border_color_black=0x7f050085;
+        public static final int token_action_mode_border_color_blue=0x7f050084;
+        public static final int token_action_mode_border_color_green=0x7f050087;
+        public static final int token_action_mode_border_color_group=0x7f050081;
+        public static final int token_action_mode_border_color_none=0x7f050082;
+        public static final int token_action_mode_border_color_red=0x7f050086;
+        public static final int token_action_mode_border_color_white=0x7f050083;
+        public static final int token_action_mode_border_color_yellow=0x7f050088;
+        public static final int token_action_mode_delete=0x7f050074;
+        public static final int token_action_mode_size=0x7f050075;
+        public static final int token_action_mode_size_1=0x7f05007a;
+        public static final int token_action_mode_size_2=0x7f05007b;
+        public static final int token_action_mode_size_3=0x7f05007c;
+        public static final int token_action_mode_size_4=0x7f05007d;
+        public static final int token_action_mode_size_5=0x7f05007e;
+        public static final int token_action_mode_size_6=0x7f05007f;
+        public static final int token_action_mode_size_group=0x7f050076;
+        public static final int token_action_mode_size_half=0x7f050079;
+        public static final int token_action_mode_size_quarter=0x7f050078;
+        public static final int token_action_mode_size_tenth=0x7f050077;
+        public static final int token_category_selector_button=0x7f050062;
+        public static final int token_delete_entire_token=0x7f05008a;
+        public static final int token_delete_from_tag=0x7f050089;
+        public static final int token_image_creator_accept=0x7f05008b;
+        public static final int token_image_creator_pick=0x7f05008c;
+        public static final int token_manager_action_mode_add_to_tag=0x7f05008f;
+        public static final int token_manager_action_mode_delete=0x7f05008d;
+        public static final int token_manager_action_mode_remove_tag=0x7f05008e;
+        public static final int token_manager_button=0x7f050063;
+        public static final int token_manager_delete_button_frame=0x7f05005f;
+        public static final int token_manager_delete_tag=0x7f050092;
+        public static final int token_manager_new_tag=0x7f050091;
+        public static final int token_manager_new_token=0x7f050090;
+        public static final int token_manager_scroll_view=0x7f05005e;
+        public static final int token_manager_taglist_frame=0x7f050060;
+        public static final int token_scroll_view=0x7f050064;
+        public static final int token_selector_button_tray=0x7f050061;
+        public static final int useLogo=0x7f050004;
+        public static final int wrap_content=0x7f050000;
+    }
+    public static final class integer {
+        public static final int abs__max_action_buttons=0x7f090000;
     }
     public static final class layout {
-        public static final int combat_map_layout=0x7f030000;
-        public static final int combat_map_legacy_layout=0x7f030001;
-        public static final int draw_tools=0x7f030002;
-        public static final int main=0x7f030003;
-        public static final int no_files_layout=0x7f030004;
-        public static final int save=0x7f030005;
-        public static final int saved_map_file=0x7f030006;
-        public static final int settings=0x7f030007;
-        public static final int token_manager_layout=0x7f030008;
-        public static final int token_options=0x7f030009;
-        public static final int token_selector=0x7f03000a;
+        public static final int about_box=0x7f030000;
+        public static final int abs__action_bar_home=0x7f030001;
+        public static final int abs__action_bar_tab=0x7f030002;
+        public static final int abs__action_bar_tab_bar_view=0x7f030003;
+        public static final int abs__action_bar_title_item=0x7f030004;
+        public static final int abs__action_menu_item_layout=0x7f030005;
+        public static final int abs__action_menu_layout=0x7f030006;
+        public static final int abs__action_mode_bar=0x7f030007;
+        public static final int abs__action_mode_close_item=0x7f030008;
+        public static final int abs__activity_chooser_view=0x7f030009;
+        public static final int abs__activity_chooser_view_list_item=0x7f03000a;
+        public static final int abs__dialog_title_holo=0x7f03000b;
+        public static final int abs__list_menu_item_checkbox=0x7f03000c;
+        public static final int abs__list_menu_item_icon=0x7f03000d;
+        public static final int abs__list_menu_item_layout=0x7f03000e;
+        public static final int abs__list_menu_item_radio=0x7f03000f;
+        public static final int abs__popup_menu_item_layout=0x7f030010;
+        public static final int abs__screen_action_bar=0x7f030011;
+        public static final int abs__screen_action_bar_overlay=0x7f030012;
+        public static final int abs__screen_simple=0x7f030013;
+        public static final int abs__screen_simple_overlay_action_mode=0x7f030014;
+        public static final int art_credits=0x7f030015;
+        public static final int combat_map_layout=0x7f030016;
+        public static final int dialog_color_picker=0x7f030017;
+        public static final int draw_text=0x7f030018;
+        public static final int export_dialog=0x7f030019;
+        public static final int gm_screen_pinpad=0x7f03001a;
+        public static final int grid_background_properties=0x7f03001b;
+        public static final int no_files_layout=0x7f03001c;
+        public static final int save=0x7f03001d;
+        public static final int saved_map_file=0x7f03001e;
+        public static final int settings=0x7f03001f;
+        public static final int sherlock_spinner_dropdown_item=0x7f030020;
+        public static final int sherlock_spinner_item=0x7f030021;
+        public static final int token_manager_layout=0x7f030022;
+        public static final int token_selector=0x7f030023;
     }
     public static final class menu {
-        public static final int combat_map_menu=0x7f060000;
-        public static final int fog_of_war_context_menu=0x7f060001;
-        public static final int save_file_context_menu=0x7f060002;
-        public static final int token_context_menu=0x7f060003;
-        public static final int token_delete_menu=0x7f060004;
-        public static final int token_image_creator=0x7f060005;
-        public static final int token_manager_menu=0x7f060006;
+        public static final int combat_map_menu=0x7f0d0000;
+        public static final int fog_of_war_context_menu=0x7f0d0001;
+        public static final int save_file_context_menu=0x7f0d0002;
+        public static final int tag_context_menu=0x7f0d0003;
+        public static final int token_action_mode_menu=0x7f0d0004;
+        public static final int token_delete_menu=0x7f0d0005;
+        public static final int token_image_creator=0x7f0d0006;
+        public static final int token_manager_action_mode=0x7f0d0007;
+        public static final int token_manager_menu=0x7f0d0008;
+    }
+    public static final class raw {
+        public static final int art_credits=0x7f040000;
     }
     public static final class string {
-        public static final int app_name=0x7f040001;
-        public static final int hello=0x7f040000;
-        public static final int no_maps_line1=0x7f040004;
-        public static final int no_maps_line2=0x7f040005;
-        public static final int preferences=0x7f040002;
-        public static final int save=0x7f040003;
+        public static final int about=0x7f0a0028;
+        public static final int about_text=0x7f0a002f;
+        /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
+         */
+        public static final int abs__action_bar_home_description=0x7f0a0000;
+        /**  Content description for the action bar "up" affordance. [CHAR LIMIT=NONE] 
+         */
+        public static final int abs__action_bar_up_description=0x7f0a0001;
+        /**  Content description for the action menu overflow button. [CHAR LIMIT=NONE] 
+         */
+        public static final int abs__action_menu_overflow_description=0x7f0a0002;
+        /**  Label for the "Done" button on the far left of action mode toolbars. 
+         */
+        public static final int abs__action_mode_done=0x7f0a0003;
+        /**  Title default for a dialog showing possible activities in ActivityChooserView [CHAR LIMIT=25] 
+         */
+        public static final int abs__activity_chooser_view_dialog_title_default=0x7f0a0005;
+        /**  Title for a button to expand the list of activities in ActivityChooserView [CHAR LIMIT=25] 
+         */
+        public static final int abs__activity_chooser_view_see_all=0x7f0a0004;
+        /**  Description of the shwoing of a popup window with activities to choose from. [CHAR LIMIT=NONE] 
+         */
+        public static final int abs__activitychooserview_choose_application=0x7f0a0007;
+        /**  Title for a dialog showing possible activities for sharing in ShareActionProvider [CHAR LIMIT=25] 
+         */
+        public static final int abs__share_action_provider_share_with=0x7f0a0006;
+        /**  Description of the choose target button in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
+         */
+        public static final int abs__shareactionprovider_share_with=0x7f0a0008;
+        /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
+         */
+        public static final int abs__shareactionprovider_share_with_application=0x7f0a0009;
+        public static final int accept=0x7f0a001f;
+        public static final int add_to_tag=0x7f0a0036;
+        public static final int annotations=0x7f0a0013;
+        public static final int app_name=0x7f0a000a;
+        public static final int art_credits=0x7f0a0027;
+        public static final int autosave=0x7f0a002e;
+        public static final int background=0x7f0a0010;
+        public static final int change_image=0x7f0a0020;
+        public static final int combat=0x7f0a0012;
+        public static final int confirm=0x7f0a0017;
+        public static final int create=0x7f0a002b;
+        public static final int delete=0x7f0a001b;
+        public static final int delete_mask_region=0x7f0a001c;
+        public static final int delete_tag=0x7f0a0037;
+        public static final int delete_token=0x7f0a001d;
+        /**  Color Picker 
+         */
+        public static final int dialog_color_picker=0x7f0a0033;
+        public static final int draw_text=0x7f0a002a;
+        public static final int filter_tokens=0x7f0a002c;
+        public static final int fog_of_war_enabled=0x7f0a0026;
+        public static final int font_size=0x7f0a000f;
+        public static final int gm_notes=0x7f0a0011;
+        public static final int gm_screen_explanation_entering=0x7f0a0032;
+        public static final int gm_screen_explanation_picking=0x7f0a0031;
+        public static final int gm_screen_warning=0x7f0a0030;
+        public static final int grid_appearence=0x7f0a0035;
+        public static final int grid_type=0x7f0a0025;
+        public static final int load=0x7f0a0015;
+        public static final int map_preview=0x7f0a0029;
+        public static final int new_map=0x7f0a0016;
+        public static final int new_tag=0x7f0a0023;
+        public static final int new_token=0x7f0a0022;
+        public static final int no_maps_line1=0x7f0a000d;
+        public static final int no_maps_line2=0x7f0a000e;
+        public static final int preferences=0x7f0a000b;
+        public static final int press_color_to_apply=0x7f0a0034;
+        public static final int remove_tag=0x7f0a0021;
+        public static final int resize_grid=0x7f0a0018;
+        public static final int resize_token=0x7f0a001e;
+        public static final int save=0x7f0a000c;
+        public static final int save_map=0x7f0a0014;
+        public static final int settings=0x7f0a001a;
+        public static final int snap_to_grid=0x7f0a0019;
+        public static final int theme=0x7f0a0024;
+        public static final int token_manager=0x7f0a002d;
     }
+    public static final class style {
+        public static final int DialogWindowTitle_Sherlock=0x7f0b0033;
+        public static final int DialogWindowTitle_Sherlock_Light=0x7f0b0034;
+        public static final int Sherlock___TextAppearance_Small=0x7f0b0047;
+        public static final int Sherlock___Theme=0x7f0b004a;
+        public static final int Sherlock___Theme_DarkActionBar=0x7f0b004c;
+        public static final int Sherlock___Theme_Dialog=0x7f0b004d;
+        public static final int Sherlock___Theme_Light=0x7f0b004b;
+        public static final int Sherlock___Widget_ActionBar=0x7f0b0001;
+        public static final int Sherlock___Widget_ActionMode=0x7f0b0016;
+        public static final int Sherlock___Widget_ActivityChooserView=0x7f0b001e;
+        public static final int Sherlock___Widget_Holo_DropDownItem=0x7f0b0029;
+        public static final int Sherlock___Widget_Holo_ListView=0x7f0b0026;
+        public static final int Sherlock___Widget_Holo_Spinner=0x7f0b0023;
+        public static final int TextAppearance_Sherlock_DialogWindowTitle=0x7f0b0045;
+        public static final int TextAppearance_Sherlock_Light_DialogWindowTitle=0x7f0b0046;
+        public static final int TextAppearance_Sherlock_Light_Small=0x7f0b0049;
+        public static final int TextAppearance_Sherlock_Light_Widget_PopupMenu_Large=0x7f0b0040;
+        public static final int TextAppearance_Sherlock_Light_Widget_PopupMenu_Small=0x7f0b0042;
+        public static final int TextAppearance_Sherlock_Small=0x7f0b0048;
+        public static final int TextAppearance_Sherlock_Widget_ActionBar_Menu=0x7f0b0035;
+        public static final int TextAppearance_Sherlock_Widget_ActionBar_Subtitle=0x7f0b0038;
+        public static final int TextAppearance_Sherlock_Widget_ActionBar_Subtitle_Inverse=0x7f0b0039;
+        public static final int TextAppearance_Sherlock_Widget_ActionBar_Title=0x7f0b0036;
+        public static final int TextAppearance_Sherlock_Widget_ActionBar_Title_Inverse=0x7f0b0037;
+        public static final int TextAppearance_Sherlock_Widget_ActionMode_Subtitle=0x7f0b003c;
+        public static final int TextAppearance_Sherlock_Widget_ActionMode_Subtitle_Inverse=0x7f0b003d;
+        public static final int TextAppearance_Sherlock_Widget_ActionMode_Title=0x7f0b003a;
+        public static final int TextAppearance_Sherlock_Widget_ActionMode_Title_Inverse=0x7f0b003b;
+        public static final int TextAppearance_Sherlock_Widget_DropDownItem=0x7f0b0044;
+        public static final int TextAppearance_Sherlock_Widget_PopupMenu=0x7f0b003e;
+        public static final int TextAppearance_Sherlock_Widget_PopupMenu_Large=0x7f0b003f;
+        public static final int TextAppearance_Sherlock_Widget_PopupMenu_Small=0x7f0b0041;
+        public static final int TextAppearance_Sherlock_Widget_TextView_SpinnerItem=0x7f0b0043;
+        public static final int Theme_Sherlock=0x7f0b004e;
+        public static final int Theme_Sherlock_Dialog=0x7f0b0056;
+        public static final int Theme_Sherlock_ForceOverflow=0x7f0b0053;
+        public static final int Theme_Sherlock_Light=0x7f0b004f;
+        public static final int Theme_Sherlock_Light_DarkActionBar=0x7f0b0050;
+        public static final int Theme_Sherlock_Light_DarkActionBar_ForceOverflow=0x7f0b0055;
+        public static final int Theme_Sherlock_Light_Dialog=0x7f0b0057;
+        public static final int Theme_Sherlock_Light_ForceOverflow=0x7f0b0054;
+        public static final int Theme_Sherlock_Light_NoActionBar=0x7f0b0052;
+        public static final int Theme_Sherlock_NoActionBar=0x7f0b0051;
+        public static final int Widget=0x7f0b0000;
+        public static final int Widget_Sherlock_ActionBar=0x7f0b0002;
+        public static final int Widget_Sherlock_ActionBar_Solid=0x7f0b0003;
+        public static final int Widget_Sherlock_ActionBar_TabBar=0x7f0b000a;
+        public static final int Widget_Sherlock_ActionBar_TabText=0x7f0b000d;
+        public static final int Widget_Sherlock_ActionBar_TabView=0x7f0b0007;
+        public static final int Widget_Sherlock_ActionButton=0x7f0b0010;
+        public static final int Widget_Sherlock_ActionButton_CloseMode=0x7f0b0012;
+        public static final int Widget_Sherlock_ActionButton_Overflow=0x7f0b0014;
+        public static final int Widget_Sherlock_ActionMode=0x7f0b0017;
+        public static final int Widget_Sherlock_ActivityChooserView=0x7f0b001f;
+        public static final int Widget_Sherlock_Button_Small=0x7f0b0021;
+        public static final int Widget_Sherlock_DropDownItem_Spinner=0x7f0b002a;
+        public static final int Widget_Sherlock_Light_ActionBar=0x7f0b0004;
+        public static final int Widget_Sherlock_Light_ActionBar_Solid=0x7f0b0005;
+        public static final int Widget_Sherlock_Light_ActionBar_Solid_Inverse=0x7f0b0006;
+        public static final int Widget_Sherlock_Light_ActionBar_TabBar=0x7f0b000b;
+        public static final int Widget_Sherlock_Light_ActionBar_TabBar_Inverse=0x7f0b000c;
+        public static final int Widget_Sherlock_Light_ActionBar_TabText=0x7f0b000e;
+        public static final int Widget_Sherlock_Light_ActionBar_TabText_Inverse=0x7f0b000f;
+        public static final int Widget_Sherlock_Light_ActionBar_TabView=0x7f0b0008;
+        public static final int Widget_Sherlock_Light_ActionBar_TabView_Inverse=0x7f0b0009;
+        public static final int Widget_Sherlock_Light_ActionButton=0x7f0b0011;
+        public static final int Widget_Sherlock_Light_ActionButton_CloseMode=0x7f0b0013;
+        public static final int Widget_Sherlock_Light_ActionButton_Overflow=0x7f0b0015;
+        public static final int Widget_Sherlock_Light_ActionMode=0x7f0b0018;
+        public static final int Widget_Sherlock_Light_ActionMode_Inverse=0x7f0b0019;
+        public static final int Widget_Sherlock_Light_ActivityChooserView=0x7f0b0020;
+        public static final int Widget_Sherlock_Light_Button_Small=0x7f0b0022;
+        public static final int Widget_Sherlock_Light_DropDownItem_Spinner=0x7f0b002b;
+        public static final int Widget_Sherlock_Light_ListPopupWindow=0x7f0b001b;
+        public static final int Widget_Sherlock_Light_ListView_DropDown=0x7f0b0028;
+        public static final int Widget_Sherlock_Light_PopupMenu=0x7f0b001d;
+        public static final int Widget_Sherlock_Light_PopupWindow_ActionMode=0x7f0b002d;
+        public static final int Widget_Sherlock_Light_ProgressBar=0x7f0b002f;
+        public static final int Widget_Sherlock_Light_ProgressBar_Horizontal=0x7f0b0031;
+        public static final int Widget_Sherlock_Light_Spinner_DropDown_ActionBar=0x7f0b0025;
+        public static final int Widget_Sherlock_ListPopupWindow=0x7f0b001a;
+        public static final int Widget_Sherlock_ListView_DropDown=0x7f0b0027;
+        public static final int Widget_Sherlock_PopupMenu=0x7f0b001c;
+        public static final int Widget_Sherlock_PopupWindow_ActionMode=0x7f0b002c;
+        public static final int Widget_Sherlock_ProgressBar=0x7f0b002e;
+        public static final int Widget_Sherlock_ProgressBar_Horizontal=0x7f0b0030;
+        public static final int Widget_Sherlock_Spinner_DropDown_ActionBar=0x7f0b0024;
+        public static final int Widget_Sherlock_TextView_SpinnerItem=0x7f0b0032;
+    }
+    public static final class styleable {
+        /**  Attributes used to style the Action Bar. 
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockActionBar_background com.tbocek.android.combatmap:background}</code></td><td> Specifies a background drawable for the action bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_backgroundSplit com.tbocek.android.combatmap:backgroundSplit}</code></td><td> Specifies a background drawable for the bottom component of a split action bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_backgroundStacked com.tbocek.android.combatmap:backgroundStacked}</code></td><td> Specifies a background drawable for a second stacked row of the action bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_customNavigationLayout com.tbocek.android.combatmap:customNavigationLayout}</code></td><td> Specifies a layout for custom navigation.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_displayOptions com.tbocek.android.combatmap:displayOptions}</code></td><td> Options affecting how the action bar is displayed.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_divider com.tbocek.android.combatmap:divider}</code></td><td> Specifies the drawable used for item dividers.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_height com.tbocek.android.combatmap:height}</code></td><td> Specifies a fixed height.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_homeLayout com.tbocek.android.combatmap:homeLayout}</code></td><td> Specifies a layout to use for the "home" section of the action bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_icon com.tbocek.android.combatmap:icon}</code></td><td> Specifies the drawable used for the application icon.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_indeterminateProgressStyle com.tbocek.android.combatmap:indeterminateProgressStyle}</code></td><td> Specifies a style resource to use for an indeterminate progress spinner.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_itemPadding com.tbocek.android.combatmap:itemPadding}</code></td><td> Specifies padding that should be applied to the left and right sides of
+             system-provided items in the bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_logo com.tbocek.android.combatmap:logo}</code></td><td> Specifies the drawable used for the application logo.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_navigationMode com.tbocek.android.combatmap:navigationMode}</code></td><td> The type of navigation to use.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_progressBarPadding com.tbocek.android.combatmap:progressBarPadding}</code></td><td> Specifies the horizontal padding on either end for an embedded progress bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_progressBarStyle com.tbocek.android.combatmap:progressBarStyle}</code></td><td> Specifies a style resource to use for an embedded progress bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_subtitle com.tbocek.android.combatmap:subtitle}</code></td><td> Specifies subtitle text used for navigationMode="normal" </td></tr>
+           <tr><td><code>{@link #SherlockActionBar_subtitleTextStyle com.tbocek.android.combatmap:subtitleTextStyle}</code></td><td> Specifies a style to use for subtitle text.</td></tr>
+           <tr><td><code>{@link #SherlockActionBar_title com.tbocek.android.combatmap:title}</code></td><td> Specifies title text used for navigationMode="normal" </td></tr>
+           <tr><td><code>{@link #SherlockActionBar_titleTextStyle com.tbocek.android.combatmap:titleTextStyle}</code></td><td> Specifies a style to use for title text.</td></tr>
+           </table>
+           @see #SherlockActionBar_background
+           @see #SherlockActionBar_backgroundSplit
+           @see #SherlockActionBar_backgroundStacked
+           @see #SherlockActionBar_customNavigationLayout
+           @see #SherlockActionBar_displayOptions
+           @see #SherlockActionBar_divider
+           @see #SherlockActionBar_height
+           @see #SherlockActionBar_homeLayout
+           @see #SherlockActionBar_icon
+           @see #SherlockActionBar_indeterminateProgressStyle
+           @see #SherlockActionBar_itemPadding
+           @see #SherlockActionBar_logo
+           @see #SherlockActionBar_navigationMode
+           @see #SherlockActionBar_progressBarPadding
+           @see #SherlockActionBar_progressBarStyle
+           @see #SherlockActionBar_subtitle
+           @see #SherlockActionBar_subtitleTextStyle
+           @see #SherlockActionBar_title
+           @see #SherlockActionBar_titleTextStyle
+         */
+        public static final int[] SherlockActionBar = {
+            0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003,
+            0x7f010004, 0x7f010005, 0x7f01003a, 0x7f01003b,
+            0x7f01003c, 0x7f01003d, 0x7f01003e, 0x7f01003f,
+            0x7f010040, 0x7f010041, 0x7f010042, 0x7f010043,
+            0x7f010044, 0x7f010045, 0x7f010046
+        };
+        /**
+          <p>
+          @attr description
+           Specifies a background drawable for the action bar. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:background
+        */
+        public static final int SherlockActionBar_background = 2;
+        /**
+          <p>
+          @attr description
+           Specifies a background drawable for the bottom component of a split action bar. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:backgroundSplit
+        */
+        public static final int SherlockActionBar_backgroundSplit = 3;
+        /**
+          <p>
+          @attr description
+           Specifies a background drawable for a second stacked row of the action bar. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:backgroundStacked
+        */
+        public static final int SherlockActionBar_backgroundStacked = 12;
+        /**
+          <p>
+          @attr description
+           Specifies a layout for custom navigation. Overrides navigationMode. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:customNavigationLayout
+        */
+        public static final int SherlockActionBar_customNavigationLayout = 13;
+        /**
+          <p>
+          @attr description
+           Options affecting how the action bar is displayed. 
+
+
+          <p>Must be one or more (separated by '|') of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>useLogo</code></td><td>0x1</td><td></td></tr>
+<tr><td><code>showHome</code></td><td>0x2</td><td></td></tr>
+<tr><td><code>homeAsUp</code></td><td>0x4</td><td></td></tr>
+<tr><td><code>showTitle</code></td><td>0x8</td><td></td></tr>
+<tr><td><code>showCustom</code></td><td>0x10</td><td></td></tr>
+<tr><td><code>disableHome</code></td><td>0x20</td><td></td></tr>
+</table>
+          <p>This is a private symbol.
+          @attr name android:displayOptions
+        */
+        public static final int SherlockActionBar_displayOptions = 7;
+        /**
+          <p>
+          @attr description
+           Specifies the drawable used for item dividers. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:divider
+        */
+        public static final int SherlockActionBar_divider = 5;
+        /**
+          <p>
+          @attr description
+           Specifies a fixed height. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:height
+        */
+        public static final int SherlockActionBar_height = 4;
+        /**
+          <p>
+          @attr description
+           Specifies a layout to use for the "home" section of the action bar. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:homeLayout
+        */
+        public static final int SherlockActionBar_homeLayout = 14;
+        /**
+          <p>
+          @attr description
+           Specifies the drawable used for the application icon. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:icon
+        */
+        public static final int SherlockActionBar_icon = 10;
+        /**
+          <p>
+          @attr description
+           Specifies a style resource to use for an indeterminate progress spinner. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:indeterminateProgressStyle
+        */
+        public static final int SherlockActionBar_indeterminateProgressStyle = 16;
+        /**
+          <p>
+          @attr description
+           Specifies padding that should be applied to the left and right sides of
+             system-provided items in the bar. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:itemPadding
+        */
+        public static final int SherlockActionBar_itemPadding = 18;
+        /**
+          <p>
+          @attr description
+           Specifies the drawable used for the application logo. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:logo
+        */
+        public static final int SherlockActionBar_logo = 11;
+        /**
+          <p>
+          @attr description
+           The type of navigation to use. 
+
+
+          <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>normal</code></td><td>0</td><td> Normal static title text </td></tr>
+<tr><td><code>listMode</code></td><td>1</td><td> The action bar will use a selection list for navigation. </td></tr>
+<tr><td><code>tabMode</code></td><td>2</td><td> The action bar will use a series of horizontal tabs for navigation. </td></tr>
+</table>
+          <p>This is a private symbol.
+          @attr name android:navigationMode
+        */
+        public static final int SherlockActionBar_navigationMode = 6;
+        /**
+          <p>
+          @attr description
+           Specifies the horizontal padding on either end for an embedded progress bar. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:progressBarPadding
+        */
+        public static final int SherlockActionBar_progressBarPadding = 17;
+        /**
+          <p>
+          @attr description
+           Specifies a style resource to use for an embedded progress bar. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:progressBarStyle
+        */
+        public static final int SherlockActionBar_progressBarStyle = 15;
+        /**
+          <p>
+          @attr description
+           Specifies subtitle text used for navigationMode="normal" 
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:subtitle
+        */
+        public static final int SherlockActionBar_subtitle = 9;
+        /**
+          <p>
+          @attr description
+           Specifies a style to use for subtitle text. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:subtitleTextStyle
+        */
+        public static final int SherlockActionBar_subtitleTextStyle = 1;
+        /**
+          <p>
+          @attr description
+           Specifies title text used for navigationMode="normal" 
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:title
+        */
+        public static final int SherlockActionBar_title = 8;
+        /**
+          <p>
+          @attr description
+           Specifies a style to use for title text. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:titleTextStyle
+        */
+        public static final int SherlockActionBar_titleTextStyle = 0;
+        /** Attributes that can be used with a SherlockActionMenuItemView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockActionMenuItemView_android_minWidth com.tbocek.android.combatmap:android_minWidth}</code></td><td></td></tr>
+           </table>
+           @see #SherlockActionMenuItemView_android_minWidth
+         */
+        public static final int[] SherlockActionMenuItemView = {
+            0x0101013f
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#android_minWidth}
+          attribute's value can be found in the {@link #SherlockActionMenuItemView} array.
+          @attr name android:android_minWidth
+        */
+        public static final int SherlockActionMenuItemView_android_minWidth = 0;
+        /** Attributes that can be used with a SherlockActionMode.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockActionMode_background com.tbocek.android.combatmap:background}</code></td><td> Specifies a background for the action mode bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionMode_backgroundSplit com.tbocek.android.combatmap:backgroundSplit}</code></td><td> Specifies a background for the split action mode bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionMode_height com.tbocek.android.combatmap:height}</code></td><td> Specifies a fixed height for the action mode bar.</td></tr>
+           <tr><td><code>{@link #SherlockActionMode_subtitleTextStyle com.tbocek.android.combatmap:subtitleTextStyle}</code></td><td> Specifies a style to use for subtitle text.</td></tr>
+           <tr><td><code>{@link #SherlockActionMode_titleTextStyle com.tbocek.android.combatmap:titleTextStyle}</code></td><td> Specifies a style to use for title text.</td></tr>
+           </table>
+           @see #SherlockActionMode_background
+           @see #SherlockActionMode_backgroundSplit
+           @see #SherlockActionMode_height
+           @see #SherlockActionMode_subtitleTextStyle
+           @see #SherlockActionMode_titleTextStyle
+         */
+        public static final int[] SherlockActionMode = {
+            0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003,
+            0x7f010004
+        };
+        /**
+          <p>
+          @attr description
+           Specifies a background for the action mode bar. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:background
+        */
+        public static final int SherlockActionMode_background = 2;
+        /**
+          <p>
+          @attr description
+           Specifies a background for the split action mode bar. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:backgroundSplit
+        */
+        public static final int SherlockActionMode_backgroundSplit = 3;
+        /**
+          <p>
+          @attr description
+           Specifies a fixed height for the action mode bar. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:height
+        */
+        public static final int SherlockActionMode_height = 4;
+        /**
+          <p>
+          @attr description
+           Specifies a style to use for subtitle text. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:subtitleTextStyle
+        */
+        public static final int SherlockActionMode_subtitleTextStyle = 1;
+        /**
+          <p>
+          @attr description
+           Specifies a style to use for title text. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:titleTextStyle
+        */
+        public static final int SherlockActionMode_titleTextStyle = 0;
+        /** Attributes that can be used with a SherlockActivityChooserView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockActivityChooserView_android_background com.tbocek.android.combatmap:android_background}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockActivityChooserView_expandActivityOverflowButtonDrawable com.tbocek.android.combatmap:expandActivityOverflowButtonDrawable}</code></td><td> The drawable to show in the button for expanding the activities overflow popup.</td></tr>
+           <tr><td><code>{@link #SherlockActivityChooserView_initialActivityCount com.tbocek.android.combatmap:initialActivityCount}</code></td><td> The maximal number of items initially shown in the activity list.</td></tr>
+           </table>
+           @see #SherlockActivityChooserView_android_background
+           @see #SherlockActivityChooserView_expandActivityOverflowButtonDrawable
+           @see #SherlockActivityChooserView_initialActivityCount
+         */
+        public static final int[] SherlockActivityChooserView = {
+            0x010100d4, 0x7f01004f, 0x7f010050
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#android_background}
+          attribute's value can be found in the {@link #SherlockActivityChooserView} array.
+          @attr name android:android_background
+        */
+        public static final int SherlockActivityChooserView_android_background = 0;
+        /**
+          <p>
+          @attr description
+           The drawable to show in the button for expanding the activities overflow popup.
+             <strong>Note:</strong> Clients would like to set this drawable
+             as a clue about the action the chosen activity will perform. For
+             example, if share activity is to be chosen the drawable should
+             give a clue that sharing is to be performed.
+         
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:expandActivityOverflowButtonDrawable
+        */
+        public static final int SherlockActivityChooserView_expandActivityOverflowButtonDrawable = 2;
+        /**
+          <p>
+          @attr description
+           The maximal number of items initially shown in the activity list. 
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:initialActivityCount
+        */
+        public static final int SherlockActivityChooserView_initialActivityCount = 1;
+        /**  Base attributes that are available to all groups. 
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockMenuGroup_android_checkableBehavior com.tbocek.android.combatmap:android_checkableBehavior}</code></td><td> Whether the items are capable of displaying a check mark.</td></tr>
+           <tr><td><code>{@link #SherlockMenuGroup_android_enabled com.tbocek.android.combatmap:android_enabled}</code></td><td> Whether the items are enabled.</td></tr>
+           <tr><td><code>{@link #SherlockMenuGroup_android_id com.tbocek.android.combatmap:android_id}</code></td><td> The ID of the group.</td></tr>
+           <tr><td><code>{@link #SherlockMenuGroup_android_menuCategory com.tbocek.android.combatmap:android_menuCategory}</code></td><td> The category applied to all items within this group.</td></tr>
+           <tr><td><code>{@link #SherlockMenuGroup_android_orderInCategory com.tbocek.android.combatmap:android_orderInCategory}</code></td><td> The order within the category applied to all items within this group.</td></tr>
+           <tr><td><code>{@link #SherlockMenuGroup_android_visible com.tbocek.android.combatmap:android_visible}</code></td><td> Whether the items are shown/visible.</td></tr>
+           </table>
+           @see #SherlockMenuGroup_android_checkableBehavior
+           @see #SherlockMenuGroup_android_enabled
+           @see #SherlockMenuGroup_android_id
+           @see #SherlockMenuGroup_android_menuCategory
+           @see #SherlockMenuGroup_android_orderInCategory
+           @see #SherlockMenuGroup_android_visible
+         */
+        public static final int[] SherlockMenuGroup = {
+            0x0101000e, 0x010100d0, 0x01010194, 0x010101de,
+            0x010101df, 0x010101e0
+        };
+        /**
+          <p>
+          @attr description
+           Whether the items are capable of displaying a check mark. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_checkableBehavior}.
+          @attr name android:android_checkableBehavior
+        */
+        public static final int SherlockMenuGroup_android_checkableBehavior = 5;
+        /**
+          <p>
+          @attr description
+           Whether the items are enabled. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_enabled}.
+          @attr name android:android_enabled
+        */
+        public static final int SherlockMenuGroup_android_enabled = 0;
+        /**
+          <p>
+          @attr description
+           The ID of the group. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_id}.
+          @attr name android:android_id
+        */
+        public static final int SherlockMenuGroup_android_id = 1;
+        /**
+          <p>
+          @attr description
+           The category applied to all items within this group.
+             (This will be or'ed with the orderInCategory attribute.) 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_menuCategory}.
+          @attr name android:android_menuCategory
+        */
+        public static final int SherlockMenuGroup_android_menuCategory = 3;
+        /**
+          <p>
+          @attr description
+           The order within the category applied to all items within this group.
+             (This will be or'ed with the category attribute.) 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_orderInCategory}.
+          @attr name android:android_orderInCategory
+        */
+        public static final int SherlockMenuGroup_android_orderInCategory = 4;
+        /**
+          <p>
+          @attr description
+           Whether the items are shown/visible. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_visible}.
+          @attr name android:android_visible
+        */
+        public static final int SherlockMenuGroup_android_visible = 2;
+        /**  Base attributes that are available to all Item objects. 
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_actionLayout com.tbocek.android.combatmap:android_actionLayout}</code></td><td> An optional layout to be used as an action view.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_actionProviderClass com.tbocek.android.combatmap:android_actionProviderClass}</code></td><td> The name of an optional ActionProvider class to instantiate an action view
+             and perform operations such as default action for that menu item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_actionViewClass com.tbocek.android.combatmap:android_actionViewClass}</code></td><td> The name of an optional View class to instantiate and use as an
+             action view.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_alphabeticShortcut com.tbocek.android.combatmap:android_alphabeticShortcut}</code></td><td> The alphabetic shortcut key.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_checkable com.tbocek.android.combatmap:android_checkable}</code></td><td> Whether the item is capable of displaying a check mark.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_checked com.tbocek.android.combatmap:android_checked}</code></td><td> Whether the item is checked.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_enabled com.tbocek.android.combatmap:android_enabled}</code></td><td> Whether the item is enabled.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_icon com.tbocek.android.combatmap:android_icon}</code></td><td> The icon associated with this item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_id com.tbocek.android.combatmap:android_id}</code></td><td> The ID of the item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_menuCategory com.tbocek.android.combatmap:android_menuCategory}</code></td><td> The category applied to the item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_numericShortcut com.tbocek.android.combatmap:android_numericShortcut}</code></td><td> The numeric shortcut key.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_onClick com.tbocek.android.combatmap:android_onClick}</code></td><td> Name of a method on the Context used to inflate the menu that will be
+             called when the item is clicked.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_orderInCategory com.tbocek.android.combatmap:android_orderInCategory}</code></td><td> The order within the category applied to the item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_showAsAction com.tbocek.android.combatmap:android_showAsAction}</code></td><td> How this item should display in the Action Bar, if present.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_title com.tbocek.android.combatmap:android_title}</code></td><td> The title associated with the item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_titleCondensed com.tbocek.android.combatmap:android_titleCondensed}</code></td><td> The condensed title associated with the item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuItem_android_visible com.tbocek.android.combatmap:android_visible}</code></td><td> Whether the item is shown/visible.</td></tr>
+           </table>
+           @see #SherlockMenuItem_android_actionLayout
+           @see #SherlockMenuItem_android_actionProviderClass
+           @see #SherlockMenuItem_android_actionViewClass
+           @see #SherlockMenuItem_android_alphabeticShortcut
+           @see #SherlockMenuItem_android_checkable
+           @see #SherlockMenuItem_android_checked
+           @see #SherlockMenuItem_android_enabled
+           @see #SherlockMenuItem_android_icon
+           @see #SherlockMenuItem_android_id
+           @see #SherlockMenuItem_android_menuCategory
+           @see #SherlockMenuItem_android_numericShortcut
+           @see #SherlockMenuItem_android_onClick
+           @see #SherlockMenuItem_android_orderInCategory
+           @see #SherlockMenuItem_android_showAsAction
+           @see #SherlockMenuItem_android_title
+           @see #SherlockMenuItem_android_titleCondensed
+           @see #SherlockMenuItem_android_visible
+         */
+        public static final int[] SherlockMenuItem = {
+            0x01010002, 0x0101000e, 0x010100d0, 0x01010106,
+            0x01010194, 0x010101de, 0x010101df, 0x010101e1,
+            0x010101e2, 0x010101e3, 0x010101e4, 0x010101e5,
+            0x0101026f, 0x010102d9, 0x010102fb, 0x010102fc,
+            0x01010389
+        };
+        /**
+          <p>
+          @attr description
+           An optional layout to be used as an action view.
+             See {@link android.view.MenuItem#setActionView(android.view.View)}
+             for more info. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_actionLayout}.
+          @attr name android:android_actionLayout
+        */
+        public static final int SherlockMenuItem_android_actionLayout = 14;
+        /**
+          <p>
+          @attr description
+           The name of an optional ActionProvider class to instantiate an action view
+             and perform operations such as default action for that menu item.
+             See {@link android.view.MenuItem#setActionProvider(android.view.ActionProvider)}
+             for more info. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_actionProviderClass}.
+          @attr name android:android_actionProviderClass
+        */
+        public static final int SherlockMenuItem_android_actionProviderClass = 16;
+        /**
+          <p>
+          @attr description
+           The name of an optional View class to instantiate and use as an
+             action view. See {@link android.view.MenuItem#setActionView(android.view.View)}
+             for more info. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_actionViewClass}.
+          @attr name android:android_actionViewClass
+        */
+        public static final int SherlockMenuItem_android_actionViewClass = 15;
+        /**
+          <p>
+          @attr description
+           The alphabetic shortcut key.  This is the shortcut when using a keyboard
+             with alphabetic keys. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_alphabeticShortcut}.
+          @attr name android:android_alphabeticShortcut
+        */
+        public static final int SherlockMenuItem_android_alphabeticShortcut = 9;
+        /**
+          <p>
+          @attr description
+           Whether the item is capable of displaying a check mark. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_checkable}.
+          @attr name android:android_checkable
+        */
+        public static final int SherlockMenuItem_android_checkable = 11;
+        /**
+          <p>
+          @attr description
+           Whether the item is checked.  Note that you must first have enabled checking with
+             the checkable attribute or else the check mark will not appear. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_checked}.
+          @attr name android:android_checked
+        */
+        public static final int SherlockMenuItem_android_checked = 3;
+        /**
+          <p>
+          @attr description
+           Whether the item is enabled. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_enabled}.
+          @attr name android:android_enabled
+        */
+        public static final int SherlockMenuItem_android_enabled = 1;
+        /**
+          <p>
+          @attr description
+           The icon associated with this item.  This icon will not always be shown, so
+             the title should be sufficient in describing this item. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_icon}.
+          @attr name android:android_icon
+        */
+        public static final int SherlockMenuItem_android_icon = 0;
+        /**
+          <p>
+          @attr description
+           The ID of the item. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_id}.
+          @attr name android:android_id
+        */
+        public static final int SherlockMenuItem_android_id = 2;
+        /**
+          <p>
+          @attr description
+           The category applied to the item.
+             (This will be or'ed with the orderInCategory attribute.) 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_menuCategory}.
+          @attr name android:android_menuCategory
+        */
+        public static final int SherlockMenuItem_android_menuCategory = 5;
+        /**
+          <p>
+          @attr description
+           The numeric shortcut key.  This is the shortcut when using a numeric (e.g., 12-key)
+             keyboard. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_numericShortcut}.
+          @attr name android:android_numericShortcut
+        */
+        public static final int SherlockMenuItem_android_numericShortcut = 10;
+        /**
+          <p>
+          @attr description
+           Name of a method on the Context used to inflate the menu that will be
+             called when the item is clicked. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_onClick}.
+          @attr name android:android_onClick
+        */
+        public static final int SherlockMenuItem_android_onClick = 12;
+        /**
+          <p>
+          @attr description
+           The order within the category applied to the item.
+             (This will be or'ed with the category attribute.) 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_orderInCategory}.
+          @attr name android:android_orderInCategory
+        */
+        public static final int SherlockMenuItem_android_orderInCategory = 6;
+        /**
+          <p>
+          @attr description
+           How this item should display in the Action Bar, if present. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_showAsAction}.
+          @attr name android:android_showAsAction
+        */
+        public static final int SherlockMenuItem_android_showAsAction = 13;
+        /**
+          <p>
+          @attr description
+           The title associated with the item. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_title}.
+          @attr name android:android_title
+        */
+        public static final int SherlockMenuItem_android_title = 7;
+        /**
+          <p>
+          @attr description
+           The condensed title associated with the item.  This is used in situations where the
+             normal title may be too long to be displayed. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_titleCondensed}.
+          @attr name android:android_titleCondensed
+        */
+        public static final int SherlockMenuItem_android_titleCondensed = 8;
+        /**
+          <p>
+          @attr description
+           Whether the item is shown/visible. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_visible}.
+          @attr name android:android_visible
+        */
+        public static final int SherlockMenuItem_android_visible = 4;
+        /** Attributes that can be used with a SherlockMenuView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockMenuView_headerBackground com.tbocek.android.combatmap:headerBackground}</code></td><td> Default background for the menu header.</td></tr>
+           <tr><td><code>{@link #SherlockMenuView_horizontalDivider com.tbocek.android.combatmap:horizontalDivider}</code></td><td> Default horizontal divider between rows of menu items.</td></tr>
+           <tr><td><code>{@link #SherlockMenuView_itemBackground com.tbocek.android.combatmap:itemBackground}</code></td><td> Default background for each menu item.</td></tr>
+           <tr><td><code>{@link #SherlockMenuView_itemIconDisabledAlpha com.tbocek.android.combatmap:itemIconDisabledAlpha}</code></td><td> Default disabled icon alpha for each menu item that shows an icon.</td></tr>
+           <tr><td><code>{@link #SherlockMenuView_itemTextAppearance com.tbocek.android.combatmap:itemTextAppearance}</code></td><td> Default appearance of menu item text.</td></tr>
+           <tr><td><code>{@link #SherlockMenuView_preserveIconSpacing com.tbocek.android.combatmap:preserveIconSpacing}</code></td><td> Whether space should be reserved in layout when an icon is missing.</td></tr>
+           <tr><td><code>{@link #SherlockMenuView_verticalDivider com.tbocek.android.combatmap:verticalDivider}</code></td><td> Default vertical divider between menu items.</td></tr>
+           <tr><td><code>{@link #SherlockMenuView_windowAnimationStyle com.tbocek.android.combatmap:windowAnimationStyle}</code></td><td> Default animations for the menu.</td></tr>
+           </table>
+           @see #SherlockMenuView_headerBackground
+           @see #SherlockMenuView_horizontalDivider
+           @see #SherlockMenuView_itemBackground
+           @see #SherlockMenuView_itemIconDisabledAlpha
+           @see #SherlockMenuView_itemTextAppearance
+           @see #SherlockMenuView_preserveIconSpacing
+           @see #SherlockMenuView_verticalDivider
+           @see #SherlockMenuView_windowAnimationStyle
+         */
+        public static final int[] SherlockMenuView = {
+            0x7f010047, 0x7f010048, 0x7f010049, 0x7f01004a,
+            0x7f01004b, 0x7f01004c, 0x7f01004d, 0x7f01004e
+        };
+        /**
+          <p>
+          @attr description
+           Default background for the menu header. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:headerBackground
+        */
+        public static final int SherlockMenuView_headerBackground = 3;
+        /**
+          <p>
+          @attr description
+           Default horizontal divider between rows of menu items. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:horizontalDivider
+        */
+        public static final int SherlockMenuView_horizontalDivider = 1;
+        /**
+          <p>
+          @attr description
+           Default background for each menu item. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:itemBackground
+        */
+        public static final int SherlockMenuView_itemBackground = 4;
+        /**
+          <p>
+          @attr description
+           Default disabled icon alpha for each menu item that shows an icon. 
+
+
+          <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:itemIconDisabledAlpha
+        */
+        public static final int SherlockMenuView_itemIconDisabledAlpha = 6;
+        /**
+          <p>
+          @attr description
+           Default appearance of menu item text. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:itemTextAppearance
+        */
+        public static final int SherlockMenuView_itemTextAppearance = 0;
+        /**
+          <p>
+          @attr description
+           Whether space should be reserved in layout when an icon is missing. 
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:preserveIconSpacing
+        */
+        public static final int SherlockMenuView_preserveIconSpacing = 7;
+        /**
+          <p>
+          @attr description
+           Default vertical divider between menu items. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:verticalDivider
+        */
+        public static final int SherlockMenuView_verticalDivider = 2;
+        /**
+          <p>
+          @attr description
+           Default animations for the menu. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:windowAnimationStyle
+        */
+        public static final int SherlockMenuView_windowAnimationStyle = 5;
+        /** Attributes that can be used with a SherlockSpinner.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_dropDownHorizontalOffset com.tbocek.android.combatmap:android_dropDownHorizontalOffset}</code></td><td> Horizontal offset from the spinner widget for positioning the dropdown
+             in spinnerMode="dropdown".</td></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_dropDownSelector com.tbocek.android.combatmap:android_dropDownSelector}</code></td><td> List selector to use for spinnerMode="dropdown" display.</td></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_dropDownVerticalOffset com.tbocek.android.combatmap:android_dropDownVerticalOffset}</code></td><td> Vertical offset from the spinner widget for positioning the dropdown in
+             spinnerMode="dropdown".</td></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_dropDownWidth com.tbocek.android.combatmap:android_dropDownWidth}</code></td><td> Width of the dropdown in spinnerMode="dropdown".</td></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_gravity com.tbocek.android.combatmap:android_gravity}</code></td><td> Gravity setting for positioning the currently selected item.</td></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_popupBackground com.tbocek.android.combatmap:android_popupBackground}</code></td><td> Background drawable to use for the dropdown in spinnerMode="dropdown".</td></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_popupPromptView com.tbocek.android.combatmap:android_popupPromptView}</code></td><td> Reference to a layout to use for displaying a prompt in the dropdown for
+             spinnerMode="dropdown".</td></tr>
+           <tr><td><code>{@link #SherlockSpinner_android_prompt com.tbocek.android.combatmap:android_prompt}</code></td><td> The prompt to display when the spinner's dialog is shown.</td></tr>
+           </table>
+           @see #SherlockSpinner_android_dropDownHorizontalOffset
+           @see #SherlockSpinner_android_dropDownSelector
+           @see #SherlockSpinner_android_dropDownVerticalOffset
+           @see #SherlockSpinner_android_dropDownWidth
+           @see #SherlockSpinner_android_gravity
+           @see #SherlockSpinner_android_popupBackground
+           @see #SherlockSpinner_android_popupPromptView
+           @see #SherlockSpinner_android_prompt
+         */
+        public static final int[] SherlockSpinner = {
+            0x010100af, 0x01010175, 0x01010176, 0x0101017b,
+            0x01010262, 0x010102ac, 0x010102ad, 0x010103ef
+        };
+        /**
+          <p>
+          @attr description
+           Horizontal offset from the spinner widget for positioning the dropdown
+             in spinnerMode="dropdown". 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_dropDownHorizontalOffset}.
+          @attr name android:android_dropDownHorizontalOffset
+        */
+        public static final int SherlockSpinner_android_dropDownHorizontalOffset = 5;
+        /**
+          <p>
+          @attr description
+           List selector to use for spinnerMode="dropdown" display. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_dropDownSelector}.
+          @attr name android:android_dropDownSelector
+        */
+        public static final int SherlockSpinner_android_dropDownSelector = 1;
+        /**
+          <p>
+          @attr description
+           Vertical offset from the spinner widget for positioning the dropdown in
+             spinnerMode="dropdown". 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_dropDownVerticalOffset}.
+          @attr name android:android_dropDownVerticalOffset
+        */
+        public static final int SherlockSpinner_android_dropDownVerticalOffset = 6;
+        /**
+          <p>
+          @attr description
+           Width of the dropdown in spinnerMode="dropdown". 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_dropDownWidth}.
+          @attr name android:android_dropDownWidth
+        */
+        public static final int SherlockSpinner_android_dropDownWidth = 4;
+        /**
+          <p>
+          @attr description
+           Gravity setting for positioning the currently selected item. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_gravity}.
+          @attr name android:android_gravity
+        */
+        public static final int SherlockSpinner_android_gravity = 0;
+        /**
+          <p>
+          @attr description
+           Background drawable to use for the dropdown in spinnerMode="dropdown". 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_popupBackground}.
+          @attr name android:android_popupBackground
+        */
+        public static final int SherlockSpinner_android_popupBackground = 2;
+        /**
+          <p>
+          @attr description
+           Reference to a layout to use for displaying a prompt in the dropdown for
+             spinnerMode="dropdown". This layout must contain a TextView with the id
+             @android:id/text1 to be populated with the prompt text. 
+          <p>This is a private symbol.
+          @attr name android:android_popupPromptView
+        */
+        public static final int SherlockSpinner_android_popupPromptView = 7;
+        /**
+          <p>
+          @attr description
+           The prompt to display when the spinner's dialog is shown. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.tbocek.android.combatmap.R.attr#android_prompt}.
+          @attr name android:android_prompt
+        */
+        public static final int SherlockSpinner_android_prompt = 3;
+        /** Attributes that can be used with a SherlockTheme.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SherlockTheme_absForceOverflow com.tbocek.android.combatmap:absForceOverflow}</code></td><td> Specified if we are forcing an action item overflow menu.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarDivider com.tbocek.android.combatmap:actionBarDivider}</code></td><td> Custom divider drawable to use for elements in the action bar.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarItemBackground com.tbocek.android.combatmap:actionBarItemBackground}</code></td><td> Custom item state list drawable background for action bar items.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarSize com.tbocek.android.combatmap:actionBarSize}</code></td><td> Size of the Action Bar, including the contextual
+             bar used to present Action Modes.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarSplitStyle com.tbocek.android.combatmap:actionBarSplitStyle}</code></td><td> Reference to a style for the split Action Bar.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarStyle com.tbocek.android.combatmap:actionBarStyle}</code></td><td> Reference to a style for the Action Bar </td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarTabBarStyle com.tbocek.android.combatmap:actionBarTabBarStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarTabStyle com.tbocek.android.combatmap:actionBarTabStyle}</code></td><td> Default style for tabs within an action bar </td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarTabTextStyle com.tbocek.android.combatmap:actionBarTabTextStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionBarWidgetTheme com.tbocek.android.combatmap:actionBarWidgetTheme}</code></td><td> Reference to a theme that should be used to inflate widgets
+             and layouts destined for the action bar.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionButtonStyle com.tbocek.android.combatmap:actionButtonStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionDropDownStyle com.tbocek.android.combatmap:actionDropDownStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionMenuTextAppearance com.tbocek.android.combatmap:actionMenuTextAppearance}</code></td><td> TextAppearance style that will be applied to text that
+             appears within action menu items.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionMenuTextColor com.tbocek.android.combatmap:actionMenuTextColor}</code></td><td> Color for text that appears within action menu items.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionModeBackground com.tbocek.android.combatmap:actionModeBackground}</code></td><td> Background drawable to use for action mode UI </td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionModeCloseButtonStyle com.tbocek.android.combatmap:actionModeCloseButtonStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionModeCloseDrawable com.tbocek.android.combatmap:actionModeCloseDrawable}</code></td><td> Drawable to use for the close action mode button </td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionModePopupWindowStyle com.tbocek.android.combatmap:actionModePopupWindowStyle}</code></td><td> PopupWindow style to use for action modes when showing as a window overlay.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionModeShareDrawable com.tbocek.android.combatmap:actionModeShareDrawable}</code></td><td> Drawable to use for the Share action button in WebView selection action modes </td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionModeSplitBackground com.tbocek.android.combatmap:actionModeSplitBackground}</code></td><td> Background drawable to use for action mode UI in the lower split bar </td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionModeStyle com.tbocek.android.combatmap:actionModeStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionOverflowButtonStyle com.tbocek.android.combatmap:actionOverflowButtonStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_actionSpinnerItemStyle com.tbocek.android.combatmap:actionSpinnerItemStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_activatedBackgroundIndicator com.tbocek.android.combatmap:activatedBackgroundIndicator}</code></td><td> Drawable used as a background for activated items.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_activityChooserViewStyle com.tbocek.android.combatmap:activityChooserViewStyle}</code></td><td> Default ActivityChooserView style.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_android_windowIsFloating com.tbocek.android.combatmap:android_windowIsFloating}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_buttonStyleSmall com.tbocek.android.combatmap:buttonStyleSmall}</code></td><td> Small Button style.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_dividerVertical com.tbocek.android.combatmap:dividerVertical}</code></td><td> Drawable to use for generic vertical dividers.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_dropDownListViewStyle com.tbocek.android.combatmap:dropDownListViewStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_dropdownListPreferredItemHeight com.tbocek.android.combatmap:dropdownListPreferredItemHeight}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_homeAsUpIndicator com.tbocek.android.combatmap:homeAsUpIndicator}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_listPopupWindowStyle com.tbocek.android.combatmap:listPopupWindowStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_listPreferredItemHeightSmall com.tbocek.android.combatmap:listPreferredItemHeightSmall}</code></td><td> A smaller, sleeker list item height.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_listPreferredItemPaddingLeft com.tbocek.android.combatmap:listPreferredItemPaddingLeft}</code></td><td> The preferred padding along the left edge of list items.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_listPreferredItemPaddingRight com.tbocek.android.combatmap:listPreferredItemPaddingRight}</code></td><td> The preferred padding along the right edge of list items.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_popupMenuStyle com.tbocek.android.combatmap:popupMenuStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_spinnerDropDownItemStyle com.tbocek.android.combatmap:spinnerDropDownItemStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_spinnerItemStyle com.tbocek.android.combatmap:spinnerItemStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_textAppearanceLargePopupMenu com.tbocek.android.combatmap:textAppearanceLargePopupMenu}</code></td><td> Text color, typeface, size, and style for the text inside of a popup menu.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_textAppearanceListItemSmall com.tbocek.android.combatmap:textAppearanceListItemSmall}</code></td><td> The preferred TextAppearance for the primary text of small list items.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_textAppearanceSmall com.tbocek.android.combatmap:textAppearanceSmall}</code></td><td> Text color, typeface, size, and style for "small" text.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_textAppearanceSmallPopupMenu com.tbocek.android.combatmap:textAppearanceSmallPopupMenu}</code></td><td> Text color, typeface, size, and style for small text inside of a popup menu.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_textColorPrimary com.tbocek.android.combatmap:textColorPrimary}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_textColorPrimaryDisableOnly com.tbocek.android.combatmap:textColorPrimaryDisableOnly}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_textColorPrimaryInverse com.tbocek.android.combatmap:textColorPrimaryInverse}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowActionBar com.tbocek.android.combatmap:windowActionBar}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowActionBarOverlay com.tbocek.android.combatmap:windowActionBarOverlay}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowActionModeOverlay com.tbocek.android.combatmap:windowActionModeOverlay}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowContentOverlay com.tbocek.android.combatmap:windowContentOverlay}</code></td><td> This Drawable is overlaid over the foreground of the Window's content area, usually
+             to place a shadow below the title.</td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowMinWidthMajor com.tbocek.android.combatmap:windowMinWidthMajor}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowMinWidthMinor com.tbocek.android.combatmap:windowMinWidthMinor}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowNoTitle com.tbocek.android.combatmap:windowNoTitle}</code></td><td></td></tr>
+           <tr><td><code>{@link #SherlockTheme_windowSplitActionBar com.tbocek.android.combatmap:windowSplitActionBar}</code></td><td></td></tr>
+           </table>
+           @see #SherlockTheme_absForceOverflow
+           @see #SherlockTheme_actionBarDivider
+           @see #SherlockTheme_actionBarItemBackground
+           @see #SherlockTheme_actionBarSize
+           @see #SherlockTheme_actionBarSplitStyle
+           @see #SherlockTheme_actionBarStyle
+           @see #SherlockTheme_actionBarTabBarStyle
+           @see #SherlockTheme_actionBarTabStyle
+           @see #SherlockTheme_actionBarTabTextStyle
+           @see #SherlockTheme_actionBarWidgetTheme
+           @see #SherlockTheme_actionButtonStyle
+           @see #SherlockTheme_actionDropDownStyle
+           @see #SherlockTheme_actionMenuTextAppearance
+           @see #SherlockTheme_actionMenuTextColor
+           @see #SherlockTheme_actionModeBackground
+           @see #SherlockTheme_actionModeCloseButtonStyle
+           @see #SherlockTheme_actionModeCloseDrawable
+           @see #SherlockTheme_actionModePopupWindowStyle
+           @see #SherlockTheme_actionModeShareDrawable
+           @see #SherlockTheme_actionModeSplitBackground
+           @see #SherlockTheme_actionModeStyle
+           @see #SherlockTheme_actionOverflowButtonStyle
+           @see #SherlockTheme_actionSpinnerItemStyle
+           @see #SherlockTheme_activatedBackgroundIndicator
+           @see #SherlockTheme_activityChooserViewStyle
+           @see #SherlockTheme_android_windowIsFloating
+           @see #SherlockTheme_buttonStyleSmall
+           @see #SherlockTheme_dividerVertical
+           @see #SherlockTheme_dropDownListViewStyle
+           @see #SherlockTheme_dropdownListPreferredItemHeight
+           @see #SherlockTheme_homeAsUpIndicator
+           @see #SherlockTheme_listPopupWindowStyle
+           @see #SherlockTheme_listPreferredItemHeightSmall
+           @see #SherlockTheme_listPreferredItemPaddingLeft
+           @see #SherlockTheme_listPreferredItemPaddingRight
+           @see #SherlockTheme_popupMenuStyle
+           @see #SherlockTheme_spinnerDropDownItemStyle
+           @see #SherlockTheme_spinnerItemStyle
+           @see #SherlockTheme_textAppearanceLargePopupMenu
+           @see #SherlockTheme_textAppearanceListItemSmall
+           @see #SherlockTheme_textAppearanceSmall
+           @see #SherlockTheme_textAppearanceSmallPopupMenu
+           @see #SherlockTheme_textColorPrimary
+           @see #SherlockTheme_textColorPrimaryDisableOnly
+           @see #SherlockTheme_textColorPrimaryInverse
+           @see #SherlockTheme_windowActionBar
+           @see #SherlockTheme_windowActionBarOverlay
+           @see #SherlockTheme_windowActionModeOverlay
+           @see #SherlockTheme_windowContentOverlay
+           @see #SherlockTheme_windowMinWidthMajor
+           @see #SherlockTheme_windowMinWidthMinor
+           @see #SherlockTheme_windowNoTitle
+           @see #SherlockTheme_windowSplitActionBar
+         */
+        public static final int[] SherlockTheme = {
+            0x01010057, 0x7f010006, 0x7f010007, 0x7f010008,
+            0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c,
+            0x7f01000d, 0x7f01000e, 0x7f01000f, 0x7f010010,
+            0x7f010011, 0x7f010012, 0x7f010013, 0x7f010014,
+            0x7f010015, 0x7f010016, 0x7f010017, 0x7f010018,
+            0x7f010019, 0x7f01001a, 0x7f01001b, 0x7f01001c,
+            0x7f01001d, 0x7f01001e, 0x7f01001f, 0x7f010020,
+            0x7f010021, 0x7f010022, 0x7f010023, 0x7f010024,
+            0x7f010025, 0x7f010026, 0x7f010027, 0x7f010028,
+            0x7f010029, 0x7f01002a, 0x7f01002b, 0x7f01002c,
+            0x7f01002d, 0x7f01002e, 0x7f01002f, 0x7f010030,
+            0x7f010031, 0x7f010032, 0x7f010033, 0x7f010034,
+            0x7f010035, 0x7f010036, 0x7f010037, 0x7f010038,
+            0x7f010039
+        };
+        /**
+          <p>
+          @attr description
+           Specified if we are forcing an action item overflow menu. 
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:absForceOverflow
+        */
+        public static final int SherlockTheme_absForceOverflow = 52;
+        /**
+          <p>
+          @attr description
+           Custom divider drawable to use for elements in the action bar. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionBarDivider
+        */
+        public static final int SherlockTheme_actionBarDivider = 9;
+        /**
+          <p>
+          @attr description
+           Custom item state list drawable background for action bar items. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionBarItemBackground
+        */
+        public static final int SherlockTheme_actionBarItemBackground = 10;
+        /**
+          <p>
+          @attr description
+           Size of the Action Bar, including the contextual
+             bar used to present Action Modes. 
+
+
+          <p>May be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+<p>May be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>wrap_content</code></td><td>0</td><td></td></tr>
+</table>
+          <p>This is a private symbol.
+          @attr name android:actionBarSize
+        */
+        public static final int SherlockTheme_actionBarSize = 8;
+        /**
+          <p>
+          @attr description
+           Reference to a style for the split Action Bar. This style
+             controls the split component that holds the menu/action
+             buttons. actionBarStyle is still used for the primary
+             bar. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionBarSplitStyle
+        */
+        public static final int SherlockTheme_actionBarSplitStyle = 6;
+        /**
+          <p>
+          @attr description
+           Reference to a style for the Action Bar 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionBarStyle
+        */
+        public static final int SherlockTheme_actionBarStyle = 5;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionBarTabBarStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionBarTabBarStyle
+        */
+        public static final int SherlockTheme_actionBarTabBarStyle = 2;
+        /**
+          <p>
+          @attr description
+           Default style for tabs within an action bar 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionBarTabStyle
+        */
+        public static final int SherlockTheme_actionBarTabStyle = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionBarTabTextStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionBarTabTextStyle
+        */
+        public static final int SherlockTheme_actionBarTabTextStyle = 3;
+        /**
+          <p>
+          @attr description
+           Reference to a theme that should be used to inflate widgets
+             and layouts destined for the action bar. Most of the time
+             this will be a reference to the current theme, but when
+             the action bar has a significantly different contrast
+             profile than the rest of the activity the difference
+             can become important. If this is set to @null the current
+             theme will be used.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionBarWidgetTheme
+        */
+        public static final int SherlockTheme_actionBarWidgetTheme = 7;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionButtonStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionButtonStyle
+        */
+        public static final int SherlockTheme_actionButtonStyle = 38;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionDropDownStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionDropDownStyle
+        */
+        public static final int SherlockTheme_actionDropDownStyle = 37;
+        /**
+          <p>
+          @attr description
+           TextAppearance style that will be applied to text that
+             appears within action menu items. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionMenuTextAppearance
+        */
+        public static final int SherlockTheme_actionMenuTextAppearance = 11;
+        /**
+          <p>
+          @attr description
+           Color for text that appears within action menu items. 
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionMenuTextColor
+        */
+        public static final int SherlockTheme_actionMenuTextColor = 12;
+        /**
+          <p>
+          @attr description
+           Background drawable to use for action mode UI 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionModeBackground
+        */
+        public static final int SherlockTheme_actionModeBackground = 15;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionModeCloseButtonStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionModeCloseButtonStyle
+        */
+        public static final int SherlockTheme_actionModeCloseButtonStyle = 14;
+        /**
+          <p>
+          @attr description
+           Drawable to use for the close action mode button 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionModeCloseDrawable
+        */
+        public static final int SherlockTheme_actionModeCloseDrawable = 17;
+        /**
+          <p>
+          @attr description
+           PopupWindow style to use for action modes when showing as a window overlay. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionModePopupWindowStyle
+        */
+        public static final int SherlockTheme_actionModePopupWindowStyle = 19;
+        /**
+          <p>
+          @attr description
+           Drawable to use for the Share action button in WebView selection action modes 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionModeShareDrawable
+        */
+        public static final int SherlockTheme_actionModeShareDrawable = 18;
+        /**
+          <p>
+          @attr description
+           Background drawable to use for action mode UI in the lower split bar 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:actionModeSplitBackground
+        */
+        public static final int SherlockTheme_actionModeSplitBackground = 16;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionModeStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionModeStyle
+        */
+        public static final int SherlockTheme_actionModeStyle = 13;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionOverflowButtonStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionOverflowButtonStyle
+        */
+        public static final int SherlockTheme_actionOverflowButtonStyle = 4;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#actionSpinnerItemStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionSpinnerItemStyle
+        */
+        public static final int SherlockTheme_actionSpinnerItemStyle = 43;
+        /**
+          <p>
+          @attr description
+           Drawable used as a background for activated items. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:activatedBackgroundIndicator
+        */
+        public static final int SherlockTheme_activatedBackgroundIndicator = 51;
+        /**
+          <p>
+          @attr description
+           Default ActivityChooserView style. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:activityChooserViewStyle
+        */
+        public static final int SherlockTheme_activityChooserViewStyle = 50;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#android_windowIsFloating}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+          @attr name android:android_windowIsFloating
+        */
+        public static final int SherlockTheme_android_windowIsFloating = 0;
+        /**
+          <p>
+          @attr description
+           Small Button style. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:buttonStyleSmall
+        */
+        public static final int SherlockTheme_buttonStyleSmall = 20;
+        /**
+          <p>
+          @attr description
+           Drawable to use for generic vertical dividers. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:dividerVertical
+        */
+        public static final int SherlockTheme_dividerVertical = 36;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#dropDownListViewStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:dropDownListViewStyle
+        */
+        public static final int SherlockTheme_dropDownListViewStyle = 40;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#dropdownListPreferredItemHeight}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:dropdownListPreferredItemHeight
+        */
+        public static final int SherlockTheme_dropdownListPreferredItemHeight = 42;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#homeAsUpIndicator}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:homeAsUpIndicator
+        */
+        public static final int SherlockTheme_homeAsUpIndicator = 39;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#listPopupWindowStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:listPopupWindowStyle
+        */
+        public static final int SherlockTheme_listPopupWindowStyle = 49;
+        /**
+          <p>
+          @attr description
+           A smaller, sleeker list item height. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:listPreferredItemHeightSmall
+        */
+        public static final int SherlockTheme_listPreferredItemHeightSmall = 30;
+        /**
+          <p>
+          @attr description
+           The preferred padding along the left edge of list items. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:listPreferredItemPaddingLeft
+        */
+        public static final int SherlockTheme_listPreferredItemPaddingLeft = 31;
+        /**
+          <p>
+          @attr description
+           The preferred padding along the right edge of list items. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:listPreferredItemPaddingRight
+        */
+        public static final int SherlockTheme_listPreferredItemPaddingRight = 32;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#popupMenuStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:popupMenuStyle
+        */
+        public static final int SherlockTheme_popupMenuStyle = 41;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#spinnerDropDownItemStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:spinnerDropDownItemStyle
+        */
+        public static final int SherlockTheme_spinnerDropDownItemStyle = 29;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#spinnerItemStyle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:spinnerItemStyle
+        */
+        public static final int SherlockTheme_spinnerItemStyle = 28;
+        /**
+          <p>
+          @attr description
+           Text color, typeface, size, and style for the text inside of a popup menu. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:textAppearanceLargePopupMenu
+        */
+        public static final int SherlockTheme_textAppearanceLargePopupMenu = 22;
+        /**
+          <p>
+          @attr description
+           The preferred TextAppearance for the primary text of small list items. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:textAppearanceListItemSmall
+        */
+        public static final int SherlockTheme_textAppearanceListItemSmall = 33;
+        /**
+          <p>
+          @attr description
+           Text color, typeface, size, and style for "small" text. Defaults to secondary text color. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:textAppearanceSmall
+        */
+        public static final int SherlockTheme_textAppearanceSmall = 24;
+        /**
+          <p>
+          @attr description
+           Text color, typeface, size, and style for small text inside of a popup menu. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:textAppearanceSmallPopupMenu
+        */
+        public static final int SherlockTheme_textAppearanceSmallPopupMenu = 23;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#textColorPrimary}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:textColorPrimary
+        */
+        public static final int SherlockTheme_textColorPrimary = 25;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#textColorPrimaryDisableOnly}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:textColorPrimaryDisableOnly
+        */
+        public static final int SherlockTheme_textColorPrimaryDisableOnly = 26;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#textColorPrimaryInverse}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:textColorPrimaryInverse
+        */
+        public static final int SherlockTheme_textColorPrimaryInverse = 27;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#windowActionBar}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:windowActionBar
+        */
+        public static final int SherlockTheme_windowActionBar = 45;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#windowActionBarOverlay}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:windowActionBarOverlay
+        */
+        public static final int SherlockTheme_windowActionBarOverlay = 46;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#windowActionModeOverlay}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:windowActionModeOverlay
+        */
+        public static final int SherlockTheme_windowActionModeOverlay = 47;
+        /**
+          <p>
+          @attr description
+           This Drawable is overlaid over the foreground of the Window's content area, usually
+             to place a shadow below the title.  
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:windowContentOverlay
+        */
+        public static final int SherlockTheme_windowContentOverlay = 21;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#windowMinWidthMajor}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:windowMinWidthMajor
+        */
+        public static final int SherlockTheme_windowMinWidthMajor = 34;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#windowMinWidthMinor}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:windowMinWidthMinor
+        */
+        public static final int SherlockTheme_windowMinWidthMinor = 35;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#windowNoTitle}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:windowNoTitle
+        */
+        public static final int SherlockTheme_windowNoTitle = 44;
+        /**
+          <p>This symbol is the offset where the {@link com.tbocek.android.combatmap.R.attr#windowSplitActionBar}
+          attribute's value can be found in the {@link #SherlockTheme} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:windowSplitActionBar
+        */
+        public static final int SherlockTheme_windowSplitActionBar = 48;
+    };
 }
