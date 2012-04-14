@@ -56,12 +56,14 @@ public class BackgroundImageCollection implements UndoRedoTarget {
 		// the assumption that the canvas is *untransformed*.  But, we still
 		// want to respect the fog of war.  So, we let the calling code assume
 		// that the canvas is transformed, and undo the transformation here.
+		
 		canvas.save();
 		transformer.setInverseMatrix(canvas);
 		
 		for (BackgroundImage i: mImages) {
 			i.draw(canvas, transformer);
 		}
+		
 		canvas.restore();
 	}
 	

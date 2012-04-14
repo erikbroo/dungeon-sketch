@@ -18,7 +18,8 @@ import com.tbocek.android.combatmap.view.CombatView;
  */
 public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 
-	private static final int HANDLE_CIRCLE_RADIUS = 6;
+	// TODO: dp
+	private static final int HANDLE_CIRCLE_RADIUS = 12;
 	
 	private BackgroundImage mSelectedImage;
 	
@@ -129,11 +130,14 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 		if (mSelectedImage != null) {
 			// Select a handle mode based on what part of the image was touched.
 			BoundingRectangle r = mSelectedImage.getBoundingRectangle();
-			// Convert bounding rectangle bounds to screen space.
-			float xmin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMin());
-			float xmax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMax());
-			float ymin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMin());
-			float ymax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMax());
+			
+    		// Convert bounding rectangle bounds to screen space.
+    		PointF upperLeft = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMin(), r.getYMin()));
+    		PointF lowerRight = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMax(), r.getYMax()));
+    		float xmin = upperLeft.x;
+    		float xmax = lowerRight.x;
+    		float ymin = upperLeft.y;
+    		float ymax = lowerRight.y;
 			
 			mHandleMode = new HandleSet(xmin, xmax, ymin, ymax).getHandleMode(new PointF(e.getX(), e.getY()));
 		}
@@ -197,8 +201,9 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     	
     	if (tappedImage == null) {
 	    	BackgroundImage i = new BackgroundImage(getView().getResources().getDrawable(R.drawable.add_image));
-	        i.setLocation(locationWorldSpace);
+	        i.setLocation(new PointF(0,0));
 	    	getView().getData().getBackgroundImages().addImage(i);
+	    	mSelectedImage = i;
     	}
     	getView().refreshMap();
         return true;
@@ -209,11 +214,15 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     	// Draw border and handles on the selected image.
     	if (mSelectedImage != null) {
     		BoundingRectangle r = mSelectedImage.getBoundingRectangle();
+    		
     		// Convert bounding rectangle bounds to screen space.
-    		float xmin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMin());
-    		float xmax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getXMax());
-    		float ymin = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMin());
-    		float ymax = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(r.getYMax());
+    		PointF upperLeft = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMin(), r.getYMin()));
+    		PointF lowerRight = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMax(), r.getYMax()));
+    		float xmin = upperLeft.x;
+    		float xmax = lowerRight.x;
+    		float ymin = upperLeft.y;
+    		float ymax = lowerRight.y;
+    		
 	    	Paint borderHandlePaint = new Paint();
 	    	borderHandlePaint.setColor(Util.ICS_BLUE);
 	    	borderHandlePaint.setStrokeWidth(2);

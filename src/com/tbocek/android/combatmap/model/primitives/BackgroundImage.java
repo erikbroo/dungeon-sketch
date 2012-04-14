@@ -26,11 +26,16 @@ public class BackgroundImage {
 	 * @param transformer The screen to world space transformer.
 	 */
 	public void draw(Canvas c, CoordinateTransformer transformer) {
-		int left = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.x);
-		int top = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.y);
-		int right = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.x + mWidthWorldSpace);
-		int bottom = (int) transformer.worldSpaceToScreenSpace(mOriginWorldSpace.y + mHeightWorldSpace);
+		// Convert bounding rectangle bounds to screen space.
+		PointF upperLeft = transformer.worldSpaceToScreenSpace(new PointF(mOriginWorldSpace.x, mOriginWorldSpace.y));
+		PointF lowerRight = transformer.worldSpaceToScreenSpace(new PointF(mOriginWorldSpace.x + mWidthWorldSpace, mOriginWorldSpace.y + mHeightWorldSpace));
+		int left = (int) upperLeft.x;
+		int right = (int) lowerRight.x;
+		int top = (int) upperLeft.y;
+		int bottom = (int) lowerRight.y;
+		
 		mDrawable.setBounds(left, top, right, bottom);
+		
 		mDrawable.draw(c);
 	}
 
