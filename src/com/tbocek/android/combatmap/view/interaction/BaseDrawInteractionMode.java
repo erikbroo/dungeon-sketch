@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.tbocek.android.combatmap.R;
+import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.view.CombatView;
 
@@ -66,5 +67,22 @@ public class BaseDrawInteractionMode extends CombatViewInteractionMode {
 	      }
 	      return false;
 	}
+	
+    /**
+     * Gets the draw location in screen space.  Snaps to the grid if necessary.
+     * @param e The motion event to get the point from.
+     * @return The point in screen space.
+     */
+    protected PointF getScreenSpacePoint(final MotionEvent e) {
+    	PointF p = new PointF(e.getX(), e.getY());
+    	if (getView().shouldSnapToGrid()) {
+    		CoordinateTransformer transformer
+    				= getView().getGridSpaceTransformer();
+    		p = transformer.worldSpaceToScreenSpace(
+    				getView().getData().getGrid().getNearestSnapPoint(
+    						transformer.screenSpaceToWorldSpace(p), 0));
+    	}
+    	return p;
+    }
 
 }

@@ -108,22 +108,6 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
         mLastPointY = p.y;
     }
 
-    /**
-     * Gets the draw location in screen space.  Snaps to the grid if necessary.
-     * @param e The motion event to get the point from.
-     * @return The point in screen space.
-     */
-    private PointF getScreenSpacePoint(final MotionEvent e) {
-    	PointF p = new PointF(e.getX(), e.getY());
-    	if (getView().shouldSnapToGrid()) {
-    		CoordinateTransformer transformer
-    				= getView().getGridSpaceTransformer();
-    		p = transformer.worldSpaceToScreenSpace(
-    				getView().getData().getGrid().getNearestSnapPoint(
-    						transformer.screenSpaceToWorldSpace(p), 0));
-    	}
-    	return p;
-    }
 
     /**
      * Returns True if the proposed point is far enough away from the previously
