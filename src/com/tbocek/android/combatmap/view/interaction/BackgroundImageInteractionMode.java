@@ -132,7 +132,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 	public boolean onDown(final MotionEvent e) {
 		PointF locationWorldSpace = getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
 	
-		mSelectedImage = getView().getData().getBackgroundImages().getImageOnPoint(locationWorldSpace, handleCircleRadiusPx());
+		mSelectedImage = getView().getData().getBackgroundImages().getImageOnPoint(locationWorldSpace,  getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(handleCircleRadiusPx()));
 		if (mSelectedImage != null) {
 			// Select a handle mode based on what part of the image was touched.
 			BoundingRectangle r = mSelectedImage.getBoundingRectangle();
@@ -203,7 +203,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     public boolean onSingleTapConfirmed(final MotionEvent e) {
     	PointF locationWorldSpace = getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
     	
-    	BackgroundImage tappedImage = getView().getData().getBackgroundImages().getImageOnPoint(locationWorldSpace, handleCircleRadiusPx());
+    	BackgroundImage tappedImage = getView().getData().getBackgroundImages().getImageOnPoint(
+    			locationWorldSpace, getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(handleCircleRadiusPx()));
     	
     	if (tappedImage == null) {
 	    	BackgroundImage i = new BackgroundImage(getView().getResources().getDrawable(R.drawable.add_image));
