@@ -130,16 +130,16 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 
 	@Override
 	public boolean onDown(final MotionEvent e) {
-		PointF locationWorldSpace = getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
+		PointF locationWorldSpace = getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
 	
-		mSelectedImage = getView().getData().getBackgroundImages().getImageOnPoint(locationWorldSpace,  getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(handleCircleRadiusPx()));
+		mSelectedImage = getData().getBackgroundImages().getImageOnPoint(locationWorldSpace,  getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(handleCircleRadiusPx()));
 		if (mSelectedImage != null) {
 			// Select a handle mode based on what part of the image was touched.
 			BoundingRectangle r = mSelectedImage.getBoundingRectangle();
 			
     		// Convert bounding rectangle bounds to screen space.
-    		PointF upperLeft = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMin(), r.getYMin()));
-    		PointF lowerRight = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMax(), r.getYMax()));
+    		PointF upperLeft = getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMin(), r.getYMin()));
+    		PointF lowerRight = getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMax(), r.getYMax()));
     		float xmin = upperLeft.x;
     		float xmax = lowerRight.x;
     		float ymin = upperLeft.y;
@@ -156,8 +156,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
   		  final float distanceX, final float distanceY) {
         if (mSelectedImage != null) {
-        	float wsDistX = -getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceX);
-        	float wsDistY = -getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceY);
+        	float wsDistX = -getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceX);
+        	float wsDistY = -getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceY);
         	switch(mHandleMode) {
         	case LEFT:
         		mSelectedImage.moveLeft(wsDistX);
@@ -201,15 +201,15 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 	
     @Override
     public boolean onSingleTapConfirmed(final MotionEvent e) {
-    	PointF locationWorldSpace = getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
+    	PointF locationWorldSpace = getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
     	
-    	BackgroundImage tappedImage = getView().getData().getBackgroundImages().getImageOnPoint(
-    			locationWorldSpace, getView().getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(handleCircleRadiusPx()));
+    	BackgroundImage tappedImage = getData().getBackgroundImages().getImageOnPoint(
+    			locationWorldSpace, getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(handleCircleRadiusPx()));
     	
     	if (tappedImage == null) {
 	    	BackgroundImage i = new BackgroundImage(getView().getResources().getDrawable(R.drawable.add_image));
 	        i.setLocation(locationWorldSpace);
-	    	getView().getData().getBackgroundImages().addImage(i);
+	    	getData().getBackgroundImages().addImage(i);
 	    	mSelectedImage = i;
     	}
     	getView().refreshMap();
@@ -223,8 +223,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     		BoundingRectangle r = mSelectedImage.getBoundingRectangle();
     		
     		// Convert bounding rectangle bounds to screen space.
-    		PointF upperLeft = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMin(), r.getYMin()));
-    		PointF lowerRight = getView().getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMax(), r.getYMax()));
+    		PointF upperLeft = getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMin(), r.getYMin()));
+    		PointF lowerRight = getData().getWorldSpaceTransformer().worldSpaceToScreenSpace(new PointF(r.getXMax(), r.getYMax()));
     		float xmin = upperLeft.x;
     		float xmax = lowerRight.x;
     		float ymin = upperLeft.y;

@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap.view.interaction;
 
 
+import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.view.CombatView;
 
@@ -169,5 +170,9 @@ public class CombatViewInteractionMode
 	 */
 	protected CombatView getView() {
 		return mView;
+	}
+	
+	protected MapData getData() {
+		return mView.getData();
 	}
 }

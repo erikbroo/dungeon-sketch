@@ -31,7 +31,7 @@ public final class GridRepositioningInteractionMode
     			.screenSpaceToWorldSpace(distanceX);
     	float deltaY = -getView().getWorldSpaceTransformer()
     			.screenSpaceToWorldSpace(distanceY);
-    	getView().getData().getGrid().gridSpaceToWorldSpaceTransformer()
+    	getData().getGrid().gridSpaceToWorldSpaceTransformer()
     			.moveOrigin(deltaX, deltaY);
         getView().refreshMap();
         return true;
@@ -42,7 +42,7 @@ public final class GridRepositioningInteractionMode
         PointF invariantPointWorldSpace =
         	getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
         			detector.getFocusX(), detector.getFocusY());
-        getView().getData().getGrid().gridSpaceToWorldSpaceTransformer().zoom(
+        getData().getGrid().gridSpaceToWorldSpaceTransformer().zoom(
         		detector.getScaleFactor(), invariantPointWorldSpace);
         getView().refreshMap();
         return true;

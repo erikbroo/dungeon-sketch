@@ -131,7 +131,7 @@ public final class TokenManipulationInteractionMode
             if (getView().shouldSnapToGrid()) {
                 // Get the nearest snap point in screen space
                 PointF nearestSnapPointWorldSpace =
-                	getView().getData().getGrid().getNearestSnapPoint(
+                	getData().getGrid().getNearestSnapPoint(
                         transformer.screenSpaceToWorldSpace(
                                 currentPointScreenSpace),
                                 getView().tokensSnapToIntersections() 
@@ -243,7 +243,7 @@ public final class TokenManipulationInteractionMode
         if (debugSnapPoint != null && mDown) {
         	Paint p = new Paint();
         	p.setColor(
-        			getView().getData().getGrid().getColorScheme()
+        			getData().getGrid().getColorScheme()
         			.getLineColor());
         	p.setStyle(Paint.Style.STROKE);
         	
@@ -258,8 +258,8 @@ public final class TokenManipulationInteractionMode
 	 */
 	private void ensureTrashCanDrawablesCreated() {
 		if (mTrashDrawable == null 
-				|| mCachedDark != getView().getData().getGrid().isDark()) {
-			if (getView().getData().getGrid().isDark()) {
+				|| mCachedDark != getData().getGrid().isDark()) {
+			if (getData().getGrid().isDark()) {
 				mTrashDrawable = getView().getResources().getDrawable(
 						R.drawable.trashcan);
 			} else {
@@ -267,7 +267,7 @@ public final class TokenManipulationInteractionMode
 						R.drawable.trashcan_dark);
 			}
 			
-			mCachedDark = getView().getData().getGrid().isDark();
+			mCachedDark = getData().getGrid().isDark();
 		    mTrashDrawable.setBounds(TRASH_CAN_RECT);
 		    mTrashHoverDrawable = getView().getResources().getDrawable(
 		    		R.drawable.trashcan_hover_over);
