@@ -207,7 +207,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     	
     	if (tappedImage == null) {
 	    	BackgroundImage i = new BackgroundImage(getView().getResources().getDrawable(R.drawable.add_image));
-	        i.setLocation(new PointF(0,0));
+	        i.setLocation(locationWorldSpace);
 	    	getView().getData().getBackgroundImages().addImage(i);
 	    	mSelectedImage = i;
     	}
