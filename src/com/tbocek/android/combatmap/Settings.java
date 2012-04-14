@@ -1,17 +1,15 @@
 package com.tbocek.android.combatmap;
 
-import com.tbocek.android.combatmap.about.AboutDialog;
-import com.tbocek.android.combatmap.about.ArtCredits;
-import com.tbocek.android.combatmap.model.MapData;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
+
+import com.tbocek.android.combatmap.about.AboutDialog;
+import com.tbocek.android.combatmap.about.ArtCredits;
 
 /**
  * Preferences activity for Dungeon Sketch.

@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer;
 import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
-import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 
 import android.app.Dialog;
 import android.content.Context;

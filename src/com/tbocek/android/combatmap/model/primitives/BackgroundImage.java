@@ -1,15 +1,7 @@
 package com.tbocek.android.combatmap.model.primitives;
 
-import java.io.IOException;
-import java.util.List;
-
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Path;
 import android.graphics.drawable.Drawable;
-
-import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
-import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 public class BackgroundImage {
 	private PointF mOriginWorldSpace;

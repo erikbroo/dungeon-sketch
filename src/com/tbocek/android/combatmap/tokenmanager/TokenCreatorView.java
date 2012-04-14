@@ -18,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * This view is the main rendering and manipulation logic for the token creator
@@ -137,7 +136,6 @@ public final class TokenCreatorView extends View {
         invalidate();
     }
 
-    @SuppressWarnings("unchecked")
 	@Override
     protected void onSizeChanged (int w, int h, int oldw, int oldh) {
     	if (!mHasCircle && w > 0 && h > 0) {

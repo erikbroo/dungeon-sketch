@@ -1,20 +1,20 @@
 package com.tbocek.tools.combatmap;
 
-import com.tbocek.android.combatmap.R;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
-import java.io.File;
-import java.io.FileOutputStream;
+import org.w3c.dom.NodeList;
+
+import com.tbocek.android.combatmap.R;
 
 /**
  * Optimizes art credits file by replacing resource names with resource IDs.

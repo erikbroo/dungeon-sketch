@@ -1,28 +1,24 @@
 package com.tbocek.android.combatmap;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Color;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 
-import com.tbocek.android.combatmap.GridPropertiesDialog.PropertiesChangedListener;
 import com.tbocek.android.combatmap.model.GridColorScheme;
 import com.tbocek.android.combatmap.model.HexGridStrategy;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.RectangularGridStrategy;
 import com.tbocek.android.combatmap.view.ImageToggleButton;
 import com.tbocek.android.combatmap.view.ToggleButtonGroup;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Bitmap.Config;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Spinner;
 
 public class GridPropertiesDialog extends Dialog{
 	

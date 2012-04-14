@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -967,7 +966,7 @@ public final class CombatMap extends SherlockActivity {
         	 break;
          case DIALOG_ID_GRID_PROPERTIES:
         	 GridPropertiesDialog gpd = (GridPropertiesDialog) dialog;
-        	 gpd.setMapData(this.mData);
+        	 gpd.setMapData(mData);
         	 break;
          case DIALOG_ID_EXPORT:
     		 sharedPreferences =

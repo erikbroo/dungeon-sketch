@@ -16,14 +16,6 @@ import android.graphics.Paint;
  */
 public final class HexGridStrategy extends GridDrawStrategy {
     /**
-     * Cached result for the tan(30 degrees).
-     */
-    private static final float TANGENT_30_DEGREES =
-    	//CHECKSTYLE:OFF
-        (float) Math.tan(30 * Math.PI / 180);
-    	//CHECKSTYLE:ON
-    
-    /**
      * Cached result for the cos(30 degrees).
      */
     private static final float COSINE_30_DEGREES =
@@ -72,10 +64,6 @@ public final class HexGridStrategy extends GridDrawStrategy {
             previousGridLineY =
                     (float) Math.floor((double) currentLocation.y);
         }
-
-        float offsetY = .5f * tokenDiameter - (float) Math.floor(.5f * tokenDiameter);
-        
-        float offsetX = .5f * innerOffset * tokenDiameter - (float) Math.floor(.5f * innerOffset * tokenDiameter);
 
         // Special case for tokenDiameter == 0: these should snap to corners
         // instead of centroids.  Now that we identified the centroid, we want

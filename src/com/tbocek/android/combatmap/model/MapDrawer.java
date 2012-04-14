@@ -132,8 +132,10 @@ public class MapDrawer {
 		}
 		CoordinateTransformer gridSpace = m.getGrid().gridSpaceToScreenSpaceTransformer(
 				m.getWorldSpaceTransformer());
-		m.getTokens().drawAllTokens(canvas, gridSpace,
-				m.getGrid().isDark(), mAreTokensManipulable);
+		if (mDrawTokens) {
+			m.getTokens().drawAllTokens(canvas, gridSpace,
+					m.getGrid().isDark(), mAreTokensManipulable);
+		}
 		canvas.restore();
 	}
 	
