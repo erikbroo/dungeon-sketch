@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.view.interaction;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 
 import com.tbocek.android.combatmap.R;
@@ -19,7 +20,7 @@ import com.tbocek.android.combatmap.view.CombatView;
 public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 
 	// TODO: dp
-	private static final int HANDLE_CIRCLE_RADIUS = 12;
+	private static final int HANDLE_CIRCLE_RADIUS_DP = 12;
 	
 	private BackgroundImage mSelectedImage;
 	
@@ -94,26 +95,31 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 		}
 		
 		public HandleMode getHandleMode(PointF p) {
-			if (Util.distance(p, getLeft()) < HANDLE_CIRCLE_RADIUS) {
+			int r = handleCircleRadiusPx();
+			if (Util.distance(p, getLeft()) < r) {
 				return HandleMode.LEFT;
-			} else if (Util.distance(p, getRight()) < HANDLE_CIRCLE_RADIUS) {
+			} else if (Util.distance(p, getRight()) < r) {
 				return HandleMode.RIGHT;
-			} else if (Util.distance(p, getTop()) < HANDLE_CIRCLE_RADIUS) {
+			} else if (Util.distance(p, getTop()) < r) {
 				return HandleMode.TOP;
-			} else if (Util.distance(p, getBottom()) < HANDLE_CIRCLE_RADIUS) {
+			} else if (Util.distance(p, getBottom()) < r) {
 				return HandleMode.BOTTOM;
-			} else if (Util.distance(p, getUpperLeft()) < HANDLE_CIRCLE_RADIUS) {
+			} else if (Util.distance(p, getUpperLeft()) < r) {
 				return HandleMode.UPPER_LEFT;
-			} else if (Util.distance(p, getLowerLeft()) < HANDLE_CIRCLE_RADIUS) {
+			} else if (Util.distance(p, getLowerLeft()) < r) {
 				return HandleMode.LOWER_LEFT;
-			} else if (Util.distance(p, getUpperRight()) < HANDLE_CIRCLE_RADIUS) {
+			} else if (Util.distance(p, getUpperRight()) < r) {
 				return HandleMode.UPPER_RIGHT;
-			} else if (Util.distance(p, getLowerRight()) < HANDLE_CIRCLE_RADIUS) {
+			} else if (Util.distance(p, getLowerRight()) < r) {
 				return HandleMode.LOWER_RIGHT;
 			} else {
 				return HandleMode.MOVE;
 			}
 		}
+	}
+	
+	private int handleCircleRadiusPx() {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, HANDLE_CIRCLE_RADIUS_DP, getView().getResources().getDisplayMetrics());
 	}
 	
 	private HandleMode mHandleMode;
@@ -250,7 +256,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     }
     
     private void drawHandle(Canvas c, PointF location, Paint p) {
-    	c.drawCircle(location.x, location.y, HANDLE_CIRCLE_RADIUS, p);
+    	c.drawCircle(location.x, location.y, handleCircleRadiusPx(), p);
     }
     
     /**
@@ -262,8 +268,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
      * @param p
      */
     private void drawBorderSegment(Canvas c, PointF p1, PointF p2, Paint p) {
-    	float horizontalClip = Math.abs(p1.x - p2.x) > Math.abs(p1.y - p2.y) ? HANDLE_CIRCLE_RADIUS : 0;
-    	float verticalClip = Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y) ? HANDLE_CIRCLE_RADIUS : 0;
+    	float horizontalClip = Math.abs(p1.x - p2.x) > Math.abs(p1.y - p2.y) ? handleCircleRadiusPx() : 0;
+    	float verticalClip = Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y) ? handleCircleRadiusPx() : 0;
     	
     	c.drawLine(
     			Math.min(p1.x, p2.x) + horizontalClip, 
