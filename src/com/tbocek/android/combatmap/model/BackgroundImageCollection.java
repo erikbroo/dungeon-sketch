@@ -72,9 +72,9 @@ public class BackgroundImageCollection implements UndoRedoTarget {
 	 * @param point Location to check in world space.
 	 * @return
 	 */
-	public BackgroundImage getImageOnPoint(PointF point) {
+	public BackgroundImage getImageOnPoint(PointF point, int borderPixels) {
 		for (BackgroundImage i: mImages) {
-			if (i.getBoundingRectangle().contains(point)) {
+			if (i.getBoundingRectangle(borderPixels).contains(point)) {
 				return i;
 			}
 		}

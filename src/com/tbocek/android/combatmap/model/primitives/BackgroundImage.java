@@ -39,10 +39,14 @@ public class BackgroundImage {
 		mDrawable.draw(c);
 	}
 
-	public BoundingRectangle getBoundingRectangle() {
-		PointF p1 = mOriginWorldSpace;
-		PointF p2 = new PointF(mOriginWorldSpace.x + mWidthWorldSpace, mOriginWorldSpace.y + mHeightWorldSpace);
+	public BoundingRectangle getBoundingRectangle(int borderPixels) {
+		PointF p1 = new PointF(mOriginWorldSpace.x - borderPixels, mOriginWorldSpace.y - borderPixels);
+		PointF p2 = new PointF(mOriginWorldSpace.x + mWidthWorldSpace  + borderPixels, mOriginWorldSpace.y + mHeightWorldSpace + borderPixels);
 		return new BoundingRectangle(p1, p2);
+	}
+	
+	public BoundingRectangle getBoundingRectangle() {
+		return getBoundingRectangle(0);
 	}
 	
 	public void moveTop(float delta) {
