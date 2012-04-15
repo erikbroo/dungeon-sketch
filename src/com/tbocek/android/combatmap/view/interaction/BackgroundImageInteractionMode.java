@@ -118,6 +118,37 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 				return HandleMode.MOVE;
 			}
 		}
+		
+		/**
+		 * Gets the center of the handle that was clicked on.  This is used to
+		 * more accurately snap those handles to the grid.  In the case of
+		 * moving the image rather than an edge, the upper left point is
+		 * returned since that is what will snap to the grid.
+		 * @param p
+		 * @return
+		 */
+		public PointF getClickedHandleCenter(PointF p) {
+			int r = handleCircleRadiusPx();
+			if (Util.distance(p, getLeft()) < r) {
+				return getLeft();
+			} else if (Util.distance(p, getRight()) < r) {
+				return getRight();
+			} else if (Util.distance(p, getTop()) < r) {
+				return getTop();
+			} else if (Util.distance(p, getBottom()) < r) {
+				return getBottom();
+			} else if (Util.distance(p, getUpperLeft()) < r) {
+				return getUpperLeft();
+			} else if (Util.distance(p, getLowerLeft()) < r) {
+				return getLowerLeft();
+			} else if (Util.distance(p, getUpperRight()) < r) {
+				return getUpperRight();
+			} else if (Util.distance(p, getLowerRight()) < r) {
+				return getLowerRight();
+			} else {
+				return getUpperLeft();
+			}			
+		}
 	}
 	
 	private int handleCircleRadiusPx() {
@@ -150,7 +181,11 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     		float ymin = upperLeft.y;
     		float ymax = lowerRight.y;
 			
-			mHandleMode = new HandleSet(xmin, xmax, ymin, ymax).getHandleMode(new PointF(e.getX(), e.getY()));
+    		HandleSet handles = new HandleSet(xmin, xmax, ymin, ymax);
+			mHandleMode = handles.getHandleMode(mLastDragPoint);
+			if (getView().shouldSnapToGrid()) {
+				mLastDragPoint = handles.getClickedHandleCenter(mLastDragPoint);
+			}
 			
 		}
 		
