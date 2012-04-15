@@ -96,14 +96,14 @@
       <property name="severity" value="ignore"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
-    <module name="AvoidNotShortCircuitOperatorsForBoolean"/>
+    <!--  <module name="AvoidNotShortCircuitOperatorsForBoolean"/> 
     <module name="CustomDeclarationOrder">
       <property name="customDeclarationOrder" value="Field(static) ### Method(static) ### Field(public) ### Field(protected) ### Field(private) ### CTOR(.*) ### Method(.*)### InnerClass()"/>
-    </module>
+    </module> 
     <module name="ReturnNullInsteadOfBoolean"/>
     <module name="ReturnBooleanFromTernary"/>
     <module name="MultipleVariableDeclarationsExtended"/>
-    <module name="UnnecessaryParenthesesExtended"/>
+    <module name="UnnecessaryParenthesesExtended"/> -->
   </module>
   <module name="FileLength"/>
   <module name="FileTabCharacter">
