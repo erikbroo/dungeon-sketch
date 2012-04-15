@@ -24,6 +24,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 	
 	private BackgroundImage mSelectedImage;
 	
+	private PointF mLastDragPoint;
+	
 	/**
 	 * Enum for representing what aspect of an image is being dragged.
 	 * @author Tim
@@ -133,6 +135,9 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 		PointF locationWorldSpace = getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
 	
 		mSelectedImage = getData().getBackgroundImages().getImageOnPoint(locationWorldSpace,  getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(handleCircleRadiusPx()));
+		
+		mLastDragPoint = new PointF(e.getX(), e.getY());
+		
 		if (mSelectedImage != null) {
 			// Select a handle mode based on what part of the image was touched.
 			BoundingRectangle r = mSelectedImage.getBoundingRectangle();
@@ -146,6 +151,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     		float ymax = lowerRight.y;
 			
 			mHandleMode = new HandleSet(xmin, xmax, ymin, ymax).getHandleMode(new PointF(e.getX(), e.getY()));
+			
 		}
 		
 		getView().refreshMap();
@@ -154,10 +160,17 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 	
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
-  		  final float distanceX, final float distanceY) {
+  		  final float distanceXignored, final float distanceYignored) {
+    	
+    	PointF snapped = this.getScreenSpacePoint(e2);
+    	
+    	float distanceX = snapped.x - mLastDragPoint.x;
+    	float distanceY = snapped.y - mLastDragPoint.y;
+    	mLastDragPoint =  snapped;
+    	
         if (mSelectedImage != null) {
-        	float wsDistX = -getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceX);
-        	float wsDistY = -getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceY);
+        	float wsDistX = getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceX);
+        	float wsDistY = getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(distanceY);
         	switch(mHandleMode) {
         	case LEFT:
         		mSelectedImage.moveLeft(wsDistX);
