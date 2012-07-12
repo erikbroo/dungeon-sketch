@@ -179,7 +179,12 @@ public final class CombatMap extends SherlockActivity {
 	 * The action mode that was started to manage the selection.
 	 */
 	private ActionMode mMultiSelectActionMode;
-
+	
+	/**
+	 * Cached SharedPreferences
+	 */
+	private SharedPreferences mSharedPreferences;
+	
     /**
      * Listener that fires when a token has been selected in the token selector
      * view.
@@ -344,6 +349,9 @@ public final class CombatMap extends SherlockActivity {
     	DeveloperMode.strictMode();
     	// android.os.Debug.startMethodTracing("main_activity_load");
         super.onCreate(savedInstanceState);
+        
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                        this.getApplicationContext());
 
         BuiltInImageToken.registerResources(
                 this.getApplicationContext().getResources());
@@ -541,14 +549,10 @@ public final class CombatMap extends SherlockActivity {
      * set.
      */
     private void reloadPreferences() {
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                    this.getApplicationContext());
-
         this.mTokenSelector.setShouldDrawDark(mData.getGrid().isDark());
 
         if (mTabManager != null) {
-	        mTabManager.pickTab(sharedPreferences.getInt(
+	        mTabManager.pickTab(mSharedPreferences.getInt(
 	        		"manipulation_mode", MODE_DRAW_BACKGROUND));
         }
         
@@ -562,19 +566,15 @@ public final class CombatMap extends SherlockActivity {
      * Loads the snap preference associated with the current combat map mode.
      */
     private void loadModeSpecificSnapPreference() {
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(
-                        this.getApplicationContext());
-    	
-    	int manipulationMode = sharedPreferences.getInt(
+    	int manipulationMode = mSharedPreferences.getInt(
     			"manipulation_mode", MODE_TOKENS);
     	
-        boolean shouldSnap = sharedPreferences.getBoolean(
+        boolean shouldSnap = mSharedPreferences.getBoolean(
         		getModeSpecificSnapPreferenceName(manipulationMode), true);
         
     	mCombatView.setShouldSnapToGrid(shouldSnap);
     	mCombatView.setTokensSnapToIntersections(
-    			sharedPreferences.getBoolean("tokenssnaptogridlines", false));
+    			mSharedPreferences.getBoolean("tokenssnaptogridlines", false));
     	
     	if (mSnapToGridMenuItem != null) {
     		mSnapToGridMenuItem.setChecked(shouldSnap);
@@ -586,18 +586,14 @@ public final class CombatMap extends SherlockActivity {
      * @param shouldSnap True if should snap, false otherwise.
      */
     private void setModeSpecificSnapPreference(final boolean shouldSnap) {
-    	SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(
-                        this.getApplicationContext());
-    	
-    	int manipulationMode = sharedPreferences.getInt(
+    	int manipulationMode = mSharedPreferences.getInt(
     			"manipulation_mode", MODE_TOKENS);
     	
-        Editor editor = sharedPreferences.edit();
+        Editor editor = mSharedPreferences.edit();
         editor.putBoolean(
         		getModeSpecificSnapPreferenceName(manipulationMode),
         		mSnapToGridMenuItem.isChecked());
-        editor.commit();
+        editor.apply();
         
     	mCombatView.setShouldSnapToGrid(shouldSnap);
     }
@@ -615,15 +611,11 @@ public final class CombatMap extends SherlockActivity {
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                    this.getApplicationContext());
-
-        Editor editor = sharedPreferences.edit();
-        editor.commit();
-        String filename = sharedPreferences.getString("filename", null);
+        Editor editor = mSharedPreferences.edit();
+        editor.apply();
+        String filename = mSharedPreferences.getString("filename", null);
         if (filename == null 
-        		|| !sharedPreferences.getBoolean("autosave", true)) {
+        		|| !mSharedPreferences.getBoolean("autosave", true)) {
         	filename = DataManager.TEMP_MAP_NAME;
         }
 
@@ -658,14 +650,11 @@ public final class CombatMap extends SherlockActivity {
      * @param newFilename The filename to set.
      */
     private void setFilenamePreference(final String newFilename) {
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                    this.getApplicationContext());
         // Persist the filename that we saved to so that we can load from that
         // file again.
-        Editor editor = sharedPreferences.edit();
+        Editor editor = mSharedPreferences.edit();
         editor.putString("filename", newFilename);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
@@ -686,16 +675,13 @@ public final class CombatMap extends SherlockActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(
-                        this.getApplicationContext());
         // Handle item selection
         switch (item.getItemId()) {
         case R.id.menu_clear_all:
         	// Save the current map, if autosave was requested.
-        	if (sharedPreferences.getBoolean("autosave", true)) {
+        	if (mSharedPreferences.getBoolean("autosave", true)) {
         		new MapSaver(
-        				sharedPreferences.getString("filename", ""), 
+        				mSharedPreferences.getString("filename", ""), 
         				this.getApplicationContext())
         		.run();
         	}
@@ -752,13 +738,9 @@ public final class CombatMap extends SherlockActivity {
      * 		declared in this class.
      */
     private void setManipulationMode(final int manipulationMode) {
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                    this.getApplicationContext());
-
-        Editor editor = sharedPreferences.edit();
+        Editor editor = mSharedPreferences.edit();
         editor.putInt("manipulation_mode", manipulationMode);
-        editor.commit();
+        editor.apply();
 
 		switch (manipulationMode) {
 		case MODE_DRAW_BACKGROUND:
@@ -808,7 +790,7 @@ public final class CombatMap extends SherlockActivity {
             mCombatView.setAreTokensManipulatable(true);
             mCombatView.setTokenManipulationMode();
             mCombatView.setFogOfWarMode(
-            		sharedPreferences.getBoolean("fogofwar", true)
+            		mSharedPreferences.getBoolean("fogofwar", true)
             				? FogOfWarMode.CLIP
             				: FogOfWarMode.NOTHING);
             mBottomControlFrame.removeAllViews();
@@ -828,14 +810,11 @@ public final class CombatMap extends SherlockActivity {
      * @param mode The mode to set
      */
     private void setModePreference(final int mode) {
-        SharedPreferences sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(
-                    this.getApplicationContext());
         // Persist the filename that we saved to so that we can load from that
         // file again.
-        Editor editor = sharedPreferences.edit();
+        Editor editor = mSharedPreferences.edit();
         editor.putInt("manipulation_mode", mode);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -843,12 +822,9 @@ public final class CombatMap extends SherlockActivity {
      * is.
      */
 	private void loadModePreference() {
-		SharedPreferences sharedPreferences =
-	            PreferenceManager.getDefaultSharedPreferences(
-	                    this.getApplicationContext());
 		// Set the current mode to the selected mode.
         setManipulationMode(
-        		sharedPreferences.getInt(
+        		mSharedPreferences.getInt(
         				"manipulation_mode", MODE_DRAW_BACKGROUND));
 	}
 
@@ -860,14 +836,10 @@ public final class CombatMap extends SherlockActivity {
              return new TextPromptDialog(this,
                      new TextPromptDialog.OnTextConfirmedListener() {
                 public void onTextConfirmed(final String text) {
-           		 	SharedPreferences sharedPreferences =
-           		 			PreferenceManager.getDefaultSharedPreferences(
-           		 					getApplicationContext());
-           		    
            		 	// If the save file name exists and is not the current file,
            		 	// warn about overwriting.
            		    if (!text.equals(
-           		    			sharedPreferences.getString("filename", "")) 
+           		    			mSharedPreferences.getString("filename", "")) 
            		    		&& new DataManager(getApplicationContext())
            		    				.saveFileExists(text)) {
            		    	mAttemptedMapName = text;
@@ -934,13 +906,9 @@ public final class CombatMap extends SherlockActivity {
     protected void onPrepareDialog(final int id, final Dialog dialog) {
     	switch(id) {
     	 case DIALOG_ID_SAVE:
-    		 SharedPreferences sharedPreferences =
-             	PreferenceManager.getDefaultSharedPreferences(
-             			this.getApplicationContext());
-
     		 // Attempt to load map data.  If we can't load map data, create a 
     		 // new map.
-    		 String filename = sharedPreferences.getString("filename", "");
+    		 String filename = mSharedPreferences.getString("filename", "");
     		 if (filename == null || filename.equals(
     				 DataManager.TEMP_MAP_NAME)) {
     			 filename = "";
@@ -969,13 +937,9 @@ public final class CombatMap extends SherlockActivity {
         	 gpd.setMapData(mData);
         	 break;
          case DIALOG_ID_EXPORT:
-    		 sharedPreferences =
-          		PreferenceManager.getDefaultSharedPreferences(
-          			this.getApplicationContext());
-
     		 // Attempt to load map data.  If we can't load map data, create a 
     		 // new map.
-    		 filename = sharedPreferences.getString("filename", "");
+    		 filename = mSharedPreferences.getString("filename", "");
     		 if (filename == null || filename.equals(
  				 DataManager.TEMP_MAP_NAME)) {
     			 filename = "";
@@ -1028,14 +992,11 @@ public final class CombatMap extends SherlockActivity {
 		        }
             } catch (Exception e) {
                 MapData.clear();
-                SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(mContext);
-
                 // Persist the filename that we saved to so that we can load
                 // from that file again.
-                Editor editor = sharedPreferences.edit();
+                Editor editor = mSharedPreferences.edit();
                 editor.putString("filename", null);
-                editor.commit();
+                editor.apply();
 
                 // Log the error in a toast
                 e.printStackTrace();
