@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TokenDatabase;
+import com.tbocek.android.combatmap.TokenLoadManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.tokenmanager.TokenStackDragShadow;
 
@@ -75,6 +77,12 @@ public final class TokenSelectorView extends LinearLayout {
      * Database to load tokens from.
      */
     private TokenDatabase mTokenDatabase;
+    
+    /**
+     * Whether this token selector has changed absolute position.  We will poll
+     * every fraction of a second.
+     */
+    private boolean mIsPositionDirty;
     
     /**
      * Constructor.
@@ -145,12 +153,11 @@ public final class TokenSelectorView extends LinearLayout {
     /**
      * Sets the token database to query for tokens.
      * @param database The token database.
-     * @param combatView The CombatView to refresh when tokens are loaded.
      */
     public void setTokenDatabase(
-    		final TokenDatabase database, final CombatView combatView) {
+    		final TokenDatabase database) {
         this.mTokenDatabase = database;
-        setTokenList(mTokenDatabase.getAllTokens(), combatView);
+        setTokenList(mTokenDatabase.getAllTokens());
     }
 
     /**
@@ -160,32 +167,30 @@ public final class TokenSelectorView extends LinearLayout {
      */
     public void setSelectedTag(
     		final String checkedTag, final CombatView combatView) {
-        setTokenList(mTokenDatabase.getTokensForTag(checkedTag), combatView);
+        setTokenList(mTokenDatabase.getTokensForTag(checkedTag));
     }
 
     /**
      * Sets the list of tokens displayed to the given collection.
      * @param tokens Tokens to offer in the selector.
-     * @param combatView The CombatView to refresh when tokens are loaded.
      */
     @SuppressWarnings("unchecked")
 	private void setTokenList(
-    		final Collection<BaseToken> tokens, final CombatView combatView) {
+    		final Collection<BaseToken> tokens) {
     	if (tokens instanceof List<?>) {
     		mTokens = (List<BaseToken>) tokens;
     	} else {
     		this.mTokens = new ArrayList<BaseToken>(tokens);
     	}
     	// TODO: Make this work if height is then changed.
-	    new CreateImageTask(this.getHeight(), this.mDrawDark, combatView)
-	    	.execute(mTokens);
+	    new CreateImageTask(this.getHeight(), this.mDrawDark).execute(mTokens);
     }
     
     @SuppressWarnings("unchecked")
 	@Override
     protected void onSizeChanged (int w, int h, int oldw, int oldh) {
     	if (h != oldh && mTokens != null) {
-    		new CreateImageTask(h, this.mDrawDark, null).execute(mTokens);
+    		new CreateImageTask(h, this.mDrawDark).execute(mTokens);
     	}
     }
     
@@ -216,11 +221,6 @@ public final class TokenSelectorView extends LinearLayout {
     	 * Whether drawn on a dark background.
     	 */
     	private boolean mDrawDark;
-
-    	/**
-    	 * The combat view to refresh when loading is finished.
-    	 */
-    	private CombatView mCombatView;
     	
     	/**
     	 * Progress bar to show when loading.
@@ -232,13 +232,10 @@ public final class TokenSelectorView extends LinearLayout {
     	 * @param height Height of the control (width will be determined by the
     	 * 		number of tokens loaded).
     	 * @param drawDark Whether there is a dark background.
-    	 * @param toRefresh The CombatView to refresh when loading is finished.
     	 */
-    	public CreateImageTask(
-    			int height, boolean drawDark, CombatView toRefresh) {
+    	public CreateImageTask(int height, boolean drawDark) {
     		mHeight = height;
     		mDrawDark = drawDark;
-    		mCombatView = toRefresh;
     	}
     	
     	@Override
@@ -285,7 +282,7 @@ public final class TokenSelectorView extends LinearLayout {
 	        }
 	        
 	        Canvas c = b != null ? new Canvas(b) : null;
-	        int i = 0;
+	        /*int i = 0;
 	        for (BaseToken t: tokens) {
 	        	t.load();
 	        	if (b != null) {
@@ -295,7 +292,7 @@ public final class TokenSelectorView extends LinearLayout {
 	        	}
 	        	i += 1;
 	        	publishProgress(i, tokens.size());
-	        }
+	        }*/
 	        return b;
 		}
 
@@ -319,13 +316,10 @@ public final class TokenSelectorView extends LinearLayout {
 		protected void onPostExecute(List<TokenImageResult> results) {
 	        mTokenLayout.removeAllViews();
 	        for(TokenImageResult r: results) {
-	        	mTokenLayout.addView(new TokenSelectorViewRow(getContext(), r.bitmap, r.tokenList));
+	        	TokenSelectorViewRow v = new TokenSelectorViewRow(getContext(), r.bitmap, r.tokenList);
+	        	v.startLoadingTokenImages();
+	        	mTokenLayout.addView(v);
 	        }
-	        
-	        if (mCombatView != null) {
-	        	mCombatView.refreshMap();
-	        }
-	        
 		}
     }
     
@@ -350,11 +344,13 @@ public final class TokenSelectorView extends LinearLayout {
 	     * Gesture detector for tapping or long pressing the list of tokens.
 	     */
 	    private GestureDetector mGestureDetector;
-
+	    Bitmap mBitmap;
+	    
 		public TokenSelectorViewRow(
 				Context context, Bitmap tokenRowImage, List<BaseToken> tokens) {
 			super(context);
 			this.setImageBitmap(tokenRowImage);
+			mBitmap = tokenRowImage;
 			mTokens = tokens;
 	        mGestureDetector = new GestureDetector(getContext(), new TouchTokenListener());
 		}
@@ -405,7 +401,30 @@ public final class TokenSelectorView extends LinearLayout {
 	    		return mTokens.get(tokenIndex).clone();
 	    	}
 	    }
-
-
+	    
+	    public void startLoadingTokenImages() {
+			// Load all the tokens that are currently placed on the map.
+	    	if (mBitmap == null) return;
+	    	
+			TokenLoadManager.getInstance().startJob(mTokens, new TokenLoadManager.JobCallback() {
+				@Override
+				public void onJobComplete(List<BaseToken> loadedTokens) {
+					Canvas c = new Canvas(mBitmap);
+			        
+			        int radius = getHeight() / 2;
+			        int drawX = radius;
+			        
+			        int i = 0;
+			        for (BaseToken t: loadedTokens) {
+			        	t.load();
+				        t.draw(c, drawX, radius, RADIUS_SCALE * radius, 
+				        		   mDrawDark, true);
+				        	drawX += radius;
+			        	i += 1;
+			        }
+			        setImageBitmap(mBitmap);
+				}
+			}, new Handler());
+	    }
 	}
 }

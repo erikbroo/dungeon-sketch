@@ -1,9 +1,14 @@
 package com.tbocek.android.combatmap.model.primitives;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 
 /**
  * Random graphics utilities.
@@ -210,6 +215,39 @@ public final class Util {
 		}
     }
     
+    
+    /**
+     * Find a correct scale factor and decode the bitmap from the given URI.
+     * See:
+     * http://stackoverflow.com/questions/2507898/how-to-pick-a-image-from-gallery-sd-card-for-my-app-in-android
+     * @param selectedImage Path to the image.
+     * @return Decoded image.
+     * @throws FileNotFoundException If image couldn't be found.
+     */
+    public static Bitmap loadImageWithMaxBounds(
+    		Uri selectedImage, int maxWidth, int maxHeight, ContentResolver contentResolver) throws FileNotFoundException {
+        // Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage), null, o);
+
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < maxWidth || height_tmp / 2 < maxHeight) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage), null, o2);
+    }
 
     /**
      * Utility class - private constructor.

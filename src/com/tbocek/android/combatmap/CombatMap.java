@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -473,6 +474,9 @@ public final class CombatMap extends SherlockActivity {
         
         mCombatView.refreshMap();
         mCombatView.requestFocus();
+        
+        // Set up and start the token load manager
+        TokenLoadManager.getInstance().startThread();
     }
     
     /**
@@ -1313,10 +1317,16 @@ public final class CombatMap extends SherlockActivity {
 	        		getApplicationContext());
 			MapData d = MapData.getInstance();
 			d.getTokens().deplaceholderize(mTokenDatabase);
-			mTokenSelector.setTokenDatabase(mTokenDatabase, mCombatView);
+			mTokenSelector.setTokenDatabase(mTokenDatabase);
 			mTokenCategorySelector.setTagList(mTokenDatabase.getTags());
-		}
 			
-    	
+			// Load all the tokens that are currently placed on the map.
+			TokenLoadManager.getInstance().startJob(d.getTokens().asList(), new TokenLoadManager.JobCallback() {
+				@Override
+				public void onJobComplete(List<BaseToken> loadedTokens) {
+					mCombatView.refreshMap();
+				}
+			}, new Handler());
+		}
     }
 }

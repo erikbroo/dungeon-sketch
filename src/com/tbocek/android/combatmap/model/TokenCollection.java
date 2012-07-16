@@ -518,4 +518,8 @@ public final class TokenCollection implements UndoRedoTarget {
 			return false;
 		}
 	}
+
+	public List<BaseToken> asList() {
+		return this.mTokens;
+	}
 }

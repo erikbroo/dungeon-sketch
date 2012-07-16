@@ -25,6 +25,7 @@ import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
+import com.tbocek.android.combatmap.model.primitives.Util;
 
 /**
  * This activity allows the user to create a new token by importing an image
@@ -158,7 +159,8 @@ public final class TokenCreator extends SherlockActivity {
         	if (resultCode == Activity.RESULT_OK) {
 	            try {
 	            	Uri selectedImage = data.getData();
-	            	Bitmap bitmap = decodeUri(selectedImage);
+	            	Bitmap bitmap = Util.loadImageWithMaxBounds(
+	            			selectedImage, MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION, getContentResolver());
 	                mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
 	                
 	                Toast t = Toast.makeText(
@@ -180,40 +182,5 @@ public final class TokenCreator extends SherlockActivity {
         		}
         	}
         }
-    }
-    
-    /**
-     * Find a correct scale factor and decode the bitmap from the given URI.
-     * See:
-     * http://stackoverflow.com/questions/2507898/how-to-pick-a-image-from-gallery-sd-card-for-my-app-in-android
-     * @param selectedImage Path to the image.
-     * @return Decoded image.
-     * @throws FileNotFoundException If image couldn't be found.
-     */
-    private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
-
-        // Decode image size
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
-
-        // Find the correct scale value. It should be the power of 2.
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
-        int scale = 1;
-        while (true) {
-            if (width_tmp / 2 < MAX_IMAGE_DIMENSION
-               || height_tmp / 2 < MAX_IMAGE_DIMENSION) {
-                break;
-            }
-            width_tmp /= 2;
-            height_tmp /= 2;
-            scale *= 2;
-        }
-
-        // Decode with inSampleSize
-        BitmapFactory.Options o2 = new BitmapFactory.Options();
-        o2.inSampleSize = scale;
-        return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
-
     }
 }
