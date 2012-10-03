@@ -49,7 +49,7 @@ public class BaseDrawInteractionMode extends CombatViewInteractionMode {
 	 */
 	public void onCreateContextMenu(final ContextMenu menu) {
 		  menu.add(Menu.NONE, R.id.fog_context_delete,
-	     		 Menu.NONE, "Delete Fog Of War Region");
+	     		 Menu.NONE, "Delete Mask Region");
 	  }
 
 	/**

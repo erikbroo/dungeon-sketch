@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"/>
     <CheckBox
         android:id="@+id/checkbox_export_fog_of_war"
-        android:text="Apply Fog of War"
+        android:text="Apply Mask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>        
     <Button

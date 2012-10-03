@@ -8,7 +8,7 @@
         android:key="fogofwar"
         android:title="@string/fog_of_war_enabled" 
         android:defaultValue="true"
-        android:summary="Use this to temporarily disable fog of war if you need to.  Note that the entire map will draw if no fog of war regions have been added yet."/>
+        android:summary="Use this to temporarily disable the mask if you need to.  Note that the entire map will draw if no mask regions have been added yet."/>
     
     <CheckBoxPreference
         android:key="autosave"
