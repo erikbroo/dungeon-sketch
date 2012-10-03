@@ -139,7 +139,8 @@ public final class TokenManager extends SherlockActivity {
 			if (tag.equals(TokenDatabase.ALL)) {
 				mScrollView.addView(
 						getTokenButtonLayout(mTokenDatabase.getAllTokens()));
-				this.mDeleteTagMenuItem.setVisible(false);
+				if (this.mDeleteTagMenuItem != null)
+				    this.mDeleteTagMenuItem.setVisible(false);
 			} else {
 				mScrollView.addView(
 						getTokenButtonLayout(mTokenDatabase.getTokensForTag(tag)));

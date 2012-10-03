@@ -419,7 +419,7 @@ public final class TokenSelectorView extends LinearLayout {
 			        	t.load();
 				        t.draw(c, drawX, radius, RADIUS_SCALE * radius, 
 				        		   mDrawDark, true);
-				        	drawX += radius;
+				        	drawX += radius * 2;
 			        	i += 1;
 			        }
 			        setImageBitmap(mBitmap);
