@@ -6,10 +6,10 @@
     <string name="no_maps_line1">There are no saved maps to load.</string>
     <string name="no_maps_line2">Why not press "back" and create one?</string>
     <string name="font_size">Font Size (grid spaces):</string>
-    <string name="background">Background</string>
+    <string name="background">Map</string>
     <string name="gm_notes">GM Notes</string>
     <string name="combat">Combat</string>
-    <string name="annotations">Annotations</string>
+    <string name="annotations">Player Notes</string>
     <string name="save_map">Save Map</string>
     <string name="load">Load</string>
     <string name="new_map">New</string>
