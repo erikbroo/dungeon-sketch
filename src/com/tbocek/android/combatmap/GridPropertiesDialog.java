@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import com.tbocek.android.combatmap.model.GridColorScheme;
 import com.tbocek.android.combatmap.model.HexGridStrategy;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.RectangularGridStrategy;
+import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.ImageToggleButton;
 import com.tbocek.android.combatmap.view.ToggleButtonGroup;
 
@@ -84,7 +86,7 @@ public class GridPropertiesDialog extends Dialog{
 		});
 		mPresetAdapter = ArrayAdapter.createFromResource(
 				this.getContext(), R.array.themeNames, 
-				android.R.layout.simple_spinner_item);
+				R.layout.selection_dialog_text_view);
 		mPresetAdapter.setDropDownViewResource(
 				android.R.layout.simple_spinner_dropdown_item);
 		mThemePresetButton = (Button) this.findViewById(

@@ -528,7 +528,7 @@ public final class TokenManager extends SherlockActivity {
 			case R.id.token_manager_action_mode_add_to_tag:
 				List<String> tags = mTokenDatabase.getTags();
 				
-				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(TokenManager.this, android.R.layout.simple_spinner_item);
+				final ArrayAdapter<String> adapter = new ArrayAdapter<String>(TokenManager.this, R.layout.selection_dialog_text_view);
 				adapter.addAll(tags);
 				new AlertDialog.Builder(TokenManager.this)
 					.setTitle("Select a Tag")
