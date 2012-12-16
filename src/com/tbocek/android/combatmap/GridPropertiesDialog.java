@@ -8,11 +8,14 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.tbocek.android.combatmap.model.GridColorScheme;
 import com.tbocek.android.combatmap.model.HexGridStrategy;
@@ -39,6 +42,38 @@ public class GridPropertiesDialog extends Dialog{
 	private PropertiesChangedListener mPropertyListener;
 	
 	private ToggleButtonGroup mGridTypeToggles = new ToggleButtonGroup();
+	
+	/**
+	 * Extends ArrayAdapter to be an adapter specific to map themes.  Will
+	 * theme the list items to preview what the map will look like with those
+	 * colors.
+	 * 
+	 * @author Tim
+	 *
+	 */
+	private class MapThemeArrayAdapter extends ArrayAdapter<CharSequence> {
+
+		public MapThemeArrayAdapter(Context context) {
+			super(context, R.layout.selection_dialog_text_view, context.getResources().getTextArray(R.array.themeNames));
+		}
+		
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			TextView v = (TextView) super.getView(position, convertView, parent);
+			GridColorScheme scheme = GridColorScheme.fromNamedScheme(v.getText().toString());
+			v.setTextColor(scheme.getLineColor());
+			v.setBackgroundColor(scheme.getBackgroundColor());
+			
+			// With all these different colors, changing the padding works wonders!
+			// TODO: DO this in the XML!!!!
+			float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getContext().getResources().getDisplayMetrics());
+			v.setPadding(0, (int) dp16, 0, (int) dp16);
+			v.setTextSize(2*dp16);
+			
+			return v;
+		}
+		
+	}
 	
 	public GridPropertiesDialog(Context context) {
 		super(context);
@@ -84,11 +119,7 @@ public class GridPropertiesDialog extends Dialog{
 			}
 			
 		});
-		mPresetAdapter = ArrayAdapter.createFromResource(
-				this.getContext(), R.array.themeNames, 
-				R.layout.selection_dialog_text_view);
-		mPresetAdapter.setDropDownViewResource(
-				android.R.layout.simple_spinner_dropdown_item);
+		mPresetAdapter = new GridPropertiesDialog.MapThemeArrayAdapter(this.getContext());
 		mThemePresetButton = (Button) this.findViewById(
 				R.id.button_theme_presets);
 
