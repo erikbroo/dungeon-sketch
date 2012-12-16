@@ -14,6 +14,7 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -50,7 +51,7 @@ public final class TokenSelectorView extends LinearLayout {
 	/**
 	 * Button that represents opening the tag selector.
 	 */
-    private ImageButton mGroupSelector;
+    private Button mGroupSelector;
 
     /**
      * Button that represents opening the token manager.
@@ -98,7 +99,7 @@ public final class TokenSelectorView extends LinearLayout {
         ((HorizontalScrollView) findViewById(R.id.token_scroll_view))
         		.addView(mTokenLayout);
 
-        mGroupSelector = (ImageButton) findViewById(
+        mGroupSelector = (Button) findViewById(
         		R.id.token_category_selector_button);
         mGroupSelector.setAlpha(1.0f);
         mTokenManager = (ImageButton) findViewById(R.id.token_manager_button);
@@ -328,6 +329,7 @@ public final class TokenSelectorView extends LinearLayout {
 	 */
 	public void setShouldDrawDark(boolean drawDark) {
 		this.mDrawDark = drawDark;
+		this.mGroupSelector.setTextColor(drawDark ? Color.WHITE : Color.BLACK);
 	}
 
 	/**

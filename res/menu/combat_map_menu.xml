@@ -40,6 +40,11 @@
 	    android:title="Grid Properties">
 	</item>
 	<item
+	    android:id="@+id/menu_token_database"
+	    android:title="@string/token_database">
+	    
+	</item>
+	<item
 		android:id="@+id/menu_settings"
 		android:title="@string/settings"/>
 	<item android:id="@+id/menu_help" android:title="@string/help" android:showAsAction="never"></item>

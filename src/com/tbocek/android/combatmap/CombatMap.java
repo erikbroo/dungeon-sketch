@@ -734,6 +734,10 @@ public final class CombatMap extends SherlockActivity {
         case R.id.menu_help:
         	Help.openHelp(this);
         	return true;
+        case R.id.menu_token_database:
+            Debug.startMethodTracing("tokenmanager");
+            startActivity(new Intent(CombatMap.this, TokenManager.class));
+            return true;
         default:
         	return false;
         }
