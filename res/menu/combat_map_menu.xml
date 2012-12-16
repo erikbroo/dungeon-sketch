@@ -42,5 +42,6 @@
 	<item
 		android:id="@+id/menu_settings"
 		android:title="@string/settings"/>
+	<item android:id="@+id/menu_help" android:title="@string/help" android:showAsAction="never"></item>
 	
 </menu>

@@ -72,5 +72,5 @@ Please do not use GM Screen to protect anything actually important, like banking
     <string name="grid_appearence">Grid Appearence</string>
     <string name="add_to_tag">Add to tag</string>
     <string name="delete_tag">Delete Tag</string>    
-    
+    <string name="help">Help</string>
 </resources>

@@ -33,6 +33,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DeveloperMode;
+import com.tbocek.android.combatmap.Help;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
@@ -375,6 +376,9 @@ public final class TokenManager extends SherlockActivity {
             Intent intent = new Intent(this, CombatMap.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+        case R.id.token_manager_help:
+        	Help.openHelp(this);
+        	return true;
     	default:
     		return false;
     	}

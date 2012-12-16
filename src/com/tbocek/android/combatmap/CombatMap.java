@@ -731,6 +731,9 @@ public final class CombatMap extends SherlockActivity {
         case R.id.menu_export:
         	showDialog(DIALOG_ID_EXPORT);
         	return true;
+        case R.id.menu_help:
+        	Help.openHelp(this);
+        	return true;
         default:
         	return false;
         }
