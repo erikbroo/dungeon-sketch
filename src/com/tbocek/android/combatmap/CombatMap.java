@@ -360,23 +360,13 @@ public final class CombatMap extends SherlockActivity {
         PreferenceManager.setDefaultValues(this, R.layout.settings, false);
 
         // Set up the tabs
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            setContentView(R.layout.combat_map_layout);
-        	ActionBar actionBar = getSupportActionBar();
-        	mTabManager = new ActionBarTabManager(actionBar);
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-            // Clear the title on the action bar, since we want to leave more 
-            // space for the tabs.
-            actionBar.setTitle("");
-        } else {
-        	this.setContentView(R.layout.combat_map_layout);
-        	View legacyActionBar = this.findViewById(R.id.legacyActionBar);
-        	legacyActionBar.setVisibility(View.VISIBLE);
-        	mTabManager = new LegacyTabManager(
-        			(LinearLayout) this.findViewById(
-        					R.id.legacyActionBarLayout));
-        }
-
+        setContentView(R.layout.combat_map_layout);
+        ActionBar actionBar = getSupportActionBar();
+        mTabManager = new TabManager(actionBar, this);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        // Clear the title on the action bar, since we want to leave more 
+        // space for the tabs.
+        actionBar.setTitle("");
 
         mCombatView = new CombatView(this);
         this.registerForContextMenu(mCombatView);
@@ -452,10 +442,10 @@ public final class CombatMap extends SherlockActivity {
         loadOrCreateMap();
 
         if (mTabManager != null) {
-        	mTabManager.addTab(getString(R.string.background), MODE_DRAW_BACKGROUND);
-            mTabManager.addTab(getString(R.string.gm_notes), MODE_DRAW_GM_NOTES);
-            mTabManager.addTab(getString(R.string.combat), MODE_TOKENS);
-            mTabManager.addTab(getString(R.string.annotations), MODE_DRAW_ANNOTATIONS);
+        	mTabManager.addTab(getString(R.string.background), MODE_DRAW_BACKGROUND, true);
+            mTabManager.addTab(getString(R.string.gm_notes), MODE_DRAW_GM_NOTES, true);
+            mTabManager.addTab(getString(R.string.combat), MODE_TOKENS, false);
+            mTabManager.addTab(getString(R.string.annotations), MODE_DRAW_ANNOTATIONS, false);
             mTabManager.setTabSelectedListener(mTabSelectedListener);
         }
         

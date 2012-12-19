@@ -55,17 +55,18 @@
         Not all token images are compatible with the LGPL.  They are provided for this distribution of the application only.  Please ensure that you have artist permission before redistributing these icons or including them in a commercial distribution of Dungeon Sketch.
     </string>
     
-    <string name="gm_screen_warning">
-This is a low-security feature intended to guard against accidental peeking - like a real GM screen.\n\n
-
-It will not encrypt your data.  It is easily circumvented.  It will not thwart players determined to find out where your diabolical traps are.\n\n
-
-Please do not use GM Screen to protect anything actually important, like banking credentials, nuclear secrets, or your totally secret diary.
+    <!-- GM Screen  -->
+    <string name="gm_screen">GM Screen</string>
+    <string name="gm_screen_explanation">
+        Provides a prompt when switching to the Map or GM Notes layers.  
+        This is meant to prevent accidental spoilers, but will not stop players from snooping!
     </string>
-    
-    <string name="gm_screen_explanation_picking">To reset the GM Screen PIN in the future, simply turn this feature off and on again.</string>
-    <string name="gm_screen_explanation_entering">Please enter the GM Screen PIN to see the background or GM Notes views.</string>
-       
+    <string name="gm_screen_spoiler_warning">
+        The Game Master has enabled GM Screen.\n
+        There may be spoilers if you continue!
+    </string>
+    <string name="gm_screen_mistchief_managed">I solemnly swear that I am up to no good!</string>
+    <string name="gm_screen_cancel">Cancel</string>
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on Color to apply</string>

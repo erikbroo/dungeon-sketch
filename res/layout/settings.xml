@@ -34,6 +34,13 @@
 	        android:defaultValue="false" 
 	        android:summary="Tokens snap to intersections of grid lines instead of the spaces between grid lines."/>
 	</PreferenceCategory>
+	
+    <CheckBoxPreference 
+        android:key="gmscreen"
+	    android:title="@string/gm_screen"
+	    android:summary="@string/gm_screen_explanation">
+        
+    </CheckBoxPreference>
 
 	<PreferenceCategory
 	    android:title="App Info">    

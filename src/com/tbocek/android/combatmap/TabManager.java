@@ -1,5 +1,18 @@
 package com.tbocek.android.combatmap;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+
 /**
  * Interface that allows management of a tabbing system without caring whether
  * the tabs are implemented in the ActionBar or in a TabWidget.  Tab actions
@@ -7,25 +20,63 @@ package com.tbocek.android.combatmap;
  * @author Tim
  *
  */
-public abstract class TabManager {
+public class TabManager {
+	
+	/**
+     * Constructor.
+     * @param actionBar The action bar that will provide the tabs.
+     */
+	public TabManager(ActionBar actionBar, Context context) {
+		this.mActionBar = actionBar;
+		this.context = context;
+	}
 
 	/**
 	 * Listener that fires when a tab is selected.
 	 */
 	private TabSelectedListener mTabSelectedListener;
 	
-	/**
-	 * Creates a new tab.
-	 * @param text Text to display on the tab.
-	 * @param mode Integer identifying the mode that the tab represents.
-	 */
-	public abstract void addTab(String text, int mode);
+	private int mLastSelectedMode = -1;
 	
+	private HashMap<Integer, Boolean> modesForGm = new HashMap<Integer, Boolean>();
+
 	/**
-	 * Forces the given tab to be selected.
-	 * @param mode Integer identifier for the mode that should be tabbed to.
+	 * Action bar that provides the tabs.
 	 */
-	public abstract void pickTab(int mode);
+	protected ActionBar mActionBar;
+
+	/**
+	 * Reverse lookup so we know what tab to select when forced into an
+	 * interaction mode.
+	 */
+	private Map<Integer, ActionBar.Tab> mManipulationModeTabs = new HashMap<Integer, ActionBar.Tab>();
+
+	protected Context context;
+	
+	public final void addTab(String description, final int mode, boolean forGm) {
+		ActionBar.Tab tab = mActionBar.newTab();
+		tab.setText(description);
+		tab.setTabListener(new ActionBar.TabListener() {
+			@Override
+			public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+				
+			}
+	
+			@Override
+			public void onTabSelected(Tab arg0, FragmentTransaction arg1) {
+				TabManager.this.onTabSelected(mode);
+			}
+	
+			@Override
+			public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+				// TODO Auto-generated method stub
+	
+			}
+		});
+		mActionBar.addTab(tab);
+		mManipulationModeTabs.put(mode, tab);
+		modesForGm.put(mode, forGm);
+	}
 	
 	/**
 	 * Sets the listener that implements the tab selection action.
@@ -40,9 +91,53 @@ public abstract class TabManager {
 	 * @param mode The integer identifier for the mode that was selected.
 	 */
 	protected void onTabSelected(int mode) {
-		if (mTabSelectedListener != null) {
-			mTabSelectedListener.onTabSelected(mode);
+		if (needGmScreenConfirmation(mode)) {
+			confirmGmScreenBeforeSwitchingTabs(mode);
+		} else {  
+			if (mTabSelectedListener != null) {
+				mTabSelectedListener.onTabSelected(mode);
+			}
+			mLastSelectedMode = mode;
 		}
+	}
+	
+	protected boolean needGmScreenConfirmation(int mode) {
+		if (mLastSelectedMode == -1) return false; // Do not need confirmation for first selection.
+		if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("gmscreen", false)) return false;
+		return this.modesForGm.get(mode).booleanValue() && !this.modesForGm.get(this.mLastSelectedMode).booleanValue();
+	}
+
+	public void pickTab(int mode) {
+		mManipulationModeTabs.get(mode).select();
+		mLastSelectedMode = mode;
+	}
+
+	private void confirmGmScreenBeforeSwitchingTabs(final int destinationMode) {
+		int switchBackMode = TabManager.this.mLastSelectedMode;
+		TabManager.this.mLastSelectedMode = -1;
+		mManipulationModeTabs.get(switchBackMode).select();
+		
+		new AlertDialog.Builder(this.context)
+			.setCancelable(true)
+			.setMessage(R.string.gm_screen_spoiler_warning)
+			.setPositiveButton(R.string.gm_screen_mistchief_managed, new OnClickListener() {
+		
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					TabManager.this.mLastSelectedMode = -1; // Make sure we don't get kicked into the dialog again!
+					mManipulationModeTabs.get(destinationMode).select();
+					
+				}
+				
+			})
+			.setNegativeButton(R.string.gm_screen_cancel, new OnClickListener() {
+		
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+				}
+			})
+			.create().show();
 	}
 
 	/**
