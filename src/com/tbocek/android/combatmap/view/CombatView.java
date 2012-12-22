@@ -492,8 +492,13 @@ public final class CombatView extends SurfaceView {
 		
 		if (mEditingMask) {
 			String explanatoryText = getMaskExplanatoryText();
-			float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
-			canvas.drawText(explanatoryText, getWidth() / 2, 16 * scaledDensity, mExplanatoryTextPaint);
+			int i = 16;
+			for (String s : explanatoryText.split("\n")) {
+				float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+				canvas.drawText(s, getWidth() / 2, i * scaledDensity, mExplanatoryTextPaint);
+				i += 20;
+			}
+			
 		}
 	}
 
@@ -501,12 +506,12 @@ public final class CombatView extends SurfaceView {
 		if (getActiveFogOfWar() == null) {
 			return "";
 		}
-		String explanatoryText = "Editing layer mask - ";
+		String explanatoryText = "Editing layer mask - Only selected regions will be visible";
+		
 		boolean visibleByDefault = this.getActiveFogOfWar() == this.mData.getBackgroundFogOfWar();
-		if (getActiveFogOfWar().isEmpty()) {
-			explanatoryText += (visibleByDefault ? "Right now, everything will be shown in combat" : "Right now, nothing will be shown in combat");
-		} else {
-			explanatoryText += "Regions in red will be shown in combat";
+		if (visibleByDefault && getActiveFogOfWar().isEmpty()) {
+			explanatoryText += "\n\nBy default, the entire background is shown\nuntil a mask region is added";
+			
 		}
 		return explanatoryText;
 	}
