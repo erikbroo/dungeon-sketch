@@ -269,6 +269,11 @@ public final class CombatMap extends SherlockActivity {
 		public void onChooseMaskEraser() {
 			mCombatView.setFogOfWarEraseMode();
 		}
+
+		@Override
+		public void onChangeMaskEditing(boolean editingMask) {
+			mCombatView.setEditingLayerMask(editingMask);
+		}
     };
 
 

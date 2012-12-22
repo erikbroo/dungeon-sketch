@@ -16,32 +16,18 @@ import com.tbocek.android.combatmap.view.CombatView;
  *
  */
 public final class MaskDrawInteractionMode extends FingerDrawInteractionMode {
-	
-	private boolean mVisibleByDefault;
 
 	/**
 	 * Constructor.
 	 * @param view The view that this interaction mode modifies.
 	 * @param visibleByDefault 
 	 */
-	public MaskDrawInteractionMode(CombatView view, boolean visibleByDefault) {
+	public MaskDrawInteractionMode(CombatView view) {
 		super(view);
-		mVisibleByDefault = visibleByDefault;
 	}
 
 	@Override
     protected Shape createLine() {
     	return getView().createFogOfWarRegion();
     }
-	
-	@Override
-	public String getExplanatoryText() {
-		String explanatoryText = "Editing layer mask - ";
-		if (getView().getActiveFogOfWar().isEmpty()) {
-			explanatoryText += (mVisibleByDefault ? "Everything is visible" : "Nothing is visible");
-		} else {
-			explanatoryText += "Regions in red are visible";
-		}
-		return explanatoryText;
-	}
 }

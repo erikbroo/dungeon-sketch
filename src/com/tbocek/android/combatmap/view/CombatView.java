@@ -139,6 +139,8 @@ public final class CombatView extends SurfaceView {
     private MultiSelectManager mTokenSelection = new MultiSelectManager();
     
 	private Paint mExplanatoryTextPaint;
+	
+	private boolean mEditingMask = false;
 
 	/**
 	 * Callback for the Android graphics surface management system.
@@ -309,16 +311,14 @@ public final class CombatView extends SurfaceView {
 	 * Sets the interaction mode to drawing fog of war regions.
 	 */
 	public void setFogOfWarDrawMode() {
-		boolean visibleByDefault = (this.getActiveFogOfWar() == this.mData.getBackgroundFogOfWar());
-		setInteractionMode(new MaskDrawInteractionMode(this, visibleByDefault));
+		setInteractionMode(new MaskDrawInteractionMode(this));
 	}
 	
 	/**
 	 * Sets the interaction mode to erase mask regions
 	 */
 	public void setFogOfWarEraseMode() {
-		boolean visibleByDefault = (this.getActiveFogOfWar() == this.mData.getBackgroundFogOfWar());
-		setInteractionMode(new MaskEraseInteractionMode(this, visibleByDefault));
+		setInteractionMode(new MaskEraseInteractionMode(this));
 	}
 
 	/**
@@ -342,6 +342,11 @@ public final class CombatView extends SurfaceView {
 	 */
 	public void setBackgroundImageMode() {
 		setInteractionMode(new BackgroundImageInteractionMode(this));
+	}
+	
+	public void setEditingLayerMask(boolean editingLayerMask) {
+		this.mEditingMask = editingLayerMask;
+		this.refreshMap();
 	}
 
 	/**
@@ -485,12 +490,25 @@ public final class CombatView extends SurfaceView {
 
 		this.mInteractionMode.draw(canvas);
 		
-	
-		String explanatoryText = this.mInteractionMode.getExplanatoryText();
-		if (explanatoryText != null && !explanatoryText.isEmpty()) {
+		if (mEditingMask) {
+			String explanatoryText = getMaskExplanatoryText();
 			float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
 			canvas.drawText(explanatoryText, getWidth() / 2, 16 * scaledDensity, mExplanatoryTextPaint);
 		}
+	}
+
+	private String getMaskExplanatoryText() {
+		if (getActiveFogOfWar() == null) {
+			return "";
+		}
+		String explanatoryText = "Editing layer mask - ";
+		boolean visibleByDefault = this.getActiveFogOfWar() == this.mData.getBackgroundFogOfWar();
+		if (getActiveFogOfWar().isEmpty()) {
+			explanatoryText += (visibleByDefault ? "Right now, everything will be shown in combat" : "Right now, nothing will be shown in combat");
+		} else {
+			explanatoryText += "Regions in red will be shown in combat";
+		}
+		return explanatoryText;
 	}
 
 	/**

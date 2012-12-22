@@ -7,18 +7,7 @@ public class MaskEraseInteractionMode extends ZoomPanInteractionMode {
 
 	private boolean mVisibleByDefault;
 	
-	public MaskEraseInteractionMode(CombatView view, boolean visibleByDefault) {
+	public MaskEraseInteractionMode(CombatView view) {
 		super(view);
-		mVisibleByDefault = visibleByDefault;
 	}
-	
-	@Override
-	public String getExplanatoryText() {
-		String explanatoryText = "Editing layer mask";
-		if (getView().getActiveFogOfWar().isEmpty()) {
-			explanatoryText += " - " + (mVisibleByDefault ? "Everything is visible" : "Nothing is visible");
-		}
-		return explanatoryText;
-	}
-
 }

@@ -293,6 +293,7 @@ public final class DrawOptionsView extends LinearLayout {
 	                mLineWidthGroup.setGroupVisibility(View.GONE);
 	                
 	                mToolsGroup.maybeSelectDefault();
+	                mOnChangeDrawToolListener.onChangeMaskEditing(true);
 				} else {
 					returnToNonMaskState();
 				}
@@ -305,7 +306,8 @@ public final class DrawOptionsView extends LinearLayout {
     void returnToNonMaskState() {
 		// Return to non-mask state.
 		mToolsGroup.setGroupVisibility(View.VISIBLE);
-		mToolsGroup.maybeSelectDefault();	
+		mToolsGroup.maybeSelectDefault();
+		mOnChangeDrawToolListener.onChangeMaskEditing(false);
     }
 
 
@@ -425,6 +427,8 @@ public final class DrawOptionsView extends LinearLayout {
 		void onChooseTextTool();
 
 		void onChooseMaskEraser();
+		
+		void onChangeMaskEditing(boolean editingMask);
     }
 
     /**
@@ -471,6 +475,9 @@ public final class DrawOptionsView extends LinearLayout {
 
 		@Override
 		public void onChooseMaskEraser() { }
+
+		@Override
+		public void onChangeMaskEditing(boolean editingMask) { }
     }
 
 
