@@ -175,4 +175,8 @@ public class CombatViewInteractionMode
 	protected MapData getData() {
 		return mView.getData();
 	}
+
+	public String getExplanatoryText() {
+		return "";
+	}
 }

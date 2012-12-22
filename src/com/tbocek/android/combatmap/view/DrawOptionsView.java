@@ -66,6 +66,11 @@ public final class DrawOptionsView extends LinearLayout {
      * modified as a group.
      */
     private ToggleButtonGroup mToolsGroup =  new ToggleButtonGroup();
+    
+    /**
+     * A list of all drawing tools that are applicable when drawing masks.
+     */
+    private ToggleButtonGroup mToolsInMaskGroup = new ToggleButtonGroup();
 
     /**
      * A list of all buttons that select a color, so that they can be modified
@@ -172,6 +177,10 @@ public final class DrawOptionsView extends LinearLayout {
         mInnerView = new HorizontalScrollView(context);
         mInnerView.addView(mLayout);
         addView(mInnerView);
+        
+        createAndAddSeperator();
+        mMaskButton = createAndAddMaskButton();
+        createAndAddSeperator();
 
         createAndAddEraserButton();
         createAndAddStraightLineButton();
@@ -179,7 +188,7 @@ public final class DrawOptionsView extends LinearLayout {
         createAndAddRectangleButton();
         createAndAddCircleButton();
         createAndAddTextButton();
-        mMaskButton = createAndAddMaskButton();
+        
         
         mBackgroundImageButton = createAndAddBackgroundImageButton();
 
@@ -271,16 +280,33 @@ public final class DrawOptionsView extends LinearLayout {
         maskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View arg0) {
-				mOnChangeDrawToolListener.onChooseMaskTool();
-                mToolsGroup.untoggle();
-                maskButton.setToggled(true);
-                mColorGroup.setGroupVisibility(View.GONE);
-                mLineWidthGroup.setGroupVisibility(View.GONE);
+				// mOnChangeDrawToolListener.onChooseMaskTool();
+				
+				maskButton.setToggled(!maskButton.isToggled());
+				
+				if (maskButton.isToggled()) {
+	                // Make sure only mask tools are visible.
+	                mToolsGroup.setGroupVisibility(View.GONE);
+	                mToolsInMaskGroup.setGroupVisibility(View.VISIBLE);
+	                
+	                mColorGroup.setGroupVisibility(View.GONE);
+	                mLineWidthGroup.setGroupVisibility(View.GONE);
+	                
+	                mToolsGroup.maybeSelectDefault();
+				} else {
+					returnToNonMaskState();
+				}
 			}
         });
         mLayout.addView(maskButton);
         return maskButton;
 	}
+    
+    void returnToNonMaskState() {
+		// Return to non-mask state.
+		mToolsGroup.setGroupVisibility(View.VISIBLE);
+		mToolsGroup.maybeSelectDefault();	
+    }
 
 
     /**
@@ -289,14 +315,12 @@ public final class DrawOptionsView extends LinearLayout {
      */
     public void setMaskToolVisibility(final boolean visible) {
     	mMaskButton.setVisibility(visible ? View.VISIBLE : View.GONE);
-    	if (visible) {
-            mToolsGroup.add(mMaskButton);
-    	} else {
+    	if (!visible) {
     		// If mask tool was selected, we need to de-select it.
     		if (mMaskButton.isToggled()) {
-    			mToolsGroup.forceDefault();
+    			mMaskButton.setToggled(false);
+    			returnToNonMaskState();
     		}
-    		mToolsGroup.remove(mMaskButton);
     	}
     }
 
@@ -399,6 +423,8 @@ public final class DrawOptionsView extends LinearLayout {
 		 * Called when the text draw tool is chosen.
 		 */
 		void onChooseTextTool();
+
+		void onChooseMaskEraser();
     }
 
     /**
@@ -442,6 +468,9 @@ public final class DrawOptionsView extends LinearLayout {
 
 		@Override
 		public void onChooseImageTool() { }
+
+		@Override
+		public void onChooseMaskEraser() { }
     }
 
 
@@ -473,15 +502,21 @@ public final class DrawOptionsView extends LinearLayout {
         eraserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mOnChangeDrawToolListener.onChooseEraser();
-                mToolsGroup.untoggle();
-                mColorGroup.setGroupVisibility(View.GONE);
-                mLineWidthGroup.setGroupVisibility(View.GONE);
+            	mToolsGroup.untoggle();
+            	if (mMaskButton.isToggled()) {
+            		mOnChangeDrawToolListener.onChooseMaskEraser();
+            	} else {
+	                mOnChangeDrawToolListener.onChooseEraser();
+	                mColorGroup.setGroupVisibility(View.GONE);
+	                mLineWidthGroup.setGroupVisibility(View.GONE);
+            	}
                 eraserButton.setToggled(true);
+                
             }
         });
         mLayout.addView(eraserButton);
         mToolsGroup.add(eraserButton);
+        mToolsInMaskGroup.add(eraserButton);
 	}
 
 	/**
@@ -503,6 +538,7 @@ public final class DrawOptionsView extends LinearLayout {
         });
         this.addView(panButton);
         mToolsGroup.add(panButton);
+        mToolsInMaskGroup.add(panButton);
 	}
 
 	/**
@@ -540,17 +576,22 @@ public final class DrawOptionsView extends LinearLayout {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mOnChangeDrawToolListener.onChooseFreeHandTool();
-                mToolsGroup.untoggle();
-                mColorGroup.setGroupVisibility(View.VISIBLE);
-                mLineWidthGroup.setGroupVisibility(View.VISIBLE);
-                button.setToggled(true);
-                mLineWidthGroup.maybeSelectDefault();
-                mColorGroup.maybeSelectDefault();
+            	mToolsGroup.untoggle();
+            	if (mMaskButton.isToggled()) {
+            		mOnChangeDrawToolListener.onChooseMaskTool();
+            	} else {
+	                mOnChangeDrawToolListener.onChooseFreeHandTool();
+	                mColorGroup.setGroupVisibility(View.VISIBLE);
+	                mLineWidthGroup.setGroupVisibility(View.VISIBLE);
+	                mLineWidthGroup.maybeSelectDefault();
+	                mColorGroup.maybeSelectDefault();
+            	}
+        		button.setToggled(true);
             }
         });
         mLayout.addView(button);
         mToolsGroup.add(button);
+        mToolsInMaskGroup.add(button);
 	}
 
 	/**

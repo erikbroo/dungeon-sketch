@@ -3,6 +3,8 @@ package com.tbocek.android.combatmap.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.view.View;
+
 /**
  * Encapsulates a group of toggle buttons that should be treated as a group,
  * providing methods to make sure that only one at a time is selected.
@@ -62,7 +64,7 @@ public class ToggleButtonGroup {
 	 */
 	public void maybeSelectDefault() {
 		for (ImageToggleButton b : mMembers) {
-			if (b.isToggled()) {
+			if (b.isToggled() && b.getVisibility() == View.VISIBLE) {
 				b.performClick();
 				return;
 			}

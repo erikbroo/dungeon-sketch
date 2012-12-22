@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.os.Build;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -35,6 +37,7 @@ import com.tbocek.android.combatmap.view.interaction.EraserInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.FingerDrawInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.GridRepositioningInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.MaskDrawInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.MaskEraseInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.TokenManipulationInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.TokenMultiSelectInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
@@ -134,6 +137,8 @@ public final class CombatView extends SurfaceView {
 	 * Object to manage a selection of multiple tokens.
 	 */
     private MultiSelectManager mTokenSelection = new MultiSelectManager();
+    
+	private Paint mExplanatoryTextPaint;
 
 	/**
 	 * Callback for the Android graphics surface management system.
@@ -215,6 +220,12 @@ public final class CombatView extends SurfaceView {
 	 */
 	public CombatView(final Context context) {
 		super(context);
+		
+		mExplanatoryTextPaint = new Paint();
+		mExplanatoryTextPaint.setTextAlign(Align.CENTER);
+		mExplanatoryTextPaint.setTextSize(24);
+		mExplanatoryTextPaint.setColor(Color.RED);
+		
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 
@@ -266,7 +277,7 @@ public final class CombatView extends SurfaceView {
 	public void setTokenManipulationMode() {
 		setInteractionMode(new TokenManipulationInteractionMode(this));
 		mShouldDrawAnnotations = true;
-		mShouldDrawGmNotes = false;
+		mShouldDrawGmNotes = true;
 		if (mData != null) {
 			mUndoRedoTarget = mData.getTokens();
 		}
@@ -298,7 +309,16 @@ public final class CombatView extends SurfaceView {
 	 * Sets the interaction mode to drawing fog of war regions.
 	 */
 	public void setFogOfWarDrawMode() {
-		setInteractionMode(new MaskDrawInteractionMode(this));
+		boolean visibleByDefault = (this.getActiveFogOfWar() == this.mData.getBackgroundFogOfWar());
+		setInteractionMode(new MaskDrawInteractionMode(this, visibleByDefault));
+	}
+	
+	/**
+	 * Sets the interaction mode to erase mask regions
+	 */
+	public void setFogOfWarEraseMode() {
+		boolean visibleByDefault = (this.getActiveFogOfWar() == this.mData.getBackgroundFogOfWar());
+		setInteractionMode(new MaskEraseInteractionMode(this, visibleByDefault));
 	}
 
 	/**
@@ -464,6 +484,13 @@ public final class CombatView extends SurfaceView {
 			.draw(canvas, getData());
 
 		this.mInteractionMode.draw(canvas);
+		
+	
+		String explanatoryText = this.mInteractionMode.getExplanatoryText();
+		if (explanatoryText != null && !explanatoryText.isEmpty()) {
+			float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+			canvas.drawText(explanatoryText, getWidth() / 2, 16 * scaledDensity, mExplanatoryTextPaint);
+		}
 	}
 
 	/**

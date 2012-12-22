@@ -264,6 +264,11 @@ public final class CombatMap extends SherlockActivity {
 		public void onChooseImageTool() {
 			mCombatView.setBackgroundImageMode();
 		}
+
+		@Override
+		public void onChooseMaskEraser() {
+			mCombatView.setFogOfWarEraseMode();
+		}
     };
 
 
