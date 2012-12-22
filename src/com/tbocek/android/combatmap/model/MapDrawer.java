@@ -115,6 +115,7 @@ public class MapDrawer {
 			} else if (this.mGmNoteFogOfWar == FogOfWarMode.DRAW){
 				m.getGmNotesFogOfWar().drawFogOfWar(canvas);
 			}
+			canvas.restore();
 		}
 		
 		if (this.mDrawAnnotations) {
