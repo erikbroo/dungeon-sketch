@@ -88,23 +88,6 @@ public class CombatViewInteractionMode
         return true;
       }
 
-    /**
-     * Allows the interaction mode to specify custom context menu options.
-     * @param menu The context menu to populate
-     */
-      public void onCreateContextMenu(final ContextMenu menu) {
-      }
-
-    /**
-     * Allows the interaction mode to specify the actions taken in
-     * response to context menu items that it added.
-     * @param item The context menu item clicked.
-     * @return Whether the event was handled.
-     */
-      public boolean onContextItemSelected(final MenuItem item) {
-          return false;
-    }
-
       /**
        * Allows the manipulation mode to draw custom user interface elements.
        * @param c The canvas to draw on.

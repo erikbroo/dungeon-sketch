@@ -619,28 +619,6 @@ public final class CombatView extends SurfaceView {
 		mActiveLines.optimize();
 	}
 
-	@Override
-	public void onCreateContextMenu(final ContextMenu menu) {
-		super.onCreateContextMenu(menu);
-		mInteractionMode.onCreateContextMenu(menu);
-	}
-
-	/**
-	 * Forwards the context item selection event to the current interaction
-	 * mode.
-	 *
-	 * @param item
-	 *            The selected item.
-	 * @return True if the event was handled.
-	 */
-	public boolean onContextItemSelected(final MenuItem item) {
-		boolean ret = mInteractionMode.onContextItemSelected(item);
-		if (ret) {
-			refreshMap(); // Gesture listener made changes, need to redraw.
-		}
-		return ret;
-	}
-
 	/**
 	 * Gets the currently active line collection.
 	 *
