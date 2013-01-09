@@ -16,6 +16,7 @@
 
 package net.margaritov.preference.colorpicker;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,6 +30,7 @@ import android.graphics.Shader;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Shader.TileMode;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -151,8 +153,11 @@ public class ColorPickerView extends View {
 		init();
 	}
 
+	@SuppressLint("NewApi")
 	private void init(){
-		this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		}
 		mDensity = getContext().getResources().getDisplayMetrics().density;
 		PALETTE_CIRCLE_TRACKER_RADIUS *= mDensity;
 		RECTANGLE_TRACKER_OFFSET *= mDensity;
@@ -210,7 +215,7 @@ public class ColorPickerView extends View {
 		int[] hue = new int[361];
 
 		int count = 0;
-		for(int i = hue.length -1; i >= 0; i--, count++){
+		for(int i = hue.length - 1; i >= 0; i--, count++){
 			hue[count] = Color.HSVToColor(new float[]{i, 1f, 1f});
 		}
 
