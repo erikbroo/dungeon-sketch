@@ -1,18 +1,16 @@
 package com.tbocek.android.combatmap.view.interaction;
 
 
+import android.graphics.Canvas;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
+
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.view.CombatView;
-
-import android.graphics.Canvas;
-import android.view.ContextMenu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 
 /**
  * This class roots a strategy pattern hierarchy that primarily defines actions

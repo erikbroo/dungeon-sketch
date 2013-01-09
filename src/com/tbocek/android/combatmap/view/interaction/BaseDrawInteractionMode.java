@@ -1,11 +1,7 @@
 package com.tbocek.android.combatmap.view.interaction;
 
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.view.CombatView;

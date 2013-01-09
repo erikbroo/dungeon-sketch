@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -8,10 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.os.Build;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.DragEvent;
 import android.view.GestureDetector;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
@@ -220,6 +219,7 @@ public final class CombatView extends SurfaceView {
 	 *
 	 * @param context The context to create this view in.
 	 */
+	@SuppressLint("NewApi")
 	public CombatView(final Context context) {
 		super(context);
 		
@@ -315,7 +315,7 @@ public final class CombatView extends SurfaceView {
 	}
 	
 	/**
-	 * Sets the interaction mode to erase mask regions
+	 * Sets the interaction mode to erase mask regions.
 	 */
 	public void setFogOfWarEraseMode() {
 		setInteractionMode(new MaskEraseInteractionMode(this));

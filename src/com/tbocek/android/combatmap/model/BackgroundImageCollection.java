@@ -2,13 +2,12 @@ package com.tbocek.android.combatmap.model;
 
 import java.util.List;
 
+import android.graphics.Canvas;
+
 import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.model.primitives.BackgroundImage;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
-
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 
 public class BackgroundImageCollection implements UndoRedoTarget {
 
@@ -70,7 +69,7 @@ public class BackgroundImageCollection implements UndoRedoTarget {
 	/**
 	 * Finds the object underneath the given point in world space.
 	 * @param point Location to check in world space.
-	 * @return
+	 * @return 
 	 */
 	public BackgroundImage getImageOnPoint(PointF point, float borderWorldSpace) {
 		for (BackgroundImage i: mImages) {
