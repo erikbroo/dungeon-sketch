@@ -13,15 +13,15 @@ import android.content.Context;
  */
 public class AboutDialog extends Dialog {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param context
-	 *            Context to construct in.
-	 */
-	public AboutDialog(final Context context) {
-		super(context);
-		this.setContentView(R.layout.about_box);
-		this.setTitle(context.getString(R.string.about));
-	}
+    /**
+     * Constructor.
+     * 
+     * @param context
+     *            Context to construct in.
+     */
+    public AboutDialog(final Context context) {
+        super(context);
+        this.setContentView(R.layout.about_box);
+        this.setTitle(context.getString(R.string.about));
+    }
 }

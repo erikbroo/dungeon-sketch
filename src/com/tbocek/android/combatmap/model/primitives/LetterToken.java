@@ -16,102 +16,102 @@ import android.graphics.Paint.Style;
  */
 public final class LetterToken extends BaseToken {
 
-	/**
-	 * The stroke width to use when drawing this token.
-	 */
-	private static final int STROKE_WIDTH = 3;
+    /**
+     * The stroke width to use when drawing this token.
+     */
+    private static final int STROKE_WIDTH = 3;
 
-	/**
-	 * Color to use when a token is both non-manipulatable and bloodied.
-	 */
-	private static final int NON_MANIPULATABLE_BLOODIED_COLOR = Color.rgb(255,
-			128, 128);
+    /**
+     * Color to use when a token is both non-manipulatable and bloodied.
+     */
+    private static final int NON_MANIPULATABLE_BLOODIED_COLOR = Color.rgb(255,
+            128, 128);
 
-	/**
-	 * The letter to draw in the circle. While this could be anything, it should
-	 * really only be a single character.
-	 */
-	private String mLetter;
+    /**
+     * The letter to draw in the circle. While this could be anything, it should
+     * really only be a single character.
+     */
+    private String mLetter;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param letter
-	 *            The single character to draw in the circle.
-	 */
-	public LetterToken(final String letter) {
-		this.mLetter = letter;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param letter
+     *            The single character to draw in the circle.
+     */
+    public LetterToken(final String letter) {
+        this.mLetter = letter;
+    }
 
-	@Override
-	public BaseToken clone() {
-		return copyAttributesTo(new LetterToken(mLetter));
-	}
+    @Override
+    public BaseToken clone() {
+        return copyAttributesTo(new LetterToken(mLetter));
+    }
 
-	@Override
-	public void drawBloodiedImpl(final Canvas c, final float x, final float y,
-			final float radius, final boolean isManipulatable) {
-		Paint p = new Paint();
-		p.setColor(isManipulatable ? Color.RED
-				: NON_MANIPULATABLE_BLOODIED_COLOR);
-		draw(c, x, y, radius, p);
-	}
+    @Override
+    public void drawBloodiedImpl(final Canvas c, final float x, final float y,
+            final float radius, final boolean isManipulatable) {
+        Paint p = new Paint();
+        p.setColor(isManipulatable ? Color.RED
+                : NON_MANIPULATABLE_BLOODIED_COLOR);
+        draw(c, x, y, radius, p);
+    }
 
-	@Override
-	public void drawImpl(final Canvas c, final float x, final float y,
-			final float radius, final boolean darkBackground,
-			final boolean isManipulatable) {
-		Paint p = new Paint();
-		p.setColor(isManipulatable ? (darkBackground ? Color.WHITE
-				: Color.BLACK) : Color.GRAY);
-		draw(c, x, y, radius, p);
-	}
+    @Override
+    public void drawImpl(final Canvas c, final float x, final float y,
+            final float radius, final boolean darkBackground,
+            final boolean isManipulatable) {
+        Paint p = new Paint();
+        p.setColor(isManipulatable ? (darkBackground ? Color.WHITE
+                : Color.BLACK) : Color.GRAY);
+        draw(c, x, y, radius, p);
+    }
 
-	/**
-	 * Draws the token with the given paint style.
-	 * 
-	 * @param c
-	 *            Canvas to draw on.
-	 * @param x
-	 *            X coordinate of the token center, in screen space.
-	 * @param y
-	 *            Y coordinate of the token center, in screen space.
-	 * @param radius
-	 *            Radius of the token, in screen space.
-	 * @param paint
-	 *            Paint object to use when drawing the circle and text.
-	 */
-	private void draw(final Canvas c, final float x, final float y,
-			final float radius, final Paint paint) {
-		paint.setStrokeWidth(STROKE_WIDTH);
-		paint.setStyle(Style.STROKE);
-		c.drawCircle(x, y, radius, paint);
-		paint.setTextSize(radius);
-		paint.setStrokeWidth(2);
-		paint.setStyle(Style.FILL);
-		// CHECKSTYLE:OFF
-		c.drawText(mLetter, x - radius / 4, y + radius / 4, paint);
-		// CHECKSTYLE:ON
-	}
+    /**
+     * Draws the token with the given paint style.
+     * 
+     * @param c
+     *            Canvas to draw on.
+     * @param x
+     *            X coordinate of the token center, in screen space.
+     * @param y
+     *            Y coordinate of the token center, in screen space.
+     * @param radius
+     *            Radius of the token, in screen space.
+     * @param paint
+     *            Paint object to use when drawing the circle and text.
+     */
+    private void draw(final Canvas c, final float x, final float y,
+            final float radius, final Paint paint) {
+        paint.setStrokeWidth(STROKE_WIDTH);
+        paint.setStyle(Style.STROKE);
+        c.drawCircle(x, y, radius, paint);
+        paint.setTextSize(radius);
+        paint.setStrokeWidth(2);
+        paint.setStyle(Style.FILL);
+        // CHECKSTYLE:OFF
+        c.drawText(mLetter, x - radius / 4, y + radius / 4, paint);
+        // CHECKSTYLE:ON
+    }
 
-	@Override
-	public void drawGhost(final Canvas c, final float x, final float y,
-			final float radius) {
-		Paint p = new Paint();
-		p.setColor(Color.GRAY);
-		draw(c, x, y, radius, p);
-	}
+    @Override
+    public void drawGhost(final Canvas c, final float x, final float y,
+            final float radius) {
+        Paint p = new Paint();
+        p.setColor(Color.GRAY);
+        draw(c, x, y, radius, p);
+    }
 
-	@Override
-	protected String getTokenClassSpecificId() {
-		return mLetter;
-	}
+    @Override
+    protected String getTokenClassSpecificId() {
+        return mLetter;
+    }
 
-	@Override
-	public Set<String> getDefaultTags() {
-		Set<String> s = new HashSet<String>();
-		s.add("built-in");
-		s.add("letter");
-		return s;
-	}
+    @Override
+    public Set<String> getDefaultTags() {
+        Set<String> s = new HashSet<String>();
+        s.add("built-in");
+        s.add("letter");
+        return s;
+    }
 }

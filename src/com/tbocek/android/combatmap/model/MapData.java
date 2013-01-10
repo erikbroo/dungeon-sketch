@@ -27,366 +27,366 @@ import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
  */
 public final class MapData {
 
-	/**
-	 * Version level of this map data, used for saving/loading.
-	 */
-	private static final int MAP_DATA_VERSION = 0;
+    /**
+     * Version level of this map data, used for saving/loading.
+     */
+    private static final int MAP_DATA_VERSION = 0;
 
-	/**
-	 * Initial zoom level of newly created maps. Corresponds to 1 square = 64
-	 * pixels. Not density independent.
-	 */
-	private static final int INITIAL_ZOOM = 64;
+    /**
+     * Initial zoom level of newly created maps. Corresponds to 1 square = 64
+     * pixels. Not density independent.
+     */
+    private static final int INITIAL_ZOOM = 64;
 
-	/**
-	 * The map data currently being managed.
-	 */
-	private static MapData instance;
+    /**
+     * The map data currently being managed.
+     */
+    private static MapData instance;
 
-	/**
-	 * Gets the current map data instance.
-	 * 
-	 * @return The map data.
-	 */
-	public static MapData getInstance() {
-		if (instance == null) {
-			clear();
-		}
-		return instance;
-	}
+    /**
+     * Gets the current map data instance.
+     * 
+     * @return The map data.
+     */
+    public static MapData getInstance() {
+        if (instance == null) {
+            clear();
+        }
+        return instance;
+    }
 
-	/**
-	 * Clears the map by loading a new instance.
-	 */
-	public static void clear() {
-		instance = new MapData();
-	}
+    /**
+     * Clears the map by loading a new instance.
+     */
+    public static void clear() {
+        instance = new MapData();
+    }
 
-	/**
-	 * Clears the currently loaded map data, forcing a reload next time map data
-	 * is needed.
-	 */
-	public static void invalidate() {
-		instance = null;
-	}
+    /**
+     * Clears the currently loaded map data, forcing a reload next time map data
+     * is needed.
+     */
+    public static void invalidate() {
+        instance = null;
+    }
 
-	/**
-	 * @return True if an instance of MapData has already been created.
-	 */
-	public static boolean hasValidInstance() {
-		return instance != null;
-	}
+    /**
+     * @return True if an instance of MapData has already been created.
+     */
+    public static boolean hasValidInstance() {
+        return instance != null;
+    }
 
-	/**
-	 * Loads the map data from an input stream.
-	 * 
-	 * @param input
-	 *            The stream to read from.
-	 * @param tokens
-	 *            Token database to use when creating tokens.
-	 * @throws IOException
-	 *             On read error.
-	 * @throws ClassNotFoundException
-	 *             On deserialization error.
-	 */
-	public static void loadFromStream(final InputStream input,
-			TokenDatabase tokens) throws IOException, ClassNotFoundException {
-		InputStreamReader inReader = new InputStreamReader(input);
-		BufferedReader reader = new BufferedReader(inReader);
-		MapDataDeserializer s = new MapDataDeserializer(reader);
-		try {
-			instance = MapData.deserialize(s, tokens);
-		} finally {
-			reader.close();
-			inReader.close();
-		}
-	}
+    /**
+     * Loads the map data from an input stream.
+     * 
+     * @param input
+     *            The stream to read from.
+     * @param tokens
+     *            Token database to use when creating tokens.
+     * @throws IOException
+     *             On read error.
+     * @throws ClassNotFoundException
+     *             On deserialization error.
+     */
+    public static void loadFromStream(final InputStream input,
+            TokenDatabase tokens) throws IOException, ClassNotFoundException {
+        InputStreamReader inReader = new InputStreamReader(input);
+        BufferedReader reader = new BufferedReader(inReader);
+        MapDataDeserializer s = new MapDataDeserializer(reader);
+        try {
+            instance = MapData.deserialize(s, tokens);
+        } finally {
+            reader.close();
+            inReader.close();
+        }
+    }
 
-	/**
-	 * Saves the map data to a stream.
-	 * 
-	 * @param output
-	 *            The stream to write to.
-	 * @throws IOException
-	 *             On write error.
-	 */
-	public static void saveToStream(final OutputStream output)
-			throws IOException {
-		OutputStreamWriter outWriter = new OutputStreamWriter(output);
-		BufferedWriter writer = new BufferedWriter(outWriter);
-		MapDataSerializer s = new MapDataSerializer(writer);
-		// TODO: Buffer this into memory and then write on a different thread.
-		try {
-			instance.serialize(s);
-		} finally {
-			writer.close();
-			outWriter.close();
-		}
-	}
+    /**
+     * Saves the map data to a stream.
+     * 
+     * @param output
+     *            The stream to write to.
+     * @throws IOException
+     *             On write error.
+     */
+    public static void saveToStream(final OutputStream output)
+            throws IOException {
+        OutputStreamWriter outWriter = new OutputStreamWriter(output);
+        BufferedWriter writer = new BufferedWriter(outWriter);
+        MapDataSerializer s = new MapDataSerializer(writer);
+        // TODO: Buffer this into memory and then write on a different thread.
+        try {
+            instance.serialize(s);
+        } finally {
+            writer.close();
+            outWriter.close();
+        }
+    }
 
-	/**
-	 * Creates, populates, and returns a new MapData object from the given
-	 * deserialization stream.
-	 * 
-	 * @param s
-	 *            The stream to read from.
-	 * @param tokens
-	 *            Token database to load tokens from.
-	 * @return The created map data.
-	 * @throws IOException
-	 *             On deserialization error.
-	 */
-	public static MapData deserialize(MapDataDeserializer s,
-			TokenDatabase tokens) throws IOException {
-		@SuppressWarnings("unused")
-		int mapDataVersion = s.readInt();
-		MapData data = new MapData();
-		data.mGrid = Grid.deserialize(s);
-		data.mTransformer = CoordinateTransformer.deserialize(s);
-		data.mTokens.deserialize(s, tokens);
-		data.mBackgroundLines.deserialize(s);
-		data.mBackgroundFogOfWar.deserialize(s);
-		data.mGmNoteLines.deserialize(s);
-		data.mGmNotesFogOfWar.deserialize(s);
-		data.mAnnotationLines.deserialize(s);
-		return data;
-	}
+    /**
+     * Creates, populates, and returns a new MapData object from the given
+     * deserialization stream.
+     * 
+     * @param s
+     *            The stream to read from.
+     * @param tokens
+     *            Token database to load tokens from.
+     * @return The created map data.
+     * @throws IOException
+     *             On deserialization error.
+     */
+    public static MapData deserialize(MapDataDeserializer s,
+            TokenDatabase tokens) throws IOException {
+        @SuppressWarnings("unused")
+        int mapDataVersion = s.readInt();
+        MapData data = new MapData();
+        data.mGrid = Grid.deserialize(s);
+        data.mTransformer = CoordinateTransformer.deserialize(s);
+        data.mTokens.deserialize(s, tokens);
+        data.mBackgroundLines.deserialize(s);
+        data.mBackgroundFogOfWar.deserialize(s);
+        data.mGmNoteLines.deserialize(s);
+        data.mGmNotesFogOfWar.deserialize(s);
+        data.mAnnotationLines.deserialize(s);
+        return data;
+    }
 
-	/**
-	 * Transformation from world space to screen space.
-	 */
-	private CoordinateTransformer mTransformer = new CoordinateTransformer(0,
-			0, INITIAL_ZOOM);
+    /**
+     * Transformation from world space to screen space.
+     */
+    private CoordinateTransformer mTransformer = new CoordinateTransformer(0,
+            0, INITIAL_ZOOM);
 
-	/**
-	 * Command history object to use for the background and associated fog of
-	 * war.
-	 */
-	private CommandHistory mBackgroundCommandHistory = new CommandHistory();
+    /**
+     * Command history object to use for the background and associated fog of
+     * war.
+     */
+    private CommandHistory mBackgroundCommandHistory = new CommandHistory();
 
-	/**
-	 * Command history to use for the annotations.
-	 */
-	private CommandHistory mAnntationCommandHistory = new CommandHistory();
+    /**
+     * Command history to use for the annotations.
+     */
+    private CommandHistory mAnntationCommandHistory = new CommandHistory();
 
-	/**
-	 * Command history to use for the GM notes and associated fog of war.
-	 */
-	private CommandHistory mGmNotesCommandHistory = new CommandHistory();
+    /**
+     * Command history to use for the GM notes and associated fog of war.
+     */
+    private CommandHistory mGmNotesCommandHistory = new CommandHistory();
 
-	/**
-	 * Command history to use for combat tokens.
-	 */
-	private CommandHistory mTokenCollectionCommandHistory = new CommandHistory();
+    /**
+     * Command history to use for combat tokens.
+     */
+    private CommandHistory mTokenCollectionCommandHistory = new CommandHistory();
 
-	/**
-	 * Background lines.
-	 */
-	private LineCollection mBackgroundLines = new LineCollection(
-			mBackgroundCommandHistory);
+    /**
+     * Background lines.
+     */
+    private LineCollection mBackgroundLines = new LineCollection(
+            mBackgroundCommandHistory);
 
-	/**
-	 * Lines that represent the fog of war.
-	 */
-	private LineCollection mBackgroundFogOfWar = new LineCollection(
-			mBackgroundCommandHistory);
+    /**
+     * Lines that represent the fog of war.
+     */
+    private LineCollection mBackgroundFogOfWar = new LineCollection(
+            mBackgroundCommandHistory);
 
-	/**
-	 * Annotation lines.
-	 */
-	private LineCollection mAnnotationLines = new LineCollection(
-			mAnntationCommandHistory);
+    /**
+     * Annotation lines.
+     */
+    private LineCollection mAnnotationLines = new LineCollection(
+            mAnntationCommandHistory);
 
-	/**
-	 * Notes for the GM that are not visible when combat is occurring.
-	 */
-	private LineCollection mGmNoteLines = new LineCollection(
-			mGmNotesCommandHistory);
+    /**
+     * Notes for the GM that are not visible when combat is occurring.
+     */
+    private LineCollection mGmNoteLines = new LineCollection(
+            mGmNotesCommandHistory);
 
-	/**
-	 * Lines that represent the fog of war.
-	 */
-	private LineCollection mGmNotesFogOfWar = new LineCollection(
-			mGmNotesCommandHistory);
+    /**
+     * Lines that represent the fog of war.
+     */
+    private LineCollection mGmNotesFogOfWar = new LineCollection(
+            mGmNotesCommandHistory);
 
-	/**
-	 * Tokens that have been placed on the map.
-	 */
-	private TokenCollection mTokens = new TokenCollection(
-			mTokenCollectionCommandHistory);
+    /**
+     * Tokens that have been placed on the map.
+     */
+    private TokenCollection mTokens = new TokenCollection(
+            mTokenCollectionCommandHistory);
 
-	/**
-	 * Collection of background images.
-	 */
-	private BackgroundImageCollection mBackgroundImages = new BackgroundImageCollection(
-			mBackgroundCommandHistory);
+    /**
+     * Collection of background images.
+     */
+    private BackgroundImageCollection mBackgroundImages = new BackgroundImageCollection(
+            mBackgroundCommandHistory);
 
-	/**
-	 * The grid to draw.
-	 */
-	private Grid mGrid = new Grid();
+    /**
+     * The grid to draw.
+     */
+    private Grid mGrid = new Grid();
 
-	/**
-	 * Whether map attributes such as color scheme and grid type should be
-	 * updated in response to loading preferences. Set to true if this map is
-	 * newly loaded.
-	 */
-	private boolean mMapAttributesLocked;
+    /**
+     * Whether map attributes such as color scheme and grid type should be
+     * updated in response to loading preferences. Set to true if this map is
+     * newly loaded.
+     */
+    private boolean mMapAttributesLocked;
 
-	/**
-	 * Private constructor - singleton pattern.
-	 */
-	private MapData() {
+    /**
+     * Private constructor - singleton pattern.
+     */
+    private MapData() {
 
-	}
+    }
 
-	/**
-	 * Gets a rectangle that encompasses the entire map.
-	 * 
-	 * @return The bounding rectangle.
-	 */
-	public BoundingRectangle getBoundingRectangle() {
-		BoundingRectangle r = new BoundingRectangle();
+    /**
+     * Gets a rectangle that encompasses the entire map.
+     * 
+     * @return The bounding rectangle.
+     */
+    public BoundingRectangle getBoundingRectangle() {
+        BoundingRectangle r = new BoundingRectangle();
 
-		r.updateBounds(mBackgroundLines.getBoundingRectangle());
-		r.updateBounds(mAnnotationLines.getBoundingRectangle());
-		r.updateBounds(getTokens().getBoundingRectangle());
+        r.updateBounds(mBackgroundLines.getBoundingRectangle());
+        r.updateBounds(mAnnotationLines.getBoundingRectangle());
+        r.updateBounds(getTokens().getBoundingRectangle());
 
-		return r;
-	}
+        return r;
+    }
 
-	/**
-	 * @return Whether anything has been placed on the map.
-	 */
-	public boolean hasData() {
-		return !mBackgroundLines.isEmpty() || !mAnnotationLines.isEmpty()
-				|| !getTokens().isEmpty();
-	}
+    /**
+     * @return Whether anything has been placed on the map.
+     */
+    public boolean hasData() {
+        return !mBackgroundLines.isEmpty() || !mAnnotationLines.isEmpty()
+                || !getTokens().isEmpty();
+    }
 
-	/**
-	 * @return the backgroundLines
-	 */
-	public LineCollection getBackgroundLines() {
-		return mBackgroundLines;
-	}
+    /**
+     * @return the backgroundLines
+     */
+    public LineCollection getBackgroundLines() {
+        return mBackgroundLines;
+    }
 
-	/**
-	 * @return the fog of war lines.
-	 */
-	public LineCollection getBackgroundFogOfWar() {
-		return mBackgroundFogOfWar;
-	}
+    /**
+     * @return the fog of war lines.
+     */
+    public LineCollection getBackgroundFogOfWar() {
+        return mBackgroundFogOfWar;
+    }
 
-	/**
-	 * @return the fog of war lines.
-	 */
-	public LineCollection getGmNotesFogOfWar() {
-		return mGmNotesFogOfWar;
-	}
+    /**
+     * @return the fog of war lines.
+     */
+    public LineCollection getGmNotesFogOfWar() {
+        return mGmNotesFogOfWar;
+    }
 
-	/**
-	 * @return the annotationLines
-	 */
-	public LineCollection getAnnotationLines() {
-		return mAnnotationLines;
-	}
+    /**
+     * @return the annotationLines
+     */
+    public LineCollection getAnnotationLines() {
+        return mAnnotationLines;
+    }
 
-	/**
-	 * @return Private notes for the GM
-	 */
-	public LineCollection getGmNoteLines() {
-		return mGmNoteLines;
-	}
+    /**
+     * @return Private notes for the GM
+     */
+    public LineCollection getGmNoteLines() {
+        return mGmNoteLines;
+    }
 
-	/**
-	 * @return the tokens
-	 */
-	public TokenCollection getTokens() {
-		return mTokens;
-	}
+    /**
+     * @return the tokens
+     */
+    public TokenCollection getTokens() {
+        return mTokens;
+    }
 
-	/**
-	 * @param grid
-	 *            the grid to set
-	 */
-	public void setGrid(final Grid grid) {
-		this.mGrid = grid;
-	}
+    /**
+     * @param grid
+     *            the grid to set
+     */
+    public void setGrid(final Grid grid) {
+        this.mGrid = grid;
+    }
 
-	/**
-	 * @return the grid
-	 */
-	public Grid getGrid() {
-		return mGrid;
-	}
+    /**
+     * @return the grid
+     */
+    public Grid getGrid() {
+        return mGrid;
+    }
 
-	/**
-	 * Saves the entire MapData to the given serialization stream.
-	 * 
-	 * @param s
-	 *            The stream to save to.
-	 * @throws IOException
-	 *             On serialization error.
-	 */
-	public void serialize(MapDataSerializer s) throws IOException {
-		s.serializeInt(MAP_DATA_VERSION);
-		this.mGrid.serialize(s);
-		this.mTransformer.serialize(s);
-		this.mTokens.serialize(s);
-		this.mBackgroundLines.serialize(s);
-		this.mBackgroundFogOfWar.serialize(s);
-		this.mGmNoteLines.serialize(s);
-		this.mGmNotesFogOfWar.serialize(s);
-		this.mAnnotationLines.serialize(s);
-	}
+    /**
+     * Saves the entire MapData to the given serialization stream.
+     * 
+     * @param s
+     *            The stream to save to.
+     * @throws IOException
+     *             On serialization error.
+     */
+    public void serialize(MapDataSerializer s) throws IOException {
+        s.serializeInt(MAP_DATA_VERSION);
+        this.mGrid.serialize(s);
+        this.mTransformer.serialize(s);
+        this.mTokens.serialize(s);
+        this.mBackgroundLines.serialize(s);
+        this.mBackgroundFogOfWar.serialize(s);
+        this.mGmNoteLines.serialize(s);
+        this.mGmNotesFogOfWar.serialize(s);
+        this.mAnnotationLines.serialize(s);
+    }
 
-	/**
-	 * @return the transformer
-	 */
-	public CoordinateTransformer getWorldSpaceTransformer() {
-		return mTransformer;
-	}
+    /**
+     * @return the transformer
+     */
+    public CoordinateTransformer getWorldSpaceTransformer() {
+        return mTransformer;
+    }
 
-	/**
-	 * 
-	 * @return Whether map attributes are locked.
-	 */
-	public boolean areMapAttributesLocked() {
-		return this.mMapAttributesLocked;
-	}
+    /**
+     * 
+     * @return Whether map attributes are locked.
+     */
+    public boolean areMapAttributesLocked() {
+        return this.mMapAttributesLocked;
+    }
 
-	/**
-	 * Sets whether to lock map attributes.
-	 * 
-	 * @param locked
-	 *            True if map attributes are locked, False otherwise.
-	 */
-	public void setMapAttributesLocked(boolean locked) {
-		this.mMapAttributesLocked = locked;
-	}
+    /**
+     * Sets whether to lock map attributes.
+     * 
+     * @param locked
+     *            True if map attributes are locked, False otherwise.
+     */
+    public void setMapAttributesLocked(boolean locked) {
+        this.mMapAttributesLocked = locked;
+    }
 
-	/**
-	 * Gets the screen space bounding rectangle of the entire map based on the
-	 * current screen space transformation.
-	 * 
-	 * @param marginsPx
-	 *            Margin to apply to each edge.
-	 * @return The bounding rectangle.
-	 */
-	public RectF getScreenSpaceBoundingRect(int marginsPx) {
-		BoundingRectangle worldSpaceRect = getBoundingRectangle();
-		PointF ul = this.mTransformer.worldSpaceToScreenSpace(
-				worldSpaceRect.getXMin(), worldSpaceRect.getYMin());
-		PointF lr = this.mTransformer.worldSpaceToScreenSpace(
-				worldSpaceRect.getXMax(), worldSpaceRect.getYMax());
-		return new RectF(ul.x - marginsPx, ul.y - marginsPx, lr.x + marginsPx,
-				lr.y + marginsPx);
-	}
+    /**
+     * Gets the screen space bounding rectangle of the entire map based on the
+     * current screen space transformation.
+     * 
+     * @param marginsPx
+     *            Margin to apply to each edge.
+     * @return The bounding rectangle.
+     */
+    public RectF getScreenSpaceBoundingRect(int marginsPx) {
+        BoundingRectangle worldSpaceRect = getBoundingRectangle();
+        PointF ul = this.mTransformer.worldSpaceToScreenSpace(
+                worldSpaceRect.getXMin(), worldSpaceRect.getYMin());
+        PointF lr = this.mTransformer.worldSpaceToScreenSpace(
+                worldSpaceRect.getXMax(), worldSpaceRect.getYMax());
+        return new RectF(ul.x - marginsPx, ul.y - marginsPx, lr.x + marginsPx,
+                lr.y + marginsPx);
+    }
 
-	/**
-	 * @return The collection of background images.
-	 */
-	public BackgroundImageCollection getBackgroundImages() {
-		return this.mBackgroundImages;
-	}
+    /**
+     * @return The collection of background images.
+     */
+    public BackgroundImageCollection getBackgroundImages() {
+        return this.mBackgroundImages;
+    }
 }

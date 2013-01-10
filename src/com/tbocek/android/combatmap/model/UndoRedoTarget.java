@@ -8,23 +8,23 @@ package com.tbocek.android.combatmap.model;
  * 
  */
 public interface UndoRedoTarget {
-	/**
-	 * Undoes the action at the current position.
-	 */
-	void undo();
+    /**
+     * Undoes the action at the current position.
+     */
+    void undo();
 
-	/**
-	 * Redoes the action at the current position.
-	 */
-	void redo();
+    /**
+     * Redoes the action at the current position.
+     */
+    void redo();
 
-	/**
-	 * @return true if there is an action in the queue that can be undone.
-	 */
-	boolean canUndo();
+    /**
+     * @return true if there is an action in the queue that can be undone.
+     */
+    boolean canUndo();
 
-	/**
-	 * @return true if there is an action in the queue that can be redone.
-	 */
-	boolean canRedo();
+    /**
+     * @return true if there is an action in the queue that can be redone.
+     */
+    boolean canRedo();
 }

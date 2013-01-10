@@ -17,67 +17,67 @@ import android.widget.ImageButton;
  * 
  */
 public final class ImageToggleButton extends ImageButton {
-	/**
-	 * The color to use when drawing a border around toggled buttons.
-	 */
-	private static final int TOGGLE_BORDER_COLOR = Color.rgb(0, 127, 255);
+    /**
+     * The color to use when drawing a border around toggled buttons.
+     */
+    private static final int TOGGLE_BORDER_COLOR = Color.rgb(0, 127, 255);
 
-	/**
-	 * Width of the toggle border line.
-	 */
-	private static final int TOGGLE_BORDER_WIDTH = 3;
+    /**
+     * Width of the toggle border line.
+     */
+    private static final int TOGGLE_BORDER_WIDTH = 3;
 
-	/**
-	 * Whether to draw the button toggled.
-	 */
-	private boolean mToggled = false;
+    /**
+     * Whether to draw the button toggled.
+     */
+    private boolean mToggled = false;
 
-	/**
-	 * Creates a new ImageToggleButton in the given context.
-	 * 
-	 * @param context
-	 *            Context to use.
-	 */
-	public ImageToggleButton(final Context context) {
-		super(context);
-	}
+    /**
+     * Creates a new ImageToggleButton in the given context.
+     * 
+     * @param context
+     *            Context to use.
+     */
+    public ImageToggleButton(final Context context) {
+        super(context);
+    }
 
-	public ImageToggleButton(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public ImageToggleButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public ImageToggleButton(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public ImageToggleButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	/**
-	 * @return Whether the button is toggled.
-	 */
-	public boolean isToggled() {
-		return mToggled;
-	}
+    /**
+     * @return Whether the button is toggled.
+     */
+    public boolean isToggled() {
+        return mToggled;
+    }
 
-	/**
-	 * Sets the toggled state.
-	 * 
-	 * @param toggled
-	 *            Whether the button should be toggled.
-	 */
-	public void setToggled(final boolean toggled) {
-		this.mToggled = toggled;
-		invalidate();
-	}
+    /**
+     * Sets the toggled state.
+     * 
+     * @param toggled
+     *            Whether the button should be toggled.
+     */
+    public void setToggled(final boolean toggled) {
+        this.mToggled = toggled;
+        invalidate();
+    }
 
-	@Override
-	public void onDraw(final Canvas c) {
-		super.onDraw(c);
+    @Override
+    public void onDraw(final Canvas c) {
+        super.onDraw(c);
 
-		Paint paint = new Paint();
-		paint.setColor(TOGGLE_BORDER_COLOR);
-		paint.setStrokeWidth(TOGGLE_BORDER_WIDTH);
-		paint.setStyle(Style.STROKE);
-		if (mToggled) {
-			c.drawRect(0, 0, this.getWidth(), this.getHeight(), paint);
-		}
-	}
+        Paint paint = new Paint();
+        paint.setColor(TOGGLE_BORDER_COLOR);
+        paint.setStrokeWidth(TOGGLE_BORDER_WIDTH);
+        paint.setStyle(Style.STROKE);
+        if (mToggled) {
+            c.drawRect(0, 0, this.getWidth(), this.getHeight(), paint);
+        }
+    }
 }

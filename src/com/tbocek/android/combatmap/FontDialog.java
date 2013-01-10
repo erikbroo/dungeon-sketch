@@ -20,107 +20,107 @@ import android.widget.TextView;
  */
 public class FontDialog extends Dialog {
 
-	/**
-	 * Listener used to specify the action to take when the user confirms text
-	 * entry in a TextPromptDialog.
-	 * 
-	 * @author Tim Bocek
-	 * 
-	 */
-	public interface OnTextConfirmedListener {
-		/**
-		 * Called when the user confirms the text entered.
-		 * 
-		 * @param text
-		 *            The text entered by the user.
-		 * @param fontSize
-		 *            The font size specified in the dialog.
-		 */
-		void onTextConfirmed(String text, float fontSize);
-	}
+    /**
+     * Listener used to specify the action to take when the user confirms text
+     * entry in a TextPromptDialog.
+     * 
+     * @author Tim Bocek
+     * 
+     */
+    public interface OnTextConfirmedListener {
+        /**
+         * Called when the user confirms the text entered.
+         * 
+         * @param text
+         *            The text entered by the user.
+         * @param fontSize
+         *            The font size specified in the dialog.
+         */
+        void onTextConfirmed(String text, float fontSize);
+    }
 
-	/**
-	 * Text entry field.
-	 */
-	private TextView mNameText;
+    /**
+     * Text entry field.
+     */
+    private TextView mNameText;
 
-	/**
-	 * Spinner for font size selection.
-	 */
-	private Spinner mFontSize;
+    /**
+     * Spinner for font size selection.
+     */
+    private Spinner mFontSize;
 
-	/**
-	 * Button that the user clicks to confirm the text entered.
-	 */
-	private Button mConfirmButton;
+    /**
+     * Button that the user clicks to confirm the text entered.
+     */
+    private Button mConfirmButton;
 
-	/**
-	 * Listener that is called when the user clicks the confirm button.
-	 */
-	private OnTextConfirmedListener mListener;
+    /**
+     * Listener that is called when the user clicks the confirm button.
+     */
+    private OnTextConfirmedListener mListener;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param context
-	 *            Context to create the dialog in.
-	 * @param listener
-	 *            Listener that specifies the action to take when the user
-	 *            confirms the text entered.
-	 */
-	public FontDialog(final Context context,
-			final OnTextConfirmedListener listener) {
-		super(context);
-		this.setContentView(R.layout.draw_text);
-		this.setTitle(context.getString(R.string.draw_text));
-		this.mListener = listener;
+    /**
+     * Constructor.
+     * 
+     * @param context
+     *            Context to create the dialog in.
+     * @param listener
+     *            Listener that specifies the action to take when the user
+     *            confirms the text entered.
+     */
+    public FontDialog(final Context context,
+            final OnTextConfirmedListener listener) {
+        super(context);
+        this.setContentView(R.layout.draw_text);
+        this.setTitle(context.getString(R.string.draw_text));
+        this.mListener = listener;
 
-		mConfirmButton = (Button) this.findViewById(R.id.button_save);
-		mNameText = (TextView) this.findViewById(R.id.entered_text);
-		mNameText.requestFocus();
-		mNameText.setText("");
+        mConfirmButton = (Button) this.findViewById(R.id.button_save);
+        mNameText = (TextView) this.findViewById(R.id.entered_text);
+        mNameText.requestFocus();
+        mNameText.setText("");
 
-		mFontSize = (Spinner) this.findViewById(R.id.spinner_font_size);
+        mFontSize = (Spinner) this.findViewById(R.id.spinner_font_size);
 
-		mConfirmButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(final View v) {
-				String name = (String) mNameText.getText().toString();
-				float size = Float.parseFloat(mFontSize.getSelectedItem()
-						.toString());
-				dismiss();
-				FontDialog.this.mListener.onTextConfirmed(name, size);
-			}
-		});
-	}
+        mConfirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                String name = (String) mNameText.getText().toString();
+                float size = Float.parseFloat(mFontSize.getSelectedItem()
+                        .toString());
+                dismiss();
+                FontDialog.this.mListener.onTextConfirmed(name, size);
+            }
+        });
+    }
 
-	/**
-	 * Sets the value of the text and font size fields, for when this dialog is
-	 * used to edit instead of create text objects.
-	 * 
-	 * @param text
-	 *            The current text of the object being edited.
-	 * @param textSize
-	 *            The current font size of the object being edited.
-	 */
-	public void populateFields(String text, float textSize) {
-		mNameText.setText(text);
+    /**
+     * Sets the value of the text and font size fields, for when this dialog is
+     * used to edit instead of create text objects.
+     * 
+     * @param text
+     *            The current text of the object being edited.
+     * @param textSize
+     *            The current font size of the object being edited.
+     */
+    public void populateFields(String text, float textSize) {
+        mNameText.setText(text);
 
-		// Iterate through the font size items, select the one that best fits
-		// the provided number
-		for (int i = 0; i < mFontSize.getCount(); ++i) {
-			float parsedItem = Float.parseFloat(mFontSize.getItemAtPosition(i)
-					.toString());
-			if (Math.abs(textSize - parsedItem) < Util.FP_COMPARE_ERROR) {
-				mFontSize.setSelection(i);
-			}
-		}
-	}
+        // Iterate through the font size items, select the one that best fits
+        // the provided number
+        for (int i = 0; i < mFontSize.getCount(); ++i) {
+            float parsedItem = Float.parseFloat(mFontSize.getItemAtPosition(i)
+                    .toString());
+            if (Math.abs(textSize - parsedItem) < Util.FP_COMPARE_ERROR) {
+                mFontSize.setSelection(i);
+            }
+        }
+    }
 
-	/**
-	 * Removes any currently entered text from the dialog.
-	 */
-	public void clearText() {
-		mNameText.setText("");
-	}
+    /**
+     * Removes any currently entered text from the dialog.
+     */
+    public void clearText() {
+        mNameText.setText("");
+    }
 }

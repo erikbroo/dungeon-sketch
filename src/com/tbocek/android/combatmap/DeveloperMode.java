@@ -10,48 +10,48 @@ import android.os.StrictMode;
  */
 public final class DeveloperMode {
 
-	/**
-	 * Whether developer/debug mode is enabled.
-	 */
-	public static final boolean DEVELOPER_MODE = BuildConfig.DEBUG;
+    /**
+     * Whether developer/debug mode is enabled.
+     */
+    public static final boolean DEVELOPER_MODE = BuildConfig.DEBUG;
 
-	/**
-	 * If in developer mode and the SDK supports it, run in strict mode.
-	 */
-	public static void strictMode() {
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD
-				&& DEVELOPER_MODE) {
-			StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-					.detectAll().penaltyLog().build());
-			StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-					.detectAll().penaltyLog().penaltyDeath().build());
-		}
-	}
+    /**
+     * If in developer mode and the SDK supports it, run in strict mode.
+     */
+    public static void strictMode() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD
+                && DEVELOPER_MODE) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll().penaltyLog().build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectAll().penaltyLog().penaltyDeath().build());
+        }
+    }
 
-	/**
-	 * Starts the profiler only if deveoper mode is active.
-	 * 
-	 * @param name
-	 *            The name of the profiler to write to.
-	 */
-	public static void startProfiler(String name) {
-		if (DEVELOPER_MODE) {
-			android.os.Debug.startMethodTracing(name);
-		}
-	}
+    /**
+     * Starts the profiler only if deveoper mode is active.
+     * 
+     * @param name
+     *            The name of the profiler to write to.
+     */
+    public static void startProfiler(String name) {
+        if (DEVELOPER_MODE) {
+            android.os.Debug.startMethodTracing(name);
+        }
+    }
 
-	/**
-	 * Stops profiling.
-	 */
-	public static void stopProfiler() {
-		if (DEVELOPER_MODE) {
-			android.os.Debug.stopMethodTracing();
-		}
-	}
+    /**
+     * Stops profiling.
+     */
+    public static void stopProfiler() {
+        if (DEVELOPER_MODE) {
+            android.os.Debug.stopMethodTracing();
+        }
+    }
 
-	/**
-	 * Private constructor because this is a utility class.
-	 */
-	private DeveloperMode() {
-	}
+    /**
+     * Private constructor because this is a utility class.
+     */
+    private DeveloperMode() {
+    }
 }

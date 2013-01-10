@@ -19,133 +19,133 @@ import android.view.ScaleGestureDetector;
  */
 public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
 
-	/**
-	 * Distance between successive points on a line in screen space.
-	 */
-	private static final float POINT_RATE_LIMIT = 3;
+    /**
+     * Distance between successive points on a line in screen space.
+     */
+    private static final float POINT_RATE_LIMIT = 3;
 
-	/**
-	 * The last x coordinate at which a point was added to the current line.
-	 */
-	private float mLastPointX;
+    /**
+     * The last x coordinate at which a point was added to the current line.
+     */
+    private float mLastPointX;
 
-	/**
-	 * The last y coordinate at which a point was added to the current line.
-	 */
-	private float mLastPointY;
+    /**
+     * The last y coordinate at which a point was added to the current line.
+     */
+    private float mLastPointY;
 
-	/**
-	 * The line that the user is actively drawing. New points will be added to
-	 * this line.
-	 */
-	private Shape mCurrentLine;
+    /**
+     * The line that the user is actively drawing. New points will be added to
+     * this line.
+     */
+    private Shape mCurrentLine;
 
-	/**
-	 * Whether a zoom operation is in progress.
-	 */
-	private boolean mZooming;
+    /**
+     * Whether a zoom operation is in progress.
+     */
+    private boolean mZooming;
 
-	/**
-	 * Whether a draw operation is in progress.
-	 */
-	private boolean mDrawing;
+    /**
+     * Whether a draw operation is in progress.
+     */
+    private boolean mDrawing;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param view
-	 *            The CombatView to manipulate.
-	 */
-	public FingerDrawInteractionMode(final CombatView view) {
-		super(view);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param view
+     *            The CombatView to manipulate.
+     */
+    public FingerDrawInteractionMode(final CombatView view) {
+        super(view);
+    }
 
-	@Override
-	public boolean onScale(final ScaleGestureDetector detector) {
-		mZooming = true;
-		if (!mDrawing) {
-			return super.onScale(detector);
-		} else {
-			return true;
-		}
-	}
+    @Override
+    public boolean onScale(final ScaleGestureDetector detector) {
+        mZooming = true;
+        if (!mDrawing) {
+            return super.onScale(detector);
+        } else {
+            return true;
+        }
+    }
 
-	@Override
-	public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
-			final float distanceX, final float distanceY) {
-		if (mZooming) {
-			getView().getWorldSpaceTransformer().moveOrigin(-distanceX,
-					-distanceY);
-			getView().refreshMap();
-			return true;
-		}
+    @Override
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+            final float distanceX, final float distanceY) {
+        if (mZooming) {
+            getView().getWorldSpaceTransformer().moveOrigin(-distanceX,
+                    -distanceY);
+            getView().refreshMap();
+            return true;
+        }
 
-		if (mCurrentLine == null) {
-			return true;
-		}
+        if (mCurrentLine == null) {
+            return true;
+        }
 
-		mDrawing = true;
+        mDrawing = true;
 
-		if (shouldAddPoint(e2.getX(), e2.getY())) {
-			addLinePoint(e2);
-		}
-		return true;
-	}
+        if (shouldAddPoint(e2.getX(), e2.getY())) {
+            addLinePoint(e2);
+        }
+        return true;
+    }
 
-	/**
-	 * Adds the location of the given motion event to the line.
-	 * 
-	 * @param e
-	 *            The motion event containing the point to add.
-	 */
-	private void addLinePoint(final MotionEvent e) {
-		PointF p = getScreenSpacePoint(e);
-		// Need to transform to world space.
-		mCurrentLine.addPoint(getView().getWorldSpaceTransformer()
-				.screenSpaceToWorldSpace(p));
+    /**
+     * Adds the location of the given motion event to the line.
+     * 
+     * @param e
+     *            The motion event containing the point to add.
+     */
+    private void addLinePoint(final MotionEvent e) {
+        PointF p = getScreenSpacePoint(e);
+        // Need to transform to world space.
+        mCurrentLine.addPoint(getView().getWorldSpaceTransformer()
+                .screenSpaceToWorldSpace(p));
 
-		getView().refreshMap(); // Redraw the screen
-		mLastPointX = p.x;
-		mLastPointY = p.y;
-	}
+        getView().refreshMap(); // Redraw the screen
+        mLastPointX = p.x;
+        mLastPointY = p.y;
+    }
 
-	/**
-	 * Returns True if the proposed point is far enough away from the previously
-	 * drawn point to add to the line.
-	 * 
-	 * @param newPointX
-	 *            X coordinate of the new point.
-	 * @param newPointY
-	 *            Y coordinate of the new point.
-	 * @return True if the point should be added
-	 */
-	private boolean shouldAddPoint(final float newPointX, final float newPointY) {
-		return Util.distance(mLastPointX, mLastPointY, newPointX, newPointY) > POINT_RATE_LIMIT;
-	}
+    /**
+     * Returns True if the proposed point is far enough away from the previously
+     * drawn point to add to the line.
+     * 
+     * @param newPointX
+     *            X coordinate of the new point.
+     * @param newPointY
+     *            Y coordinate of the new point.
+     * @return True if the point should be added
+     */
+    private boolean shouldAddPoint(final float newPointX, final float newPointY) {
+        return Util.distance(mLastPointX, mLastPointY, newPointX, newPointY) > POINT_RATE_LIMIT;
+    }
 
-	@Override
-	public boolean onDown(final MotionEvent e) {
-		mCurrentLine = createLine();
-		PointF p = getScreenSpacePoint(e);
-		mLastPointX = p.x;
-		mLastPointY = p.y;
-		return true;
-	}
+    @Override
+    public boolean onDown(final MotionEvent e) {
+        mCurrentLine = createLine();
+        PointF p = getScreenSpacePoint(e);
+        mLastPointX = p.x;
+        mLastPointY = p.y;
+        return true;
+    }
 
-	@Override
-	public void onUp(final MotionEvent e) {
-		if (getNumberOfFingers() == 0) {
-			mZooming = false;
-			mDrawing = false;
-		}
-	}
+    @Override
+    public void onUp(final MotionEvent e) {
+        if (getNumberOfFingers() == 0) {
+            mZooming = false;
+            mDrawing = false;
+        }
+    }
 
-	/**
-	 * Creates a line in the data tied to the manipulated view, and returns it.
-	 * 
-	 * @return The created line.
-	 */
-	protected Shape createLine() {
-		return getView().createLine();
-	}
+    /**
+     * Creates a line in the data tied to the manipulated view, and returns it.
+     * 
+     * @return The created line.
+     */
+    protected Shape createLine() {
+        return getView().createLine();
+    }
 }

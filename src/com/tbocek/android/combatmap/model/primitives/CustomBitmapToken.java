@@ -18,79 +18,79 @@ import com.tbocek.android.combatmap.DataManager;
  */
 public final class CustomBitmapToken extends DrawableToken {
 
-	/**
-	 * The data manager that is used to load custom images.
-	 */
-	private static transient DataManager dataManager = null;
+    /**
+     * The data manager that is used to load custom images.
+     */
+    private static transient DataManager dataManager = null;
 
-	/**
-	 * Sets the data manager that will be used to load images.
-	 * 
-	 * @param manager
-	 *            The data manager.
-	 */
-	public static void registerDataManager(final DataManager manager) {
-		CustomBitmapToken.dataManager = manager;
-	}
+    /**
+     * Sets the data manager that will be used to load images.
+     * 
+     * @param manager
+     *            The data manager.
+     */
+    public static void registerDataManager(final DataManager manager) {
+        CustomBitmapToken.dataManager = manager;
+    }
 
-	/**
-	 * The filename to load.
-	 */
-	private String mFilename = null;
+    /**
+     * The filename to load.
+     */
+    private String mFilename = null;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param filename
-	 *            The filename to load.
-	 */
-	public CustomBitmapToken(final String filename) {
-		this.mFilename = filename;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param filename
+     *            The filename to load.
+     */
+    public CustomBitmapToken(final String filename) {
+        this.mFilename = filename;
+    }
 
-	@Override
-	protected Drawable createDrawable() {
-		if (dataManager == null) {
-			return null;
-		}
+    @Override
+    protected Drawable createDrawable() {
+        if (dataManager == null) {
+            return null;
+        }
 
-		Bitmap b;
-		try {
-			b = dataManager.loadTokenImage(mFilename);
-			return new BitmapDrawable(b);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+        Bitmap b;
+        try {
+            b = dataManager.loadTokenImage(mFilename);
+            return new BitmapDrawable(b);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	@Override
-	public BaseToken clone() {
-		return copyAttributesTo(new CustomBitmapToken(mFilename));
-	}
+    @Override
+    public BaseToken clone() {
+        return copyAttributesTo(new CustomBitmapToken(mFilename));
+    }
 
-	@Override
-	protected String getTokenClassSpecificId() {
-		return mFilename;
-	}
+    @Override
+    protected String getTokenClassSpecificId() {
+        return mFilename;
+    }
 
-	@Override
-	public Set<String> getDefaultTags() {
-		Set<String> s = new HashSet<String>();
-		s.add("custom");
-		s.add("image");
-		return s;
-	}
+    @Override
+    public Set<String> getDefaultTags() {
+        Set<String> s = new HashSet<String>();
+        s.add("custom");
+        s.add("image");
+        return s;
+    }
 
-	@Override
-	public boolean maybeDeletePermanently() throws IOException {
-		dataManager.deleteTokenImage(mFilename);
-		return true;
-	}
+    @Override
+    public boolean maybeDeletePermanently() throws IOException {
+        dataManager.deleteTokenImage(mFilename);
+        return true;
+    }
 
-	@Override
-	public boolean isBuiltIn() {
-		return false;
-	}
+    @Override
+    public boolean isBuiltIn() {
+        return false;
+    }
 
 }

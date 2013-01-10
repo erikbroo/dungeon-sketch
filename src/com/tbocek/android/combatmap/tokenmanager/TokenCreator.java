@@ -34,151 +34,151 @@ import com.tbocek.android.combatmap.model.primitives.Util;
  */
 public final class TokenCreator extends SherlockActivity {
 
-	/**
-	 * Maximum dimension allowed in any image before the image starts being
-	 * downsampled on load.
-	 */
-	private static final int MAX_IMAGE_DIMENSION = 1280;
+    /**
+     * Maximum dimension allowed in any image before the image starts being
+     * downsampled on load.
+     */
+    private static final int MAX_IMAGE_DIMENSION = 1280;
 
-	/**
-	 * Request ID that is passed to the image gallery activity; this is returned
-	 * by the image gallery to let us know that a new image was picked.
-	 */
-	static final int PICK_IMAGE_REQUEST = 0;
+    /**
+     * Request ID that is passed to the image gallery activity; this is returned
+     * by the image gallery to let us know that a new image was picked.
+     */
+    static final int PICK_IMAGE_REQUEST = 0;
 
-	/**
-	 * The view that implements drawing the selected image and allowing the user
-	 * to sepcify a circle on it.
-	 */
-	private TokenCreatorView mTokenCreatorView;
+    /**
+     * The view that implements drawing the selected image and allowing the user
+     * to sepcify a circle on it.
+     */
+    private TokenCreatorView mTokenCreatorView;
 
-	/**
-	 * Whether the image selector activity was started automatically. If true,
-	 * and the activity was cancelled, this activity should end as well.
-	 */
-	private boolean mImageSelectorStartedAutomatically = false;
+    /**
+     * Whether the image selector activity was started automatically. If true,
+     * and the activity was cancelled, this activity should end as well.
+     */
+    private boolean mImageSelectorStartedAutomatically = false;
 
-	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-		DeveloperMode.strictMode();
-		super.onCreate(savedInstanceState);
-		mTokenCreatorView = new TokenCreatorView(this);
-		setContentView(mTokenCreatorView);
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        DeveloperMode.strictMode();
+        super.onCreate(savedInstanceState);
+        mTokenCreatorView = new TokenCreatorView(this);
+        setContentView(mTokenCreatorView);
 
-		// Automatically select a new image when the view starts.
-		mImageSelectorStartedAutomatically = true;
-		startImageSelectorActivity();
-	}
+        // Automatically select a new image when the view starts.
+        mImageSelectorStartedAutomatically = true;
+        startImageSelectorActivity();
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.token_image_creator, menu);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.token_image_creator, menu);
+        return true;
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.token_image_creator_pick:
-			mImageSelectorStartedAutomatically = false;
-			startImageSelectorActivity();
-			return true;
-		case R.id.token_image_creator_accept:
-			try {
-				// Pick a filename based on the current date and time. This
-				// ensures that the tokens load in the order added.
-				Date now = new Date();
-				String filename = Long.toString(now.getTime());
-				filename = saveToInternalImage(filename);
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.token_image_creator_pick:
+            mImageSelectorStartedAutomatically = false;
+            startImageSelectorActivity();
+            return true;
+        case R.id.token_image_creator_accept:
+            try {
+                // Pick a filename based on the current date and time. This
+                // ensures that the tokens load in the order added.
+                Date now = new Date();
+                String filename = Long.toString(now.getTime());
+                filename = saveToInternalImage(filename);
 
-				// Add this token to the token database
-				TokenDatabase tokenDatabase = TokenDatabase.getInstance(this
-						.getApplicationContext());
-				BaseToken t = new CustomBitmapToken(filename);
-				tokenDatabase.addTokenPrototype(t);
-				tokenDatabase.tagToken(t.getTokenId(), t.getDefaultTags());
+                // Add this token to the token database
+                TokenDatabase tokenDatabase = TokenDatabase.getInstance(this
+                        .getApplicationContext());
+                BaseToken t = new CustomBitmapToken(filename);
+                tokenDatabase.addTokenPrototype(t);
+                tokenDatabase.tagToken(t.getTokenId(), t.getDefaultTags());
 
-				setResult(Activity.RESULT_OK);
-				finish();
-			} catch (IOException e) {
-				e.printStackTrace();
-				Toast toast = Toast.makeText(this.getApplicationContext(),
-						"Couldn't save image: " + e.toString(),
-						Toast.LENGTH_LONG);
-				toast.show();
-			}
-			return true;
-		case android.R.id.home:
-			// app icon in action bar clicked; go home
-			Intent intent = new Intent(this, CombatMap.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
-			return true;
-		default:
-			return false;
-		}
-	}
+                setResult(Activity.RESULT_OK);
+                finish();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast toast = Toast.makeText(this.getApplicationContext(),
+                        "Couldn't save image: " + e.toString(),
+                        Toast.LENGTH_LONG);
+                toast.show();
+            }
+            return true;
+        case android.R.id.home:
+            // app icon in action bar clicked; go home
+            Intent intent = new Intent(this, CombatMap.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        default:
+            return false;
+        }
+    }
 
-	/**
-	 * Starts the activity to pick an image. This will probably be the image
-	 * gallery, but the user might have a different app installed that does the
-	 * same thing.
-	 */
-	private void startImageSelectorActivity() {
-		startActivityForResult(new Intent(Intent.ACTION_PICK,
-				MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
-				PICK_IMAGE_REQUEST);
-	}
+    /**
+     * Starts the activity to pick an image. This will probably be the image
+     * gallery, but the user might have a different app installed that does the
+     * same thing.
+     */
+    private void startImageSelectorActivity() {
+        startActivityForResult(new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
+                PICK_IMAGE_REQUEST);
+    }
 
-	/**
-	 * Gets the cropped region of the selected image and saves it to the
-	 * standard token storage location.
-	 * 
-	 * @param name
-	 *            The name of the image to save, without file extension.
-	 * @return The filename that was saved to.
-	 * @throws IOException
-	 *             On write error.
-	 */
-	private String saveToInternalImage(final String name) throws IOException {
-		Bitmap bitmap = mTokenCreatorView.getClippedBitmap();
-		if (bitmap == null) {
-			return null;
-		}
-		return new DataManager(this.getApplicationContext()).saveTokenImage(
-				name, bitmap);
-	}
+    /**
+     * Gets the cropped region of the selected image and saves it to the
+     * standard token storage location.
+     * 
+     * @param name
+     *            The name of the image to save, without file extension.
+     * @return The filename that was saved to.
+     * @throws IOException
+     *             On write error.
+     */
+    private String saveToInternalImage(final String name) throws IOException {
+        Bitmap bitmap = mTokenCreatorView.getClippedBitmap();
+        if (bitmap == null) {
+            return null;
+        }
+        return new DataManager(this.getApplicationContext()).saveTokenImage(
+                name, bitmap);
+    }
 
-	@Override
-	protected void onActivityResult(final int requestCode,
-			final int resultCode, final Intent data) {
-		// If an image was successfully picked, use it.
-		if (requestCode == PICK_IMAGE_REQUEST) {
-			if (resultCode == Activity.RESULT_OK) {
-				try {
-					Uri selectedImage = data.getData();
-					Bitmap bitmap = Util.loadImageWithMaxBounds(selectedImage,
-							MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION,
-							getContentResolver());
-					mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
+    @Override
+    protected void onActivityResult(final int requestCode,
+            final int resultCode, final Intent data) {
+        // If an image was successfully picked, use it.
+        if (requestCode == PICK_IMAGE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    Uri selectedImage = data.getData();
+                    Bitmap bitmap = Util.loadImageWithMaxBounds(selectedImage,
+                            MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION,
+                            getContentResolver());
+                    mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
 
-					Toast t = Toast.makeText(this.getApplicationContext(),
-							"Pinch to change the cut out region",
-							Toast.LENGTH_LONG);
-					t.show();
-				} catch (Exception e) {
-					e.printStackTrace();
-					Toast toast = Toast.makeText(this.getApplicationContext(),
-							"Couldn't load image: " + e.toString(),
-							Toast.LENGTH_LONG);
-					toast.show();
-				}
-			} else if (resultCode == Activity.RESULT_CANCELED) {
-				if (mImageSelectorStartedAutomatically) {
-					finish();
-				}
-			}
-		}
-	}
+                    Toast t = Toast.makeText(this.getApplicationContext(),
+                            "Pinch to change the cut out region",
+                            Toast.LENGTH_LONG);
+                    t.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast toast = Toast.makeText(this.getApplicationContext(),
+                            "Couldn't load image: " + e.toString(),
+                            Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                if (mImageSelectorStartedAutomatically) {
+                    finish();
+                }
+            }
+        }
+    }
 }

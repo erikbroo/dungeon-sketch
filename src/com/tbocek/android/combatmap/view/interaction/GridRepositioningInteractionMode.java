@@ -14,40 +14,40 @@ import android.view.ScaleGestureDetector;
  * 
  */
 public final class GridRepositioningInteractionMode extends
-		CombatViewInteractionMode {
+        CombatViewInteractionMode {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param view
-	 *            The CombatView to interact with.
-	 */
-	public GridRepositioningInteractionMode(final CombatView view) {
-		super(view);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param view
+     *            The CombatView to interact with.
+     */
+    public GridRepositioningInteractionMode(final CombatView view) {
+        super(view);
+    }
 
-	@Override
-	public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
-			final float distanceX, final float distanceY) {
-		float deltaX = -getView().getWorldSpaceTransformer()
-				.screenSpaceToWorldSpace(distanceX);
-		float deltaY = -getView().getWorldSpaceTransformer()
-				.screenSpaceToWorldSpace(distanceY);
-		getData().getGrid().gridSpaceToWorldSpaceTransformer()
-				.moveOrigin(deltaX, deltaY);
-		getView().refreshMap();
-		return true;
-	}
+    @Override
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+            final float distanceX, final float distanceY) {
+        float deltaX = -getView().getWorldSpaceTransformer()
+                .screenSpaceToWorldSpace(distanceX);
+        float deltaY = -getView().getWorldSpaceTransformer()
+                .screenSpaceToWorldSpace(distanceY);
+        getData().getGrid().gridSpaceToWorldSpaceTransformer()
+                .moveOrigin(deltaX, deltaY);
+        getView().refreshMap();
+        return true;
+    }
 
-	@Override
-	public boolean onScale(final ScaleGestureDetector detector) {
-		PointF invariantPointWorldSpace = getView().getWorldSpaceTransformer()
-				.screenSpaceToWorldSpace(detector.getFocusX(),
-						detector.getFocusY());
-		getData().getGrid().gridSpaceToWorldSpaceTransformer()
-				.zoom(detector.getScaleFactor(), invariantPointWorldSpace);
-		getView().refreshMap();
-		return true;
-	}
+    @Override
+    public boolean onScale(final ScaleGestureDetector detector) {
+        PointF invariantPointWorldSpace = getView().getWorldSpaceTransformer()
+                .screenSpaceToWorldSpace(detector.getFocusX(),
+                        detector.getFocusY());
+        getData().getGrid().gridSpaceToWorldSpaceTransformer()
+                .zoom(detector.getScaleFactor(), invariantPointWorldSpace);
+        getView().refreshMap();
+        return true;
+    }
 
 }

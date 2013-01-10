@@ -16,81 +16,81 @@ import android.view.ViewGroup;
  */
 public class GridLayout extends ViewGroup {
 
-	/**
-	 * The width of each cell.
-	 */
-	private int mCellWidth;
+    /**
+     * The width of each cell.
+     */
+    private int mCellWidth;
 
-	/**
-	 * The height of each cell.
-	 */
-	private int mCellHeight;
+    /**
+     * The height of each cell.
+     */
+    private int mCellHeight;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param context
-	 *            Context that this view uses.
-	 */
-	public GridLayout(Context context) {
-		super(context);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param context
+     *            Context that this view uses.
+     */
+    public GridLayout(Context context) {
+        super(context);
+    }
 
-	/**
-	 * Sets the width and height for each cell.
-	 * 
-	 * @param width
-	 *            The width of each cell.
-	 * @param height
-	 *            The height of each cell.
-	 */
-	public void setCellDimensions(int width, int height) {
-		mCellWidth = width;
-		mCellHeight = height;
-	}
+    /**
+     * Sets the width and height for each cell.
+     * 
+     * @param width
+     *            The width of each cell.
+     * @param height
+     *            The height of each cell.
+     */
+    public void setCellDimensions(int width, int height) {
+        mCellWidth = width;
+        mCellHeight = height;
+    }
 
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		int cellsPerRow = (r - l) / mCellWidth;
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int cellsPerRow = (r - l) / mCellWidth;
 
-		for (int i = 0; i < this.getChildCount(); ++i) {
-			int row = i / cellsPerRow;
-			int col = i % cellsPerRow;
+        for (int i = 0; i < this.getChildCount(); ++i) {
+            int row = i / cellsPerRow;
+            int col = i % cellsPerRow;
 
-			int childLeft = col * mCellWidth;
-			int childTop = row * mCellHeight;
+            int childLeft = col * mCellWidth;
+            int childTop = row * mCellHeight;
 
-			this.getChildAt(i).layout(childLeft, childTop,
-					childLeft + mCellWidth, childTop + mCellHeight);
-		}
+            this.getChildAt(i).layout(childLeft, childTop,
+                    childLeft + mCellWidth, childTop + mCellHeight);
+        }
 
-	}
+    }
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		int width = View.MeasureSpec.getSize(widthMeasureSpec);
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = View.MeasureSpec.getSize(widthMeasureSpec);
 
-		int cellsPerRow = width / mCellWidth;
-		int numRows = (int) Math.ceil(((float) this.getChildCount())
-				/ ((float) cellsPerRow));
+        int cellsPerRow = width / mCellWidth;
+        int numRows = (int) Math.ceil(((float) this.getChildCount())
+                / ((float) cellsPerRow));
 
-		int height = numRows * mCellHeight;
+        int height = numRows * mCellHeight;
 
-		setMeasuredDimension(width, height);
+        setMeasuredDimension(width, height);
 
-		// Measure children to give them the dimensions allowed.
-		int childWidthSpec = View.MeasureSpec.makeMeasureSpec(mCellWidth,
-				View.MeasureSpec.EXACTLY);
-		int childHeightSpec = View.MeasureSpec.makeMeasureSpec(mCellHeight,
-				View.MeasureSpec.EXACTLY);
-		for (int i = 0; i < this.getChildCount(); ++i) {
-			this.getChildAt(i).measure(childWidthSpec, childHeightSpec);
-		}
-	}
+        // Measure children to give them the dimensions allowed.
+        int childWidthSpec = View.MeasureSpec.makeMeasureSpec(mCellWidth,
+                View.MeasureSpec.EXACTLY);
+        int childHeightSpec = View.MeasureSpec.makeMeasureSpec(mCellHeight,
+                View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < this.getChildCount(); ++i) {
+            this.getChildAt(i).measure(childWidthSpec, childHeightSpec);
+        }
+    }
 
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-	}
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
 
 }

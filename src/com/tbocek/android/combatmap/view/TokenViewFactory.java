@@ -17,58 +17,58 @@ import com.tbocek.android.combatmap.model.primitives.BaseToken;
  */
 public class TokenViewFactory {
 
-	/**
-	 * Map that stores cached views for tokens.
-	 */
-	private Map<BaseToken, View> mCachedViews = new HashMap<BaseToken, View>();
+    /**
+     * Map that stores cached views for tokens.
+     */
+    private Map<BaseToken, View> mCachedViews = new HashMap<BaseToken, View>();
 
-	/**
-	 * The context to use when creating views.
-	 */
-	private Context mContext;
+    /**
+     * The context to use when creating views.
+     */
+    private Context mContext;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param context
-	 *            The context to use when creating views.
-	 */
-	public TokenViewFactory(final Context context) {
-		this.mContext = context;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param context
+     *            The context to use when creating views.
+     */
+    public TokenViewFactory(final Context context) {
+        this.mContext = context;
+    }
 
-	/**
-	 * Gets a view representing the given token.
-	 * 
-	 * @param prototype
-	 *            Token prototype that will be used in the view.
-	 * @return The view for the given token.
-	 */
-	public View getTokenView(final BaseToken prototype) {
-		if (mCachedViews.containsKey(prototype)) {
-			return mCachedViews.get(prototype);
-		}
+    /**
+     * Gets a view representing the given token.
+     * 
+     * @param prototype
+     *            Token prototype that will be used in the view.
+     * @return The view for the given token.
+     */
+    public View getTokenView(final BaseToken prototype) {
+        if (mCachedViews.containsKey(prototype)) {
+            return mCachedViews.get(prototype);
+        }
 
-		TokenButton b = newTokenView(prototype);
-		mCachedViews.put(prototype, b);
-		return b;
-	}
+        TokenButton b = newTokenView(prototype);
+        mCachedViews.put(prototype, b);
+        return b;
+    }
 
-	/**
-	 * Creates a new token view for the given prototype.
-	 * 
-	 * @param prototype
-	 *            Token prototype to include in the view.
-	 * @return The created view.
-	 */
-	protected TokenButton newTokenView(final BaseToken prototype) {
-		return new TokenButton(getContext(), prototype);
-	}
+    /**
+     * Creates a new token view for the given prototype.
+     * 
+     * @param prototype
+     *            Token prototype to include in the view.
+     * @return The created view.
+     */
+    protected TokenButton newTokenView(final BaseToken prototype) {
+        return new TokenButton(getContext(), prototype);
+    }
 
-	/**
-	 * @return The context to use when constructing tokens.
-	 */
-	protected final Context getContext() {
-		return mContext;
-	}
+    /**
+     * @return The context to use when constructing tokens.
+     */
+    protected final Context getContext() {
+        return mContext;
+    }
 }

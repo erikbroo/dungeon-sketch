@@ -12,19 +12,19 @@ import com.tbocek.android.combatmap.view.CombatView;
  */
 public final class MaskDrawInteractionMode extends FingerDrawInteractionMode {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param view
-	 *            The view that this interaction mode modifies.
-	 * @param visibleByDefault
-	 */
-	public MaskDrawInteractionMode(CombatView view) {
-		super(view);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param view
+     *            The view that this interaction mode modifies.
+     * @param visibleByDefault
+     */
+    public MaskDrawInteractionMode(CombatView view) {
+        super(view);
+    }
 
-	@Override
-	protected Shape createLine() {
-		return getView().createFogOfWarRegion();
-	}
+    @Override
+    protected Shape createLine() {
+        return getView().createFogOfWarRegion();
+    }
 }
