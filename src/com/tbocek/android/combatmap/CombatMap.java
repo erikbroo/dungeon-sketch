@@ -303,7 +303,7 @@ public final class CombatMap extends SherlockActivity {
     private MenuItem mRedoMenuItem;
 
     /**
-     * Cached SharedPreferences
+     * Cached SharedPreferences.
      */
     private SharedPreferences mSharedPreferences;
 
@@ -924,7 +924,8 @@ public final class CombatMap extends SherlockActivity {
             this.mCombatView.setAreTokensManipulatable(true);
             this.mCombatView.setTokenManipulationMode();
             this.mCombatView.setFogOfWarMode(this.mSharedPreferences
-                    .getBoolean("fogofwar", true) ? FogOfWarMode.CLIP
+                    .getBoolean("fogofwar", true)
+                    ? FogOfWarMode.CLIP
                     : FogOfWarMode.NOTHING);
             this.mBottomControlFrame.removeAllViews();
             this.mBottomControlFrame.addView(this.mTokenSelector);
@@ -979,7 +980,8 @@ public final class CombatMap extends SherlockActivity {
      */
     private void setTagSelectorVisibility(boolean visible) {
         this.mPopupFrame.getLayoutParams().width =
-                visible ? (int) (this.getResources().getDisplayMetrics().density * POPUP_AREA_HEIGHT)
+                visible
+                        ? (int) (this.getResources().getDisplayMetrics().density * POPUP_AREA_HEIGHT)
                         : 0;
         this.findViewById(R.id.combatMapMainLayout).requestLayout();
         this.mTagSelectorVisible = visible;
@@ -998,16 +1000,16 @@ public final class CombatMap extends SherlockActivity {
         if (this.mUndoMenuItem != null) {
             this.mUndoMenuItem.setEnabled(this.mCombatView.getUndoRedoTarget()
                     .canUndo());
-            this.mUndoMenuItem
-                    .setIcon(this.mUndoMenuItem.isEnabled() ? R.drawable.undo
-                            : R.drawable.undo_greyscale);
+            this.mUndoMenuItem.setIcon(this.mUndoMenuItem.isEnabled()
+                    ? R.drawable.undo
+                    : R.drawable.undo_greyscale);
         }
         if (this.mRedoMenuItem != null) {
             this.mRedoMenuItem.setEnabled(this.mCombatView.getUndoRedoTarget()
                     .canRedo());
-            this.mRedoMenuItem
-                    .setIcon(this.mRedoMenuItem.isEnabled() ? R.drawable.redo
-                            : R.drawable.redo_greyscale);
+            this.mRedoMenuItem.setIcon(this.mRedoMenuItem.isEnabled()
+                    ? R.drawable.redo
+                    : R.drawable.redo_greyscale);
         }
     }
 

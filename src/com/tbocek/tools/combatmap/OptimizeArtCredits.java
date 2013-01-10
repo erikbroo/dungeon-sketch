@@ -32,8 +32,8 @@ public class OptimizeArtCredits {
             File inputXmlFile = new File(args[1]);
             File outputXmlFile = new File(args[2]);
 
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-                    .newInstance();
+            DocumentBuilderFactory dbFactory =
+                    DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
             Document doc = dBuilder.parse(inputXmlFile);
@@ -56,7 +56,7 @@ public class OptimizeArtCredits {
     }
 
     /**
-     * Walks the DOM, replacing node elements with their
+     * Walks the DOM, replacing node elements with their element IDs.
      * 
      * @param element
      * @throws NoSuchFieldException
@@ -68,8 +68,8 @@ public class OptimizeArtCredits {
             SecurityException, IllegalAccessException, NoSuchFieldException {
         String res = node.getAttribute("res");
         if (res != null) {
-            int resourceId = R.drawable.class.getDeclaredField(res)
-                    .getInt(null);
+            int resourceId =
+                    R.drawable.class.getDeclaredField(res).getInt(null);
             node.setAttribute("res", Integer.toString(resourceId));
         }
 

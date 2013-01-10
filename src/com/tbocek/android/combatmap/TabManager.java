@@ -28,7 +28,7 @@ public class TabManager {
      */
     private ActionBar mActionBar;
 
-    protected Context mContext;
+    private Context mContext;
 
     private int mLastSelectedMode = -1;
 
