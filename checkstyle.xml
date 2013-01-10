@@ -5,7 +5,7 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: Dungeon Sketch
+    Checkstyle-Configuration: Dungeon Sketch Style
     Description: none
 -->
 <module name="Checker">
@@ -31,10 +31,7 @@
     <module name="IllegalImport"/>
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
-    <module name="LineLength">
-      <property name="severity" value="ignore"/>
-      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
-    </module>
+    <module name="LineLength"/>
     <module name="MethodLength"/>
     <module name="ParameterNumber"/>
     <module name="EmptyForIteratorPad"/>
@@ -95,14 +92,6 @@
       <property name="severity" value="ignore"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
-    <!--  <module name="AvoidNotShortCircuitOperatorsForBoolean"/> 
-    <module name="CustomDeclarationOrder">
-      <property name="customDeclarationOrder" value="Field(static) ### Method(static) ### Field(public) ### Field(protected) ### Field(private) ### CTOR(.*) ### Method(.*)### InnerClass()"/>
-    </module> 
-    <module name="ReturnNullInsteadOfBoolean"/>
-    <module name="ReturnBooleanFromTernary"/>
-    <module name="MultipleVariableDeclarationsExtended"/>
-    <module name="UnnecessaryParenthesesExtended"/> -->
   </module>
   <module name="FileLength"/>
   <module name="FileTabCharacter">
@@ -115,7 +104,7 @@
   </module>
   <module name="Translation"/>
   <module name="SuppressionCommentFilter"/>
-<module name="SuppressionFilter">
-    <property name="file" value="${samedir}/checkstyle_suppression.xml" />
-</module>
+  <module name="SuppressionFilter">
+    <property name="file" value="${samedir}/checkstyle_suppression.xml"/>
+  </module>
 </module>
