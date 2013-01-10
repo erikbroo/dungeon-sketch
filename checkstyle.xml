@@ -94,10 +94,7 @@
     </module>
   </module>
   <module name="FileLength"/>
-  <module name="FileTabCharacter">
-    <property name="severity" value="ignore"/>
-    <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
-  </module>
+  <module name="FileTabCharacter"/>
   <module name="NewlineAtEndOfFile">
     <property name="severity" value="ignore"/>
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
