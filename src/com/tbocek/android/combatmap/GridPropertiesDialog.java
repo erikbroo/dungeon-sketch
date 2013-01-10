@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -21,7 +20,6 @@ import com.tbocek.android.combatmap.model.GridColorScheme;
 import com.tbocek.android.combatmap.model.HexGridStrategy;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.RectangularGridStrategy;
-import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.ImageToggleButton;
 import com.tbocek.android.combatmap.view.ToggleButtonGroup;
 
@@ -224,7 +222,7 @@ public class GridPropertiesDialog extends Dialog{
 		int c = color;
 		for (int i = 0; i < w; i++) {
 			for (int j = i; j < h; j++) {
-				c = (i <= 1 || j <= 1 || i >= w-2 || j >= h-2) ? Color.GRAY : color;
+				c = (i <= 1 || j <= 1 || i >= w - 2 || j >= h - 2) ? Color.GRAY : color;
 				bm.setPixel(i, j, c);
 				if (i != j) {
 					bm.setPixel(j, i, c);

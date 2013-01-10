@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.tbocek.android.combatmap.DataManager;
-
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+
+import com.tbocek.android.combatmap.DataManager;
 
 /**
  * A token type that is loaded from an external file and displays the image.

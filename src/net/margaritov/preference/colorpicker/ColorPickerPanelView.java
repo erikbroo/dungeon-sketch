@@ -122,9 +122,9 @@ public class ColorPickerPanelView extends View {
 		float bottom = dRect.bottom - BORDER_WIDTH_PX;
 		float right = dRect.right - BORDER_WIDTH_PX;
 
-		mColorRect = new RectF(left,top, right, bottom);
+		mColorRect = new RectF(left, top, right, bottom);
 
-		mAlphaPattern = new AlphaPatternDrawable((int)(5 * mDensity));
+		mAlphaPattern = new AlphaPatternDrawable((int) (5 * mDensity));
 
 		mAlphaPattern.setBounds(
 			Math.round(mColorRect.left),
