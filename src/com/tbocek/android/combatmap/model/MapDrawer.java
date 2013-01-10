@@ -7,9 +7,9 @@ import android.graphics.Canvas;
 public class MapDrawer {
 	/**
 	 * Options for what to do with the fog of war.
-	 *
+	 * 
 	 * @author Tim
-	 *
+	 * 
 	 */
 	public enum FogOfWarMode {
 		/**
@@ -27,7 +27,7 @@ public class MapDrawer {
 		 */
 		CLIP
 	}
-	
+
 	private boolean mDrawGridLines;
 	private boolean mDrawGmNotes;
 	private boolean mDrawTokens;
@@ -35,48 +35,48 @@ public class MapDrawer {
 	private boolean mDrawAnnotations;
 	private FogOfWarMode mBackgroundFogOfWar;
 	private FogOfWarMode mGmNoteFogOfWar;
-	
+
 	public MapDrawer drawGridLines(boolean val) {
 		mDrawGridLines = val;
 		return this;
 	}
-	
+
 	public MapDrawer drawGmNotes(boolean val) {
 		mDrawGmNotes = val;
 		return this;
 	}
-	
+
 	public MapDrawer drawTokens(boolean val) {
 		mDrawTokens = val;
 		return this;
-	}	
-	
+	}
+
 	public MapDrawer areTokensManipulable(boolean val) {
 		mAreTokensManipulable = val;
 		return this;
 	}
-	
+
 	public MapDrawer drawAnnotations(boolean val) {
 		mDrawAnnotations = val;
 		return this;
 	}
-	
+
 	public MapDrawer backgroundFogOfWar(FogOfWarMode val) {
 		mBackgroundFogOfWar = val;
 		return this;
 	}
-	
+
 	public MapDrawer gmNotesFogOfWar(FogOfWarMode val) {
 		mGmNoteFogOfWar = val;
 		return this;
 	}
-	
+
 	public void draw(Canvas canvas, MapData m) {
 		m.getGrid().drawBackground(canvas);
-		
+
 		canvas.save();
 		m.getWorldSpaceTransformer().setMatrix(canvas);
-		if (mBackgroundFogOfWar == FogOfWarMode.CLIP 
+		if (mBackgroundFogOfWar == FogOfWarMode.CLIP
 				&& !m.getBackgroundFogOfWar().isEmpty()) {
 			m.getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
@@ -87,10 +87,10 @@ public class MapDrawer {
 		if (mDrawGridLines) {
 			m.getGrid().draw(canvas, m.getWorldSpaceTransformer());
 		}
-		
+
 		canvas.save();
 		m.getWorldSpaceTransformer().setMatrix(canvas);
-		if (mBackgroundFogOfWar == FogOfWarMode.CLIP 
+		if (mBackgroundFogOfWar == FogOfWarMode.CLIP
 				&& !m.getBackgroundFogOfWar().isEmpty()) {
 			m.getBackgroundFogOfWar().clipFogOfWar(canvas);
 		}
@@ -102,7 +102,6 @@ public class MapDrawer {
 
 		canvas.save();
 		m.getWorldSpaceTransformer().setMatrix(canvas);
-		
 
 		if (mDrawGmNotes) {
 			canvas.save();
@@ -117,7 +116,7 @@ public class MapDrawer {
 			}
 			canvas.restore();
 		}
-		
+
 		if (this.mDrawAnnotations) {
 
 			m.getAnnotationLines().drawAllLines(canvas);
@@ -131,13 +130,14 @@ public class MapDrawer {
 			m.getBackgroundFogOfWar().clipFogOfWar(canvas);
 			m.getWorldSpaceTransformer().setInverseMatrix(canvas);
 		}
-		CoordinateTransformer gridSpace = m.getGrid().gridSpaceToScreenSpaceTransformer(
-				m.getWorldSpaceTransformer());
+		CoordinateTransformer gridSpace = m
+				.getGrid()
+				.gridSpaceToScreenSpaceTransformer(m.getWorldSpaceTransformer());
 		if (mDrawTokens) {
 			m.getTokens().drawAllTokens(canvas, gridSpace,
 					m.getGrid().isDark(), mAreTokensManipulable);
 		}
 		canvas.restore();
 	}
-	
+
 }

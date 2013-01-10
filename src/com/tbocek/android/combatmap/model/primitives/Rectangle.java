@@ -11,38 +11,42 @@ import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 /**
  * Represents a drawn rectangle.
+ * 
  * @author Tim
- *
+ * 
  */
 public class Rectangle extends Shape {
 	/**
 	 * Short character string that is the type of the shape.
 	 */
 	public static final String SHAPE_TYPE = "rct";
-	
+
 	/**
 	 * Upper right corner of the rectangle.
 	 */
 	private PointF mP2;
-	
+
 	/**
 	 * Lower left corner of the rectangle.
 	 */
 	private PointF mP1;
-	
+
 	/**
 	 * Line to use when erasing portions of the rectangle.
 	 */
 	private FreehandLine mLineForErasing;
-	
+
 	/**
 	 * Constructor.
-	 * @param color Line color.
-	 * @param width Stroke width.
+	 * 
+	 * @param color
+	 *            Line color.
+	 * @param width
+	 *            Stroke width.
 	 */
 	public Rectangle(int color, float width) {
-        this.setColor(color);
-        this.setWidth(width);
+		this.setColor(color);
+		this.setWidth(width);
 	}
 
 	@Override
@@ -72,8 +76,7 @@ public class Rectangle extends Shape {
 				float ymin = Math.min(mP1.y, mP2.y);
 				float xmax = Math.max(mP1.x, mP2.x);
 				float ymax = Math.max(mP1.y, mP2.y);
-				mLineForErasing = new FreehandLine(
-						getColor(), getStrokeWidth());
+				mLineForErasing = new FreehandLine(getColor(), getStrokeWidth());
 				mLineForErasing.addPoint(new PointF(xmin, ymin));
 				mLineForErasing.addPoint(new PointF(xmin, ymax));
 				mLineForErasing.addPoint(new PointF(xmax, ymax));
@@ -95,12 +98,9 @@ public class Rectangle extends Shape {
 			return mLineForErasing.createPath();
 		} else {
 			Path p = new Path();
-			
-			p.addRect(
-					Math.min(mP1.x, mP2.x), 
-					Math.min(mP1.y, mP2.y),
-					Math.max(mP1.x, mP2.x), 
-					Math.max(mP1.y, mP2.y),
+
+			p.addRect(Math.min(mP1.x, mP2.x), Math.min(mP1.y, mP2.y),
+					Math.max(mP1.x, mP2.x), Math.max(mP1.y, mP2.y),
 					Path.Direction.CW);
 			return p;
 		}
@@ -123,17 +123,17 @@ public class Rectangle extends Shape {
 
 	@Override
 	public void serialize(MapDataSerializer s) throws IOException {
-    	serializeBase(s, SHAPE_TYPE);
+		serializeBase(s, SHAPE_TYPE);
 
-    	s.startObject();
-    	s.serializeFloat(mP1.x);
-    	s.serializeFloat(mP1.y);
-    	s.serializeFloat(mP2.x);
-    	s.serializeFloat(mP2.y);
-    	s.endObject();
+		s.startObject();
+		s.serializeFloat(mP1.x);
+		s.serializeFloat(mP1.y);
+		s.serializeFloat(mP2.x);
+		s.serializeFloat(mP2.y);
+		s.endObject();
 
 	}
-	
+
 	@Override
 	public boolean isValid() {
 		return mP2 != null && mP1 != null;

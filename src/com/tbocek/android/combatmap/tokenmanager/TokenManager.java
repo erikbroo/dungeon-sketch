@@ -60,6 +60,12 @@ public final class TokenManager extends SherlockActivity {
 	 * ID for the dialog that will create a new tag.
 	 */
     private static final int DIALOG_ID_NEW_TAG = 0;
+    
+    /**
+     * The minimum number of tokens to display in the grid across the smallest
+     * screen dimension.
+     */
+    private static final int MINIMUM_TOKENS_SHOWN = 3;
 
     /**
      * View that displays tags in the token database.
@@ -301,7 +307,7 @@ public final class TokenManager extends SherlockActivity {
 		
 		// Make tokens at most TOKEN_BUTTON_SIZE DiP large, but fit at least
 		// three across the smallest screen dimension.
-		int cellDimension = Math.min(smallerDimension / 3, (int) (
+		int cellDimension = Math.min(smallerDimension / MINIMUM_TOKENS_SHOWN, (int) (
 				TOKEN_BUTTON_SIZE * getResources().getDisplayMetrics().density));
 		grid.setCellDimensions(cellDimension, cellDimension);
 		

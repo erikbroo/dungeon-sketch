@@ -10,24 +10,24 @@ import android.view.View;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 /**
- * This task loads custom token images on a separate thread.  This allows faster
+ * This task loads custom token images on a separate thread. This allows faster
  * startup times for activities that need to load the entire token library.
+ * 
  * @author Tim
- *
+ * 
  */
-public class TokenLoadTask
-	extends AsyncTask<Void, String, Void> {
+public class TokenLoadTask extends AsyncTask<Void, String, Void> {
 
 	/**
 	 * Map from token ID to the token button to show once that token ID loads.
 	 */
 	private Map<String, TokenButton> mTokenButtonMap;
-	
+
 	/**
 	 * The list of token buttons that are being loaded.
 	 */
 	private Collection<TokenButton> mTokenButtons;
-	
+
 	/**
 	 * Combat view in which these tokens are being drawn.
 	 */
@@ -35,25 +35,28 @@ public class TokenLoadTask
 
 	/**
 	 * Constructor.
-	 * @param buttons The list of token buttons to load.
+	 * 
+	 * @param buttons
+	 *            The list of token buttons to load.
 	 */
 	public TokenLoadTask(Collection<TokenButton> buttons) {
 		super();
 		mTokenButtons = buttons;
 	}
-	
+
 	/**
 	 * Constructor.
-	 * @param buttons The list of token buttons to load.
-	 * @param combatView CombatView to refresh when a token is loaded.
+	 * 
+	 * @param buttons
+	 *            The list of token buttons to load.
+	 * @param combatView
+	 *            CombatView to refresh when a token is loaded.
 	 */
-	public TokenLoadTask(
-			Collection<TokenButton> buttons, CombatView combatView) {
+	public TokenLoadTask(Collection<TokenButton> buttons, CombatView combatView) {
 		super();
 		mTokenButtons = buttons;
 		mCombatView = combatView;
 	}
-
 
 	@Override
 	protected Void doInBackground(Void... args) {
@@ -77,7 +80,7 @@ public class TokenLoadTask
 			}
 		}
 	}
-	
+
 	@Override
 	protected void onPostExecute(Void result) {
 		if (mCombatView != null) {

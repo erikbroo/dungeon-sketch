@@ -9,10 +9,11 @@ import android.graphics.Point;
 import android.view.View;
 
 /**
- * This drag shadow draws the given collection of tokens as a stack.
- * It is used to display tokens when dragged and dropped as a group.
+ * This drag shadow draws the given collection of tokens as a stack. It is used
+ * to display tokens when dragged and dropped as a group.
+ * 
  * @author Tim Bocek
- *
+ * 
  */
 public final class TokenStackDragShadow extends View.DragShadowBuilder {
 
@@ -33,11 +34,14 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
 
 	/**
 	 * Constructor.
-	 * @param tokens The tokens to display.
-	 * @param tokenRadius The radius of a single token.
+	 * 
+	 * @param tokens
+	 *            The tokens to display.
+	 * @param tokenRadius
+	 *            The radius of a single token.
 	 */
-	public TokenStackDragShadow(
-			final Collection<BaseToken> tokens, final int tokenRadius) {
+	public TokenStackDragShadow(final Collection<BaseToken> tokens,
+			final int tokenRadius) {
 		super();
 		mTokens = tokens;
 		mTokenRadius = tokenRadius;
@@ -48,8 +52,8 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
 	 * Drag shadow should always be twice the size of a token, with the finger
 	 * location in the middle of the first displayed token.
 	 */
-	public void onProvideShadowMetrics(
-			final Point shadowSize, final Point shadowTouchPoint) {
+	public void onProvideShadowMetrics(final Point shadowSize,
+			final Point shadowTouchPoint) {
 		// CHECKSTYLE:OFF
 		shadowSize.x = mTokenRadius * 4;
 		shadowSize.y = mTokenRadius * 4;
@@ -66,8 +70,8 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
 		int displayedTokens = Math.min(mTokens.size(), MAX_DISPLAYED_TOKENS);
 		int tokenDiameter = canvas.getWidth() / 2;
 
-		// If one token, display it alone.  If two or three tokens, offset by
-		// half a radius.  Otherwise, crowd tokens until they fit.
+		// If one token, display it alone. If two or three tokens, offset by
+		// half a radius. Otherwise, crowd tokens until they fit.
 		int tokenOffset = 0;
 		if (displayedTokens < MAX_DISPLAYED_TOKENS - 1) {
 			tokenOffset = tokenDiameter / 2;

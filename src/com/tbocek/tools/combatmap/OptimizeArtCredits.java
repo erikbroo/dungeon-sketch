@@ -18,8 +18,9 @@ import com.tbocek.android.combatmap.R;
 
 /**
  * Optimizes art credits file by replacing resource names with resource IDs.
+ * 
  * @author Tim
- *
+ * 
  */
 public class OptimizeArtCredits {
 
@@ -30,46 +31,48 @@ public class OptimizeArtCredits {
 		try {
 			File inputXmlFile = new File(args[1]);
 			File outputXmlFile = new File(args[2]);
-			
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			
-			Document doc = dBuilder.parse(inputXmlFile);
-			
-			walkDom(doc.getDocumentElement());
-			
-			 // Use a Transformer for output
-			 TransformerFactory tFactory =
-			    TransformerFactory.newInstance();
-			 Transformer transformer = tFactory.newTransformer();
 
-			 DOMSource source = new DOMSource(doc);
-			 FileOutputStream out = new FileOutputStream(outputXmlFile);
-			 StreamResult result = new StreamResult(out);
-			 transformer.transform(source, result); 
-			 out.close();
-			
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+			Document doc = dBuilder.parse(inputXmlFile);
+
+			walkDom(doc.getDocumentElement());
+
+			// Use a Transformer for output
+			TransformerFactory tFactory = TransformerFactory.newInstance();
+			Transformer transformer = tFactory.newTransformer();
+
+			DOMSource source = new DOMSource(doc);
+			FileOutputStream out = new FileOutputStream(outputXmlFile);
+			StreamResult result = new StreamResult(out);
+			transformer.transform(source, result);
+			out.close();
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Walks the DOM, replacing node elements with their
+	 * 
 	 * @param element
-	 * @throws NoSuchFieldException 
-	 * @throws IllegalAccessException 
-	 * @throws SecurityException 
-	 * @throws IllegalArgumentException 
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
 	 */
-	private static void walkDom(Element node) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+	private static void walkDom(Element node) throws IllegalArgumentException,
+			SecurityException, IllegalAccessException, NoSuchFieldException {
 		String res = node.getAttribute("res");
 		if (res != null) {
-			int resourceId = R.drawable.class.getDeclaredField(res).getInt(null);
+			int resourceId = R.drawable.class.getDeclaredField(res)
+					.getInt(null);
 			node.setAttribute("res", Integer.toString(resourceId));
 		}
-		
+
 		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); ++i) {
 			if (children.item(i) instanceof Element) {

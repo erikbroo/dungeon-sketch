@@ -11,61 +11,64 @@ import android.widget.ImageView;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
-
 /**
- * This view defines a region that tokens can be dragged onto to delete them
- * or remove tags.
+ * This view defines a region that tokens can be dragged onto to delete them or
+ * remove tags.
+ * 
  * @author Tim Bocek
- *
+ * 
  */
 public final class TokenDeleteButton extends ImageView {
 
 	/**
 	 * The token that was last dropped onto the button.
 	 */
-    private Collection<BaseToken> mManagedTokens;
-    
-	/**
-     * On drag listener that manages changing the color of the button and
-     * opening the context menu.
-     */
-   private OnDragListener mOnDragToTrashCanListener = new OnDragListener() {
-        @Override
-        public boolean onDrag(final View view, final DragEvent event) {
-            Log.d("DRAG", Integer.toString(event.getAction()));
-            ImageView iv = (ImageView) view;
-            if (event.getAction() == DragEvent.ACTION_DROP) {
-                @SuppressWarnings("unchecked")
-				Collection<BaseToken> t =
-                	(Collection<BaseToken>) event.getLocalState();
-                mManagedTokens = t;
-                iv.showContextMenu();
-                iv.setImageResource(R.drawable.trashcan);
-            } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-                iv.setImageResource(R.drawable.trashcan_hover_over);
-                return true;
-            } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
-                iv.setImageResource(R.drawable.trashcan);
-                return true;
-            } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                return true;
-            }
-            return true;
-        }
-    };
-    
-    /**
-     * Constructor.
-     * @param context The context to construct in.
-     */
-    public TokenDeleteButton(final Context context) {
-        super(context);
-        setImageResource(R.drawable.trashcan);
-        setOnDragListener(this.mOnDragToTrashCanListener);
-    }
+	private Collection<BaseToken> mManagedTokens;
 
-    /**
-	 * @param tokens The tokens to manage.
+	/**
+	 * On drag listener that manages changing the color of the button and
+	 * opening the context menu.
+	 */
+	private OnDragListener mOnDragToTrashCanListener = new OnDragListener() {
+		@Override
+		public boolean onDrag(final View view, final DragEvent event) {
+			Log.d("DRAG", Integer.toString(event.getAction()));
+			ImageView iv = (ImageView) view;
+			if (event.getAction() == DragEvent.ACTION_DROP) {
+				@SuppressWarnings("unchecked")
+				Collection<BaseToken> t = (Collection<BaseToken>) event
+						.getLocalState();
+				mManagedTokens = t;
+				iv.showContextMenu();
+				iv.setImageResource(R.drawable.trashcan);
+			} else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+				iv.setImageResource(R.drawable.trashcan_hover_over);
+				return true;
+			} else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
+				iv.setImageResource(R.drawable.trashcan);
+				return true;
+			} else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+				return true;
+			}
+			return true;
+		}
+	};
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param context
+	 *            The context to construct in.
+	 */
+	public TokenDeleteButton(final Context context) {
+		super(context);
+		setImageResource(R.drawable.trashcan);
+		setOnDragListener(this.mOnDragToTrashCanListener);
+	}
+
+	/**
+	 * @param tokens
+	 *            The tokens to manage.
 	 */
 	public void setManagedTokens(final Collection<BaseToken> tokens) {
 		this.mManagedTokens = tokens;
@@ -77,6 +80,5 @@ public final class TokenDeleteButton extends ImageView {
 	public Collection<BaseToken> getManagedTokens() {
 		return mManagedTokens;
 	}
-
 
 }

@@ -10,8 +10,9 @@ import com.tbocek.android.combatmap.view.TokenViewFactory;
 /**
  * Subclasses the TokenViewFactory to override the kind of TokenButton created.
  * This creates TokenButtons that allow easy multiple selection of tokens.
+ * 
  * @author Tim Bocek
- *
+ * 
  */
 public final class MultiSelectTokenViewFactory extends TokenViewFactory {
 	/**
@@ -22,7 +23,9 @@ public final class MultiSelectTokenViewFactory extends TokenViewFactory {
 
 	/**
 	 * Constructor.
-	 * @param context The context to use when creating tokens.
+	 * 
+	 * @param context
+	 *            The context to use when creating tokens.
 	 */
 	public MultiSelectTokenViewFactory(final Context context) {
 		super(context);
@@ -30,24 +33,24 @@ public final class MultiSelectTokenViewFactory extends TokenViewFactory {
 
 	@Override
 	protected TokenButton newTokenView(final BaseToken prototype) {
-		MultiSelectTokenButton b = new MultiSelectTokenButton(
-				getContext(), prototype, mMultiSelect);
+		MultiSelectTokenButton b = new MultiSelectTokenButton(getContext(),
+				prototype, mMultiSelect);
 		b.refreshSelectedState();
 		return b;
 	}
-	
+
 	@Override
 	public TokenButton getTokenView(final BaseToken prototype) {
-		MultiSelectTokenButton mstb =
-				(MultiSelectTokenButton) super.getTokenView(prototype);
+		MultiSelectTokenButton mstb = (MultiSelectTokenButton) super
+				.getTokenView(prototype);
 		mstb.refreshSelectedState();
 		return mstb;
 	}
 
 	/**
-	 *
+	 * 
 	 * @return The multi-select manager used by token views created by this
-	 *     view.
+	 *         view.
 	 */
 	public MultiSelectManager getMultiSelectManager() {
 		return mMultiSelect;

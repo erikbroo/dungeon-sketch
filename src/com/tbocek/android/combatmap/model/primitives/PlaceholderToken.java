@@ -11,19 +11,22 @@ import android.graphics.Paint;
 /**
  * This token is meant to be replaced by another token after the token database
  * loads.
+ * 
  * @author Tim
- *
+ * 
  */
 public class PlaceholderToken extends BaseToken {
-	
+
 	/**
 	 * The ID of the token that this is a placeholder for.
 	 */
 	private String mReplaceWith;
-	
+
 	/**
 	 * Constructor.
-	 * @param tokenId The ID of the token that this is a placeholder for.
+	 * 
+	 * @param tokenId
+	 *            The ID of the token that this is a placeholder for.
 	 */
 	public PlaceholderToken(String tokenId) {
 		mReplaceWith = tokenId;
@@ -41,7 +44,7 @@ public class PlaceholderToken extends BaseToken {
 		p.setStyle(Paint.Style.STROKE);
 		p.setColor(Color.BLACK);
 		p.setStrokeWidth(1.0f);
-		
+
 		c.drawCircle(x, y, radius, p);
 	}
 
@@ -49,13 +52,13 @@ public class PlaceholderToken extends BaseToken {
 	protected void drawBloodiedImpl(Canvas c, float x, float y, float radius,
 			boolean isManipulatable) {
 		drawImpl(c, x, y, radius, true, true);
-		
+
 	}
 
 	@Override
 	protected void drawGhost(Canvas c, float x, float y, float radius) {
 		drawImpl(c, x, y, radius, true, true);
-		
+
 	}
 
 	@Override
@@ -68,9 +71,10 @@ public class PlaceholderToken extends BaseToken {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public BaseToken deplaceholderize(TokenDatabase database) {
-		return database.createToken(this.mReplaceWith.replace(this.getClass().getSimpleName(), ""));
+		return database.createToken(this.mReplaceWith.replace(this.getClass()
+				.getSimpleName(), ""));
 	}
 }

@@ -15,8 +15,9 @@ import android.graphics.Rect;
 
 /**
  * Represents a short piece of text on the combat map.
+ * 
  * @author Tim
- *
+ * 
  */
 public class Text extends Shape {
 
@@ -24,30 +25,32 @@ public class Text extends Shape {
 	 * Short character string that is the type of the shape.
 	 */
 	public static final String SHAPE_TYPE = "txt";
-	
+
 	/**
 	 * Global flag to control whether bounding boxes should be drawn around the
-	 * text.  This will generally be active when text is explicitly being
+	 * text. This will generally be active when text is explicitly being
 	 * manipulated.
 	 */
 	private static boolean drawBoundingBoxes;
 
 	/**
 	 * Sets whether to draw bounding boxes around every text object.
-	 * @param value Whether to draw the boxes.
+	 * 
+	 * @param value
+	 *            Whether to draw the boxes.
 	 */
 	public static void shouldDrawBoundingBoxes(boolean value) {
 		drawBoundingBoxes = value;
 	}
-	
+
 	/**
 	 * Contents of the text field.
 	 */
 	private String mText;
 
 	/**
-	 * Text size, in world space.  1 point = 1 grid space, although this
-	 * is not rescaled to account for later changes in grid size.
+	 * Text size, in world space. 1 point = 1 grid space, although this is not
+	 * rescaled to account for later changes in grid size.
 	 */
 	private float mTextSize;
 
@@ -55,7 +58,7 @@ public class Text extends Shape {
 	 * Location of the lower left hand corner of the text.
 	 */
 	private PointF mLocation;
-	
+
 	/**
 	 * Whether this text object has a pending erase operation.
 	 */
@@ -63,54 +66,64 @@ public class Text extends Shape {
 
 	/**
 	 * Constructor.
-	 * @param text The contents of the text object.
-	 * @param size Font size for the text object.
-	 * @param color Color of the text.
-	 * @param strokeWidth Stroke width to use (currently ignored, might bold the
-	 * 		text later).
-	 * @param location Location of the lower left hand corner of the text.
-	 * @param transform Coordinate transformer from world to screen space.  This
-	 * 		is only used to determine the bounding box, and is not saved.
+	 * 
+	 * @param text
+	 *            The contents of the text object.
+	 * @param size
+	 *            Font size for the text object.
+	 * @param color
+	 *            Color of the text.
+	 * @param strokeWidth
+	 *            Stroke width to use (currently ignored, might bold the text
+	 *            later).
+	 * @param location
+	 *            Location of the lower left hand corner of the text.
+	 * @param transform
+	 *            Coordinate transformer from world to screen space. This is
+	 *            only used to determine the bounding box, and is not saved.
 	 */
-	public Text(
-			String text, float size, int color, float strokeWidth, 
+	public Text(String text, float size, int color, float strokeWidth,
 			PointF location, CoordinateTransformer transform) {
 		this.mText = text;
 		this.mTextSize = size;
 		this.setColor(color);
 		this.setWidth(strokeWidth);
-		
+
 		this.mLocation = location;
-		
+
 		// Compute the bounding rectangle.
 		// To do this, we need to create the Paint object so we know the size
 		// of the text.
 		ensurePaintCreated();
 		this.getPaint().setTextSize(mTextSize);
-		
+
 		Rect bounds = new Rect();
 		getPaint().getTextBounds(mText, 0, mText.length(), bounds);
 		this.getBoundingRectangle().updateBounds(location);
 		this.getBoundingRectangle().updateBounds(
-				new PointF(
-						location.x + bounds.width(), 
-						location.y - bounds.height()));
+				new PointF(location.x + bounds.width(), location.y
+						- bounds.height()));
 	}
-	
+
 	/**
-	 * HACK: Ctor for deserialization ONLY!!!  The bounding rectangle in
+	 * HACK: Ctor for deserialization ONLY!!! The bounding rectangle in
 	 * particular MUST be manually set!!!
-	 * @param color Color of the text object.
-	 * @param strokeWidth Stroke width of the text object.
+	 * 
+	 * @param color
+	 *            Color of the text object.
+	 * @param strokeWidth
+	 *            Stroke width of the text object.
 	 */
 	Text(int color, float strokeWidth) {
 		this.setColor(color);
 		this.setWidth(strokeWidth);
 	}
-	
+
 	/**
 	 * Copy constructor.
-	 * @param copyFrom Text object to copy parameters from.
+	 * 
+	 * @param copyFrom
+	 *            Text object to copy parameters from.
 	 */
 	public Text(Text copyFrom) {
 		mText = copyFrom.mText;
@@ -174,37 +187,38 @@ public class Text extends Shape {
 		}
 		c.drawText(mText, mLocation.x, mLocation.y, this.getPaint());
 	}
-	
+
 	@Override
 	protected Shape getMovedShape(float deltaX, float deltaY) {
 		Text t = new Text(this);
-		
+
 		t.mLocation.x += deltaX;
 		t.mLocation.y += deltaY;
 		t.getBoundingRectangle().move(deltaX, deltaY);
-		
+
 		return t;
 	}
-	
-	@Override
-	public boolean shouldDrawBelowGrid() {
-		return false; //Text should never draw below the grid.
-	}
-	
-	@Override
-    public void serialize(MapDataSerializer s) throws IOException {
-    	serializeBase(s, SHAPE_TYPE);
-    	
-    	s.startObject();
-    	s.serializeString(this.mText);
-    	s.serializeFloat(this.mTextSize);
-    	s.serializeFloat(this.mLocation.x);
-    	s.serializeFloat(this.mLocation.y);
-    	s.endObject();
-    }
 
 	@Override
-	protected void shapeSpecificDeserialize(MapDataDeserializer s) throws IOException {
+	public boolean shouldDrawBelowGrid() {
+		return false; // Text should never draw below the grid.
+	}
+
+	@Override
+	public void serialize(MapDataSerializer s) throws IOException {
+		serializeBase(s, SHAPE_TYPE);
+
+		s.startObject();
+		s.serializeString(this.mText);
+		s.serializeFloat(this.mTextSize);
+		s.serializeFloat(this.mLocation.x);
+		s.serializeFloat(this.mLocation.y);
+		s.endObject();
+	}
+
+	@Override
+	protected void shapeSpecificDeserialize(MapDataDeserializer s)
+			throws IOException {
 		s.expectObjectStart();
 		this.mText = s.readString();
 		this.mTextSize = s.readFloat();
@@ -213,28 +227,28 @@ public class Text extends Shape {
 		this.mLocation.y = s.readFloat();
 		s.expectObjectEnd();
 	}
-	
+
 	/**
 	 * @return The contents of the text object.
 	 */
 	public String getText() {
 		return this.mText;
 	}
-	
+
 	/**
 	 * @return The size of the text in the text object.
 	 */
 	public float getTextSize() {
 		return this.mTextSize;
 	}
-	
+
 	/**
 	 * @return The location of the lower left hand corner of the text.
 	 */
 	public PointF getLocation() {
 		return this.mLocation;
 	}
-	
+
 	@Override
 	public boolean isValid() {
 		return mText != null && mLocation != null;

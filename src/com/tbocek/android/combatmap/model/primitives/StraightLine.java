@@ -99,11 +99,14 @@ public class StraightLine extends Shape {
 		// eraser intersects with it.  However, this is an expensive
 		// test, so we don't want to do it for all line segments when
 		// they are generally small enough for the eraser to enclose.
-		Util.IntersectionPair intersection = Util.lineCircleIntersection(mStart, mEnd, center, radius);
+        Util.IntersectionPair intersection = Util.lineCircleIntersection(
+            mStart, mEnd, center, radius);
 
 		if (intersection != null) {
-			float intersect1T = this.pointToParameterization(intersection.getIntersection1());
-			float intersect2T = this.pointToParameterization(intersection.getIntersection2());
+			float intersect1T = this.pointToParameterization(
+					intersection.getIntersection1());
+			float intersect2T = this.pointToParameterization(
+					intersection.getIntersection2());
 
 			insertErasedSegment(intersect1T, intersect2T);
 			invalidatePath();

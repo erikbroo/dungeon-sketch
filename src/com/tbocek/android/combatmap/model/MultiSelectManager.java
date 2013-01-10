@@ -9,14 +9,14 @@ import com.tbocek.android.combatmap.model.primitives.BaseToken;
 /**
  * This class tracks a selection of multiple tokens in a way that each token
  * button can contribute to and make use of the selections.
+ * 
  * @author Tim Bocek
- *
+ * 
  */
 public final class MultiSelectManager {
 	/**
-	 * The selected tokens.  Maps original object hash code to token (the
-	 * default token implementation hashes on TokenID, which isn't good enough
-	 * for us).
+	 * The selected tokens. Maps original object hash code to token (the default
+	 * token implementation hashes on TokenID, which isn't good enough for us).
 	 */
 	private Set<BaseToken> mSelection = Sets.newHashSet();
 
@@ -24,18 +24,22 @@ public final class MultiSelectManager {
 	 * The callback to use when the selection is modified.
 	 */
 	private SelectionChangedListener mSelectionChangedListener;
-	
+
 	/**
 	 * Changes the callback to use when the selection changes.
-	 * @param listener The new listener.
+	 * 
+	 * @param listener
+	 *            The new listener.
 	 */
 	public void setSelectionChangedListener(SelectionChangedListener listener) {
 		mSelectionChangedListener = listener;
 	}
-	
+
 	/**
 	 * Adds a token to the current selection.
-	 * @param t The token to add.  Should be a unique clone.
+	 * 
+	 * @param t
+	 *            The token to add. Should be a unique clone.
 	 */
 	public void addToken(final BaseToken t) {
 		if (mSelection.isEmpty() && mSelectionChangedListener != null) {
@@ -50,7 +54,9 @@ public final class MultiSelectManager {
 
 	/**
 	 * Removes the token with the given ID from the current selection.
-	 * @param token The token to remove.
+	 * 
+	 * @param token
+	 *            The token to remove.
 	 */
 	public void removeToken(final BaseToken token) {
 		token.setSelected(false);
@@ -62,10 +68,12 @@ public final class MultiSelectManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Toggles the selected state of the given token.
-	 * @param token The token to toggle.
+	 * 
+	 * @param token
+	 *            The token to toggle.
 	 */
 	public void toggleToken(BaseToken token) {
 		if (token.isSelected()) {
@@ -77,6 +85,7 @@ public final class MultiSelectManager {
 
 	/**
 	 * Returns the selected tokens, in no particular order.
+	 * 
 	 * @return The tokens.
 	 */
 	public Collection<BaseToken> getSelectedTokens() {
@@ -87,7 +96,7 @@ public final class MultiSelectManager {
 	 * Clears the selection.
 	 */
 	public void selectNone() {
-		for (BaseToken t: mSelection) {
+		for (BaseToken t : mSelection) {
 			t.setSelected(false);
 		}
 		mSelection.clear();
@@ -95,24 +104,25 @@ public final class MultiSelectManager {
 			mSelectionChangedListener.selectionEnded();
 		}
 	}
-	
+
 	/**
 	 * Callback to define actions to take when a selection has changed.
+	 * 
 	 * @author Tim
-	 *
+	 * 
 	 */
 	public interface SelectionChangedListener {
-		
+
 		/**
 		 * Called when a new selection is started.
 		 */
 		void selectionStarted();
-		
+
 		/**
 		 * Called when a selection is cleared.
 		 */
 		void selectionEnded();
-		
+
 		/**
 		 * Called when a single token is added or removed from the collection.
 		 */

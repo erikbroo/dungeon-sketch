@@ -7,13 +7,13 @@ import java.util.List;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
-
 import android.graphics.Path;
 
 /**
  * Represents a circle drawn on the map.
+ * 
  * @author Tim
- *
+ * 
  */
 public class Circle extends Shape {
 
@@ -21,7 +21,7 @@ public class Circle extends Shape {
 	 * Short character string that is the type of the shape.
 	 */
 	public static final String SHAPE_TYPE = "cr";
-	
+
 	/**
 	 * When converting the circle into a freehand line that is a polygon to
 	 * approximate a circle, the number of line segments to use.
@@ -32,7 +32,7 @@ public class Circle extends Shape {
 	 * Center of the circle, in world space.
 	 */
 	private PointF mCenter;
-	
+
 	/**
 	 * Radius of the circle, in world space.
 	 */
@@ -51,13 +51,16 @@ public class Circle extends Shape {
 	private FreehandLine mLineForErasing;
 
 	/**
-	 * Constructor from line properties.  Center and radius to be set later.
-	 * @param color Color of the new circle.
-	 * @param newLineStrokeWidth Stroke width of the new circle.
+	 * Constructor from line properties. Center and radius to be set later.
+	 * 
+	 * @param color
+	 *            Color of the new circle.
+	 * @param newLineStrokeWidth
+	 *            Stroke width of the new circle.
 	 */
 	public Circle(int color, float newLineStrokeWidth) {
-        this.setColor(color);
-        this.setWidth(newLineStrokeWidth);
+		this.setColor(color);
+		this.setWidth(newLineStrokeWidth);
 	}
 
 	@Override
@@ -96,8 +99,7 @@ public class Circle extends Shape {
 
 		float d = Util.distance(this.mCenter, center);
 
-		if (d <= radius + this.mRadius 
-				&& d >= Math.abs(radius - this.mRadius)) {
+		if (d <= radius + this.mRadius && d >= Math.abs(radius - this.mRadius)) {
 			createLineForErasing();
 			mLineForErasing.erase(center, radius);
 			invalidatePath();
@@ -110,11 +112,11 @@ public class Circle extends Shape {
 	 */
 	private void createLineForErasing() {
 		mLineForErasing = new FreehandLine(this.getColor(), this.getWidth());
-		for (float rad = 0; rad < 2 * Math.PI; 
-				rad += 2 * Math.PI / FREEHAND_LINE_CONVERSION_SEGMENTS) {
-			mLineForErasing.addPoint(new PointF(
-					mCenter.x + mRadius * (float) Math.cos(rad),
-					mCenter.y + mRadius * (float) Math.sin(rad)));
+		for (float rad = 0; rad < 2 * Math.PI; rad += 2 * Math.PI
+				/ FREEHAND_LINE_CONVERSION_SEGMENTS) {
+			mLineForErasing.addPoint(new PointF(mCenter.x + mRadius
+					* (float) Math.cos(rad), mCenter.y + mRadius
+					* (float) Math.sin(rad)));
 		}
 	}
 
@@ -141,8 +143,8 @@ public class Circle extends Shape {
 			// Create a circle where the line from startPoint to P is a
 			// diameter.
 			mRadius = Util.distance(mStartPoint, p) / 2;
-			mCenter = new PointF(
-					(p.x + mStartPoint.x) / 2, (p.y + mStartPoint.y) / 2);
+			mCenter = new PointF((p.x + mStartPoint.x) / 2,
+					(p.y + mStartPoint.y) / 2);
 			invalidatePath();
 			getBoundingRectangle().clear();
 			getBoundingRectangle().updateBounds(
@@ -151,7 +153,6 @@ public class Circle extends Shape {
 					new PointF(mCenter.x + mRadius, mCenter.y + mRadius));
 		}
 	}
-	
 
 	@Override
 	public boolean isValid() {
@@ -159,14 +160,14 @@ public class Circle extends Shape {
 	}
 
 	@Override
-    public void serialize(MapDataSerializer s) throws IOException {
-    	serializeBase(s, SHAPE_TYPE);
-    	s.startObject();
-    	s.serializeFloat(this.mRadius);
-    	s.serializeFloat(this.mCenter.x);
-    	s.serializeFloat(this.mCenter.y);
-    	s.endObject();
-    }
+	public void serialize(MapDataSerializer s) throws IOException {
+		serializeBase(s, SHAPE_TYPE);
+		s.startObject();
+		s.serializeFloat(this.mRadius);
+		s.serializeFloat(this.mCenter.x);
+		s.serializeFloat(this.mCenter.y);
+		s.endObject();
+	}
 
 	@Override
 	protected void shapeSpecificDeserialize(MapDataDeserializer s)

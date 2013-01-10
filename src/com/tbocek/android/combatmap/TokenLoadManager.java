@@ -55,13 +55,13 @@ public class TokenLoadManager {
 		}
 		
 		public void cancel() {
-			synchronized(this) {
+			synchronized (this) {
 				mIsCancelled = true;
 			}
 		}
 		
 		private boolean isCancelled() {
-			synchronized(this) {
+			synchronized (this) {
 				return mIsCancelled;
 			}
 		}
@@ -97,7 +97,7 @@ public class TokenLoadManager {
 	}
 	
 	public void startThread() {
-		synchronized(this) {
+		synchronized (this) {
 			if (!isStarted) {
 				new TokenLoadJobThread().start();
 			}
