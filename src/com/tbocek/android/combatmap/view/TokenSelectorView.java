@@ -323,7 +323,7 @@ public final class TokenSelectorView extends LinearLayout {
 		@Override
 		protected void onPostExecute(List<TokenImageResult> results) {
 	        mTokenLayout.removeAllViews();
-	        for(TokenImageResult r: results) {
+	        for (TokenImageResult r: results) {
 	        	TokenSelectorViewRow v = new TokenSelectorViewRow(getContext(), r.bitmap, r.tokenList);
 	        	v.startLoadingTokenImages();
 	        	mTokenLayout.addView(v);

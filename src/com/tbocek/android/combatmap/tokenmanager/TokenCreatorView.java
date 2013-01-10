@@ -139,7 +139,7 @@ public final class TokenCreatorView extends View {
     }
 
 	@Override
-    protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     	if (!mHasCircle && w > 0 && h > 0) {
     		setCircleToDefault(w, h);
     	}

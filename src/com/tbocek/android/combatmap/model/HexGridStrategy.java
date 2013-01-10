@@ -70,13 +70,13 @@ public final class HexGridStrategy extends GridDrawStrategy {
         // to find the nearest corner.
         if (tokenDiameter == 0) {
         	return getNearestHexCorner(
-        			previousGridLineX * (l + innerOffset) + innerOffset/2, 
+        			previousGridLineX * (l + innerOffset) + innerOffset / 2, 
         			previousGridLineY + .5f, 
         			currentLocation.x, currentLocation.y);
         }
 
         return new PointF(
-            previousGridLineX * (l + innerOffset) + innerOffset/2, 
+            previousGridLineX * (l + innerOffset) + innerOffset / 2, 
             previousGridLineY + .5f);
     }
     
@@ -133,7 +133,7 @@ public final class HexGridStrategy extends GridDrawStrategy {
         // Draw the vertical undulating "lines".  We want to start slightly
         // offscreen
         for (int j = -1; j <= numSquaresHorizontal + 1; ++j) {
-            float x = j * (l + innerOffset ) + offsetX;
+            float x = j * (l + innerOffset) + offsetX;
             float innerX = x + innerOffset;
             for (int i = -1; i <= numSquaresVertical + 1; ++i) {
                 float y = i * h + offsetY

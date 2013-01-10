@@ -23,7 +23,7 @@ import com.tbocek.android.combatmap.model.RectangularGridStrategy;
 import com.tbocek.android.combatmap.view.ImageToggleButton;
 import com.tbocek.android.combatmap.view.ToggleButtonGroup;
 
-public class GridPropertiesDialog extends Dialog{
+public class GridPropertiesDialog extends Dialog {
 	
 	public interface PropertiesChangedListener {
 		void onPropertiesChanged();
@@ -66,7 +66,7 @@ public class GridPropertiesDialog extends Dialog{
 			// TODO: DO this in the XML!!!!
 			float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, this.getContext().getResources().getDisplayMetrics());
 			v.setPadding(0, (int) dp16, 0, (int) dp16);
-			v.setTextSize(2*dp16);
+			v.setTextSize(2 * dp16);
 			
 			return v;
 		}
@@ -191,7 +191,7 @@ public class GridPropertiesDialog extends Dialog{
 			@Override
 			public void onColorChanged(int color) {
 				mBackgroundColor.setImageBitmap(getPreviewBitmap(color));
-				mData.getGrid().setColorScheme( new GridColorScheme(color, mData.getGrid().getColorScheme().getLineColor(), false));
+				mData.getGrid().setColorScheme(new GridColorScheme(color, mData.getGrid().getColorScheme().getLineColor(), false));
 				picker.dismiss();
 				propertiesChanged();
 			}

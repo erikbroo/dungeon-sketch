@@ -44,7 +44,7 @@ public class ExportImageDialog extends Dialog {
 	private int mExportHeight;
 	
 	private class SetBooleanPreferenceHandler
-		implements CompoundButton.OnCheckedChangeListener{
+		implements CompoundButton.OnCheckedChangeListener {
 		String mPreference;
 		public SetBooleanPreferenceHandler(String preference) {
 			mPreference = preference;

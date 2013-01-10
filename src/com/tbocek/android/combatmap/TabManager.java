@@ -28,7 +28,7 @@ public class TabManager {
      */
 	public TabManager(ActionBar actionBar, Context context) {
 		this.mActionBar = actionBar;
-		this.context = context;
+		this.mContext = context;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class TabManager {
 	 */
 	private Map<Integer, ActionBar.Tab> mManipulationModeTabs = new HashMap<Integer, ActionBar.Tab>();
 
-	protected Context context;
+	protected Context mContext;
 	
 	public final void addTab(String description, final int mode, boolean forGm) {
 		ActionBar.Tab tab = mActionBar.newTab();
@@ -102,8 +102,8 @@ public class TabManager {
 	}
 	
 	protected boolean needGmScreenConfirmation(int mode) {
-		if (mLastSelectedMode == -1) return false; // Do not need confirmation for first selection.
-		if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("gmscreen", false)) return false;
+		if (mLastSelectedMode == -1) {return false;} // Do not need confirmation for first selection.
+		if (!PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean("gmscreen", false)) {return false;}
 		return this.modesForGm.get(mode).booleanValue() && !this.modesForGm.get(this.mLastSelectedMode).booleanValue();
 	}
 
@@ -117,7 +117,7 @@ public class TabManager {
 		TabManager.this.mLastSelectedMode = -1;
 		mManipulationModeTabs.get(switchBackMode).select();
 		
-		new AlertDialog.Builder(this.context)
+		new AlertDialog.Builder(this.mContext)
 			.setCancelable(true)
 			.setMessage(R.string.gm_screen_spoiler_warning)
 			.setPositiveButton(R.string.gm_screen_mistchief_managed, new OnClickListener() {

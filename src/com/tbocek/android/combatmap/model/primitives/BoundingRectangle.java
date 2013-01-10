@@ -32,7 +32,7 @@ public final class BoundingRectangle {
 	/**
 	 * Default ctor.
 	 */
-	public BoundingRectangle() {}
+	public BoundingRectangle() { }
 
 	/**
 	 * Creates a new BoundingRectangle by reading from the given stream.

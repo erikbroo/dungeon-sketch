@@ -140,8 +140,9 @@ public final class TokenManager extends SherlockActivity {
 			if (tag.equals(TokenDatabase.ALL)) {
 				mScrollView.addView(
 						getTokenButtonLayout(mTokenDatabase.getAllTokens()));
-				if (this.mDeleteTagMenuItem != null)
+				if (this.mDeleteTagMenuItem != null) {
 				    this.mDeleteTagMenuItem.setVisible(false);
+				}
 			} else {
 				mScrollView.addView(
 						getTokenButtonLayout(mTokenDatabase.getTokensForTag(tag)));
@@ -237,8 +238,8 @@ public final class TokenManager extends SherlockActivity {
 	private boolean isLargeScreen() {
 		int layout = getResources().getConfiguration().screenLayout;
 		int layoutSize = layout & Configuration.SCREENLAYOUT_SIZE_MASK;
-		return layoutSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
-			   layoutSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
+		return layoutSize == Configuration.SCREENLAYOUT_SIZE_LARGE
+			   || layoutSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
 	}
 
 
