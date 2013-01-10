@@ -116,6 +116,6 @@
   <module name="Translation"/>
   <module name="SuppressionCommentFilter"/>
 <module name="SuppressionFilter">
-    <property name="file" value="checkstyle_suppression.xml" />
+    <property name="file" value="${samedir}/checkstyle_suppression.xml" />
 </module>
 </module>
