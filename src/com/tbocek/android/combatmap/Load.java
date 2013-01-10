@@ -31,11 +31,6 @@ import com.tbocek.android.combatmap.view.SaveFileButton;
  */
 public final class Load extends Activity {
     /**
-     * Width of a file button.
-     */
-    private static final int FILE_VIEW_WIDTH = 200;
-
-    /**
      * Height of a file button.
      */
     private static final int FILE_VIEW_HEIGHT = 200;
@@ -46,20 +41,9 @@ public final class Load extends Activity {
     private static final int FILE_VIEW_PADDING = 16;
 
     /**
-     * List of save files available.
+     * Width of a file button.
      */
-    private List<String> mSavedFiles;
-
-    /**
-     * Data manager to facilitate save file enumeration and loading.
-     */
-    private DataManager mDataMgr;
-
-    /**
-     * The save file button that last triggered a context menu open. Used to
-     * determine which file to delete if a delete operation is selected.
-     */
-    private SaveFileButton mContextMenuTrigger;
+    private static final int FILE_VIEW_WIDTH = 200;
 
     /**
      * Listener that creates a menu to delete the given save file.
@@ -73,47 +57,29 @@ public final class Load extends Activity {
                     while (!(v instanceof SaveFileButton)) {
                         v = (View) v.getParent();
                     }
-                    mContextMenuTrigger = (SaveFileButton) v;
+                    Load.this.mContextMenuTrigger = (SaveFileButton) v;
                     if (menu.size() == 0) {
-                        getMenuInflater().inflate(
+                        Load.this.getMenuInflater().inflate(
                                 R.menu.save_file_context_menu, menu);
                     }
                 }
             };
 
-    @Override
-    protected void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mDataMgr = new DataManager(this.getApplicationContext());
-
-        setup();
-    }
+    /**
+     * The save file button that last triggered a context menu open. Used to
+     * determine which file to delete if a delete operation is selected.
+     */
+    private SaveFileButton mContextMenuTrigger;
 
     /**
-     * Loads a list of files and sets up and lays out views to represent all the
-     * files.
+     * Data manager to facilitate save file enumeration and loading.
      */
-    private void setup() {
-        mSavedFiles = mDataMgr.savedFiles();
+    private DataManager mDataMgr;
 
-        if (mSavedFiles.size() > 0) {
-            List<View> fileViews = new ArrayList<View>();
-            for (String saveFile : mSavedFiles) {
-                SaveFileButton b = createSaveFileButton(saveFile);
-                fileViews.add(b);
-            }
-
-            View layout = createLayout(fileViews);
-            ScrollView scroller = new ScrollView(this);
-            scroller.addView(layout);
-            this.setContentView(scroller);
-        } else {
-            RelativeLayout root = new RelativeLayout(this);
-            this.getLayoutInflater().inflate(R.layout.no_files_layout, root);
-            this.setContentView(root);
-        }
-    }
+    /**
+     * List of save files available.
+     */
+    private List<String> mSavedFiles;
 
     /**
      * Lays out the given save file buttons in a grid.
@@ -126,7 +92,7 @@ public final class Load extends Activity {
         TableLayout layout = new TableLayout(this);
         TableRow currentRow = null;
         int viewsPerRow =
-                getWindowManager().getDefaultDisplay().getWidth()
+                this.getWindowManager().getDefaultDisplay().getWidth()
                         / (FILE_VIEW_WIDTH + 2 * FILE_VIEW_PADDING);
         int i = 0;
         for (View v : views) {
@@ -152,7 +118,7 @@ public final class Load extends Activity {
         SaveFileButton b = new SaveFileButton(this);
         b.setFileName(saveFile);
         try {
-            b.setPreviewImage(mDataMgr.loadPreviewImage(saveFile));
+            b.setPreviewImage(this.mDataMgr.loadPreviewImage(saveFile));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -161,9 +127,86 @@ public final class Load extends Activity {
         b.setMinimumWidth(FILE_VIEW_WIDTH);
         b.setMinimumHeight(FILE_VIEW_HEIGHT);
         b.setOnClickListener(new SaveFileButtonClickListener(saveFile));
-        registerForContextMenu(b);
-        b.setOnCreateContextMenuListener(mContextMenuListener);
+        this.registerForContextMenu(b);
+        b.setOnCreateContextMenuListener(this.mContextMenuListener);
         return b;
+    }
+
+    /**
+     * Loads the map with the given name (no extension), and replaces the
+     * currently loaded map with it.
+     * 
+     * @param name
+     *            Name of the map to load.
+     */
+    private void loadMap(final String name) {
+        try {
+            new DataManager(this.getApplicationContext()).loadMapName(name);
+            this.setFilenamePreference(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast toast =
+                    Toast.makeText(this.getApplicationContext(),
+                            "Could not load file.  Reason: " + e.toString(),
+                            Toast.LENGTH_LONG);
+            toast.show();
+
+            MapData.clear();
+            this.setFilenamePreference(null);
+
+            if (DeveloperMode.DEVELOPER_MODE) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.save_file_context_delete:
+            this.mDataMgr
+                    .deleteSaveFile(this.mContextMenuTrigger.getFileName());
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this
+                            .getApplicationContext());
+
+            // If we deleted the currently open file, set us up to create a new
+            // file when we return to the main activity.
+            if (this.mContextMenuTrigger.getFileName().equals(
+                    sharedPreferences.getString("filename", null))) {
+                this.setFilenamePreference(null);
+                MapData.invalidate();
+            }
+
+            // Re-run the setup to remove the deleted file.
+            this.setup();
+            return true;
+        default:
+            return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        this.mDataMgr = new DataManager(this.getApplicationContext());
+
+        this.setup();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            // app icon in action bar clicked; go home
+            Intent intent = new Intent(this, CombatMap.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            this.startActivity(intent);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -184,6 +227,31 @@ public final class Load extends Activity {
         Editor editor = sharedPreferences.edit();
         editor.putString("filename", newFilename);
         editor.commit();
+    }
+
+    /**
+     * Loads a list of files and sets up and lays out views to represent all the
+     * files.
+     */
+    private void setup() {
+        this.mSavedFiles = this.mDataMgr.savedFiles();
+
+        if (this.mSavedFiles.size() > 0) {
+            List<View> fileViews = new ArrayList<View>();
+            for (String saveFile : this.mSavedFiles) {
+                SaveFileButton b = this.createSaveFileButton(saveFile);
+                fileViews.add(b);
+            }
+
+            View layout = this.createLayout(fileViews);
+            ScrollView scroller = new ScrollView(this);
+            scroller.addView(layout);
+            this.setContentView(scroller);
+        } else {
+            RelativeLayout root = new RelativeLayout(this);
+            this.getLayoutInflater().inflate(R.layout.no_files_layout, root);
+            this.setContentView(root);
+        }
     }
 
     /**
@@ -212,76 +280,9 @@ public final class Load extends Activity {
 
         @Override
         public void onClick(final View v) {
-            setFilenamePreference(mFilename);
-            loadMap(mFilename);
-            finish();
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.save_file_context_delete:
-            mDataMgr.deleteSaveFile(mContextMenuTrigger.getFileName());
-            SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(this
-                            .getApplicationContext());
-
-            // If we deleted the currently open file, set us up to create a new
-            // file when we return to the main activity.
-            if (mContextMenuTrigger.getFileName().equals(
-                    sharedPreferences.getString("filename", null))) {
-                setFilenamePreference(null);
-                MapData.invalidate();
-            }
-
-            // Re-run the setup to remove the deleted file.
-            setup();
-            return true;
-        default:
-            return super.onContextItemSelected(item);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            // app icon in action bar clicked; go home
-            Intent intent = new Intent(this, CombatMap.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * Loads the map with the given name (no extension), and replaces the
-     * currently loaded map with it.
-     * 
-     * @param name
-     *            Name of the map to load.
-     */
-    private void loadMap(final String name) {
-        try {
-            new DataManager(getApplicationContext()).loadMapName(name);
-            setFilenamePreference(name);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast toast =
-                    Toast.makeText(this.getApplicationContext(),
-                            "Could not load file.  Reason: " + e.toString(),
-                            Toast.LENGTH_LONG);
-            toast.show();
-
-            MapData.clear();
-            setFilenamePreference(null);
-
-            if (DeveloperMode.DEVELOPER_MODE) {
-                throw new RuntimeException(e);
-            }
+            Load.this.setFilenamePreference(this.mFilename);
+            Load.this.loadMap(this.mFilename);
+            Load.this.finish();
         }
     }
 }

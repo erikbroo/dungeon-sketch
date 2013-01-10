@@ -1,10 +1,10 @@
 package com.tbocek.android.combatmap.model;
 
-import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
-import com.tbocek.android.combatmap.model.primitives.PointF;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
+
+import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
+import com.tbocek.android.combatmap.model.primitives.PointF;
 
 /**
  * Represents a grid of squares that will draw as virtual "graph paper".
@@ -24,14 +24,14 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
     private static final int MAJOR_GRID_LINE_SIZE_LIMIT = 4;
 
     /**
-     * Maximum size of squares formed by minor grid lines in pixels.
-     */
-    private static final int MINOR_GRID_LINE_SIZE_LIMIT = 8;
-
-    /**
      * Width to draw major grid lines with.
      */
     private static final float MAJOR_GRID_LINE_WIDTH = 3;
+
+    /**
+     * Maximum size of squares formed by minor grid lines in pixels.
+     */
+    private static final int MINOR_GRID_LINE_SIZE_LIMIT = 8;
 
     /**
      * Width to draw minor grid lines with.
@@ -50,8 +50,8 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
 
         float squareSize = transformer.worldSpaceToScreenSpace(1.0f);
         float numSquaresHorizontal = (float) width / squareSize;
-        float numSquaresVertical = numSquaresHorizontal * ((float) height)
-                / ((float) width);
+        float numSquaresVertical =
+                numSquaresHorizontal * ((float) height) / ((float) width);
 
         boolean shouldDrawMinorLines = squareSize >= MINOR_GRID_LINE_SIZE_LIMIT;
         boolean shouldDrawMajorLines = squareSize >= MAJOR_GRID_LINE_SIZE_LIMIT;
@@ -62,12 +62,10 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
         float offsetX = origin.x % squareSize;
         float offsetY = origin.y % squareSize;
 
-        int thickLineStartX = (int) (
-                (origin.x % (squareSize * MAJOR_GRID_LINE_FREQUENCY))
-                / squareSize);
-        int thickLineStartY = (int) (
-                (origin.y % (squareSize * MAJOR_GRID_LINE_FREQUENCY))
-                / squareSize);
+        int thickLineStartX =
+                (int) ((origin.x % (squareSize * MAJOR_GRID_LINE_FREQUENCY)) / squareSize);
+        int thickLineStartY =
+                (int) ((origin.y % (squareSize * MAJOR_GRID_LINE_FREQUENCY)) / squareSize);
 
         for (int i = 0; i <= numSquaresHorizontal; ++i) {
             if ((i - thickLineStartX) % MAJOR_GRID_LINE_FREQUENCY == 0) {
@@ -88,7 +86,8 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
 
         for (int i = 0; i <= numSquaresVertical; ++i) {
             if ((i - thickLineStartY) % MAJOR_GRID_LINE_FREQUENCY == 0) {
-                paint.setStrokeWidth(shouldDrawMinorLines ? MAJOR_GRID_LINE_WIDTH
+                paint.setStrokeWidth(shouldDrawMinorLines
+                        ? MAJOR_GRID_LINE_WIDTH
                         : MINOR_GRID_LINE_WIDTH);
                 shouldDrawCurrentLine = shouldDrawMajorLines;
             } else {
@@ -114,20 +113,24 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
                     Math.round(currentLocation.y));
         }
 
-        float previousGridLineX = (float) Math
-                .floor((double) currentLocation.x);
-        float previousGridLineY = (float) Math
-                .floor((double) currentLocation.y);
-        float offset = .5f * tokenDiameter
-                - (float) Math.floor(.5 * tokenDiameter);
+        float previousGridLineX =
+                (float) Math.floor((double) currentLocation.x);
+        float previousGridLineY =
+                (float) Math.floor((double) currentLocation.y);
+        float offset =
+                .5f * tokenDiameter - (float) Math.floor(.5 * tokenDiameter);
 
         // If we have a token that is smaller than one grid line, find the
         // nearest subgrid line instead.
         if (tokenDiameter < 1) {
-            previousGridLineX += (currentLocation.x - previousGridLineX)
-                    - (currentLocation.x - previousGridLineX) % tokenDiameter;
-            previousGridLineY += (currentLocation.y - previousGridLineY)
-                    - (currentLocation.y - previousGridLineY) % tokenDiameter;
+            previousGridLineX +=
+                    (currentLocation.x - previousGridLineX)
+                            - (currentLocation.x - previousGridLineX)
+                            % tokenDiameter;
+            previousGridLineY +=
+                    (currentLocation.y - previousGridLineY)
+                            - (currentLocation.y - previousGridLineY)
+                            % tokenDiameter;
         }
 
         return new PointF(previousGridLineX + offset, previousGridLineY

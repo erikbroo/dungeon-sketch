@@ -33,14 +33,14 @@ import com.tbocek.android.combatmap.model.primitives.Text;
 public final class LineCollection implements UndoRedoTarget {
 
     /**
-     * The internal list of lines.
-     */
-    private List<Shape> mLines = new LinkedList<Shape>();
-
-    /**
      * Undo/Redo History.
      */
     private CommandHistory mCommandHistory;
+
+    /**
+     * The internal list of lines.
+     */
+    private List<Shape> mLines = new LinkedList<Shape>();
 
     /**
      * Constructor allowing multiple line collections to share one undo/redo
@@ -50,65 +50,24 @@ public final class LineCollection implements UndoRedoTarget {
      *            The undo/redo history.
      */
     public LineCollection(CommandHistory history) {
-        mCommandHistory = history;
+        this.mCommandHistory = history;
+    }
+
+    @Override
+    public boolean canRedo() {
+        return this.mCommandHistory.canRedo();
+    }
+
+    @Override
+    public boolean canUndo() {
+        return this.mCommandHistory.canUndo();
     }
 
     /**
-     * Draws all lines on the given canvas.
-     * 
-     * @param canvas
-     *            The canvas to draw on.
+     * Removes all lines.
      */
-    public void drawAllLines(final Canvas canvas) {
-        for (int i = 0; i < mLines.size(); ++i) {
-            mLines.get(i).applyDrawOffsetToCanvas(canvas);
-            mLines.get(i).draw(canvas);
-            mLines.get(i).revertDrawOffsetFromCanvas(canvas);
-        }
-    }
-
-    /**
-     * Draws all lines on the given canvas that should be drawn below the grid.
-     * 
-     * @param canvas
-     *            The canvas to draw on.
-     */
-    public void drawAllLinesBelowGrid(final Canvas canvas) {
-        for (int i = 0; i < mLines.size(); ++i) {
-            if (mLines.get(i).shouldDrawBelowGrid()) {
-                mLines.get(i).applyDrawOffsetToCanvas(canvas);
-                mLines.get(i).draw(canvas);
-                mLines.get(i).revertDrawOffsetFromCanvas(canvas);
-            }
-        }
-    }
-
-    /**
-     * Draws all lines on the given canvas that should be drawn above the grid.
-     * 
-     * @param canvas
-     *            The canvas to draw on.
-     */
-    public void drawAllLinesAboveGrid(final Canvas canvas) {
-        for (int i = 0; i < mLines.size(); ++i) {
-            if (!mLines.get(i).shouldDrawBelowGrid()) {
-                mLines.get(i).applyDrawOffsetToCanvas(canvas);
-                mLines.get(i).draw(canvas);
-                mLines.get(i).revertDrawOffsetFromCanvas(canvas);
-            }
-        }
-    }
-
-    /**
-     * Draws all lines on the given canvas.
-     * 
-     * @param canvas
-     *            The canvas to draw on.
-     */
-    public void drawFogOfWar(final Canvas canvas) {
-        for (int i = 0; i < mLines.size(); ++i) {
-            mLines.get(i).drawFogOfWar(canvas);
-        }
+    public void clear() {
+        this.mLines.clear();
     }
 
     /**
@@ -124,11 +83,29 @@ public final class LineCollection implements UndoRedoTarget {
         canvas.clipRect(r, Op.DIFFERENCE);
 
         // Union together the regions that are supposed to draw.
-        for (int i = 0; i < mLines.size(); ++i) {
-            mLines.get(i).clipFogOfWar(canvas);
+        for (int i = 0; i < this.mLines.size(); ++i) {
+            this.mLines.get(i).clipFogOfWar(canvas);
         }
 
         canvas.clipRect(r, Op.INTERSECT);
+    }
+
+    /**
+     * Factory method that creates a circle, adds it to the list of lines, and
+     * returns the newly created line.
+     * 
+     * @param newLineColor
+     *            The new line's color.
+     * @param newLineStrokeWidth
+     *            The new line's stroke width.
+     * @return The new line.
+     */
+    public Shape createCircle(int newLineColor, float newLineStrokeWidth) {
+        Circle l = new Circle(newLineColor, newLineStrokeWidth);
+        Command c = new Command(this);
+        c.addCreatedShape(l);
+        this.mCommandHistory.execute(c);
+        return l;
     }
 
     /**
@@ -146,44 +123,7 @@ public final class LineCollection implements UndoRedoTarget {
         FreehandLine l = new FreehandLine(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
         c.addCreatedShape(l);
-        mCommandHistory.execute(c);
-        return l;
-    }
-
-    /**
-     * Factory method that creates a straight line, adds it to the list of
-     * lines, and returns the newly created line.
-     * 
-     * @param newLineColor
-     *            The new line's color.
-     * @param newLineStrokeWidth
-     *            The new line's stroke width.
-     * @return The new line.
-     */
-    public Shape createStraightLine(
-            int newLineColor, float newLineStrokeWidth) {
-        StraightLine l = new StraightLine(newLineColor, newLineStrokeWidth);
-        Command c = new Command(this);
-        c.addCreatedShape(l);
-        mCommandHistory.execute(c);
-        return l;
-    }
-
-    /**
-     * Factory method that creates a circle, adds it to the list of lines, and
-     * returns the newly created line.
-     * 
-     * @param newLineColor
-     *            The new line's color.
-     * @param newLineStrokeWidth
-     *            The new line's stroke width.
-     * @return The new line.
-     */
-    public Shape createCircle(int newLineColor, float newLineStrokeWidth) {
-        Circle l = new Circle(newLineColor, newLineStrokeWidth);
-        Command c = new Command(this);
-        c.addCreatedShape(l);
-        mCommandHistory.execute(c);
+        this.mCommandHistory.execute(c);
         return l;
     }
 
@@ -201,7 +141,25 @@ public final class LineCollection implements UndoRedoTarget {
         Rectangle l = new Rectangle(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
         c.addCreatedShape(l);
-        mCommandHistory.execute(c);
+        this.mCommandHistory.execute(c);
+        return l;
+    }
+
+    /**
+     * Factory method that creates a straight line, adds it to the list of
+     * lines, and returns the newly created line.
+     * 
+     * @param newLineColor
+     *            The new line's color.
+     * @param newLineStrokeWidth
+     *            The new line's stroke width.
+     * @return The new line.
+     */
+    public Shape createStraightLine(int newLineColor, float newLineStrokeWidth) {
+        StraightLine l = new StraightLine(newLineColor, newLineStrokeWidth);
+        Command c = new Command(this);
+        c.addCreatedShape(l);
+        this.mCommandHistory.execute(c);
         return l;
     }
 
@@ -223,13 +181,102 @@ public final class LineCollection implements UndoRedoTarget {
      *            World to screen space transformer.
      * @return The created text object.
      */
-    public Shape createText(String text, float size, int color,
-            float strokeWidth, PointF location, CoordinateTransformer transform) {
+    public Shape
+            createText(String text, float size, int color, float strokeWidth,
+                    PointF location, CoordinateTransformer transform) {
         Text t = new Text(text, size, color, strokeWidth, location, transform);
         Command c = new Command(this);
         c.addCreatedShape(t);
-        mCommandHistory.execute(c);
+        this.mCommandHistory.execute(c);
         return t;
+    }
+
+    /**
+     * Deletes the given shape.
+     * 
+     * @param l
+     *            The shape to delete.
+     */
+    public void deleteShape(Shape l) {
+        if (this.mLines.contains(l)) {
+            Command c = new Command(this);
+            c.addDeletedShape(l);
+            this.mCommandHistory.execute(c);
+        }
+    }
+
+    /**
+     * Populates this line collection by reading from the given stream.
+     * 
+     * @param s
+     *            Stream to load from.
+     * @throws IOException
+     *             On deserialization error.
+     */
+    public void deserialize(MapDataDeserializer s) throws IOException {
+        int arrayLevel = s.expectArrayStart();
+        while (s.hasMoreArrayItems(arrayLevel)) {
+            this.mLines.add(Shape.deserialize(s));
+        }
+        s.expectArrayEnd();
+    }
+
+    /**
+     * Draws all lines on the given canvas.
+     * 
+     * @param canvas
+     *            The canvas to draw on.
+     */
+    public void drawAllLines(final Canvas canvas) {
+        for (int i = 0; i < this.mLines.size(); ++i) {
+            this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
+            this.mLines.get(i).draw(canvas);
+            this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+        }
+    }
+
+    /**
+     * Draws all lines on the given canvas that should be drawn above the grid.
+     * 
+     * @param canvas
+     *            The canvas to draw on.
+     */
+    public void drawAllLinesAboveGrid(final Canvas canvas) {
+        for (int i = 0; i < this.mLines.size(); ++i) {
+            if (!this.mLines.get(i).shouldDrawBelowGrid()) {
+                this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
+                this.mLines.get(i).draw(canvas);
+                this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+            }
+        }
+    }
+
+    /**
+     * Draws all lines on the given canvas that should be drawn below the grid.
+     * 
+     * @param canvas
+     *            The canvas to draw on.
+     */
+    public void drawAllLinesBelowGrid(final Canvas canvas) {
+        for (int i = 0; i < this.mLines.size(); ++i) {
+            if (this.mLines.get(i).shouldDrawBelowGrid()) {
+                this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
+                this.mLines.get(i).draw(canvas);
+                this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+            }
+        }
+    }
+
+    /**
+     * Draws all lines on the given canvas.
+     * 
+     * @param canvas
+     *            The canvas to draw on.
+     */
+    public void drawFogOfWar(final Canvas canvas) {
+        for (int i = 0; i < this.mLines.size(); ++i) {
+            this.mLines.get(i).drawFogOfWar(canvas);
+        }
     }
 
     /**
@@ -246,35 +293,40 @@ public final class LineCollection implements UndoRedoTarget {
      */
     public void editText(Text editedTextObject, String text, float size,
             CoordinateTransformer transformer) {
-        Text newText = new Text(text, size, editedTextObject.getColor(),
-                editedTextObject.getWidth(), editedTextObject.getLocation(),
-                transformer);
+        Text newText =
+                new Text(text, size, editedTextObject.getColor(),
+                        editedTextObject.getWidth(),
+                        editedTextObject.getLocation(), transformer);
         Command c = new Command(this);
         c.addCreatedShape(newText);
         c.addDeletedShape(editedTextObject);
-        mCommandHistory.execute(c);
+        this.mCommandHistory.execute(c);
     }
 
     /**
-     * Inserts a new line into the list of lines, making sure that the lines are
-     * sorted by line width.
+     * Erases all points on lines centered at a given location.
      * 
-     * @param line
-     *            The line to add.
+     * @param location
+     *            The point in world space to center the erase on.
+     * @param radius
+     *            Radius around the point to erase, in world space.
      */
-    private void insertLine(final Shape line) {
-        if (mLines.isEmpty()) {
-            mLines.add(line);
-            return;
+    public void erase(final PointF location, final float radius) {
+        for (int i = 0; i < this.mLines.size(); ++i) {
+            this.mLines.get(i).erase(location, radius);
         }
+    }
 
-        ListIterator<Shape> it = mLines.listIterator();
-        while (it.hasNext()
-                && mLines.get(it.nextIndex()).getStrokeWidth() >= line
-                        .getStrokeWidth()) {
-            it.next();
-        }
-        it.add(line);
+    /**
+     * Finds and returns the shape under the given point. If there are multiple
+     * candidates, returns one arbitrarily.
+     * 
+     * @param under
+     *            Point that should lie in the found shape.
+     * @return A shape that meets the criteria.
+     */
+    public Shape findShape(PointF under) {
+        return this.findShape(under, null);
     }
 
     /**
@@ -289,7 +341,7 @@ public final class LineCollection implements UndoRedoTarget {
      * @return A shape that meets the criteria.
      */
     public Shape findShape(final PointF under, final Class<?> requestedClass) {
-        for (Shape l : mLines) {
+        for (Shape l : this.mLines) {
             if ((requestedClass == null || l.getClass() == requestedClass)
                     && l.contains(under)) {
                 return l;
@@ -299,50 +351,43 @@ public final class LineCollection implements UndoRedoTarget {
     }
 
     /**
-     * Finds and returns the shape under the given point. If there are multiple
-     * candidates, returns one arbitrarily.
-     * 
-     * @param under
-     *            Point that should lie in the found shape.
-     * @return A shape that meets the criteria.
+     * @return The bounding rectangle that bounds all lines in the collection.
      */
-    public Shape findShape(PointF under) {
-        return findShape(under, null);
-    }
-
-    /**
-     * Deletes the given shape.
-     * 
-     * @param l
-     *            The shape to delete.
-     */
-    public void deleteShape(Shape l) {
-        if (mLines.contains(l)) {
-            Command c = new Command(this);
-            c.addDeletedShape(l);
-            mCommandHistory.execute(c);
+    public BoundingRectangle getBoundingRectangle() {
+        BoundingRectangle r = new BoundingRectangle();
+        for (Shape l : this.mLines) {
+            r.updateBounds(l.getBoundingRectangle());
         }
+        return r;
     }
 
     /**
-     * Removes all lines.
-     */
-    public void clear() {
-        mLines.clear();
-    }
-
-    /**
-     * Erases all points on lines centered at a given location.
+     * Inserts a new line into the list of lines, making sure that the lines are
+     * sorted by line width.
      * 
-     * @param location
-     *            The point in world space to center the erase on.
-     * @param radius
-     *            Radius around the point to erase, in world space.
+     * @param line
+     *            The line to add.
      */
-    public void erase(final PointF location, final float radius) {
-        for (int i = 0; i < mLines.size(); ++i) {
-            mLines.get(i).erase(location, radius);
+    private void insertLine(final Shape line) {
+        if (this.mLines.isEmpty()) {
+            this.mLines.add(line);
+            return;
         }
+
+        ListIterator<Shape> it = this.mLines.listIterator();
+        while (it.hasNext()
+                && this.mLines.get(it.nextIndex()).getStrokeWidth() >= line
+                        .getStrokeWidth()) {
+            it.next();
+        }
+        it.add(line);
+    }
+
+    /**
+     * @return True if this collection has no lines in it, False otherwise.
+     */
+    public boolean isEmpty() {
+        return this.mLines.isEmpty();
     }
 
     /**
@@ -353,26 +398,28 @@ public final class LineCollection implements UndoRedoTarget {
      */
     public void optimize() {
         Command c = new Command(this);
-        for (int i = 0; i < mLines.size(); ++i) {
-            if (!mLines.get(i).isValid()) {
-                c.addDeletedShape(mLines.get(i));
-            } else if (mLines.get(i).needsOptimization()) {
-                List<Shape> optimizedLines = mLines.get(i).removeErasedPoints();
-                c.addDeletedShape(mLines.get(i));
+        for (int i = 0; i < this.mLines.size(); ++i) {
+            if (!this.mLines.get(i).isValid()) {
+                c.addDeletedShape(this.mLines.get(i));
+            } else if (this.mLines.get(i).needsOptimization()) {
+                List<Shape> optimizedLines =
+                        this.mLines.get(i).removeErasedPoints();
+                c.addDeletedShape(this.mLines.get(i));
                 c.addCreatedShapes(optimizedLines);
-            } else if (mLines.get(i).hasOffset()) {
-                c.addDeletedShape(mLines.get(i));
-                c.addCreatedShape(mLines.get(i).commitDrawOffset());
+            } else if (this.mLines.get(i).hasOffset()) {
+                c.addDeletedShape(this.mLines.get(i));
+                c.addCreatedShape(this.mLines.get(i).commitDrawOffset());
             }
         }
-        mCommandHistory.execute(c);
+        this.mCommandHistory.execute(c);
     }
 
     /**
-     * @return True if this collection has no lines in it, False otherwise.
+     * Redoes an operation, if there is one to redo.
      */
-    public boolean isEmpty() {
-        return mLines.isEmpty();
+    @Override
+    public void redo() {
+        this.mCommandHistory.redo();
     }
 
     /**
@@ -394,30 +441,11 @@ public final class LineCollection implements UndoRedoTarget {
     }
 
     /**
-     * Populates this line collection by reading from the given stream.
-     * 
-     * @param s
-     *            Stream to load from.
-     * @throws IOException
-     *             On deserialization error.
+     * Undoes an operation, if there is one to undo.
      */
-    public void deserialize(MapDataDeserializer s) throws IOException {
-        int arrayLevel = s.expectArrayStart();
-        while (s.hasMoreArrayItems(arrayLevel)) {
-            this.mLines.add(Shape.deserialize(s));
-        }
-        s.expectArrayEnd();
-    }
-
-    /**
-     * @return The bounding rectangle that bounds all lines in the collection.
-     */
-    public BoundingRectangle getBoundingRectangle() {
-        BoundingRectangle r = new BoundingRectangle();
-        for (Shape l : mLines) {
-            r.updateBounds(l.getBoundingRectangle());
-        }
-        return r;
+    @Override
+    public void undo() {
+        this.mCommandHistory.undo();
     }
 
     /**
@@ -449,41 +477,7 @@ public final class LineCollection implements UndoRedoTarget {
          *            The LineCollection that this command modifies.
          */
         public Command(final LineCollection lineCollection) {
-            mLineCollection = lineCollection;
-        }
-
-        /**
-         * Executes the command on the LineCollection that this command mutates.
-         */
-        public void execute() {
-            List<Shape> newLines = new LinkedList<Shape>();
-            for (Shape l : mLineCollection.mLines) {
-                if (!mDeleted.contains(l)) {
-                    newLines.add(l);
-                }
-            }
-            mLineCollection.mLines = newLines;
-
-            for (Shape l : mCreated) {
-                mLineCollection.insertLine(l);
-            }
-        }
-
-        /**
-         * Undoes the command on the LineCollection that this command mutates.
-         */
-        public void undo() {
-            List<Shape> newLines = new LinkedList<Shape>();
-            for (Shape l : mLineCollection.mLines) {
-                if (!mCreated.contains(l)) {
-                    newLines.add(l);
-                }
-            }
-            mLineCollection.mLines = newLines;
-
-            for (Shape l : mDeleted) {
-                mLineCollection.insertLine(l);
-            }
+            this.mLineCollection = lineCollection;
         }
 
         /**
@@ -493,7 +487,7 @@ public final class LineCollection implements UndoRedoTarget {
          *            The line to add.
          */
         public void addCreatedShape(final Shape l) {
-            mCreated.add(l);
+            this.mCreated.add(l);
         }
 
         /**
@@ -503,7 +497,7 @@ public final class LineCollection implements UndoRedoTarget {
          *            The lines to add.
          */
         public void addCreatedShapes(final Collection<Shape> lc) {
-            mCreated.addAll(lc);
+            this.mCreated.addAll(lc);
         }
 
         /**
@@ -513,40 +507,53 @@ public final class LineCollection implements UndoRedoTarget {
          *            The line to remove.
          */
         public void addDeletedShape(final Shape l) {
-            mDeleted.add(l);
+            this.mDeleted.add(l);
+        }
+
+        /**
+         * Executes the command on the LineCollection that this command mutates.
+         */
+        @Override
+        public void execute() {
+            List<Shape> newLines = new LinkedList<Shape>();
+            for (Shape l : this.mLineCollection.mLines) {
+                if (!this.mDeleted.contains(l)) {
+                    newLines.add(l);
+                }
+            }
+            this.mLineCollection.mLines = newLines;
+
+            for (Shape l : this.mCreated) {
+                this.mLineCollection.insertLine(l);
+            }
         }
 
         /**
          * @return True if the command is a no-op, false if it modifies lines.
          *         noop.
          */
+        @Override
         public boolean isNoop() {
-            return mCreated.isEmpty() && mDeleted.isEmpty();
+            return this.mCreated.isEmpty() && this.mDeleted.isEmpty();
         }
-    }
 
-    /**
-     * Undoes an operation, if there is one to undo.
-     */
-    public void undo() {
-        mCommandHistory.undo();
-    }
+        /**
+         * Undoes the command on the LineCollection that this command mutates.
+         */
+        @Override
+        public void undo() {
+            List<Shape> newLines = new LinkedList<Shape>();
+            for (Shape l : this.mLineCollection.mLines) {
+                if (!this.mCreated.contains(l)) {
+                    newLines.add(l);
+                }
+            }
+            this.mLineCollection.mLines = newLines;
 
-    /**
-     * Redoes an operation, if there is one to redo.
-     */
-    public void redo() {
-        mCommandHistory.redo();
-    }
-
-    @Override
-    public boolean canUndo() {
-        return mCommandHistory.canUndo();
-    }
-
-    @Override
-    public boolean canRedo() {
-        return mCommandHistory.canRedo();
+            for (Shape l : this.mDeleted) {
+                this.mLineCollection.insertLine(l);
+            }
+        }
     }
 
 }

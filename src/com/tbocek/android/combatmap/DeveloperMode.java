@@ -16,20 +16,7 @@ public final class DeveloperMode {
     public static final boolean DEVELOPER_MODE = BuildConfig.DEBUG;
 
     /**
-     * If in developer mode and the SDK supports it, run in strict mode.
-     */
-    public static void strictMode() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD
-                && DEVELOPER_MODE) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll().penaltyLog().build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectAll().penaltyLog().penaltyDeath().build());
-        }
-    }
-
-    /**
-     * Starts the profiler only if deveoper mode is active.
+     * Starts the profiler only if developer mode is active.
      * 
      * @param name
      *            The name of the profiler to write to.
@@ -46,6 +33,19 @@ public final class DeveloperMode {
     public static void stopProfiler() {
         if (DEVELOPER_MODE) {
             android.os.Debug.stopMethodTracing();
+        }
+    }
+
+    /**
+     * If in developer mode and the SDK supports it, run in strict mode.
+     */
+    public static void strictMode() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD
+                && DEVELOPER_MODE) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll().penaltyLog().build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectAll().penaltyLog().penaltyDeath().build());
         }
     }
 

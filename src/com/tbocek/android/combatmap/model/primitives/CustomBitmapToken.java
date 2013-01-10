@@ -24,6 +24,11 @@ public final class CustomBitmapToken extends DrawableToken {
     private static transient DataManager dataManager = null;
 
     /**
+     * The filename to load.
+     */
+    private String mFilename = null;
+
+    /**
      * Sets the data manager that will be used to load images.
      * 
      * @param manager
@@ -32,11 +37,6 @@ public final class CustomBitmapToken extends DrawableToken {
     public static void registerDataManager(final DataManager manager) {
         CustomBitmapToken.dataManager = manager;
     }
-
-    /**
-     * The filename to load.
-     */
-    private String mFilename = null;
 
     /**
      * Constructor.
@@ -49,6 +49,11 @@ public final class CustomBitmapToken extends DrawableToken {
     }
 
     @Override
+    public BaseToken clone() {
+        return this.copyAttributesTo(new CustomBitmapToken(this.mFilename));
+    }
+
+    @Override
     protected Drawable createDrawable() {
         if (dataManager == null) {
             return null;
@@ -56,22 +61,12 @@ public final class CustomBitmapToken extends DrawableToken {
 
         Bitmap b;
         try {
-            b = dataManager.loadTokenImage(mFilename);
+            b = dataManager.loadTokenImage(this.mFilename);
             return new BitmapDrawable(b);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public BaseToken clone() {
-        return copyAttributesTo(new CustomBitmapToken(mFilename));
-    }
-
-    @Override
-    protected String getTokenClassSpecificId() {
-        return mFilename;
     }
 
     @Override
@@ -83,14 +78,19 @@ public final class CustomBitmapToken extends DrawableToken {
     }
 
     @Override
-    public boolean maybeDeletePermanently() throws IOException {
-        dataManager.deleteTokenImage(mFilename);
-        return true;
+    protected String getTokenClassSpecificId() {
+        return this.mFilename;
     }
 
     @Override
     public boolean isBuiltIn() {
         return false;
+    }
+
+    @Override
+    public boolean maybeDeletePermanently() throws IOException {
+        dataManager.deleteTokenImage(this.mFilename);
+        return true;
     }
 
 }

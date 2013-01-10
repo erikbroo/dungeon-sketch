@@ -1,15 +1,15 @@
 package com.tbocek.android.combatmap.view;
 
-import com.tbocek.android.combatmap.model.primitives.BaseToken;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.ImageView;
+
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 /**
  * Represents a button that contains a prototype for a token. Draws the button
@@ -27,16 +27,6 @@ public class TokenButton extends ImageView {
     private static final float TOKEN_SCALE = 0.8f;
 
     /**
-     * The token represented by this button.
-     */
-    private BaseToken mPrototype;
-
-    /**
-     * A gesture detector used to detect long presses for drag and drop start.
-     */
-    private GestureDetector mGestureDetector;
-
-    /**
      * Whether this token button is allowed to initiate a drag action.
      */
     private boolean mAllowDrag = true;
@@ -47,18 +37,29 @@ public class TokenButton extends ImageView {
     private boolean mDrawDark = false;
 
     /**
+     * A gesture detector used to detect long presses for drag and drop start.
+     */
+    private GestureDetector mGestureDetector;
+
+    /**
      * A gesture listener used to start a drag and drop when a long press
      * occurs.
      */
-    private SimpleOnGestureListener mGestureListener = new SimpleOnGestureListener() {
-        public void onLongPress(final MotionEvent e) {
-            if (mAllowDrag
-                    && android.os.Build.VERSION.SDK_INT
-                        >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                TokenButton.this.onStartDrag();
-            }
-        }
-    };
+    private SimpleOnGestureListener mGestureListener =
+            new SimpleOnGestureListener() {
+                @Override
+                public void onLongPress(final MotionEvent e) {
+                    if (TokenButton.this.mAllowDrag
+                            && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                        TokenButton.this.onStartDrag();
+                    }
+                }
+            };
+
+    /**
+     * The token represented by this button.
+     */
+    private BaseToken mPrototype;
 
     /**
      * Constructor.
@@ -73,28 +74,45 @@ public class TokenButton extends ImageView {
         this.mPrototype = prototype;
 
         // Set up listener to see if a drag has started.
-        mGestureDetector = new GestureDetector(this.getContext(),
-                mGestureListener);
+        this.mGestureDetector =
+                new GestureDetector(this.getContext(), this.mGestureListener);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 
     /**
-     * Called when a drag and drop operation should start.
+     * @param allowDrag
+     *            Whether to allow this token button to start a drag action.
      */
-    protected void onStartDrag() {
-        startDrag(null, new View.DragShadowBuilder(TokenButton.this),
-                mPrototype.clone(), 0);
+    public void allowDrag(boolean allowDrag) {
+        this.mAllowDrag = allowDrag;
     }
 
-    @Override
-    public void onDraw(final Canvas c) {
-        mPrototype
-                .draw(c, (float) this.getWidth() / 2,
-                        (float) this.getHeight() / 2, getTokenRadius(),
-                        mDrawDark, true);
+    /**
+     * Gets a new token that is a clone of the token specified here.
+     * 
+     * @return A clone of the token.
+     */
+    public final BaseToken getClone() {
+        return this.mPrototype.clone();
+    }
+
+    /**
+     * @return The original prototype token.
+     */
+    public final BaseToken getPrototype() {
+        return this.mPrototype;
+    }
+
+    /**
+     * Gets the token ID of the managed token.
+     * 
+     * @return The token ID.
+     */
+    public final String getTokenId() {
+        return this.mPrototype.getTokenId();
     }
 
     /**
@@ -104,29 +122,19 @@ public class TokenButton extends ImageView {
         return Math.min(this.getWidth(), this.getHeight()) * TOKEN_SCALE / 2;
     }
 
-    /**
-     * Gets a new token that is a clone of the token specified here.
-     * 
-     * @return A clone of the token.
-     */
-    public final BaseToken getClone() {
-        return mPrototype.clone();
+    @Override
+    public void onDraw(final Canvas c) {
+        this.mPrototype.draw(c, (float) this.getWidth() / 2,
+                (float) this.getHeight() / 2, this.getTokenRadius(),
+                this.mDrawDark, true);
     }
 
     /**
-     * @return The original prototype token.
+     * Called when a drag and drop operation should start.
      */
-    public final BaseToken getPrototype() {
-        return mPrototype;
-    }
-
-    /**
-     * Gets the token ID of the managed token.
-     * 
-     * @return The token ID.
-     */
-    public final String getTokenId() {
-        return mPrototype.getTokenId();
+    protected void onStartDrag() {
+        this.startDrag(null, new View.DragShadowBuilder(TokenButton.this),
+                this.mPrototype.clone(), 0);
     }
 
     @Override
@@ -147,14 +155,6 @@ public class TokenButton extends ImageView {
      * @return Whether tokens are drawn on a dark background.
      */
     public boolean shouldDrawDark() {
-        return mDrawDark;
-    }
-
-    /**
-     * @param allowDrag
-     *            Whether to allow this token button to start a drag action.
-     */
-    public void allowDrag(boolean allowDrag) {
-        mAllowDrag = allowDrag;
+        return this.mDrawDark;
     }
 }

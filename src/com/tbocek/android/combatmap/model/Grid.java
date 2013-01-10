@@ -18,28 +18,19 @@ import com.tbocek.android.combatmap.model.primitives.PointF;
 public class Grid {
 
     /**
-     * Factory method that creates a grid with the given parameters.
-     * 
-     * @param gridStyle
-     *            The style of the grid, either "hex" or "rectangular".
-     * @param colorScheme
-     *            The color scheme of the grid. Valid color schemes are defined
-     *            in GridColorScheme.
-     * @param transformer
-     *            A grid space to world space transformation to use in this
-     *            grid.
-     * @return The created grid.
+     * The color scheme to use when drawing this grid.
      */
-    public static Grid createGrid(final String gridStyle,
-            final String colorScheme, final CoordinateTransformer transformer) {
-        Grid g = new Grid();
-        g.setDrawStrategy(gridStyle.equals(new HexGridStrategy()
-                .getTypeString()) ? new HexGridStrategy()
-                : new RectangularGridStrategy());
-        g.mColorScheme = GridColorScheme.fromNamedScheme(colorScheme);
-        g.mGridToWorldTransformer = transformer;
-        return g;
-    }
+    private GridColorScheme mColorScheme = GridColorScheme.GRAPH_PAPER;
+
+    private GridDrawStrategy mDrawStrategy = new RectangularGridStrategy();
+
+    /**
+     * The transformation from grid space to world space. We track this
+     * seperately as a property of the grid so that the grid can easily be
+     * resized to fit a drawing.
+     */
+    private CoordinateTransformer mGridToWorldTransformer =
+            new CoordinateTransformer(0, 0, 1);
 
     /**
      * Factory method that creates a grid with the given parameters.
@@ -66,6 +57,30 @@ public class Grid {
     }
 
     /**
+     * Factory method that creates a grid with the given parameters.
+     * 
+     * @param gridStyle
+     *            The style of the grid, either "hex" or "rectangular".
+     * @param colorScheme
+     *            The color scheme of the grid. Valid color schemes are defined
+     *            in GridColorScheme.
+     * @param transformer
+     *            A grid space to world space transformation to use in this
+     *            grid.
+     * @return The created grid.
+     */
+    public static Grid createGrid(final String gridStyle,
+            final String colorScheme, final CoordinateTransformer transformer) {
+        Grid g = new Grid();
+        g.setDrawStrategy(gridStyle.equals(new HexGridStrategy()
+                .getTypeString()) ? new HexGridStrategy()
+                : new RectangularGridStrategy());
+        g.mColorScheme = GridColorScheme.fromNamedScheme(colorScheme);
+        g.mGridToWorldTransformer = transformer;
+        return g;
+    }
+
+    /**
      * Loads and returns a Grid object from the given deserialization stream.
      * 
      * @param s
@@ -84,43 +99,6 @@ public class Grid {
     }
 
     /**
-     * The color scheme to use when drawing this grid.
-     */
-    private GridColorScheme mColorScheme = GridColorScheme.GRAPH_PAPER;
-
-    /**
-     * The transformation from grid space to world space. We track this
-     * seperately as a property of the grid so that the grid can easily be
-     * resized to fit a drawing.
-     */
-    private CoordinateTransformer mGridToWorldTransformer = new CoordinateTransformer(
-            0, 0, 1);
-
-    private GridDrawStrategy mDrawStrategy = new RectangularGridStrategy();
-
-    /**
-     * @return The color to use when drawing grid lines.
-     */
-    protected final int getLineColor() {
-        return this.mColorScheme.getLineColor();
-    }
-
-    /**
-     * @return The color to use when drawing the background.
-     * @return
-     */
-    protected final int getBackgroundColor() {
-        return this.mColorScheme.getBackgroundColor();
-    }
-
-    /**
-     * @return Whether the grid has a dark background.
-     */
-    public final boolean isDark() {
-        return this.mColorScheme.isDark();
-    }
-
-    /**
      * Draws the grid on the given canvas.
      * 
      * @param canvas
@@ -131,8 +109,9 @@ public class Grid {
      */
     public final void draw(final Canvas canvas,
             final CoordinateTransformer transformer) {
-        CoordinateTransformer transformer2 = gridSpaceToScreenSpaceTransformer(transformer);
-        mDrawStrategy.drawGrid(canvas, transformer2, mColorScheme);
+        CoordinateTransformer transformer2 =
+                this.gridSpaceToScreenSpaceTransformer(transformer);
+        this.mDrawStrategy.drawGrid(canvas, transformer2, this.mColorScheme);
     }
 
     /**
@@ -142,58 +121,30 @@ public class Grid {
      *            The canvas to draw on.
      */
     public final void drawBackground(final Canvas canvas) {
-        canvas.drawColor(getBackgroundColor());
+        canvas.drawColor(this.getBackgroundColor());
     }
 
     /**
-     * Gets a transformation between grid space and screen space, by composing
-     * the known grid --> world transformation with the given world --> screen
-     * transformation.
-     * 
-     * @param worldToScreen
-     *            Transformation from world space to screen space.
-     * @return The grid space to screen space transformation.
+     * @return The color to use when drawing the background.
+     * @return
      */
-    public final CoordinateTransformer gridSpaceToScreenSpaceTransformer(
-            final CoordinateTransformer worldToScreen) {
-        return mGridToWorldTransformer.compose(worldToScreen);
-    }
-
-    /**
-     * Returns the stored transformation from grid space to world space.
-     * 
-     * @return The grid space to world space transformation.
-     */
-    public final CoordinateTransformer gridSpaceToWorldSpaceTransformer() {
-        return mGridToWorldTransformer;
-    }
-
-    /**
-     * Writes this Grid object to the given serialization stream.
-     * 
-     * @param s
-     *            Stream to write to.
-     * @throws IOException
-     *             On serialization error.
-     */
-    public void serialize(MapDataSerializer s) throws IOException {
-        s.startObject();
-        s.serializeString(mDrawStrategy.getTypeString());
-        this.mColorScheme.serialize(s);
-        this.mGridToWorldTransformer.serialize(s);
-        s.endObject();
+    protected final int getBackgroundColor() {
+        return this.mColorScheme.getBackgroundColor();
     }
 
     public GridColorScheme getColorScheme() {
-        return mColorScheme;
+        return this.mColorScheme;
     }
 
     public GridDrawStrategy getDrawStrategy() {
-        return mDrawStrategy;
+        return this.mDrawStrategy;
     }
 
-    public void setDrawStrategy(GridDrawStrategy s) {
-        mDrawStrategy = s;
+    /**
+     * @return The color to use when drawing grid lines.
+     */
+    protected final int getLineColor() {
+        return this.mColorScheme.getLineColor();
     }
 
     /**
@@ -208,13 +159,63 @@ public class Grid {
      */
     public PointF getNearestSnapPoint(final PointF currentLocation,
             final float tokenDiameter) {
-        return mDrawStrategy
-                .getNearestSnapPoint(currentLocation, tokenDiameter);
+        return this.mDrawStrategy.getNearestSnapPoint(currentLocation,
+                tokenDiameter);
+    }
+
+    /**
+     * Gets a transformation between grid space and screen space, by composing
+     * the known grid --> world transformation with the given world --> screen
+     * transformation.
+     * 
+     * @param worldToScreen
+     *            Transformation from world space to screen space.
+     * @return The grid space to screen space transformation.
+     */
+    public final CoordinateTransformer gridSpaceToScreenSpaceTransformer(
+            final CoordinateTransformer worldToScreen) {
+        return this.mGridToWorldTransformer.compose(worldToScreen);
+    }
+
+    /**
+     * Returns the stored transformation from grid space to world space.
+     * 
+     * @return The grid space to world space transformation.
+     */
+    public final CoordinateTransformer gridSpaceToWorldSpaceTransformer() {
+        return this.mGridToWorldTransformer;
+    }
+
+    /**
+     * @return Whether the grid has a dark background.
+     */
+    public final boolean isDark() {
+        return this.mColorScheme.isDark();
+    }
+
+    /**
+     * Writes this Grid object to the given serialization stream.
+     * 
+     * @param s
+     *            Stream to write to.
+     * @throws IOException
+     *             On serialization error.
+     */
+    public void serialize(MapDataSerializer s) throws IOException {
+        s.startObject();
+        s.serializeString(this.mDrawStrategy.getTypeString());
+        this.mColorScheme.serialize(s);
+        this.mGridToWorldTransformer.serialize(s);
+        s.endObject();
     }
 
     public void setColorScheme(GridColorScheme scheme) {
         this.mColorScheme = scheme;
 
+    }
+
+    public void setDrawStrategy(GridDrawStrategy s) {
+        this.mDrawStrategy = s;
     }
 
 }

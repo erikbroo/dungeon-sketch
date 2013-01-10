@@ -17,15 +17,15 @@ import android.graphics.Paint.Style;
 public final class LetterToken extends BaseToken {
 
     /**
-     * The stroke width to use when drawing this token.
-     */
-    private static final int STROKE_WIDTH = 3;
-
-    /**
      * Color to use when a token is both non-manipulatable and bloodied.
      */
     private static final int NON_MANIPULATABLE_BLOODIED_COLOR = Color.rgb(255,
             128, 128);
+
+    /**
+     * The stroke width to use when drawing this token.
+     */
+    private static final int STROKE_WIDTH = 3;
 
     /**
      * The letter to draw in the circle. While this could be anything, it should
@@ -45,26 +45,7 @@ public final class LetterToken extends BaseToken {
 
     @Override
     public BaseToken clone() {
-        return copyAttributesTo(new LetterToken(mLetter));
-    }
-
-    @Override
-    public void drawBloodiedImpl(final Canvas c, final float x, final float y,
-            final float radius, final boolean isManipulatable) {
-        Paint p = new Paint();
-        p.setColor(isManipulatable ? Color.RED
-                : NON_MANIPULATABLE_BLOODIED_COLOR);
-        draw(c, x, y, radius, p);
-    }
-
-    @Override
-    public void drawImpl(final Canvas c, final float x, final float y,
-            final float radius, final boolean darkBackground,
-            final boolean isManipulatable) {
-        Paint p = new Paint();
-        p.setColor(isManipulatable ? (darkBackground ? Color.WHITE
-                : Color.BLACK) : Color.GRAY);
-        draw(c, x, y, radius, p);
+        return this.copyAttributesTo(new LetterToken(this.mLetter));
     }
 
     /**
@@ -90,8 +71,18 @@ public final class LetterToken extends BaseToken {
         paint.setStrokeWidth(2);
         paint.setStyle(Style.FILL);
         // CHECKSTYLE:OFF
-        c.drawText(mLetter, x - radius / 4, y + radius / 4, paint);
+        c.drawText(this.mLetter, x - radius / 4, y + radius / 4, paint);
         // CHECKSTYLE:ON
+    }
+
+    @Override
+    public void drawBloodiedImpl(final Canvas c, final float x, final float y,
+            final float radius, final boolean isManipulatable) {
+        Paint p = new Paint();
+        p.setColor(isManipulatable
+                ? Color.RED
+                : NON_MANIPULATABLE_BLOODIED_COLOR);
+        this.draw(c, x, y, radius, p);
     }
 
     @Override
@@ -99,12 +90,18 @@ public final class LetterToken extends BaseToken {
             final float radius) {
         Paint p = new Paint();
         p.setColor(Color.GRAY);
-        draw(c, x, y, radius, p);
+        this.draw(c, x, y, radius, p);
     }
 
     @Override
-    protected String getTokenClassSpecificId() {
-        return mLetter;
+    public void drawImpl(final Canvas c, final float x, final float y,
+            final float radius, final boolean darkBackground,
+            final boolean isManipulatable) {
+        Paint p = new Paint();
+        p.setColor(isManipulatable ? (darkBackground
+                ? Color.WHITE
+                : Color.BLACK) : Color.GRAY);
+        this.draw(c, x, y, radius, p);
     }
 
     @Override
@@ -113,5 +110,10 @@ public final class LetterToken extends BaseToken {
         s.add("built-in");
         s.add("letter");
         return s;
+    }
+
+    @Override
+    protected String getTokenClassSpecificId() {
+        return this.mLetter;
     }
 }

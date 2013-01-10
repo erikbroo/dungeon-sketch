@@ -13,72 +13,38 @@ import java.util.Stack;
  */
 public class CommandHistory {
     /**
-     * Interface defining the operations that commands should support.
-     * 
-     * @author Tim
-     * 
-     */
-    public interface Command {
-        /**
-         * Executes the command on the LineCollection that this command mutates.
-         */
-        void execute();
-
-        /**
-         * Undoes the command on the LineCollection that this command mutates.
-         */
-        void undo();
-
-        /**
-         * @return True if the command is a no-op, false if it modifies lines.
-         *         noop.
-         */
-        boolean isNoop();
-    }
-
-    /**
-     * Operations on this line collection that are available to undo.
-     */
-    private transient Stack<Command> mUndo = new Stack<Command>();
-    /**
      * Operations on this line collection that are available to redo.
      */
     private transient Stack<Command> mRedo = new Stack<Command>();
 
     /**
-     * Undo the last line operation.
+     * Operations on this line collection that are available to undo.
      */
-    public void undo() {
-        if (canUndo()) {
-            Command c = mUndo.pop();
-            c.undo();
-            mRedo.push(c);
-        }
-    }
+    private transient Stack<Command> mUndo = new Stack<Command>();
 
     /**
-     * Redo the last line operation.
+     * Adds the given command to the command history without executing it.
+     * 
+     * @param command
+     *            The command to add.
      */
-    public void redo() {
-        if (canRedo()) {
-            Command c = mRedo.pop();
-            c.execute();
-            mUndo.push(c);
-        }
-    }
-
-    /**
-     * @return True if the undo operation can be performed, false otherwise.
-     */
-    public boolean canUndo() {
-        return !mUndo.isEmpty();
+    public void addToCommandHistory(final Command command) {
+        this.mUndo.add(command);
+        this.mRedo.clear();
     }
 
     /**
      * @return True if the redo operation can be performed, false otherwise.
      */
     public boolean canRedo() {
-        return !mRedo.isEmpty();
+        return !this.mRedo.isEmpty();
+    }
+
+    /**
+     * @return True if the undo operation can be performed, false otherwise.
+     */
+    public boolean canUndo() {
+        return !this.mUndo.isEmpty();
     }
 
     /**
@@ -91,20 +57,9 @@ public class CommandHistory {
     public void execute(final Command command) {
         if (!command.isNoop()) {
             command.execute();
-            mUndo.add(command);
-            mRedo.clear();
+            this.mUndo.add(command);
+            this.mRedo.clear();
         }
-    }
-
-    /**
-     * Adds the given command to the command history without executing it.
-     * 
-     * @param command
-     *            The command to add.
-     */
-    public void addToCommandHistory(final Command command) {
-        mUndo.add(command);
-        mRedo.clear();
     }
 
     /**
@@ -121,7 +76,53 @@ public class CommandHistory {
     private void readObject(final ObjectInputStream inputStream)
             throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        mUndo = new Stack<Command>();
-        mRedo = new Stack<Command>();
+        this.mUndo = new Stack<Command>();
+        this.mRedo = new Stack<Command>();
+    }
+
+    /**
+     * Redo the last line operation.
+     */
+    public void redo() {
+        if (this.canRedo()) {
+            Command c = this.mRedo.pop();
+            c.execute();
+            this.mUndo.push(c);
+        }
+    }
+
+    /**
+     * Undo the last line operation.
+     */
+    public void undo() {
+        if (this.canUndo()) {
+            Command c = this.mUndo.pop();
+            c.undo();
+            this.mRedo.push(c);
+        }
+    }
+
+    /**
+     * Interface defining the operations that commands should support.
+     * 
+     * @author Tim
+     * 
+     */
+    public interface Command {
+        /**
+         * Executes the command on the LineCollection that this command mutates.
+         */
+        void execute();
+
+        /**
+         * @return True if the command is a no-op, false if it modifies lines.
+         *         noop.
+         */
+        boolean isNoop();
+
+        /**
+         * Undoes the command on the LineCollection that this command mutates.
+         */
+        void undo();
     }
 }

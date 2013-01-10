@@ -19,6 +19,11 @@ import com.tbocek.android.combatmap.model.primitives.BaseToken;
 public class TokenLoadTask extends AsyncTask<Void, String, Void> {
 
     /**
+     * Combat view in which these tokens are being drawn.
+     */
+    private CombatView mCombatView;
+
+    /**
      * Map from token ID to the token button to show once that token ID loads.
      */
     private Map<String, TokenButton> mTokenButtonMap;
@@ -29,11 +34,6 @@ public class TokenLoadTask extends AsyncTask<Void, String, Void> {
     private Collection<TokenButton> mTokenButtons;
 
     /**
-     * Combat view in which these tokens are being drawn.
-     */
-    private CombatView mCombatView;
-
-    /**
      * Constructor.
      * 
      * @param buttons
@@ -41,7 +41,7 @@ public class TokenLoadTask extends AsyncTask<Void, String, Void> {
      */
     public TokenLoadTask(Collection<TokenButton> buttons) {
         super();
-        mTokenButtons = buttons;
+        this.mTokenButtons = buttons;
     }
 
     /**
@@ -54,44 +54,44 @@ public class TokenLoadTask extends AsyncTask<Void, String, Void> {
      */
     public TokenLoadTask(Collection<TokenButton> buttons, CombatView combatView) {
         super();
-        mTokenButtons = buttons;
-        mCombatView = combatView;
+        this.mTokenButtons = buttons;
+        this.mCombatView = combatView;
     }
 
     @Override
     protected Void doInBackground(Void... args) {
-        for (TokenButton b : mTokenButtonMap.values()) {
+        for (TokenButton b : this.mTokenButtonMap.values()) {
             BaseToken t = b.getClone();
             if (t.needsLoad()) {
                 t.load();
             }
-            publishProgress(b.getTokenId());
+            this.publishProgress(b.getTokenId());
         }
         return null;
     }
 
     @Override
-    protected void onPreExecute() {
-        mTokenButtonMap = new HashMap<String, TokenButton>();
-        for (TokenButton b : mTokenButtons) {
-            if (b.getClone().needsLoad()) {
-                b.setVisibility(View.INVISIBLE);
-                mTokenButtonMap.put(b.getTokenId(), b);
-            }
+    protected void onPostExecute(Void result) {
+        if (this.mCombatView != null) {
+            this.mCombatView.refreshMap();
         }
     }
 
     @Override
-    protected void onPostExecute(Void result) {
-        if (mCombatView != null) {
-            mCombatView.refreshMap();
+    protected void onPreExecute() {
+        this.mTokenButtonMap = new HashMap<String, TokenButton>();
+        for (TokenButton b : this.mTokenButtons) {
+            if (b.getClone().needsLoad()) {
+                b.setVisibility(View.INVISIBLE);
+                this.mTokenButtonMap.put(b.getTokenId(), b);
+            }
         }
     }
 
     @Override
     protected void onProgressUpdate(String... progress) {
         String tokenId = progress[0];
-        TokenButton b = mTokenButtonMap.get(tokenId);
+        TokenButton b = this.mTokenButtonMap.get(tokenId);
         if (b != null) {
             b.setVisibility(View.VISIBLE);
             b.invalidate();

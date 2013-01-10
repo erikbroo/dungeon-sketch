@@ -54,18 +54,7 @@ public final class ImageToggleButton extends ImageButton {
      * @return Whether the button is toggled.
      */
     public boolean isToggled() {
-        return mToggled;
-    }
-
-    /**
-     * Sets the toggled state.
-     * 
-     * @param toggled
-     *            Whether the button should be toggled.
-     */
-    public void setToggled(final boolean toggled) {
-        this.mToggled = toggled;
-        invalidate();
+        return this.mToggled;
     }
 
     @Override
@@ -76,8 +65,19 @@ public final class ImageToggleButton extends ImageButton {
         paint.setColor(TOGGLE_BORDER_COLOR);
         paint.setStrokeWidth(TOGGLE_BORDER_WIDTH);
         paint.setStyle(Style.STROKE);
-        if (mToggled) {
+        if (this.mToggled) {
             c.drawRect(0, 0, this.getWidth(), this.getHeight(), paint);
         }
+    }
+
+    /**
+     * Sets the toggled state.
+     * 
+     * @param toggled
+     *            Whether the button should be toggled.
+     */
+    public void setToggled(final boolean toggled) {
+        this.mToggled = toggled;
+        this.invalidate();
     }
 }

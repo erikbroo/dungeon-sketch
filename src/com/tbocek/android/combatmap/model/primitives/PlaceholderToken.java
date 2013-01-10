@@ -2,11 +2,11 @@ package com.tbocek.android.combatmap.model.primitives;
 
 import java.util.Set;
 
-import com.tbocek.android.combatmap.TokenDatabase;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+
+import com.tbocek.android.combatmap.TokenDatabase;
 
 /**
  * This token is meant to be replaced by another token after the token database
@@ -29,12 +29,31 @@ public class PlaceholderToken extends BaseToken {
      *            The ID of the token that this is a placeholder for.
      */
     public PlaceholderToken(String tokenId) {
-        mReplaceWith = tokenId;
+        this.mReplaceWith = tokenId;
     }
 
     @Override
     public BaseToken clone() {
-        return new PlaceholderToken(mReplaceWith);
+        return new PlaceholderToken(this.mReplaceWith);
+    }
+
+    @Override
+    public BaseToken deplaceholderize(TokenDatabase database) {
+        return database.createToken(this.mReplaceWith.replace(this.getClass()
+                .getSimpleName(), ""));
+    }
+
+    @Override
+    protected void drawBloodiedImpl(Canvas c, float x, float y, float radius,
+            boolean isManipulatable) {
+        this.drawImpl(c, x, y, radius, true, true);
+
+    }
+
+    @Override
+    protected void drawGhost(Canvas c, float x, float y, float radius) {
+        this.drawImpl(c, x, y, radius, true, true);
+
     }
 
     @Override
@@ -49,32 +68,13 @@ public class PlaceholderToken extends BaseToken {
     }
 
     @Override
-    protected void drawBloodiedImpl(Canvas c, float x, float y, float radius,
-            boolean isManipulatable) {
-        drawImpl(c, x, y, radius, true, true);
-
-    }
-
-    @Override
-    protected void drawGhost(Canvas c, float x, float y, float radius) {
-        drawImpl(c, x, y, radius, true, true);
-
-    }
-
-    @Override
-    protected String getTokenClassSpecificId() {
-        return mReplaceWith;
-    }
-
-    @Override
     public Set<String> getDefaultTags() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public BaseToken deplaceholderize(TokenDatabase database) {
-        return database.createToken(this.mReplaceWith.replace(this.getClass()
-                .getSimpleName(), ""));
+    protected String getTokenClassSpecificId() {
+        return this.mReplaceWith;
     }
 }

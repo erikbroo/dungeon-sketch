@@ -17,14 +17,14 @@ public final class TwoImageToggleButton extends ImageButton {
     private int mNotToggledResourceId;
 
     /**
-     * Resource ID of the image to use when the button is toggled.
-     */
-    private int mToggledResourceId;
-
-    /**
      * Whether to draw the button toggled.
      */
     private boolean mToggled;
+
+    /**
+     * Resource ID of the image to use when the button is toggled.
+     */
+    private int mToggledResourceId;
 
     /**
      * Constructor.
@@ -39,16 +39,16 @@ public final class TwoImageToggleButton extends ImageButton {
     public TwoImageToggleButton(final Context context,
             final int notToggledResourceId, final int toggledResourceId) {
         super(context);
-        mNotToggledResourceId = notToggledResourceId;
-        mToggledResourceId = toggledResourceId;
-        this.setImageResource(mNotToggledResourceId);
+        this.mNotToggledResourceId = notToggledResourceId;
+        this.mToggledResourceId = toggledResourceId;
+        this.setImageResource(this.mNotToggledResourceId);
     }
 
     /**
      * @return Whether the button is toggled.
      */
     public boolean isToggled() {
-        return mToggled;
+        return this.mToggled;
     }
 
     /**
@@ -59,8 +59,9 @@ public final class TwoImageToggleButton extends ImageButton {
      */
     public void setToggled(final boolean toggled) {
         this.mToggled = toggled;
-        this.setImageResource(this.mToggled ? mToggledResourceId
-                : mNotToggledResourceId);
+        this.setImageResource(this.mToggled
+                ? this.mToggledResourceId
+                : this.mNotToggledResourceId);
     }
 
 }

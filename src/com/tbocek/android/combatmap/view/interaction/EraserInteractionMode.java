@@ -1,12 +1,12 @@
 package com.tbocek.android.combatmap.view.interaction;
 
-import com.tbocek.android.combatmap.model.primitives.PointF;
-import com.tbocek.android.combatmap.view.CombatView;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
+
+import com.tbocek.android.combatmap.model.primitives.PointF;
+import com.tbocek.android.combatmap.view.CombatView;
 
 /**
  * This interaction mode allows the user to move their finger to erase points
@@ -17,14 +17,14 @@ import android.view.MotionEvent;
  */
 public final class EraserInteractionMode extends BaseDrawInteractionMode {
     /**
-     * Radius in screen space to erase out from the center of a touch event.
-     */
-    private static final float ERASER_RADIUS = 30;
-
-    /**
      * The color of the eraser to draw on the screen.
      */
     private static final int ERASER_COLOR = Color.rgb(180, 180, 180);
+
+    /**
+     * Radius in screen space to erase out from the center of a touch event.
+     */
+    private static final float ERASER_RADIUS = 30;
 
     /**
      * True if currently actively erasing.
@@ -48,6 +48,18 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
     }
 
     @Override
+    public void draw(final Canvas c) {
+        Paint p = new Paint();
+        // Draw a light grey circle showing the erase diameter.
+        p.setColor(ERASER_COLOR);
+
+        if (this.mIsErasing) {
+            c.drawCircle(this.mLastErasedPoint.x, this.mLastErasedPoint.y,
+                    ERASER_RADIUS, p);
+        }
+    }
+
+    @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
         // Set up to draw erase indicator
@@ -55,13 +67,14 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
         this.mLastErasedPoint = new PointF(e2.getX(), e2.getY());
 
         // Erase
-        getView().getActiveLines().erase(
-                getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
-                        this.mLastErasedPoint),
-                getView().getWorldSpaceTransformer().screenSpaceToWorldSpace(
-                        ERASER_RADIUS));
+        this.getView()
+                .getActiveLines()
+                .erase(this.getView().getWorldSpaceTransformer()
+                        .screenSpaceToWorldSpace(this.mLastErasedPoint),
+                        this.getView().getWorldSpaceTransformer()
+                                .screenSpaceToWorldSpace(ERASER_RADIUS));
 
-        getView().refreshMap();
+        this.getView().refreshMap();
         return true;
     }
 
@@ -69,19 +82,7 @@ public final class EraserInteractionMode extends BaseDrawInteractionMode {
     public void onUp(final MotionEvent event) {
         this.mIsErasing = false;
         this.getView().optimizeActiveLines();
-        getView().refreshMap();
-    }
-
-    @Override
-    public void draw(final Canvas c) {
-        Paint p = new Paint();
-        // Draw a light grey circle showing the erase diameter.
-        p.setColor(ERASER_COLOR);
-
-        if (mIsErasing) {
-            c.drawCircle(mLastErasedPoint.x, mLastErasedPoint.y, ERASER_RADIUS,
-                    p);
-        }
+        this.getView().refreshMap();
     }
 
 }

@@ -1,73 +1,26 @@
 package com.tbocek.android.combatmap.model;
 
-import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
-
 import android.graphics.Canvas;
 
+import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
+
 public class MapDrawer {
-    /**
-     * Options for what to do with the fog of war.
-     * 
-     * @author Tim
-     * 
-     */
-    public enum FogOfWarMode {
-        /**
-         * Ignore the fog of war.
-         */
-        NOTHING,
-
-        /**
-         * Draw the fog of war as an overlay.
-         */
-        DRAW,
-
-        /**
-         * Use the fog of war to clip the background.
-         */
-        CLIP
-    }
-
-    private boolean mDrawGridLines;
-    private boolean mDrawGmNotes;
-    private boolean mDrawTokens;
     private boolean mAreTokensManipulable;
-    private boolean mDrawAnnotations;
+
     private FogOfWarMode mBackgroundFogOfWar;
+    private boolean mDrawAnnotations;
+    private boolean mDrawGmNotes;
+    private boolean mDrawGridLines;
+    private boolean mDrawTokens;
     private FogOfWarMode mGmNoteFogOfWar;
 
-    public MapDrawer drawGridLines(boolean val) {
-        mDrawGridLines = val;
-        return this;
-    }
-
-    public MapDrawer drawGmNotes(boolean val) {
-        mDrawGmNotes = val;
-        return this;
-    }
-
-    public MapDrawer drawTokens(boolean val) {
-        mDrawTokens = val;
-        return this;
-    }
-
     public MapDrawer areTokensManipulable(boolean val) {
-        mAreTokensManipulable = val;
-        return this;
-    }
-
-    public MapDrawer drawAnnotations(boolean val) {
-        mDrawAnnotations = val;
+        this.mAreTokensManipulable = val;
         return this;
     }
 
     public MapDrawer backgroundFogOfWar(FogOfWarMode val) {
-        mBackgroundFogOfWar = val;
-        return this;
-    }
-
-    public MapDrawer gmNotesFogOfWar(FogOfWarMode val) {
-        mGmNoteFogOfWar = val;
+        this.mBackgroundFogOfWar = val;
         return this;
     }
 
@@ -76,7 +29,7 @@ public class MapDrawer {
 
         canvas.save();
         m.getWorldSpaceTransformer().setMatrix(canvas);
-        if (mBackgroundFogOfWar == FogOfWarMode.CLIP
+        if (this.mBackgroundFogOfWar == FogOfWarMode.CLIP
                 && !m.getBackgroundFogOfWar().isEmpty()) {
             m.getBackgroundFogOfWar().clipFogOfWar(canvas);
         }
@@ -84,18 +37,18 @@ public class MapDrawer {
         m.getBackgroundImages().draw(canvas, m.getWorldSpaceTransformer());
         canvas.restore();
 
-        if (mDrawGridLines) {
+        if (this.mDrawGridLines) {
             m.getGrid().draw(canvas, m.getWorldSpaceTransformer());
         }
 
         canvas.save();
         m.getWorldSpaceTransformer().setMatrix(canvas);
-        if (mBackgroundFogOfWar == FogOfWarMode.CLIP
+        if (this.mBackgroundFogOfWar == FogOfWarMode.CLIP
                 && !m.getBackgroundFogOfWar().isEmpty()) {
             m.getBackgroundFogOfWar().clipFogOfWar(canvas);
         }
         m.getBackgroundLines().drawAllLinesAboveGrid(canvas);
-        if (mBackgroundFogOfWar == FogOfWarMode.DRAW) {
+        if (this.mBackgroundFogOfWar == FogOfWarMode.DRAW) {
             m.getBackgroundFogOfWar().drawFogOfWar(canvas);
         }
         canvas.restore();
@@ -103,7 +56,7 @@ public class MapDrawer {
         canvas.save();
         m.getWorldSpaceTransformer().setMatrix(canvas);
 
-        if (mDrawGmNotes) {
+        if (this.mDrawGmNotes) {
             canvas.save();
             if (this.mGmNoteFogOfWar == FogOfWarMode.CLIP) {
                 m.getGmNotesFogOfWar().clipFogOfWar(canvas);
@@ -124,20 +77,68 @@ public class MapDrawer {
         canvas.restore();
 
         canvas.save();
-        if (mBackgroundFogOfWar == FogOfWarMode.CLIP
+        if (this.mBackgroundFogOfWar == FogOfWarMode.CLIP
                 && !m.getBackgroundFogOfWar().isEmpty()) {
             m.getWorldSpaceTransformer().setMatrix(canvas);
             m.getBackgroundFogOfWar().clipFogOfWar(canvas);
             m.getWorldSpaceTransformer().setInverseMatrix(canvas);
         }
-        CoordinateTransformer gridSpace = m
-                .getGrid()
-                .gridSpaceToScreenSpaceTransformer(m.getWorldSpaceTransformer());
-        if (mDrawTokens) {
+        CoordinateTransformer gridSpace =
+                m.getGrid().gridSpaceToScreenSpaceTransformer(
+                        m.getWorldSpaceTransformer());
+        if (this.mDrawTokens) {
             m.getTokens().drawAllTokens(canvas, gridSpace,
-                    m.getGrid().isDark(), mAreTokensManipulable);
+                    m.getGrid().isDark(), this.mAreTokensManipulable);
         }
         canvas.restore();
+    }
+
+    public MapDrawer drawAnnotations(boolean val) {
+        this.mDrawAnnotations = val;
+        return this;
+    }
+
+    public MapDrawer drawGmNotes(boolean val) {
+        this.mDrawGmNotes = val;
+        return this;
+    }
+
+    public MapDrawer drawGridLines(boolean val) {
+        this.mDrawGridLines = val;
+        return this;
+    }
+
+    public MapDrawer drawTokens(boolean val) {
+        this.mDrawTokens = val;
+        return this;
+    }
+
+    public MapDrawer gmNotesFogOfWar(FogOfWarMode val) {
+        this.mGmNoteFogOfWar = val;
+        return this;
+    }
+
+    /**
+     * Options for what to do with the fog of war.
+     * 
+     * @author Tim
+     * 
+     */
+    public enum FogOfWarMode {
+        /**
+         * Use the fog of war to clip the background.
+         */
+        CLIP,
+
+        /**
+         * Draw the fog of war as an overlay.
+         */
+        DRAW,
+
+        /**
+         * Ignore the fog of war.
+         */
+        NOTHING
     }
 
 }

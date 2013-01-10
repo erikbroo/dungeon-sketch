@@ -36,9 +36,9 @@ public final class TokenDeleteButton extends ImageView {
             ImageView iv = (ImageView) view;
             if (event.getAction() == DragEvent.ACTION_DROP) {
                 @SuppressWarnings("unchecked")
-                Collection<BaseToken> t = (Collection<BaseToken>) event
-                        .getLocalState();
-                mManagedTokens = t;
+                Collection<BaseToken> t =
+                        (Collection<BaseToken>) event.getLocalState();
+                TokenDeleteButton.this.mManagedTokens = t;
                 iv.showContextMenu();
                 iv.setImageResource(R.drawable.trashcan);
             } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
@@ -62,8 +62,15 @@ public final class TokenDeleteButton extends ImageView {
      */
     public TokenDeleteButton(final Context context) {
         super(context);
-        setImageResource(R.drawable.trashcan);
-        setOnDragListener(this.mOnDragToTrashCanListener);
+        this.setImageResource(R.drawable.trashcan);
+        this.setOnDragListener(this.mOnDragToTrashCanListener);
+    }
+
+    /**
+     * @return The managed tokens.
+     */
+    public Collection<BaseToken> getManagedTokens() {
+        return this.mManagedTokens;
     }
 
     /**
@@ -72,13 +79,6 @@ public final class TokenDeleteButton extends ImageView {
      */
     public void setManagedTokens(final Collection<BaseToken> tokens) {
         this.mManagedTokens = tokens;
-    }
-
-    /**
-     * @return The managed tokens.
-     */
-    public Collection<BaseToken> getManagedTokens() {
-        return mManagedTokens;
     }
 
 }

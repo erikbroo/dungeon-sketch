@@ -23,275 +23,33 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     // TODO: dp
     private static final int HANDLE_CIRCLE_RADIUS_DP = 12;
 
-    private BackgroundImage mSelectedImage;
+    private HandleMode mHandleMode;
 
     private PointF mLastDragPoint;
 
-    /**
-     * Enum for representing what aspect of an image is being dragged.
-     * 
-     * @author Tim
-     * 
-     */
-    private enum HandleMode {
-        // CHECKSTYLE:OFF
-        MOVE, UPPER_LEFT, LEFT, LOWER_LEFT, BOTTOM, LOWER_RIGHT, RIGHT, UPPER_RIGHT, TOP,
-        // CHECKSTYLE:ON
-    }
-
-    /**
-     * Provides ability to specify a rectangle and query the locations of the
-     * handles to manipulate parts of that rectangle.
-     * 
-     * @author Tim
-     * 
-     */
-    private class HandleSet {
-        float mXmin;
-        float mXmax;
-        float mYmin;
-        float mYmax;
-
-        public HandleSet(float xmin, float xmax, float ymin, float ymax) {
-            mXmin = xmin;
-            mXmax = xmax;
-            mYmin = ymin;
-            mYmax = ymax;
-        }
-
-        public PointF getUpperLeft() {
-            return new PointF(mXmin, mYmin);
-        }
-
-        public PointF getLowerLeft() {
-            return new PointF(mXmin, mYmax);
-        }
-
-        public PointF getUpperRight() {
-            return new PointF(mXmax, mYmin);
-        }
-
-        public PointF getLowerRight() {
-            return new PointF(mXmax, mYmax);
-        }
-
-        public PointF getLeft() {
-            return new PointF(mXmin, (mYmin + mYmax) / 2);
-        }
-
-        public PointF getTop() {
-            return new PointF((mXmin + mXmax) / 2, mYmin);
-        }
-
-        public PointF getRight() {
-            return new PointF(mXmax, (mYmin + mYmax) / 2);
-        }
-
-        public PointF getBottom() {
-            return new PointF((mXmin + mXmax) / 2, mYmax);
-        }
-
-        public HandleMode getHandleMode(PointF p) {
-            int r = handleCircleRadiusPx();
-            if (Util.distance(p, getLeft()) < r) {
-                return HandleMode.LEFT;
-            } else if (Util.distance(p, getRight()) < r) {
-                return HandleMode.RIGHT;
-            } else if (Util.distance(p, getTop()) < r) {
-                return HandleMode.TOP;
-            } else if (Util.distance(p, getBottom()) < r) {
-                return HandleMode.BOTTOM;
-            } else if (Util.distance(p, getUpperLeft()) < r) {
-                return HandleMode.UPPER_LEFT;
-            } else if (Util.distance(p, getLowerLeft()) < r) {
-                return HandleMode.LOWER_LEFT;
-            } else if (Util.distance(p, getUpperRight()) < r) {
-                return HandleMode.UPPER_RIGHT;
-            } else if (Util.distance(p, getLowerRight()) < r) {
-                return HandleMode.LOWER_RIGHT;
-            } else {
-                return HandleMode.MOVE;
-            }
-        }
-
-        /**
-         * Gets the center of the handle that was clicked on. This is used to
-         * more accurately snap those handles to the grid. In the case of moving
-         * the image rather than an edge, the upper left point is returned since
-         * that is what will snap to the grid.
-         * 
-         * @param p
-         * @return
-         */
-        public PointF getClickedHandleCenter(PointF p) {
-            int r = handleCircleRadiusPx();
-            if (Util.distance(p, getLeft()) < r) {
-                return getLeft();
-            } else if (Util.distance(p, getRight()) < r) {
-                return getRight();
-            } else if (Util.distance(p, getTop()) < r) {
-                return getTop();
-            } else if (Util.distance(p, getBottom()) < r) {
-                return getBottom();
-            } else if (Util.distance(p, getUpperLeft()) < r) {
-                return getUpperLeft();
-            } else if (Util.distance(p, getLowerLeft()) < r) {
-                return getLowerLeft();
-            } else if (Util.distance(p, getUpperRight()) < r) {
-                return getUpperRight();
-            } else if (Util.distance(p, getLowerRight()) < r) {
-                return getLowerRight();
-            } else {
-                return getUpperLeft();
-            }
-        }
-    }
-
-    private int handleCircleRadiusPx() {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                HANDLE_CIRCLE_RADIUS_DP, getView().getResources()
-                        .getDisplayMetrics());
-    }
-
-    private HandleMode mHandleMode;
+    private BackgroundImage mSelectedImage;
 
     public BackgroundImageInteractionMode(CombatView view) {
         super(view);
     }
 
     @Override
-    public boolean onDown(final MotionEvent e) {
-        PointF locationWorldSpace = getData().getWorldSpaceTransformer()
-                .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
-
-        mSelectedImage = getData().getBackgroundImages().getImageOnPoint(
-                locationWorldSpace,
-                getData().getWorldSpaceTransformer().screenSpaceToWorldSpace(
-                        handleCircleRadiusPx()));
-
-        mLastDragPoint = new PointF(e.getX(), e.getY());
-
-        if (mSelectedImage != null) {
-            // Select a handle mode based on what part of the image was touched.
-            BoundingRectangle r = mSelectedImage.getBoundingRectangle();
-
-            // Convert bounding rectangle bounds to screen space.
-            PointF upperLeft = getData().getWorldSpaceTransformer()
-                    .worldSpaceToScreenSpace(
-                            new PointF(r.getXMin(), r.getYMin()));
-            PointF lowerRight = getData().getWorldSpaceTransformer()
-                    .worldSpaceToScreenSpace(
-                            new PointF(r.getXMax(), r.getYMax()));
-            float xmin = upperLeft.x;
-            float xmax = lowerRight.x;
-            float ymin = upperLeft.y;
-            float ymax = lowerRight.y;
-
-            HandleSet handles = new HandleSet(xmin, xmax, ymin, ymax);
-            mHandleMode = handles.getHandleMode(mLastDragPoint);
-            if (getView().shouldSnapToGrid()) {
-                mLastDragPoint = handles.getClickedHandleCenter(mLastDragPoint);
-            }
-
-        }
-
-        getView().refreshMap();
-        return true;
-    }
-
-    @Override
-    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
-            final float distanceXignored, final float distanceYignored) {
-
-        PointF snapped = this.getScreenSpacePoint(e2);
-
-        float distanceX = snapped.x - mLastDragPoint.x;
-        float distanceY = snapped.y - mLastDragPoint.y;
-        mLastDragPoint = snapped;
-
-        if (mSelectedImage != null) {
-            float wsDistX = getData().getWorldSpaceTransformer()
-                    .screenSpaceToWorldSpace(distanceX);
-            float wsDistY = getData().getWorldSpaceTransformer()
-                    .screenSpaceToWorldSpace(distanceY);
-            switch (mHandleMode) {
-            case LEFT:
-                mSelectedImage.moveLeft(wsDistX);
-                break;
-            case RIGHT:
-                mSelectedImage.moveRight(wsDistX);
-                break;
-            case TOP:
-                mSelectedImage.moveTop(wsDistY);
-                break;
-            case BOTTOM:
-                mSelectedImage.moveBottom(wsDistY);
-                break;
-            case UPPER_LEFT:
-                mSelectedImage.moveLeft(wsDistX);
-                mSelectedImage.moveTop(wsDistY);
-                break;
-            case LOWER_LEFT:
-                mSelectedImage.moveLeft(wsDistX);
-                mSelectedImage.moveBottom(wsDistY);
-                break;
-            case UPPER_RIGHT:
-                mSelectedImage.moveRight(wsDistX);
-                mSelectedImage.moveTop(wsDistY);
-                break;
-            case LOWER_RIGHT:
-                mSelectedImage.moveRight(wsDistX);
-                mSelectedImage.moveBottom(wsDistY);
-                break;
-            default:
-                mSelectedImage.moveImage(wsDistX, wsDistY);
-                break;
-            }
-            getView().refreshMap();
-        } else {
-            super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onSingleTapConfirmed(final MotionEvent e) {
-        PointF locationWorldSpace = getData().getWorldSpaceTransformer()
-                .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
-
-        BackgroundImage tappedImage = getData()
-                .getBackgroundImages()
-                .getImageOnPoint(
-                        locationWorldSpace,
-                        getData()
-                                .getWorldSpaceTransformer()
-                                .screenSpaceToWorldSpace(handleCircleRadiusPx()));
-
-        if (tappedImage == null) {
-            BackgroundImage i = new BackgroundImage(getView().getResources()
-                    .getDrawable(R.drawable.add_image));
-            i.setLocation(locationWorldSpace);
-            getData().getBackgroundImages().addImage(i);
-            mSelectedImage = i;
-        }
-        getView().refreshMap();
-        return true;
-    }
-
-    @Override
     public void draw(Canvas c) {
         // Draw border and handles on the selected image.
-        if (mSelectedImage != null) {
-            BoundingRectangle r = mSelectedImage.getBoundingRectangle();
+        if (this.mSelectedImage != null) {
+            BoundingRectangle r = this.mSelectedImage.getBoundingRectangle();
 
             // Convert bounding rectangle bounds to screen space.
-            PointF upperLeft = getData().getWorldSpaceTransformer()
-                    .worldSpaceToScreenSpace(
-                            new PointF(r.getXMin(), r.getYMin()));
-            PointF lowerRight = getData().getWorldSpaceTransformer()
-                    .worldSpaceToScreenSpace(
-                            new PointF(r.getXMax(), r.getYMax()));
+            PointF upperLeft =
+                    this.getData()
+                            .getWorldSpaceTransformer()
+                            .worldSpaceToScreenSpace(
+                                    new PointF(r.getXMin(), r.getYMin()));
+            PointF lowerRight =
+                    this.getData()
+                            .getWorldSpaceTransformer()
+                            .worldSpaceToScreenSpace(
+                                    new PointF(r.getXMax(), r.getYMax()));
             float xmin = upperLeft.x;
             float xmax = lowerRight.x;
             float ymin = upperLeft.y;
@@ -303,36 +61,32 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
             borderHandlePaint.setStyle(Paint.Style.STROKE);
 
             HandleSet handles = new HandleSet(xmin, xmax, ymin, ymax);
-            drawHandle(c, handles.getLeft(), borderHandlePaint);
-            drawBorderSegment(c, handles.getLeft(), handles.getUpperLeft(),
+            this.drawHandle(c, handles.getLeft(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getLeft(),
+                    handles.getUpperLeft(), borderHandlePaint);
+            this.drawHandle(c, handles.getUpperLeft(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getUpperLeft(), handles.getTop(),
                     borderHandlePaint);
-            drawHandle(c, handles.getUpperLeft(), borderHandlePaint);
-            drawBorderSegment(c, handles.getUpperLeft(), handles.getTop(),
-                    borderHandlePaint);
-            drawHandle(c, handles.getTop(), borderHandlePaint);
-            drawBorderSegment(c, handles.getTop(), handles.getUpperRight(),
-                    borderHandlePaint);
-            drawHandle(c, handles.getUpperRight(), borderHandlePaint);
-            drawBorderSegment(c, handles.getUpperRight(), handles.getRight(),
-                    borderHandlePaint);
-            drawHandle(c, handles.getRight(), borderHandlePaint);
-            drawBorderSegment(c, handles.getRight(), handles.getLowerRight(),
-                    borderHandlePaint);
-            drawHandle(c, handles.getLowerRight(), borderHandlePaint);
-            drawBorderSegment(c, handles.getLowerRight(), handles.getBottom(),
-                    borderHandlePaint);
-            drawHandle(c, handles.getBottom(), borderHandlePaint);
-            drawBorderSegment(c, handles.getBottom(), handles.getLowerLeft(),
-                    borderHandlePaint);
-            drawHandle(c, handles.getLowerLeft(), borderHandlePaint);
-            drawBorderSegment(c, handles.getLowerLeft(), handles.getLeft(),
-                    borderHandlePaint);
+            this.drawHandle(c, handles.getTop(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getTop(),
+                    handles.getUpperRight(), borderHandlePaint);
+            this.drawHandle(c, handles.getUpperRight(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getUpperRight(),
+                    handles.getRight(), borderHandlePaint);
+            this.drawHandle(c, handles.getRight(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getRight(),
+                    handles.getLowerRight(), borderHandlePaint);
+            this.drawHandle(c, handles.getLowerRight(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getLowerRight(),
+                    handles.getBottom(), borderHandlePaint);
+            this.drawHandle(c, handles.getBottom(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getBottom(),
+                    handles.getLowerLeft(), borderHandlePaint);
+            this.drawHandle(c, handles.getLowerLeft(), borderHandlePaint);
+            this.drawBorderSegment(c, handles.getLowerLeft(),
+                    handles.getLeft(), borderHandlePaint);
 
         }
-    }
-
-    private void drawHandle(Canvas c, PointF location, Paint p) {
-        c.drawCircle(location.x, location.y, handleCircleRadiusPx(), p);
     }
 
     /**
@@ -345,15 +99,288 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
      * @param p
      */
     private void drawBorderSegment(Canvas c, PointF p1, PointF p2, Paint p) {
-        float horizontalClip = Math.abs(p1.x - p2.x) > Math.abs(p1.y - p2.y)
-                ? handleCircleRadiusPx()
-                : 0;
-        float verticalClip = Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y)
-                ? handleCircleRadiusPx()
-                : 0;
+        float horizontalClip =
+                Math.abs(p1.x - p2.x) > Math.abs(p1.y - p2.y) ? this
+                        .handleCircleRadiusPx() : 0;
+        float verticalClip =
+                Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y) ? this
+                        .handleCircleRadiusPx() : 0;
 
         c.drawLine(Math.min(p1.x, p2.x) + horizontalClip, Math.min(p1.y, p2.y)
                 + verticalClip, Math.max(p1.x, p2.x) - horizontalClip,
                 Math.max(p1.y, p2.y) - verticalClip, p);
+    }
+
+    private void drawHandle(Canvas c, PointF location, Paint p) {
+        c.drawCircle(location.x, location.y, this.handleCircleRadiusPx(), p);
+    }
+
+    private int handleCircleRadiusPx() {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                HANDLE_CIRCLE_RADIUS_DP, this.getView().getResources()
+                        .getDisplayMetrics());
+    }
+
+    @Override
+    public boolean onDown(final MotionEvent e) {
+        PointF locationWorldSpace =
+                this.getData()
+                        .getWorldSpaceTransformer()
+                        .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
+
+        this.mSelectedImage =
+                this.getData()
+                        .getBackgroundImages()
+                        .getImageOnPoint(
+                                locationWorldSpace,
+                                this.getData()
+                                        .getWorldSpaceTransformer()
+                                        .screenSpaceToWorldSpace(
+                                                this.handleCircleRadiusPx()));
+
+        this.mLastDragPoint = new PointF(e.getX(), e.getY());
+
+        if (this.mSelectedImage != null) {
+            // Select a handle mode based on what part of the image was touched.
+            BoundingRectangle r = this.mSelectedImage.getBoundingRectangle();
+
+            // Convert bounding rectangle bounds to screen space.
+            PointF upperLeft =
+                    this.getData()
+                            .getWorldSpaceTransformer()
+                            .worldSpaceToScreenSpace(
+                                    new PointF(r.getXMin(), r.getYMin()));
+            PointF lowerRight =
+                    this.getData()
+                            .getWorldSpaceTransformer()
+                            .worldSpaceToScreenSpace(
+                                    new PointF(r.getXMax(), r.getYMax()));
+            float xmin = upperLeft.x;
+            float xmax = lowerRight.x;
+            float ymin = upperLeft.y;
+            float ymax = lowerRight.y;
+
+            HandleSet handles = new HandleSet(xmin, xmax, ymin, ymax);
+            this.mHandleMode = handles.getHandleMode(this.mLastDragPoint);
+            if (this.getView().shouldSnapToGrid()) {
+                this.mLastDragPoint =
+                        handles.getClickedHandleCenter(this.mLastDragPoint);
+            }
+
+        }
+
+        this.getView().refreshMap();
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
+            final float distanceXignored, final float distanceYignored) {
+
+        PointF snapped = this.getScreenSpacePoint(e2);
+
+        float distanceX = snapped.x - this.mLastDragPoint.x;
+        float distanceY = snapped.y - this.mLastDragPoint.y;
+        this.mLastDragPoint = snapped;
+
+        if (this.mSelectedImage != null) {
+            float wsDistX =
+                    this.getData().getWorldSpaceTransformer()
+                            .screenSpaceToWorldSpace(distanceX);
+            float wsDistY =
+                    this.getData().getWorldSpaceTransformer()
+                            .screenSpaceToWorldSpace(distanceY);
+            switch (this.mHandleMode) {
+            case LEFT:
+                this.mSelectedImage.moveLeft(wsDistX);
+                break;
+            case RIGHT:
+                this.mSelectedImage.moveRight(wsDistX);
+                break;
+            case TOP:
+                this.mSelectedImage.moveTop(wsDistY);
+                break;
+            case BOTTOM:
+                this.mSelectedImage.moveBottom(wsDistY);
+                break;
+            case UPPER_LEFT:
+                this.mSelectedImage.moveLeft(wsDistX);
+                this.mSelectedImage.moveTop(wsDistY);
+                break;
+            case LOWER_LEFT:
+                this.mSelectedImage.moveLeft(wsDistX);
+                this.mSelectedImage.moveBottom(wsDistY);
+                break;
+            case UPPER_RIGHT:
+                this.mSelectedImage.moveRight(wsDistX);
+                this.mSelectedImage.moveTop(wsDistY);
+                break;
+            case LOWER_RIGHT:
+                this.mSelectedImage.moveRight(wsDistX);
+                this.mSelectedImage.moveBottom(wsDistY);
+                break;
+            default:
+                this.mSelectedImage.moveImage(wsDistX, wsDistY);
+                break;
+            }
+            this.getView().refreshMap();
+        } else {
+            super.onScroll(e1, e2, distanceX, distanceY);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(final MotionEvent e) {
+        PointF locationWorldSpace =
+                this.getData()
+                        .getWorldSpaceTransformer()
+                        .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
+
+        BackgroundImage tappedImage =
+                this.getData()
+                        .getBackgroundImages()
+                        .getImageOnPoint(
+                                locationWorldSpace,
+                                this.getData()
+                                        .getWorldSpaceTransformer()
+                                        .screenSpaceToWorldSpace(
+                                                this.handleCircleRadiusPx()));
+
+        if (tappedImage == null) {
+            BackgroundImage i =
+                    new BackgroundImage(this.getView().getResources()
+                            .getDrawable(R.drawable.add_image));
+            i.setLocation(locationWorldSpace);
+            this.getData().getBackgroundImages().addImage(i);
+            this.mSelectedImage = i;
+        }
+        this.getView().refreshMap();
+        return true;
+    }
+
+    /**
+     * Enum for representing what aspect of an image is being dragged.
+     * 
+     * @author Tim
+     * 
+     */
+    private enum HandleMode {
+        BOTTOM, LEFT, LOWER_LEFT, LOWER_RIGHT, // CHECKSTYLE:OFF
+        MOVE,
+        RIGHT,
+        TOP,
+        UPPER_LEFT,
+        UPPER_RIGHT,
+        // CHECKSTYLE:ON
+    }
+
+    /**
+     * Provides ability to specify a rectangle and query the locations of the
+     * handles to manipulate parts of that rectangle.
+     * 
+     * @author Tim
+     * 
+     */
+    private class HandleSet {
+        float mXmax;
+        float mXmin;
+        float mYmax;
+        float mYmin;
+
+        public HandleSet(float xmin, float xmax, float ymin, float ymax) {
+            this.mXmin = xmin;
+            this.mXmax = xmax;
+            this.mYmin = ymin;
+            this.mYmax = ymax;
+        }
+
+        public PointF getBottom() {
+            return new PointF((this.mXmin + this.mXmax) / 2, this.mYmax);
+        }
+
+        /**
+         * Gets the center of the handle that was clicked on. This is used to
+         * more accurately snap those handles to the grid. In the case of moving
+         * the image rather than an edge, the upper left point is returned since
+         * that is what will snap to the grid.
+         * 
+         * @param p
+         * @return
+         */
+        public PointF getClickedHandleCenter(PointF p) {
+            int r = BackgroundImageInteractionMode.this.handleCircleRadiusPx();
+            if (Util.distance(p, this.getLeft()) < r) {
+                return this.getLeft();
+            } else if (Util.distance(p, this.getRight()) < r) {
+                return this.getRight();
+            } else if (Util.distance(p, this.getTop()) < r) {
+                return this.getTop();
+            } else if (Util.distance(p, this.getBottom()) < r) {
+                return this.getBottom();
+            } else if (Util.distance(p, this.getUpperLeft()) < r) {
+                return this.getUpperLeft();
+            } else if (Util.distance(p, this.getLowerLeft()) < r) {
+                return this.getLowerLeft();
+            } else if (Util.distance(p, this.getUpperRight()) < r) {
+                return this.getUpperRight();
+            } else if (Util.distance(p, this.getLowerRight()) < r) {
+                return this.getLowerRight();
+            } else {
+                return this.getUpperLeft();
+            }
+        }
+
+        public HandleMode getHandleMode(PointF p) {
+            int r = BackgroundImageInteractionMode.this.handleCircleRadiusPx();
+            if (Util.distance(p, this.getLeft()) < r) {
+                return HandleMode.LEFT;
+            } else if (Util.distance(p, this.getRight()) < r) {
+                return HandleMode.RIGHT;
+            } else if (Util.distance(p, this.getTop()) < r) {
+                return HandleMode.TOP;
+            } else if (Util.distance(p, this.getBottom()) < r) {
+                return HandleMode.BOTTOM;
+            } else if (Util.distance(p, this.getUpperLeft()) < r) {
+                return HandleMode.UPPER_LEFT;
+            } else if (Util.distance(p, this.getLowerLeft()) < r) {
+                return HandleMode.LOWER_LEFT;
+            } else if (Util.distance(p, this.getUpperRight()) < r) {
+                return HandleMode.UPPER_RIGHT;
+            } else if (Util.distance(p, this.getLowerRight()) < r) {
+                return HandleMode.LOWER_RIGHT;
+            } else {
+                return HandleMode.MOVE;
+            }
+        }
+
+        public PointF getLeft() {
+            return new PointF(this.mXmin, (this.mYmin + this.mYmax) / 2);
+        }
+
+        public PointF getLowerLeft() {
+            return new PointF(this.mXmin, this.mYmax);
+        }
+
+        public PointF getLowerRight() {
+            return new PointF(this.mXmax, this.mYmax);
+        }
+
+        public PointF getRight() {
+            return new PointF(this.mXmax, (this.mYmin + this.mYmax) / 2);
+        }
+
+        public PointF getTop() {
+            return new PointF((this.mXmin + this.mXmax) / 2, this.mYmin);
+        }
+
+        public PointF getUpperLeft() {
+            return new PointF(this.mXmin, this.mYmin);
+        }
+
+        public PointF getUpperRight() {
+            return new PointF(this.mXmax, this.mYmin);
+        }
     }
 }

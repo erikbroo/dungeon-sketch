@@ -3,8 +3,6 @@ package com.tbocek.android.combatmap.model.primitives;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tbocek.android.combatmap.DeveloperMode;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -15,6 +13,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.tbocek.android.combatmap.DeveloperMode;
+
 /**
  * Base class for tokens that display some sort of drawable. Provides standard
  * drawing methods and a caching scheme. Subclasses need mainly to specify how
@@ -24,16 +24,6 @@ import android.util.Log;
  * 
  */
 public abstract class DrawableToken extends BaseToken {
-
-    /**
-     * Alpha value that will draw at full opacity.
-     */
-    private static final int FULL_OPACITY = 255;
-
-    /**
-     * Alpha value that will draw at half opacity.
-     */
-    private static final int HALF_OPACITY = 128;
 
     /**
      * Color transformation matrix used to place a red tint on bloodied tokens.
@@ -60,22 +50,95 @@ public abstract class DrawableToken extends BaseToken {
             new HashMap<String, Drawable>();
 
     /**
+     * Alpha value that will draw at full opacity.
+     */
+    private static final int FULL_OPACITY = 255;
+
+    /**
+     * Alpha value that will draw at half opacity.
+     */
+    private static final int HALF_OPACITY = 128;
+
+    /**
      * The loaded drawable to use.
      */
     private transient Drawable mDrawable;
 
+    /**
+     * Sets the clip of the given canvas to a circle centered at (x,y) with
+     * radius r.
+     * 
+     * @param c
+     *            The canvas we are drawing on.
+     * @param x
+     *            X coordinate of the circle to clip to.
+     * @param y
+     *            Y coordinate of the circle to clip to.
+     * @param radius
+     *            Radius of the circle to clip to.
+     */
+    private void clipToCircle(final Canvas c, final float x, final float y,
+            final float radius) {
+        Path p = new Path();
+        p.addCircle(x, y, radius, Path.Direction.CW);
+        c.clipPath(p);
+    }
+
+    /**
+     * Loads the drawable. Subclasses override this to specify how to load their
+     * specific type of drawable.
+     * 
+     * @return The created drawable, or null if the drawable could not be
+     *         created.
+     */
+    protected abstract Drawable createDrawable();
+
     @Override
     public final void drawBloodiedImpl(final Canvas c, final float x,
             final float y, final float radius, final boolean isManipulatable) {
-        Drawable d = getDrawable();
+        Drawable d = this.getDrawable();
         if (d != null) {
             d.setColorFilter(BLOODIED_FILTER);
-            drawImpl(c, x, y, radius, false, isManipulatable);
+            this.drawImpl(c, x, y, radius, false, isManipulatable);
             d.setColorFilter(null);
         } else {
-            drawPlaceholder(c, x, y, radius);
+            this.drawPlaceholder(c, x, y, radius);
         }
 
+    }
+
+    @Override
+    protected final void drawGhost(final Canvas c, final float x,
+            final float y, final float radius) {
+        Drawable d = this.getDrawable();
+        if (d != null) {
+            d.setAlpha(HALF_OPACITY);
+            this.drawImpl(c, x, y, radius, false, true);
+            d.setAlpha(FULL_OPACITY);
+        }
+    }
+
+    @Override
+    public final void drawImpl(final Canvas c, final float x, final float y,
+            final float radius, final boolean darkBackground,
+            final boolean isManipulatable) {
+        Drawable d = this.getDrawable();
+        if (d != null) {
+            c.save(Canvas.CLIP_SAVE_FLAG);
+            this.clipToCircle(c, x, y, radius);
+            d.setBounds(new Rect((int) (x - radius), (int) (y - radius),
+                    (int) (x + radius), (int) (y + radius)));
+            if (!isManipulatable) {
+                d.setAlpha(HALF_OPACITY);
+            }
+            d.draw(c);
+            if (!isManipulatable) {
+                d.setAlpha(FULL_OPACITY);
+            }
+            c.restore();
+        } else {
+            this.drawPlaceholder(c, x, y, radius);
+        }
     }
 
     /**
@@ -100,60 +163,6 @@ public abstract class DrawableToken extends BaseToken {
         c.drawCircle(x, y, radius, p);
     }
 
-    @Override
-    public final void drawImpl(final Canvas c, final float x, final float y,
-            final float radius, final boolean darkBackground,
-            final boolean isManipulatable) {
-        Drawable d = getDrawable();
-        if (d != null) {
-            c.save(Canvas.CLIP_SAVE_FLAG);
-            clipToCircle(c, x, y, radius);
-            d.setBounds(new Rect((int) (x - radius), (int) (y - radius),
-                    (int) (x + radius), (int) (y + radius)));
-            if (!isManipulatable) {
-                d.setAlpha(HALF_OPACITY);
-            }
-            d.draw(c);
-            if (!isManipulatable) {
-                d.setAlpha(FULL_OPACITY);
-            }
-            c.restore();
-        } else {
-            drawPlaceholder(c, x, y, radius);
-        }
-    }
-
-    /**
-     * Sets the clip of the given canvas to a circle centered at (x,y) with
-     * radius r.
-     * 
-     * @param c
-     *            The canvas we are drawing on.
-     * @param x
-     *            X coordinate of the circle to clip to.
-     * @param y
-     *            Y coordinate of the circle to clip to.
-     * @param radius
-     *            Radius of the circle to clip to.
-     */
-    private void clipToCircle(final Canvas c, final float x, final float y,
-            final float radius) {
-        Path p = new Path();
-        p.addCircle(x, y, radius, Path.Direction.CW);
-        c.clipPath(p);
-    }
-
-    @Override
-    protected final void drawGhost(final Canvas c, final float x,
-            final float y, final float radius) {
-        Drawable d = getDrawable();
-        if (d != null) {
-            d.setAlpha(HALF_OPACITY);
-            drawImpl(c, x, y, radius, false, true);
-            d.setAlpha(FULL_OPACITY);
-        }
-    }
-
     /**
      * Returns the drawable associated with this token. This may cause the
      * drawable to be loaded.
@@ -162,29 +171,22 @@ public abstract class DrawableToken extends BaseToken {
      */
     private Drawable getDrawable() {
         synchronized (drawableCache) {
-            if (drawableCache.containsKey(getTokenId())) {
-                return drawableCache.get(getTokenId());
+            if (drawableCache.containsKey(this.getTokenId())) {
+                return drawableCache.get(this.getTokenId());
             }
-            return mDrawable;
-        }
-    }
-
-    @Override
-    public final boolean needsLoad() {
-        synchronized (drawableCache) {
-            return !drawableCache.containsKey(getTokenId());
+            return this.mDrawable;
         }
     }
 
     @Override
     public final void load() {
-        if (mDrawable == null) {
-            mDrawable = createDrawable();
+        if (this.mDrawable == null) {
+            this.mDrawable = this.createDrawable();
         }
 
-        if (mDrawable != null) {
+        if (this.mDrawable != null) {
             synchronized (drawableCache) {
-                drawableCache.put(getTokenId(), mDrawable);
+                drawableCache.put(this.getTokenId(), this.mDrawable);
             }
         } else if (DeveloperMode.DEVELOPER_MODE) {
             Log.d(DrawableToken.class.getName(),
@@ -192,13 +194,11 @@ public abstract class DrawableToken extends BaseToken {
         }
     }
 
-    /**
-     * Loads the drawable. Subclasses override this to specify how to load their
-     * specific type of drawable.
-     * 
-     * @return The created drawable, or null if the drawable could not be
-     *         created.
-     */
-    protected abstract Drawable createDrawable();
+    @Override
+    public final boolean needsLoad() {
+        synchronized (drawableCache) {
+            return !drawableCache.containsKey(this.getTokenId());
+        }
+    }
 
 }

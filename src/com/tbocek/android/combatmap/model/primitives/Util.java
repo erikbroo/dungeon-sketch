@@ -24,22 +24,6 @@ public final class Util {
     public static final float FP_COMPARE_ERROR = 1e-10f;
 
     /**
-     * Hue is represented on a 360 degree circle.
-     */
-    private static final int HUE_DEGREES = 360;
-
-    /**
-     * Amount to increment around the color wheel.
-     */
-    private static final int HUE_INCREMENT = 30;
-
-    /**
-     * Amount to adjust saturation and luminence by when they are not held at
-     * full when generating the palette.
-     */
-    private static final float SAT_LUM_ADJUST = .5f;
-
-    /**
      * Constant for full opacity alpha value.
      */
     public static final int FULL_OPACITY = 255;
@@ -50,23 +34,26 @@ public final class Util {
     public static final int HALF_OPACITY = 128;
 
     /**
+     * Hue is represented on a 360 degree circle.
+     */
+    private static final int HUE_DEGREES = 360;
+
+    /**
+     * Amount to increment around the color wheel.
+     */
+    private static final int HUE_INCREMENT = 30;
+
+    /**
      * Color to highlight text with when a token is being dragged to it. Should
      * match Android's Holo light blue.
      */
     public static final int ICS_BLUE = Color.rgb(44, 169, 210);
 
     /**
-     * Compute the distance between two PointFs.
-     * 
-     * @param p1
-     *            First point.
-     * @param p2
-     *            Second point.
-     * @return The distance.
+     * Amount to adjust saturation and luminence by when they are not held at
+     * full when generating the palette.
      */
-    public static float distance(final PointF p1, final PointF p2) {
-        return distance(p1.x, p1.y, p2.x, p2.y);
-    }
+    private static final float SAT_LUM_ADJUST = .5f;
 
     /**
      * Compute the distance between two points.
@@ -85,6 +72,19 @@ public final class Util {
             final float x2, final float y2) {
         return (float) Math.sqrt((double) (x1 - x2) * (x1 - x2) + (y1 - y2)
                 * (y1 - y2));
+    }
+
+    /**
+     * Compute the distance between two PointFs.
+     * 
+     * @param p1
+     *            First point.
+     * @param p2
+     *            Second point.
+     * @return The distance.
+     */
+    public static float distance(final PointF p1, final PointF p2) {
+        return distance(p1.x, p1.y, p2.x, p2.y);
     }
 
     /**
@@ -115,53 +115,6 @@ public final class Util {
         }
 
         return palette;
-    }
-
-    /**
-     * Class that contains a pair of intersections that results from a
-     * line/circle intersection calculation. Not guaranteed to be in a
-     * particular order.
-     * 
-     * @author Tim
-     * 
-     */
-    public static class IntersectionPair {
-        /**
-         * The first intersection.
-         */
-        private PointF mIntersection1;
-
-        /**
-         * The second intersection.
-         */
-        private PointF mIntersection2;
-
-        /**
-         * Constructor.
-         * 
-         * @param i1
-         *            First intersection.
-         * @param i2
-         *            Second intersection.
-         */
-        public IntersectionPair(PointF i1, PointF i2) {
-            mIntersection1 = i1;
-            mIntersection2 = i2;
-        }
-
-        /**
-         * @return The first intersection.
-         */
-        public PointF getIntersection1() {
-            return mIntersection1;
-        }
-
-        /**
-         * @return The second intersection.
-         */
-        public PointF getIntersection2() {
-            return mIntersection2;
-        }
     }
 
     /**
@@ -211,19 +164,19 @@ public final class Util {
             float signDy = dy < 0 ? -1 : 1;
             // Now, compute the x coordinates of the real intersection with the
             // line, not the line segment. Again, this is from Wolfram.
-            float intersect1X = (float) ((det * dy - signDy * dx
-                    * Math.sqrt(discriminant)) / dsquared)
-                    + center.x;
-            float intersect2X = (float) ((det * dy + signDy * dx
-                    * Math.sqrt(discriminant)) / dsquared)
-                    + center.x;
+            float intersect1X =
+                    (float) ((det * dy - signDy * dx * Math.sqrt(discriminant)) / dsquared)
+                            + center.x;
+            float intersect2X =
+                    (float) ((det * dy + signDy * dx * Math.sqrt(discriminant)) / dsquared)
+                            + center.x;
 
-            float intersect1Y = (float) ((det * dx - Math.abs(dy)
-                    * Math.sqrt(discriminant)) / dsquared)
-                    + center.y;
-            float intersect2Y = (float) ((det * dx + Math.abs(dy)
-                    * Math.sqrt(discriminant)) / dsquared)
-                    + center.y;
+            float intersect1Y =
+                    (float) ((det * dx - Math.abs(dy) * Math.sqrt(discriminant)) / dsquared)
+                            + center.y;
+            float intersect2Y =
+                    (float) ((det * dx + Math.abs(dy) * Math.sqrt(discriminant)) / dsquared)
+                            + center.y;
 
             return new IntersectionPair(new PointF(intersect1X, intersect1Y),
                     new PointF(intersect2X, intersect2Y));
@@ -275,5 +228,52 @@ public final class Util {
      * Utility class - private constructor.
      */
     private Util() {
+    }
+
+    /**
+     * Class that contains a pair of intersections that results from a
+     * line/circle intersection calculation. Not guaranteed to be in a
+     * particular order.
+     * 
+     * @author Tim
+     * 
+     */
+    public static class IntersectionPair {
+        /**
+         * The first intersection.
+         */
+        private PointF mIntersection1;
+
+        /**
+         * The second intersection.
+         */
+        private PointF mIntersection2;
+
+        /**
+         * Constructor.
+         * 
+         * @param i1
+         *            First intersection.
+         * @param i2
+         *            Second intersection.
+         */
+        public IntersectionPair(PointF i1, PointF i2) {
+            this.mIntersection1 = i1;
+            this.mIntersection2 = i2;
+        }
+
+        /**
+         * @return The first intersection.
+         */
+        public PointF getIntersection1() {
+            return this.mIntersection1;
+        }
+
+        /**
+         * @return The second intersection.
+         */
+        public PointF getIntersection2() {
+            return this.mIntersection2;
+        }
     }
 }

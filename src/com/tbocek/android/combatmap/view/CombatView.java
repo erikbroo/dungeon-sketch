@@ -49,28 +49,47 @@ import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
  * 
  */
 public final class CombatView extends SurfaceView {
-    
+
     /**
      * For the explanatory mask text, Y location of the first line in density-
      * Independent pixels.
      */
     private static final int EXPLANATORY_TEXT_INITIAL_Y_DP = 16;
-    
+
     /**
      * For the explanatory mask text, height of each line in density-
      * Independent pixels.
      */
     private static final int EXPLANATORY_TEXT_LINE_HEIGHT_DP = 20;
-    
+
+    /**
+     * Reference to the collection of lines that are actively being drawn.
+     */
+    private LineCollection mActiveLines;
+
+    /**
+     * Whether tokens should be drawn as manipulatable.
+     */
+    private boolean mAreTokensManipulatable = true;
+
+    /**
+     * The current map.
+     */
+    private MapData mData;
+
+    private boolean mEditingMask = false;
+
+    private Paint mExplanatoryTextPaint;
+
+    /**
+     * What to do with the fog of war when drawing.
+     */
+    private MapDrawer.FogOfWarMode mFogOfWarMode;
+
     /**
      * Detector object to detect regular gestures.
      */
     private GestureDetector mGestureDetector;
-
-    /**
-     * Detector object to detect pinch zoom.
-     */
-    private ScaleGestureDetector mScaleDetector;
 
     /**
      * Interaction mode, defining how the view should currently respond to user
@@ -89,19 +108,31 @@ public final class CombatView extends SurfaceView {
     private float mNewLineStrokeWidth;
 
     /**
-     * The current map.
+     * The style that new lines should have.
      */
-    private MapData mData;
+    private NewLineStyle mNewLineStyle = NewLineStyle.FREEHAND;
 
     /**
-     * Reference to the collection of lines that are actively being drawn.
+     * Callback that the parent activity registers to listen to requests for
+     * new/edited text objects. This indirection is needed because this
+     * operation requires a dialog, which the activity needs to open.
      */
-    private LineCollection mActiveLines;
+    private NewTextEntryListener mNewTextEntryListener;
 
     /**
-     * Whether tokens being moved should snap to the grid.
+     * Drag and drop listener that allows the user to drop tokens onto the grid.
      */
-    private boolean mSnapToGrid;
+    private View.OnDragListener mOnDrag;
+
+    /**
+     * Listener to publish refresh requests to.
+     */
+    private OnRefreshListener mOnRefreshListener;
+
+    /**
+     * Detector object to detect pinch zoom.
+     */
+    private ScaleGestureDetector mScaleDetector;
 
     /**
      * Whether to draw the annotation layer.
@@ -114,9 +145,33 @@ public final class CombatView extends SurfaceView {
     private boolean mShouldDrawGmNotes;
 
     /**
-     * Whether tokens should be drawn as manipulatable.
+     * Whether tokens being moved should snap to the grid.
      */
-    private boolean mAreTokensManipulatable = true;
+    private boolean mSnapToGrid;
+
+    /**
+     * Callback for the Android graphics surface management system.
+     */
+    private SurfaceHolder.Callback mSurfaceHolderCallback =
+            new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceChanged(SurfaceHolder arg0, int arg1,
+                        int arg2, int arg3) {
+                    CombatView.this.refreshMap();
+                }
+
+                @Override
+                public void surfaceCreated(SurfaceHolder arg0) {
+                    CombatView.this.mSurfaceReady = true;
+                    CombatView.this.refreshMap();
+                }
+
+                @Override
+                public void surfaceDestroyed(SurfaceHolder arg0) {
+                    CombatView.this.mSurfaceReady = false;
+
+                }
+            };
 
     /**
      * Whether the surface is ready to draw.
@@ -124,107 +179,20 @@ public final class CombatView extends SurfaceView {
     private boolean mSurfaceReady = false;
 
     /**
-     * Drag and drop listener that allows the user to drop tokens onto the grid.
-     */
-    private View.OnDragListener mOnDrag;
-
-    /**
-     * The current map data object that undo/redo actions will affect.
-     */
-    private UndoRedoTarget mUndoRedoTarget;
-
-    /**
-     * Callback that the parent activity registers to listen to requests for
-     * new/edited text objects. This indirection is needed because this
-     * operation requires a dialog, which the activity needs to open.
-     */
-    private NewTextEntryListener mNewTextEntryListener;
-
-    /**
-     * Listener to publish refresh requests to.
-     */
-    private OnRefreshListener mOnRefreshListener;
-
-    /**
      * Object to manage a selection of multiple tokens.
      */
     private MultiSelectManager mTokenSelection = new MultiSelectManager();
-
-    private Paint mExplanatoryTextPaint;
-
-    private boolean mEditingMask = false;
-
-    /**
-     * Callback for the Android graphics surface management system.
-     */
-    private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
-        @Override
-        public void surfaceDestroyed(SurfaceHolder arg0) {
-            mSurfaceReady = false;
-
-        }
-
-        @Override
-        public void surfaceCreated(SurfaceHolder arg0) {
-            mSurfaceReady = true;
-            refreshMap();
-        }
-
-        @Override
-        public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2,
-                int arg3) {
-            refreshMap();
-        }
-    };
-
-    /**
-     * What to do with the fog of war when drawing.
-     */
-    private MapDrawer.FogOfWarMode mFogOfWarMode;
-
-    /**
-     * The style that new lines should have.
-     * 
-     * @author Tim
-     * 
-     */
-    public enum NewLineStyle {
-        /**
-         * Draw freehand lines.
-         */
-        FREEHAND,
-
-        /**
-         * Draw straight lines.
-         */
-        STRAIGHT,
-
-        /**
-         * Draw a circle.
-         */
-        CIRCLE,
-
-        /**
-         * Draw text.
-         */
-        TEXT,
-
-        /**
-         * Draw rectangle.
-         */
-        RECTANGLE
-    }
-
-    /**
-     * The style that new lines should have.
-     */
-    private NewLineStyle mNewLineStyle = NewLineStyle.FREEHAND;
 
     /**
      * Whether tokens snap to the intersections of grid lines rather than the
      * spaces between them.
      */
     private boolean mTokensSnapToIntersections;
+
+    /**
+     * The current map data object that undo/redo actions will affect.
+     */
+    private UndoRedoTarget mUndoRedoTarget;
 
     /**
      * Constructor.
@@ -236,33 +204,39 @@ public final class CombatView extends SurfaceView {
     public CombatView(final Context context) {
         super(context);
 
-        mExplanatoryTextPaint = new Paint();
-        mExplanatoryTextPaint.setTextAlign(Align.CENTER);
-        mExplanatoryTextPaint.setTextSize(24);
-        mExplanatoryTextPaint.setColor(Color.RED);
+        this.mExplanatoryTextPaint = new Paint();
+        this.mExplanatoryTextPaint.setTextAlign(Align.CENTER);
+        this.mExplanatoryTextPaint.setTextSize(24);
+        this.mExplanatoryTextPaint.setColor(Color.RED);
 
-        setFocusable(true);
-        setFocusableInTouchMode(true);
+        this.setFocusable(true);
+        this.setFocusableInTouchMode(true);
 
         this.setTokenManipulationMode();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            mOnDrag = new View.OnDragListener() {
+            this.mOnDrag = new View.OnDragListener() {
                 @Override
                 public boolean onDrag(final View view, final DragEvent event) {
                     Log.d("DRAG", Integer.toString(event.getAction()));
                     if (event.getAction() == DragEvent.ACTION_DROP) {
                         BaseToken toAdd = (BaseToken) event.getLocalState();
-                        PointF location = getGridSpaceTransformer()
-                                .screenSpaceToWorldSpace(
-                                        new PointF(event.getX(), event.getY()));
-                        if (mSnapToGrid) {
-                            location = getData().getGrid().getNearestSnapPoint(
-                                    location, toAdd.getSize());
+                        PointF location =
+                                CombatView.this.getGridSpaceTransformer()
+                                        .screenSpaceToWorldSpace(
+                                                new PointF(event.getX(), event
+                                                        .getY()));
+                        if (CombatView.this.mSnapToGrid) {
+                            location =
+                                    CombatView.this
+                                            .getData()
+                                            .getGrid()
+                                            .getNearestSnapPoint(location,
+                                                    toAdd.getSize());
                         }
                         toAdd.setLocation(location);
-                        getData().getTokens().addToken(toAdd);
-                        refreshMap();
+                        CombatView.this.getData().getTokens().addToken(toAdd);
+                        CombatView.this.refreshMap();
                         return true;
                     } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                         return true;
@@ -270,297 +244,20 @@ public final class CombatView extends SurfaceView {
                     return false;
                 }
             };
-            this.setOnDragListener(mOnDrag);
+            this.setOnDragListener(this.mOnDrag);
         }
 
-        getHolder().addCallback(this.mSurfaceHolderCallback);
+        this.getHolder().addCallback(this.mSurfaceHolderCallback);
         // setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     /**
-     * Sets the interaction mode to simple zooming and panning.
-     */
-    public void setZoomPanMode() {
-        setInteractionMode(new ZoomPanInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to dragging tokens; this will zoom and pan when
-     * not on a token. Note that annotations should always draw in this mode.
-     */
-    public void setTokenManipulationMode() {
-        setInteractionMode(new TokenManipulationInteractionMode(this));
-        mShouldDrawAnnotations = true;
-        mShouldDrawGmNotes = true;
-        if (mData != null) {
-            mUndoRedoTarget = mData.getTokens();
-        }
-    }
-
-    /**
-     * Sets the interaction mode to selecting multiple tokens.
-     */
-    public void setMultiTokenMode() {
-        setInteractionMode(new TokenMultiSelectInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to drawing lines.
-     */
-    public void setDrawMode() {
-        setInteractionMode(new FingerDrawInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to creating text objects.
-     */
-    public void setTextMode() {
-        setInteractionMode(new DrawTextInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to drawing fog of war regions.
-     */
-    public void setFogOfWarDrawMode() {
-        setInteractionMode(new MaskDrawInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to erase mask regions.
-     */
-    public void setFogOfWarEraseMode() {
-        setInteractionMode(new MaskEraseInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to erasing lines.
-     */
-    public void setEraseMode() {
-        setInteractionMode(new EraserInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to resizing the grid independent of anything
-     * already drawn.
-     */
-    public void setResizeGridMode() {
-        setInteractionMode(new GridRepositioningInteractionMode(this));
-    }
-
-    /**
-     * Sets the interaction mode to creating and manipulating background images.
-     */
-    public void setBackgroundImageMode() {
-        setInteractionMode(new BackgroundImageInteractionMode(this));
-    }
-
-    public void setEditingLayerMask(boolean editingLayerMask) {
-        this.mEditingMask = editingLayerMask;
-        this.refreshMap();
-    }
-
-    /**
-     * Sets the background layer as the active layer, so that any draw commands
-     * will draw on the background.
-     */
-    public void useBackgroundLayer() {
-        mActiveLines = getData().getBackgroundLines();
-        mShouldDrawAnnotations = false;
-        mShouldDrawGmNotes = false;
-        mUndoRedoTarget = mActiveLines;
-    }
-
-    /**
-     * Sets the annotation layer as the active layer, so that any draw commands
-     * will draw on the annotations.
-     */
-    public void useAnnotationLayer() {
-        mActiveLines = getData().getAnnotationLines();
-        mShouldDrawAnnotations = true;
-        mShouldDrawGmNotes = false;
-        mUndoRedoTarget = mActiveLines;
-    }
-
-    /**
-     * Sets the gm note layer as the active layer, so that any draw commands
-     * will draw on the annotations.
-     */
-    public void useGmNotesLayer() {
-        mActiveLines = getData().getGmNoteLines();
-        mShouldDrawAnnotations = false;
-        mShouldDrawGmNotes = true;
-        mUndoRedoTarget = mActiveLines;
-    }
-
-    /**
-     * Sets the interaction mode to the given listener.
+     * Creates a new region in the fog of war.
      * 
-     * @param mode
-     *            The interaction mode to use.
+     * @return The new region.
      */
-    private void setInteractionMode(final CombatViewInteractionMode mode) {
-        if (mInteractionMode != null) {
-            mInteractionMode.onEndMode();
-        }
-
-        mGestureDetector = new GestureDetector(this.getContext(), mode);
-        mGestureDetector.setOnDoubleTapListener(mode);
-        mScaleDetector = new ScaleGestureDetector(this.getContext(), mode);
-        mInteractionMode = mode;
-
-        if (mInteractionMode != null) {
-            mInteractionMode.onStartMode();
-        }
-
-        this.refreshMap();
-    }
-
-    /**
-     * Sets what to do with the fog of war layer.
-     * 
-     * @param mode
-     *            The fog of war mode to use.
-     */
-    public void setFogOfWarMode(final FogOfWarMode mode) {
-        mFogOfWarMode = mode;
-        refreshMap();
-    }
-
-    /**
-     * 
-     * @return The fog of war mode.
-     */
-    public FogOfWarMode getFogOfWarMode() {
-        return mFogOfWarMode;
-    }
-
-    /**
-     * Sets whether tokens are manipulatable.
-     * 
-     * @param manip
-     *            Value to set.
-     */
-    public void setAreTokensManipulatable(boolean manip) {
-        mAreTokensManipulatable = manip;
-    }
-
-    @Override
-    public boolean onTouchEvent(final MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            this.mInteractionMode.addFinger();
-        }
-
-        this.mGestureDetector.onTouchEvent(ev);
-        this.mScaleDetector.onTouchEvent(ev);
-
-        // If a finger was removed, optimize the lines by removing unused
-        // points.
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            this.mInteractionMode.removeFinger();
-            this.mInteractionMode.onUp(ev);
-        }
-        return true;
-    }
-
-    /**
-     * Redraws the contents of the map.
-     */
-    public void refreshMap() {
-        if (!mSurfaceReady) {
-            return;
-        }
-
-        SurfaceHolder holder = getHolder();
-        Canvas canvas = holder.lockCanvas();
-        if (canvas != null) {
-            drawOnCanvas(canvas);
-            holder.unlockCanvasAndPost(canvas);
-        }
-
-        if (mOnRefreshListener != null) {
-            mOnRefreshListener.onRefresh();
-        }
-    }
-
-    /**
-     * Draws the contents of the view to the given canvas.
-     * 
-     * @param canvas
-     *            The canvas to draw on.
-     */
-    private void drawOnCanvas(final Canvas canvas) {
-        new MapDrawer()
-                .drawGridLines(true)
-                .drawGmNotes(this.mShouldDrawGmNotes)
-                .drawTokens(true)
-                .areTokensManipulable(mAreTokensManipulatable)
-                .drawAnnotations(this.mShouldDrawAnnotations)
-                .gmNotesFogOfWar(
-                        this.mActiveLines == getData().getGmNoteLines()
-                                ? FogOfWarMode.DRAW
-                                : FogOfWarMode.CLIP)
-                .backgroundFogOfWar(mFogOfWarMode).draw(canvas, getData());
-
-        this.mInteractionMode.draw(canvas);
-
-        if (mEditingMask) {
-            String explanatoryText = getMaskExplanatoryText();
-
-            int i = EXPLANATORY_TEXT_INITIAL_Y_DP;
-            for (String s : explanatoryText.split("\n")) {
-                float scaledDensity = getContext().getResources()
-                        .getDisplayMetrics().scaledDensity;
-                canvas.drawText(s, getWidth() / 2, i * scaledDensity,
-                        mExplanatoryTextPaint);
-                i += EXPLANATORY_TEXT_LINE_HEIGHT_DP;
-            }
-
-        }
-    }
-
-    private String getMaskExplanatoryText() {
-        if (getActiveFogOfWar() == null) {
-            return "";
-        }
-        String explanatoryText = "Editing layer mask - Only selected regions will be visible";
-
-        boolean visibleByDefault = this.getActiveFogOfWar() == this.mData
-                .getBackgroundFogOfWar();
-        if (visibleByDefault && getActiveFogOfWar().isEmpty()) {
-            explanatoryText += "\n\nBy default, the entire background is shown\nuntil a mask region is added";
-
-        }
-        return explanatoryText;
-    }
-
-    /**
-     * Gets a preview image of the map currently displayed in the view.
-     * 
-     * @return A bitmap containing the preview image.
-     */
-    public Bitmap getPreview() {
-        if (this.getWidth() == 0 || this.getHeight() == 0) {
-            return null;
-        }
-        Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(),
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-
-        new MapDrawer().drawGridLines(false).drawGmNotes(false)
-                .drawTokens(true).areTokensManipulable(true)
-                .drawAnnotations(false).gmNotesFogOfWar(FogOfWarMode.NOTHING)
-                .backgroundFogOfWar(mFogOfWarMode).draw(canvas, getData());
-
-        return bitmap;
-    }
-
-    /**
-     * Returns the world space to screen space transformer used by the view.
-     * 
-     * @return The transformation object.
-     */
-    public CoordinateTransformer getWorldSpaceTransformer() {
-        return this.getData().getWorldSpaceTransformer();
+    public Shape createFogOfWarRegion() {
+        return this.createLine(this.getActiveFogOfWar());
     }
 
     /**
@@ -570,7 +267,7 @@ public final class CombatView extends SurfaceView {
      * @return The new line.
      */
     public Shape createLine() {
-        return createLine(mActiveLines);
+        return this.createLine(this.mActiveLines);
     }
 
     /**
@@ -601,221 +298,6 @@ public final class CombatView extends SurfaceView {
     }
 
     /**
-     * Creates a new region in the fog of war.
-     * 
-     * @return The new region.
-     */
-    public Shape createFogOfWarRegion() {
-        return createLine(getActiveFogOfWar());
-    }
-
-    /**
-     * Places a token on the screen, at a location chosen by the view.
-     * 
-     * @param t
-     *            The token to place.
-     */
-    public void placeToken(final BaseToken t) {
-        PointF attemptedLocationScreenSpace = new PointF(
-                this.getWidth() / 2.0f, this.getHeight() / 2.0f);
-        PointF attemptedLocationGridSpace = this.getGridSpaceTransformer()
-                .screenSpaceToWorldSpace(attemptedLocationScreenSpace);
-
-        getData().getTokens().placeTokenNearby(t, attemptedLocationGridSpace,
-                getData().getGrid(), this.mTokensSnapToIntersections);
-        this.getData().getTokens().addToken(t);
-        refreshMap();
-    }
-
-    /**
-     * Removes all erased points from the currently active set of lines.
-     */
-    public void optimizeActiveLines() {
-        mActiveLines.optimize();
-    }
-
-    /**
-     * Gets the currently active line collection.
-     * 
-     * @return The active lines.
-     */
-    public LineCollection getActiveLines() {
-        return mActiveLines;
-    }
-
-    /**
-     * Returns the current token collection.
-     * 
-     * @return The tokens.
-     */
-    public TokenCollection getTokens() {
-        return getData().getTokens();
-    }
-
-    /**
-     * Gets a transformer from grid space to screen space, by composing the grid
-     * to world and the world to screen transformers.
-     * 
-     * @return The composed transformation.
-     */
-    public CoordinateTransformer getGridSpaceTransformer() {
-        return getData().getGrid().gridSpaceToScreenSpaceTransformer(
-                getData().getWorldSpaceTransformer());
-    }
-
-    /**
-     * Sets the map data displayed. Forces a redraw.
-     * 
-     * @param data
-     *            The new map data.
-     */
-    public void setData(final MapData data) {
-
-        boolean useBackgroundLines = (mData == null)
-                || this.mActiveLines == mData.getBackgroundLines();
-        mData = data;
-        this.mActiveLines = useBackgroundLines ? mData.getBackgroundLines()
-                : mData.getAnnotationLines();
-        refreshMap();
-    }
-
-    /**
-     * Gets the current map data.
-     * 
-     * @return data The map data.
-     */
-    public MapData getData() {
-        return mData;
-    }
-
-    /**
-     * @param shouldSnapToGrid
-     *            the shouldSnapToGrid to set
-     */
-    public void setShouldSnapToGrid(final boolean shouldSnapToGrid) {
-        this.mSnapToGrid = shouldSnapToGrid;
-    }
-
-    /**
-     * @return the shouldSnapToGrid
-     */
-    public boolean shouldSnapToGrid() {
-        return mSnapToGrid;
-    }
-
-    /**
-     * Sets whether tokens snap to the intersections of grid lines rather than
-     * the spaces between them.
-     * 
-     * @param shouldSnap
-     *            True if should snap to intersections.
-     */
-    public void setTokensSnapToIntersections(boolean shouldSnap) {
-        mTokensSnapToIntersections = shouldSnap;
-
-    }
-
-    /**
-     * @return Whether tokens snap to the intersections of grid lines rather
-     *         than the spaces between them.
-     */
-    public boolean tokensSnapToIntersections() {
-        return mTokensSnapToIntersections;
-    }
-
-    /**
-     * @param width
-     *            the newLineStrokeWidth to set
-     */
-    public void setNewLineStrokeWidth(final float width) {
-        this.mNewLineStrokeWidth = width;
-    }
-
-    /**
-     * @return the newLineStrokeWidth
-     */
-    public float getNewLineStrokeWidth() {
-        return mNewLineStrokeWidth;
-    }
-
-    /**
-     * @param newLineColor
-     *            the newLineColor to set
-     */
-    public void setNewLineColor(final int newLineColor) {
-        this.mNewLineColor = newLineColor;
-    }
-
-    /**
-     * @return the newLineColor
-     */
-    public int getNewLineColor() {
-        return mNewLineColor;
-    }
-
-    /**
-     * @param newLineStyle
-     *            the newLineStyle to set
-     */
-    public void setNewLineStyle(NewLineStyle newLineStyle) {
-        mNewLineStyle = newLineStyle;
-    }
-
-    /**
-     * @return the newLineStyle
-     */
-    public NewLineStyle getNewLineStyle() {
-        return mNewLineStyle;
-    }
-
-    /**
-     * @return The multi-select manager used to select multiple tokens in this
-     *         view.
-     */
-    public MultiSelectManager getMultiSelect() {
-        return mTokenSelection;
-    }
-
-    /**
-     * Callback interface for the activity to listen for requests to create or
-     * edit text objects, since these actions require the activity to open a
-     * dialog box.
-     * 
-     * @author Tim
-     * 
-     */
-    public interface NewTextEntryListener {
-        /**
-         * Called when a new text object is created.
-         * 
-         * @param newTextLocationWorldSpace
-         *            Location to place the new text object in world space.
-         */
-        void requestNewTextEntry(PointF newTextLocationWorldSpace);
-
-        /**
-         * Called when an edit is requested on an existing text object.
-         * 
-         * @param t
-         *            The text object to edit.
-         */
-        void requestEditTextObject(Text t);
-    }
-
-    /**
-     * Forwards a request to create a text object to the parent activity.
-     * 
-     * @param newTextLocationWorldSpace
-     *            Location to place the new text object in world space.
-     */
-    public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
-        if (mNewTextEntryListener != null) {
-            mNewTextEntryListener
-                    .requestNewTextEntry(newTextLocationWorldSpace);
-        }
-    }
-
-    /**
      * Creates a new text object with the given location, text, and font size.
      * This is called by the parent activity after being alerted to the request
      * for a new text object and after the resulting dialog is accepted.
@@ -830,12 +312,274 @@ public final class CombatView extends SurfaceView {
     public void createNewText(PointF newTextLocationWorldSpace, String text,
             float size) {
         // Compute the text size as being one grid cell large.
-        float textSize = getData().getGrid().gridSpaceToWorldSpaceTransformer()
-                .worldSpaceToScreenSpace(size);
-        mActiveLines.createText(text, textSize, mNewLineColor,
+        float textSize =
+                this.getData().getGrid().gridSpaceToWorldSpaceTransformer()
+                        .worldSpaceToScreenSpace(size);
+        this.mActiveLines.createText(text, textSize, this.mNewLineColor,
                 Float.POSITIVE_INFINITY, newTextLocationWorldSpace,
                 this.getWorldSpaceTransformer());
-        refreshMap();
+        this.refreshMap();
+    }
+
+    /**
+     * Draws the contents of the view to the given canvas.
+     * 
+     * @param canvas
+     *            The canvas to draw on.
+     */
+    private void drawOnCanvas(final Canvas canvas) {
+        new MapDrawer()
+                .drawGridLines(true)
+                .drawGmNotes(this.mShouldDrawGmNotes)
+                .drawTokens(true)
+                .areTokensManipulable(this.mAreTokensManipulatable)
+                .drawAnnotations(this.mShouldDrawAnnotations)
+                .gmNotesFogOfWar(
+                        this.mActiveLines == this.getData().getGmNoteLines()
+                                ? FogOfWarMode.DRAW
+                                : FogOfWarMode.CLIP)
+                .backgroundFogOfWar(this.mFogOfWarMode)
+                .draw(canvas, this.getData());
+
+        this.mInteractionMode.draw(canvas);
+
+        if (this.mEditingMask) {
+            String explanatoryText = this.getMaskExplanatoryText();
+
+            int i = EXPLANATORY_TEXT_INITIAL_Y_DP;
+            for (String s : explanatoryText.split("\n")) {
+                float scaledDensity =
+                        this.getContext().getResources().getDisplayMetrics().scaledDensity;
+                canvas.drawText(s, this.getWidth() / 2, i * scaledDensity,
+                        this.mExplanatoryTextPaint);
+                i += EXPLANATORY_TEXT_LINE_HEIGHT_DP;
+            }
+
+        }
+    }
+
+    /**
+     * @return The fog of war layer associated with the current active lines.
+     */
+    public LineCollection getActiveFogOfWar() {
+        if (this.mActiveLines == this.getData().getBackgroundLines()) {
+            return this.getData().getBackgroundFogOfWar();
+        } else if (this.mActiveLines == this.getData().getGmNoteLines()) {
+            return this.getData().getGmNotesFogOfWar();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the currently active line collection.
+     * 
+     * @return The active lines.
+     */
+    public LineCollection getActiveLines() {
+        return this.mActiveLines;
+    }
+
+    /**
+     * Gets the current map data.
+     * 
+     * @return data The map data.
+     */
+    public MapData getData() {
+        return this.mData;
+    }
+
+    /**
+     * 
+     * @return The fog of war mode.
+     */
+    public FogOfWarMode getFogOfWarMode() {
+        return this.mFogOfWarMode;
+    }
+
+    /**
+     * Gets a transformer from grid space to screen space, by composing the grid
+     * to world and the world to screen transformers.
+     * 
+     * @return The composed transformation.
+     */
+    public CoordinateTransformer getGridSpaceTransformer() {
+        return this
+                .getData()
+                .getGrid()
+                .gridSpaceToScreenSpaceTransformer(
+                        this.getData().getWorldSpaceTransformer());
+    }
+
+    private String getMaskExplanatoryText() {
+        if (this.getActiveFogOfWar() == null) {
+            return "";
+        }
+        String explanatoryText =
+                "Editing layer mask - Only selected regions will be visible";
+
+        boolean visibleByDefault =
+                this.getActiveFogOfWar() == this.mData.getBackgroundFogOfWar();
+        if (visibleByDefault && this.getActiveFogOfWar().isEmpty()) {
+            explanatoryText +=
+                    "\n\nBy default, the entire background is shown\nuntil a mask region is added";
+
+        }
+        return explanatoryText;
+    }
+
+    /**
+     * @return The multi-select manager used to select multiple tokens in this
+     *         view.
+     */
+    public MultiSelectManager getMultiSelect() {
+        return this.mTokenSelection;
+    }
+
+    /**
+     * @return the newLineColor
+     */
+    public int getNewLineColor() {
+        return this.mNewLineColor;
+    }
+
+    /**
+     * @return the newLineStrokeWidth
+     */
+    public float getNewLineStrokeWidth() {
+        return this.mNewLineStrokeWidth;
+    }
+
+    /**
+     * @return the newLineStyle
+     */
+    public NewLineStyle getNewLineStyle() {
+        return this.mNewLineStyle;
+    }
+
+    /**
+     * Gets a preview image of the map currently displayed in the view.
+     * 
+     * @return A bitmap containing the preview image.
+     */
+    public Bitmap getPreview() {
+        if (this.getWidth() == 0 || this.getHeight() == 0) {
+            return null;
+        }
+        Bitmap bitmap =
+                Bitmap.createBitmap(this.getWidth(), this.getHeight(),
+                        Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        new MapDrawer().drawGridLines(false).drawGmNotes(false)
+                .drawTokens(true).areTokensManipulable(true)
+                .drawAnnotations(false).gmNotesFogOfWar(FogOfWarMode.NOTHING)
+                .backgroundFogOfWar(this.mFogOfWarMode)
+                .draw(canvas, this.getData());
+
+        return bitmap;
+    }
+
+    /**
+     * Returns the current token collection.
+     * 
+     * @return The tokens.
+     */
+    public TokenCollection getTokens() {
+        return this.getData().getTokens();
+    }
+
+    /**
+     * 
+     * @return The current target for undo and redo operations.
+     */
+    public UndoRedoTarget getUndoRedoTarget() {
+        return this.mUndoRedoTarget;
+    }
+
+    /**
+     * Returns the world space to screen space transformer used by the view.
+     * 
+     * @return The transformation object.
+     */
+    public CoordinateTransformer getWorldSpaceTransformer() {
+        return this.getData().getWorldSpaceTransformer();
+    }
+
+    /**
+     * 
+     * @return Whether one of the fog of war layers is visible.
+     */
+    public boolean isAFogOfWarLayerVisible() {
+        return this.getFogOfWarMode() == FogOfWarMode.DRAW
+                || this.mShouldDrawGmNotes;
+    }
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            this.mInteractionMode.addFinger();
+        }
+
+        this.mGestureDetector.onTouchEvent(ev);
+        this.mScaleDetector.onTouchEvent(ev);
+
+        // If a finger was removed, optimize the lines by removing unused
+        // points.
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            this.mInteractionMode.removeFinger();
+            this.mInteractionMode.onUp(ev);
+        }
+        return true;
+    }
+
+    /**
+     * Removes all erased points from the currently active set of lines.
+     */
+    public void optimizeActiveLines() {
+        this.mActiveLines.optimize();
+    }
+
+    /**
+     * Places a token on the screen, at a location chosen by the view.
+     * 
+     * @param t
+     *            The token to place.
+     */
+    public void placeToken(final BaseToken t) {
+        PointF attemptedLocationScreenSpace =
+                new PointF(this.getWidth() / 2.0f, this.getHeight() / 2.0f);
+        PointF attemptedLocationGridSpace =
+                this.getGridSpaceTransformer().screenSpaceToWorldSpace(
+                        attemptedLocationScreenSpace);
+
+        this.getData()
+                .getTokens()
+                .placeTokenNearby(t, attemptedLocationGridSpace,
+                        this.getData().getGrid(),
+                        this.mTokensSnapToIntersections);
+        this.getData().getTokens().addToken(t);
+        this.refreshMap();
+    }
+
+    /**
+     * Redraws the contents of the map.
+     */
+    public void refreshMap() {
+        if (!this.mSurfaceReady) {
+            return;
+        }
+
+        SurfaceHolder holder = this.getHolder();
+        Canvas canvas = holder.lockCanvas();
+        if (canvas != null) {
+            this.drawOnCanvas(canvas);
+            holder.unlockCanvasAndPost(canvas);
+        }
+
+        if (this.mOnRefreshListener != null) {
+            this.mOnRefreshListener.onRefresh();
+        }
     }
 
     /**
@@ -845,37 +589,154 @@ public final class CombatView extends SurfaceView {
      *            The text object to edit.
      */
     public void requestEditTextObject(Text t) {
-        mNewTextEntryListener.requestEditTextObject(t);
+        this.mNewTextEntryListener.requestEditTextObject(t);
     }
 
     /**
-     * @return The fog of war layer associated with the current active lines.
+     * Forwards a request to create a text object to the parent activity.
+     * 
+     * @param newTextLocationWorldSpace
+     *            Location to place the new text object in world space.
      */
-    public LineCollection getActiveFogOfWar() {
-        if (mActiveLines == getData().getBackgroundLines()) {
-            return getData().getBackgroundFogOfWar();
-        } else if (mActiveLines == getData().getGmNoteLines()) {
-            return getData().getGmNotesFogOfWar();
-        } else {
-            return null;
+    public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
+        if (this.mNewTextEntryListener != null) {
+            this.mNewTextEntryListener
+                    .requestNewTextEntry(newTextLocationWorldSpace);
         }
     }
 
     /**
+     * Sets whether tokens are manipulatable.
      * 
-     * @return Whether one of the fog of war layers is visible.
+     * @param manip
+     *            Value to set.
      */
-    public boolean isAFogOfWarLayerVisible() {
-        return getFogOfWarMode() == FogOfWarMode.DRAW
-                || this.mShouldDrawGmNotes;
+    public void setAreTokensManipulatable(boolean manip) {
+        this.mAreTokensManipulatable = manip;
     }
 
     /**
-     * 
-     * @return The current target for undo and redo operations.
+     * Sets the interaction mode to creating and manipulating background images.
      */
-    public UndoRedoTarget getUndoRedoTarget() {
-        return mUndoRedoTarget;
+    public void setBackgroundImageMode() {
+        this.setInteractionMode(new BackgroundImageInteractionMode(this));
+    }
+
+    /**
+     * Sets the map data displayed. Forces a redraw.
+     * 
+     * @param data
+     *            The new map data.
+     */
+    public void setData(final MapData data) {
+
+        boolean useBackgroundLines =
+                (this.mData == null)
+                        || this.mActiveLines == this.mData.getBackgroundLines();
+        this.mData = data;
+        this.mActiveLines =
+                useBackgroundLines
+                        ? this.mData.getBackgroundLines()
+                        : this.mData.getAnnotationLines();
+        this.refreshMap();
+    }
+
+    /**
+     * Sets the interaction mode to drawing lines.
+     */
+    public void setDrawMode() {
+        this.setInteractionMode(new FingerDrawInteractionMode(this));
+    }
+
+    public void setEditingLayerMask(boolean editingLayerMask) {
+        this.mEditingMask = editingLayerMask;
+        this.refreshMap();
+    }
+
+    /**
+     * Sets the interaction mode to erasing lines.
+     */
+    public void setEraseMode() {
+        this.setInteractionMode(new EraserInteractionMode(this));
+    }
+
+    /**
+     * Sets the interaction mode to drawing fog of war regions.
+     */
+    public void setFogOfWarDrawMode() {
+        this.setInteractionMode(new MaskDrawInteractionMode(this));
+    }
+
+    /**
+     * Sets the interaction mode to erase mask regions.
+     */
+    public void setFogOfWarEraseMode() {
+        this.setInteractionMode(new MaskEraseInteractionMode(this));
+    }
+
+    /**
+     * Sets what to do with the fog of war layer.
+     * 
+     * @param mode
+     *            The fog of war mode to use.
+     */
+    public void setFogOfWarMode(final FogOfWarMode mode) {
+        this.mFogOfWarMode = mode;
+        this.refreshMap();
+    }
+
+    /**
+     * Sets the interaction mode to the given listener.
+     * 
+     * @param mode
+     *            The interaction mode to use.
+     */
+    private void setInteractionMode(final CombatViewInteractionMode mode) {
+        if (this.mInteractionMode != null) {
+            this.mInteractionMode.onEndMode();
+        }
+
+        this.mGestureDetector = new GestureDetector(this.getContext(), mode);
+        this.mGestureDetector.setOnDoubleTapListener(mode);
+        this.mScaleDetector = new ScaleGestureDetector(this.getContext(), mode);
+        this.mInteractionMode = mode;
+
+        if (this.mInteractionMode != null) {
+            this.mInteractionMode.onStartMode();
+        }
+
+        this.refreshMap();
+    }
+
+    /**
+     * Sets the interaction mode to selecting multiple tokens.
+     */
+    public void setMultiTokenMode() {
+        this.setInteractionMode(new TokenMultiSelectInteractionMode(this));
+    }
+
+    /**
+     * @param newLineColor
+     *            the newLineColor to set
+     */
+    public void setNewLineColor(final int newLineColor) {
+        this.mNewLineColor = newLineColor;
+    }
+
+    /**
+     * @param width
+     *            the newLineStrokeWidth to set
+     */
+    public void setNewLineStrokeWidth(final float width) {
+        this.mNewLineStrokeWidth = width;
+    }
+
+    /**
+     * @param newLineStyle
+     *            the newLineStyle to set
+     */
+    public void setNewLineStyle(NewLineStyle newLineStyle) {
+        this.mNewLineStyle = newLineStyle;
     }
 
     /**
@@ -896,7 +757,169 @@ public final class CombatView extends SurfaceView {
      *            The listener to use.
      */
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
-        mOnRefreshListener = onRefreshListener;
+        this.mOnRefreshListener = onRefreshListener;
+    }
+
+    /**
+     * Sets the interaction mode to resizing the grid independent of anything
+     * already drawn.
+     */
+    public void setResizeGridMode() {
+        this.setInteractionMode(new GridRepositioningInteractionMode(this));
+    }
+
+    /**
+     * @param shouldSnapToGrid
+     *            the shouldSnapToGrid to set
+     */
+    public void setShouldSnapToGrid(final boolean shouldSnapToGrid) {
+        this.mSnapToGrid = shouldSnapToGrid;
+    }
+
+    /**
+     * Sets the interaction mode to creating text objects.
+     */
+    public void setTextMode() {
+        this.setInteractionMode(new DrawTextInteractionMode(this));
+    }
+
+    /**
+     * Sets the interaction mode to dragging tokens; this will zoom and pan when
+     * not on a token. Note that annotations should always draw in this mode.
+     */
+    public void setTokenManipulationMode() {
+        this.setInteractionMode(new TokenManipulationInteractionMode(this));
+        this.mShouldDrawAnnotations = true;
+        this.mShouldDrawGmNotes = true;
+        if (this.mData != null) {
+            this.mUndoRedoTarget = this.mData.getTokens();
+        }
+    }
+
+    /**
+     * Sets whether tokens snap to the intersections of grid lines rather than
+     * the spaces between them.
+     * 
+     * @param shouldSnap
+     *            True if should snap to intersections.
+     */
+    public void setTokensSnapToIntersections(boolean shouldSnap) {
+        this.mTokensSnapToIntersections = shouldSnap;
+
+    }
+
+    /**
+     * Sets the interaction mode to simple zooming and panning.
+     */
+    public void setZoomPanMode() {
+        this.setInteractionMode(new ZoomPanInteractionMode(this));
+    }
+
+    /**
+     * @return the shouldSnapToGrid
+     */
+    public boolean shouldSnapToGrid() {
+        return this.mSnapToGrid;
+    }
+
+    /**
+     * @return Whether tokens snap to the intersections of grid lines rather
+     *         than the spaces between them.
+     */
+    public boolean tokensSnapToIntersections() {
+        return this.mTokensSnapToIntersections;
+    }
+
+    /**
+     * Sets the annotation layer as the active layer, so that any draw commands
+     * will draw on the annotations.
+     */
+    public void useAnnotationLayer() {
+        this.mActiveLines = this.getData().getAnnotationLines();
+        this.mShouldDrawAnnotations = true;
+        this.mShouldDrawGmNotes = false;
+        this.mUndoRedoTarget = this.mActiveLines;
+    }
+
+    /**
+     * Sets the background layer as the active layer, so that any draw commands
+     * will draw on the background.
+     */
+    public void useBackgroundLayer() {
+        this.mActiveLines = this.getData().getBackgroundLines();
+        this.mShouldDrawAnnotations = false;
+        this.mShouldDrawGmNotes = false;
+        this.mUndoRedoTarget = this.mActiveLines;
+    }
+
+    /**
+     * Sets the gm note layer as the active layer, so that any draw commands
+     * will draw on the annotations.
+     */
+    public void useGmNotesLayer() {
+        this.mActiveLines = this.getData().getGmNoteLines();
+        this.mShouldDrawAnnotations = false;
+        this.mShouldDrawGmNotes = true;
+        this.mUndoRedoTarget = this.mActiveLines;
+    }
+
+    /**
+     * The style that new lines should have.
+     * 
+     * @author Tim
+     * 
+     */
+    public enum NewLineStyle {
+        /**
+         * Draw a circle.
+         */
+        CIRCLE,
+
+        /**
+         * Draw freehand lines.
+         */
+        FREEHAND,
+
+        /**
+         * Draw rectangle.
+         */
+        RECTANGLE,
+
+        /**
+         * Draw straight lines.
+         */
+        STRAIGHT,
+
+        /**
+         * Draw text.
+         */
+        TEXT
+    }
+
+    /**
+     * Callback interface for the activity to listen for requests to create or
+     * edit text objects, since these actions require the activity to open a
+     * dialog box.
+     * 
+     * @author Tim
+     * 
+     */
+    public interface NewTextEntryListener {
+        /**
+         * Called when an edit is requested on an existing text object.
+         * 
+         * @param t
+         *            The text object to edit.
+         */
+        void requestEditTextObject(Text t);
+
+        /**
+         * Called when a new text object is created.
+         * 
+         * @param newTextLocationWorldSpace
+         *            Location to place the new text object in world space.
+         */
+        void requestNewTextEntry(PointF newTextLocationWorldSpace);
     }
 
     /**

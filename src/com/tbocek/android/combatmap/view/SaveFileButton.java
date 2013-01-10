@@ -37,17 +37,26 @@ public final class SaveFileButton extends LinearLayout {
     public SaveFileButton(final Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.saved_map_file, this);
-        mPreview = (ImageView) findViewById(R.id.saved_map_preview);
-        mText = (TextView) findViewById(R.id.saved_map_file_name);
+        this.mPreview = (ImageView) this.findViewById(R.id.saved_map_preview);
+        this.mText = (TextView) this.findViewById(R.id.saved_map_file_name);
 
         // Clicking on the preview should count as clicking on the button its
         // self.
-        mPreview.setOnClickListener(new OnClickListener() {
+        this.mPreview.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View arg0) {
-                performClick();
+                SaveFileButton.this.performClick();
             }
         });
+    }
+
+    /**
+     * Returns the filename associated with this button.
+     * 
+     * @return The filename.
+     */
+    public String getFileName() {
+        return this.mText.getText().toString();
     }
 
     /**
@@ -57,7 +66,15 @@ public final class SaveFileButton extends LinearLayout {
      *            The name to display.
      */
     public void setFileName(final String name) {
-        mText.setText(name);
+        this.mText.setText(name);
+    }
+
+    @Override
+    public void setOnCreateContextMenuListener(
+            final View.OnCreateContextMenuListener l) {
+        super.setOnCreateContextMenuListener(l);
+        this.mPreview.setOnCreateContextMenuListener(l);
+        this.mText.setOnCreateContextMenuListener(l);
     }
 
     /**
@@ -67,23 +84,6 @@ public final class SaveFileButton extends LinearLayout {
      *            The image to display.
      */
     public void setPreviewImage(final Bitmap image) {
-        mPreview.setImageBitmap(image);
-    }
-
-    /**
-     * Returns the filename associated with this button.
-     * 
-     * @return The filename.
-     */
-    public String getFileName() {
-        return mText.getText().toString();
-    }
-
-    @Override
-    public void setOnCreateContextMenuListener(
-            final View.OnCreateContextMenuListener l) {
-        super.setOnCreateContextMenuListener(l);
-        mPreview.setOnCreateContextMenuListener(l);
-        mText.setOnCreateContextMenuListener(l);
+        this.mPreview.setImageBitmap(image);
     }
 }

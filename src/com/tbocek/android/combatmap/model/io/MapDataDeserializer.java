@@ -13,35 +13,6 @@ import java.util.LinkedList;
  */
 public class MapDataDeserializer {
     /**
-     * Thrown when the start/end of an object/array is not at the expected
-     * place.
-     * 
-     * @author Tim
-     * 
-     */
-    public static class SyncException extends IOException {
-        /**
-		 * 
-		 */
-        private static final long serialVersionUID = 9205252802710503280L;
-
-        /**
-         * Constructor.
-         * 
-         * @param string
-         *            Exception text.
-         */
-        public SyncException(String string) {
-            super(string);
-        }
-    }
-
-    /**
-     * The reader to read from.
-     */
-    private BufferedReader mReader;
-
-    /**
      * The current number of nested arrays.
      */
     private int mArrayLevel;
@@ -51,6 +22,11 @@ public class MapDataDeserializer {
      * without consuming.
      */
     private LinkedList<String> mPeekBuffer = new LinkedList<String>();
+
+    /**
+     * The reader to read from.
+     */
+    private BufferedReader mReader;
 
     /**
      * Constructor.
@@ -63,47 +39,19 @@ public class MapDataDeserializer {
     }
 
     /**
-     * Consumes and returns a string value.
+     * Consumes the end of an array if we are at the end of an object. If not,
+     * throws an exception.
      * 
-     * @return The read value.
      * @throws IOException
-     *             On read error.
+     *             If we are not at the end of the array as expected.
      */
-    public String readString() throws IOException {
-        return nextToken();
-    }
-
-    /**
-     * Consumes and returns an integer value.
-     * 
-     * @return The read value.
-     * @throws IOException
-     *             On read error.
-     */
-    public int readInt() throws IOException {
-        return Integer.parseInt(nextToken());
-    }
-
-    /**
-     * Consumes and returns a floating point value.
-     * 
-     * @return The read value.
-     * @throws IOException
-     *             On read error.
-     */
-    public float readFloat() throws IOException {
-        return Float.parseFloat(nextToken());
-    }
-
-    /**
-     * Consumes and returns a boolean value.
-     * 
-     * @return The read value.
-     * @throws IOException
-     *             On read error.
-     */
-    public boolean readBoolean() throws IOException {
-        return !nextToken().equals("0");
+    public void expectArrayEnd() throws IOException {
+        String t = this.nextToken();
+        if (t.equals("]")) {
+            this.mArrayLevel--;
+        } else {
+            throw new SyncException("Expected array end, got " + t);
+        }
     }
 
     /**
@@ -115,29 +63,27 @@ public class MapDataDeserializer {
      *             If we are not at the start of the array as expected.
      */
     public int expectArrayStart() throws IOException {
-        String t = nextToken();
+        String t = this.nextToken();
         if (t.equals("[")) {
-            mArrayLevel++;
+            this.mArrayLevel++;
         } else {
             throw new SyncException("Expected array start, got " + t);
         }
         // Return the array level at which this array will end.
-        return mArrayLevel - 1;
+        return this.mArrayLevel - 1;
     }
 
     /**
-     * Consumes the end of an array if we are at the end of an object. If not,
+     * Consumes the end of an object if we are at the end of an object. If not,
      * throws an exception.
      * 
      * @throws IOException
-     *             If we are not at the end of the array as expected.
+     *             If we are not at the end of the object as expected.
      */
-    public void expectArrayEnd() throws IOException {
-        String t = nextToken();
-        if (t.equals("]")) {
-            mArrayLevel--;
-        } else {
-            throw new SyncException("Expected array end, got " + t);
+    public void expectObjectEnd() throws IOException {
+        String t = this.nextToken();
+        if (!t.equals("}")) {
+            throw new SyncException("Expected object end, got " + t);
         }
     }
 
@@ -149,69 +95,17 @@ public class MapDataDeserializer {
      *             If we are not at the start of the object as expected.
      */
     public void expectObjectStart() throws IOException {
-        String t = nextToken();
+        String t = this.nextToken();
         if (!t.equals("{")) {
             throw new SyncException("Expected object start, got " + t);
         }
     }
 
     /**
-     * Consumes the end of an object if we are at the end of an object. If not,
-     * throws an exception.
-     * 
-     * @throws IOException
-     *             If we are not at the end of the object as expected.
-     */
-    public void expectObjectEnd() throws IOException {
-        String t = nextToken();
-        if (!t.equals("}")) {
-            throw new SyncException("Expected object end, got " + t);
-        }
-    }
-
-    /**
-     * Reads and returns a token.
-     * 
-     * @return The read token, or null if at EOF.
-     * @throws IOException
-     *             On read error.
-     */
-    private String nextToken() throws IOException {
-        String s;
-        if (mPeekBuffer.size() == 0) {
-            s = mReader.readLine();
-        } else {
-            s = mPeekBuffer.remove();
-        }
-
-        if (s == null) {
-            return null;
-        }
-        return s;
-    }
-
-    /**
      * @return The current amount of array nesting.
      */
     public int getArrayLevel() {
-        return mArrayLevel;
-    }
-
-    /**
-     * Reads and returns a token from the stream, placing it in a queue of
-     * tokens that have already been peeked at.
-     * 
-     * @return The read token.
-     * @throws IOException
-     *             On read error.
-     */
-    private String peek() throws IOException {
-        String s;
-        s = mReader.readLine();
-        if (s != null) {
-            mPeekBuffer.add(s);
-        }
-        return s;
+        return this.mArrayLevel;
     }
 
     /**
@@ -219,10 +113,10 @@ public class MapDataDeserializer {
      * @throws IOException
      */
     private int getNextArrayLevel() throws IOException {
-        int l = mArrayLevel;
+        int l = this.mArrayLevel;
         String s;
         do {
-            s = peek();
+            s = this.peek();
             if (s == null) {
                 break;
             }
@@ -246,6 +140,112 @@ public class MapDataDeserializer {
      */
     public boolean hasMoreArrayItems(int terminateAtArrayLevel)
             throws IOException {
-        return terminateAtArrayLevel < getNextArrayLevel();
+        return terminateAtArrayLevel < this.getNextArrayLevel();
+    }
+
+    /**
+     * Reads and returns a token.
+     * 
+     * @return The read token, or null if at EOF.
+     * @throws IOException
+     *             On read error.
+     */
+    private String nextToken() throws IOException {
+        String s;
+        if (this.mPeekBuffer.size() == 0) {
+            s = this.mReader.readLine();
+        } else {
+            s = this.mPeekBuffer.remove();
+        }
+
+        if (s == null) {
+            return null;
+        }
+        return s;
+    }
+
+    /**
+     * Reads and returns a token from the stream, placing it in a queue of
+     * tokens that have already been peeked at.
+     * 
+     * @return The read token.
+     * @throws IOException
+     *             On read error.
+     */
+    private String peek() throws IOException {
+        String s;
+        s = this.mReader.readLine();
+        if (s != null) {
+            this.mPeekBuffer.add(s);
+        }
+        return s;
+    }
+
+    /**
+     * Consumes and returns a boolean value.
+     * 
+     * @return The read value.
+     * @throws IOException
+     *             On read error.
+     */
+    public boolean readBoolean() throws IOException {
+        return !this.nextToken().equals("0");
+    }
+
+    /**
+     * Consumes and returns a floating point value.
+     * 
+     * @return The read value.
+     * @throws IOException
+     *             On read error.
+     */
+    public float readFloat() throws IOException {
+        return Float.parseFloat(this.nextToken());
+    }
+
+    /**
+     * Consumes and returns an integer value.
+     * 
+     * @return The read value.
+     * @throws IOException
+     *             On read error.
+     */
+    public int readInt() throws IOException {
+        return Integer.parseInt(this.nextToken());
+    }
+
+    /**
+     * Consumes and returns a string value.
+     * 
+     * @return The read value.
+     * @throws IOException
+     *             On read error.
+     */
+    public String readString() throws IOException {
+        return this.nextToken();
+    }
+
+    /**
+     * Thrown when the start/end of an object/array is not at the expected
+     * place.
+     * 
+     * @author Tim
+     * 
+     */
+    public static class SyncException extends IOException {
+        /**
+		 * 
+		 */
+        private static final long serialVersionUID = 9205252802710503280L;
+
+        /**
+         * Constructor.
+         * 
+         * @param string
+         *            Exception text.
+         */
+        public SyncException(String string) {
+            super(string);
+        }
     }
 }

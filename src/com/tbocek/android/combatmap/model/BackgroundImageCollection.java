@@ -19,25 +19,11 @@ public class BackgroundImageCollection implements UndoRedoTarget {
     private List<BackgroundImage> mImages = Lists.newArrayList();
 
     public BackgroundImageCollection(CommandHistory commandHistory) {
-        mCommandHistory = commandHistory;
+        this.mCommandHistory = commandHistory;
     }
 
-    @Override
-    public void undo() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void redo() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public boolean canUndo() {
-        // TODO Auto-generated method stub
-        return false;
+    public void addImage(BackgroundImage backgroundImage) {
+        this.mImages.add(backgroundImage);
     }
 
     @Override
@@ -46,8 +32,10 @@ public class BackgroundImageCollection implements UndoRedoTarget {
         return false;
     }
 
-    public void addImage(BackgroundImage backgroundImage) {
-        mImages.add(backgroundImage);
+    @Override
+    public boolean canUndo() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     public void draw(Canvas canvas, CoordinateTransformer transformer) {
@@ -59,7 +47,7 @@ public class BackgroundImageCollection implements UndoRedoTarget {
         canvas.save();
         transformer.setInverseMatrix(canvas);
 
-        for (BackgroundImage i : mImages) {
+        for (BackgroundImage i : this.mImages) {
             i.draw(canvas, transformer);
         }
 
@@ -73,12 +61,25 @@ public class BackgroundImageCollection implements UndoRedoTarget {
      *            Location to check in world space.
      * @return
      */
-    public BackgroundImage getImageOnPoint(PointF point, float borderWorldSpace) {
-        for (BackgroundImage i : mImages) {
+    public BackgroundImage
+            getImageOnPoint(PointF point, float borderWorldSpace) {
+        for (BackgroundImage i : this.mImages) {
             if (i.getBoundingRectangle(borderWorldSpace).contains(point)) {
                 return i;
             }
         }
         return null;
+    }
+
+    @Override
+    public void redo() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void undo() {
+        // TODO Auto-generated method stub
+
     }
 }

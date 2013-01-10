@@ -27,10 +27,22 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
     private static final int GRID_SNAP_THRESHOLD = 20;
 
     /**
+     * The token that the user clicked on to start a drag operation. Will be
+     * used to determine snapping to grid.
+     */
+    private BaseToken mCurrentToken;
+
+    /**
      * Whether the current scroll operation should drag the selected tokens or
      * scroll the screen.
      */
     private boolean mDragging;
+
+    /**
+     * When moving tokens with snap to grid enabled, this is the last point that
+     * was snapped to.
+     */
+    private PointF mLastSnappedLocation;
 
     /**
      * Whether the current token has been moved.
@@ -43,18 +55,6 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
     private Collection<BaseToken> mUnmovedTokens = Lists.newArrayList();
 
     /**
-     * The token that the user clicked on to start a drag operation. Will be
-     * used to determine snapping to grid.
-     */
-    private BaseToken mCurrentToken;
-
-    /**
-     * When moving tokens with snap to grid enabled, this is the last point that
-     * was snapped to.
-     */
-    private PointF mLastSnappedLocation;
-
-    /**
      * Constructor.
      * 
      * @param view
@@ -65,106 +65,124 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
     }
 
     @Override
-    public boolean onSingleTapConfirmed(final MotionEvent e) {
-        BaseToken t = getView().getTokens().getTokenUnderPoint(
-                new PointF(e.getX(), e.getY()),
-                getView().getGridSpaceTransformer());
-        if (t != null) {
-            getView().getMultiSelect().toggleToken(t);
-            getView().refreshMap();
+    public void draw(final Canvas c) {
+        for (BaseToken t : this.mUnmovedTokens) {
+            t.drawGhost(c, this.getView().getGridSpaceTransformer(),
+                    t.getLocation());
         }
-        return true;
     }
 
     @Override
     public boolean onDown(final MotionEvent e) {
-        mCurrentToken = getView().getTokens().getTokenUnderPoint(
-                new PointF(e.getX(), e.getY()),
-                getView().getGridSpaceTransformer());
+        this.mCurrentToken =
+                this.getView()
+                        .getTokens()
+                        .getTokenUnderPoint(new PointF(e.getX(), e.getY()),
+                                this.getView().getGridSpaceTransformer());
 
-        if (mCurrentToken != null
-                && getView().getMultiSelect().getSelectedTokens()
-                        .contains(mCurrentToken)) {
-            mMoved = false;
-            mDragging = true;
-            getView().getTokens().checkpointTokens(
-                    new ArrayList<BaseToken>(getView().getMultiSelect()
-                            .getSelectedTokens()));
-            for (BaseToken t : getView().getMultiSelect().getSelectedTokens()) {
+        if (this.mCurrentToken != null
+                && this.getView().getMultiSelect().getSelectedTokens()
+                        .contains(this.mCurrentToken)) {
+            this.mMoved = false;
+            this.mDragging = true;
+            this.getView()
+                    .getTokens()
+                    .checkpointTokens(
+                            new ArrayList<BaseToken>(this.getView()
+                                    .getMultiSelect().getSelectedTokens()));
+            for (BaseToken t : this.getView().getMultiSelect()
+                    .getSelectedTokens()) {
                 this.mUnmovedTokens.add(t.clone());
             }
-            mLastSnappedLocation = mCurrentToken.getLocation();
+            this.mLastSnappedLocation = this.mCurrentToken.getLocation();
         } else {
-            mDragging = false;
+            this.mDragging = false;
         }
 
         return true;
-    }
-
-    @Override
-    public void onUp(final MotionEvent ev) {
-        mUnmovedTokens.clear();
-        if (mMoved) {
-            getView().getTokens().createCommandHistory();
-        }
-        getView().refreshMap();
     }
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
-        if (mDragging) {
-            mMoved = true;
-            CoordinateTransformer transformer = getView()
-                    .getGridSpaceTransformer();
+        if (this.mDragging) {
+            this.mMoved = true;
+            CoordinateTransformer transformer =
+                    this.getView().getGridSpaceTransformer();
             float deltaX;
             float deltaY;
 
             // If snap to grid is enabled, change the world space movement
             // deltas to compensate for distance between the real point and
             // the snap to grid point.
-            if (getView().shouldSnapToGrid()) {
-                PointF currentPointScreenSpace = new PointF(e2.getX(),
-                        e2.getY());
-                PointF currentPointWorldSpace = transformer
-                        .screenSpaceToWorldSpace(currentPointScreenSpace);
-                PointF nearestSnapPointWorldSpace = getData().getGrid()
-                        .getNearestSnapPoint(
-                                currentPointWorldSpace,
-                                getView().tokensSnapToIntersections() ? 0
-                                        : mCurrentToken.getSize());
+            if (this.getView().shouldSnapToGrid()) {
+                PointF currentPointScreenSpace =
+                        new PointF(e2.getX(), e2.getY());
+                PointF currentPointWorldSpace =
+                        transformer
+                                .screenSpaceToWorldSpace(currentPointScreenSpace);
+                PointF nearestSnapPointWorldSpace =
+                        this.getData()
+                                .getGrid()
+                                .getNearestSnapPoint(
+                                        currentPointWorldSpace,
+                                        this.getView()
+                                                .tokensSnapToIntersections()
+                                                ? 0
+                                                : this.mCurrentToken.getSize());
 
                 // Snap to that point if it is less than a threshold
-                float distanceToSnapPoint = Util.distance(transformer
-                        .worldSpaceToScreenSpace(nearestSnapPointWorldSpace),
-                        currentPointScreenSpace);
+                float distanceToSnapPoint =
+                        Util.distance(
+                                transformer
+                                        .worldSpaceToScreenSpace(nearestSnapPointWorldSpace),
+                                currentPointScreenSpace);
 
-                PointF newLocationWorldSpace = distanceToSnapPoint < GRID_SNAP_THRESHOLD ? nearestSnapPointWorldSpace
-                        : currentPointWorldSpace;
+                PointF newLocationWorldSpace =
+                        distanceToSnapPoint < GRID_SNAP_THRESHOLD
+                                ? nearestSnapPointWorldSpace
+                                : currentPointWorldSpace;
 
-                deltaX = mLastSnappedLocation.x - newLocationWorldSpace.x;
-                deltaY = mLastSnappedLocation.y - newLocationWorldSpace.y;
-                mLastSnappedLocation = newLocationWorldSpace;
+                deltaX = this.mLastSnappedLocation.x - newLocationWorldSpace.x;
+                deltaY = this.mLastSnappedLocation.y - newLocationWorldSpace.y;
+                this.mLastSnappedLocation = newLocationWorldSpace;
 
             } else {
                 deltaX = transformer.screenSpaceToWorldSpace(distanceX);
                 deltaY = transformer.screenSpaceToWorldSpace(distanceY);
             }
-            for (BaseToken t : getView().getMultiSelect().getSelectedTokens()) {
+            for (BaseToken t : this.getView().getMultiSelect()
+                    .getSelectedTokens()) {
                 t.move(deltaX, deltaY);
             }
         } else {
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
-        getView().refreshMap();
+        this.getView().refreshMap();
         return true;
     }
 
     @Override
-    public void draw(final Canvas c) {
-        for (BaseToken t : mUnmovedTokens) {
-            t.drawGhost(c, getView().getGridSpaceTransformer(), t.getLocation());
+    public boolean onSingleTapConfirmed(final MotionEvent e) {
+        BaseToken t =
+                this.getView()
+                        .getTokens()
+                        .getTokenUnderPoint(new PointF(e.getX(), e.getY()),
+                                this.getView().getGridSpaceTransformer());
+        if (t != null) {
+            this.getView().getMultiSelect().toggleToken(t);
+            this.getView().refreshMap();
         }
+        return true;
+    }
+
+    @Override
+    public void onUp(final MotionEvent ev) {
+        this.mUnmovedTokens.clear();
+        if (this.mMoved) {
+            this.getView().getTokens().createCommandHistory();
+        }
+        this.getView().refreshMap();
     }
 
 }

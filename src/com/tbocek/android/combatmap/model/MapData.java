@@ -28,11 +28,6 @@ import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 public final class MapData {
 
     /**
-     * Version level of this map data, used for saving/loading.
-     */
-    private static final int MAP_DATA_VERSION = 0;
-
-    /**
      * Initial zoom level of newly created maps. Corresponds to 1 square = 64
      * pixels. Not density independent.
      */
@@ -42,6 +37,128 @@ public final class MapData {
      * The map data currently being managed.
      */
     private static MapData instance;
+
+    /**
+     * Version level of this map data, used for saving/loading.
+     */
+    private static final int MAP_DATA_VERSION = 0;
+
+    /**
+     * Annotation lines.
+     */
+    private LineCollection mAnnotationLines = new LineCollection(
+            this.mAnntationCommandHistory);
+
+    /**
+     * Command history to use for the annotations.
+     */
+    private CommandHistory mAnntationCommandHistory = new CommandHistory();
+
+    /**
+     * Command history object to use for the background and associated fog of
+     * war.
+     */
+    private CommandHistory mBackgroundCommandHistory = new CommandHistory();
+
+    /**
+     * Lines that represent the fog of war.
+     */
+    private LineCollection mBackgroundFogOfWar = new LineCollection(
+            this.mBackgroundCommandHistory);
+
+    /**
+     * Collection of background images.
+     */
+    private BackgroundImageCollection mBackgroundImages =
+            new BackgroundImageCollection(this.mBackgroundCommandHistory);
+
+    /**
+     * Background lines.
+     */
+    private LineCollection mBackgroundLines = new LineCollection(
+            this.mBackgroundCommandHistory);
+
+    /**
+     * Notes for the GM that are not visible when combat is occurring.
+     */
+    private LineCollection mGmNoteLines = new LineCollection(
+            this.mGmNotesCommandHistory);
+
+    /**
+     * Command history to use for the GM notes and associated fog of war.
+     */
+    private CommandHistory mGmNotesCommandHistory = new CommandHistory();
+
+    /**
+     * Lines that represent the fog of war.
+     */
+    private LineCollection mGmNotesFogOfWar = new LineCollection(
+            this.mGmNotesCommandHistory);
+
+    /**
+     * The grid to draw.
+     */
+    private Grid mGrid = new Grid();
+
+    /**
+     * Whether map attributes such as color scheme and grid type should be
+     * updated in response to loading preferences. Set to true if this map is
+     * newly loaded.
+     */
+    private boolean mMapAttributesLocked;
+
+    /**
+     * Command history to use for combat tokens.
+     */
+    private CommandHistory mTokenCollectionCommandHistory =
+            new CommandHistory();
+
+    /**
+     * Tokens that have been placed on the map.
+     */
+    private TokenCollection mTokens = new TokenCollection(
+            this.mTokenCollectionCommandHistory);
+
+    /**
+     * Transformation from world space to screen space.
+     */
+    private CoordinateTransformer mTransformer = new CoordinateTransformer(0,
+            0, INITIAL_ZOOM);
+
+    /**
+     * Clears the map by loading a new instance.
+     */
+    public static void clear() {
+        instance = new MapData();
+    }
+
+    /**
+     * Creates, populates, and returns a new MapData object from the given
+     * deserialization stream.
+     * 
+     * @param s
+     *            The stream to read from.
+     * @param tokens
+     *            Token database to load tokens from.
+     * @return The created map data.
+     * @throws IOException
+     *             On deserialization error.
+     */
+    public static MapData deserialize(MapDataDeserializer s,
+            TokenDatabase tokens) throws IOException {
+        @SuppressWarnings("unused")
+        int mapDataVersion = s.readInt();
+        MapData data = new MapData();
+        data.mGrid = Grid.deserialize(s);
+        data.mTransformer = CoordinateTransformer.deserialize(s);
+        data.mTokens.deserialize(s, tokens);
+        data.mBackgroundLines.deserialize(s);
+        data.mBackgroundFogOfWar.deserialize(s);
+        data.mGmNoteLines.deserialize(s);
+        data.mGmNotesFogOfWar.deserialize(s);
+        data.mAnnotationLines.deserialize(s);
+        return data;
+    }
 
     /**
      * Gets the current map data instance.
@@ -56,10 +173,10 @@ public final class MapData {
     }
 
     /**
-     * Clears the map by loading a new instance.
+     * @return True if an instance of MapData has already been created.
      */
-    public static void clear() {
-        instance = new MapData();
+    public static boolean hasValidInstance() {
+        return instance != null;
     }
 
     /**
@@ -68,13 +185,6 @@ public final class MapData {
      */
     public static void invalidate() {
         instance = null;
-    }
-
-    /**
-     * @return True if an instance of MapData has already been created.
-     */
-    public static boolean hasValidInstance() {
-        return instance != null;
     }
 
     /**
@@ -125,120 +235,46 @@ public final class MapData {
     }
 
     /**
-     * Creates, populates, and returns a new MapData object from the given
-     * deserialization stream.
-     * 
-     * @param s
-     *            The stream to read from.
-     * @param tokens
-     *            Token database to load tokens from.
-     * @return The created map data.
-     * @throws IOException
-     *             On deserialization error.
-     */
-    public static MapData deserialize(MapDataDeserializer s,
-            TokenDatabase tokens) throws IOException {
-        @SuppressWarnings("unused")
-        int mapDataVersion = s.readInt();
-        MapData data = new MapData();
-        data.mGrid = Grid.deserialize(s);
-        data.mTransformer = CoordinateTransformer.deserialize(s);
-        data.mTokens.deserialize(s, tokens);
-        data.mBackgroundLines.deserialize(s);
-        data.mBackgroundFogOfWar.deserialize(s);
-        data.mGmNoteLines.deserialize(s);
-        data.mGmNotesFogOfWar.deserialize(s);
-        data.mAnnotationLines.deserialize(s);
-        return data;
-    }
-
-    /**
-     * Transformation from world space to screen space.
-     */
-    private CoordinateTransformer mTransformer = new CoordinateTransformer(0,
-            0, INITIAL_ZOOM);
-
-    /**
-     * Command history object to use for the background and associated fog of
-     * war.
-     */
-    private CommandHistory mBackgroundCommandHistory = new CommandHistory();
-
-    /**
-     * Command history to use for the annotations.
-     */
-    private CommandHistory mAnntationCommandHistory = new CommandHistory();
-
-    /**
-     * Command history to use for the GM notes and associated fog of war.
-     */
-    private CommandHistory mGmNotesCommandHistory = new CommandHistory();
-
-    /**
-     * Command history to use for combat tokens.
-     */
-    private CommandHistory mTokenCollectionCommandHistory =
-            new CommandHistory();
-
-    /**
-     * Background lines.
-     */
-    private LineCollection mBackgroundLines = new LineCollection(
-            mBackgroundCommandHistory);
-
-    /**
-     * Lines that represent the fog of war.
-     */
-    private LineCollection mBackgroundFogOfWar = new LineCollection(
-            mBackgroundCommandHistory);
-
-    /**
-     * Annotation lines.
-     */
-    private LineCollection mAnnotationLines = new LineCollection(
-            mAnntationCommandHistory);
-
-    /**
-     * Notes for the GM that are not visible when combat is occurring.
-     */
-    private LineCollection mGmNoteLines = new LineCollection(
-            mGmNotesCommandHistory);
-
-    /**
-     * Lines that represent the fog of war.
-     */
-    private LineCollection mGmNotesFogOfWar = new LineCollection(
-            mGmNotesCommandHistory);
-
-    /**
-     * Tokens that have been placed on the map.
-     */
-    private TokenCollection mTokens = new TokenCollection(
-            mTokenCollectionCommandHistory);
-
-    /**
-     * Collection of background images.
-     */
-    private BackgroundImageCollection mBackgroundImages = new BackgroundImageCollection(
-            mBackgroundCommandHistory);
-
-    /**
-     * The grid to draw.
-     */
-    private Grid mGrid = new Grid();
-
-    /**
-     * Whether map attributes such as color scheme and grid type should be
-     * updated in response to loading preferences. Set to true if this map is
-     * newly loaded.
-     */
-    private boolean mMapAttributesLocked;
-
-    /**
      * Private constructor - singleton pattern.
      */
     private MapData() {
 
+    }
+
+    /**
+     * 
+     * @return Whether map attributes are locked.
+     */
+    public boolean areMapAttributesLocked() {
+        return this.mMapAttributesLocked;
+    }
+
+    /**
+     * @return the annotationLines
+     */
+    public LineCollection getAnnotationLines() {
+        return this.mAnnotationLines;
+    }
+
+    /**
+     * @return the fog of war lines.
+     */
+    public LineCollection getBackgroundFogOfWar() {
+        return this.mBackgroundFogOfWar;
+    }
+
+    /**
+     * @return The collection of background images.
+     */
+    public BackgroundImageCollection getBackgroundImages() {
+        return this.mBackgroundImages;
+    }
+
+    /**
+     * @return the backgroundLines
+     */
+    public LineCollection getBackgroundLines() {
+        return this.mBackgroundLines;
     }
 
     /**
@@ -249,76 +285,75 @@ public final class MapData {
     public BoundingRectangle getBoundingRectangle() {
         BoundingRectangle r = new BoundingRectangle();
 
-        r.updateBounds(mBackgroundLines.getBoundingRectangle());
-        r.updateBounds(mAnnotationLines.getBoundingRectangle());
-        r.updateBounds(getTokens().getBoundingRectangle());
+        r.updateBounds(this.mBackgroundLines.getBoundingRectangle());
+        r.updateBounds(this.mAnnotationLines.getBoundingRectangle());
+        r.updateBounds(this.getTokens().getBoundingRectangle());
 
         return r;
-    }
-
-    /**
-     * @return Whether anything has been placed on the map.
-     */
-    public boolean hasData() {
-        return !mBackgroundLines.isEmpty() || !mAnnotationLines.isEmpty()
-                || !getTokens().isEmpty();
-    }
-
-    /**
-     * @return the backgroundLines
-     */
-    public LineCollection getBackgroundLines() {
-        return mBackgroundLines;
-    }
-
-    /**
-     * @return the fog of war lines.
-     */
-    public LineCollection getBackgroundFogOfWar() {
-        return mBackgroundFogOfWar;
-    }
-
-    /**
-     * @return the fog of war lines.
-     */
-    public LineCollection getGmNotesFogOfWar() {
-        return mGmNotesFogOfWar;
-    }
-
-    /**
-     * @return the annotationLines
-     */
-    public LineCollection getAnnotationLines() {
-        return mAnnotationLines;
     }
 
     /**
      * @return Private notes for the GM
      */
     public LineCollection getGmNoteLines() {
-        return mGmNoteLines;
+        return this.mGmNoteLines;
     }
 
     /**
-     * @return the tokens
+     * @return the fog of war lines.
      */
-    public TokenCollection getTokens() {
-        return mTokens;
-    }
-
-    /**
-     * @param grid
-     *            the grid to set
-     */
-    public void setGrid(final Grid grid) {
-        this.mGrid = grid;
+    public LineCollection getGmNotesFogOfWar() {
+        return this.mGmNotesFogOfWar;
     }
 
     /**
      * @return the grid
      */
     public Grid getGrid() {
-        return mGrid;
+        return this.mGrid;
+    }
+
+    /**
+     * Gets the screen space bounding rectangle of the entire map based on the
+     * current screen space transformation.
+     * 
+     * @param marginsPx
+     *            Margin to apply to each edge.
+     * @return The bounding rectangle.
+     */
+    public RectF getScreenSpaceBoundingRect(int marginsPx) {
+        BoundingRectangle worldSpaceRect = this.getBoundingRectangle();
+        PointF ul =
+                this.mTransformer.worldSpaceToScreenSpace(
+                        worldSpaceRect.getXMin(), worldSpaceRect.getYMin());
+        PointF lr =
+                this.mTransformer.worldSpaceToScreenSpace(
+                        worldSpaceRect.getXMax(), worldSpaceRect.getYMax());
+        return new RectF(ul.x - marginsPx, ul.y - marginsPx, lr.x + marginsPx,
+                lr.y + marginsPx);
+    }
+
+    /**
+     * @return the tokens
+     */
+    public TokenCollection getTokens() {
+        return this.mTokens;
+    }
+
+    /**
+     * @return the transformer
+     */
+    public CoordinateTransformer getWorldSpaceTransformer() {
+        return this.mTransformer;
+    }
+
+    /**
+     * @return Whether anything has been placed on the map.
+     */
+    public boolean hasData() {
+        return !this.mBackgroundLines.isEmpty()
+                || !this.mAnnotationLines.isEmpty()
+                || !this.getTokens().isEmpty();
     }
 
     /**
@@ -342,18 +377,11 @@ public final class MapData {
     }
 
     /**
-     * @return the transformer
+     * @param grid
+     *            the grid to set
      */
-    public CoordinateTransformer getWorldSpaceTransformer() {
-        return mTransformer;
-    }
-
-    /**
-     * 
-     * @return Whether map attributes are locked.
-     */
-    public boolean areMapAttributesLocked() {
-        return this.mMapAttributesLocked;
+    public void setGrid(final Grid grid) {
+        this.mGrid = grid;
     }
 
     /**
@@ -364,30 +392,5 @@ public final class MapData {
      */
     public void setMapAttributesLocked(boolean locked) {
         this.mMapAttributesLocked = locked;
-    }
-
-    /**
-     * Gets the screen space bounding rectangle of the entire map based on the
-     * current screen space transformation.
-     * 
-     * @param marginsPx
-     *            Margin to apply to each edge.
-     * @return The bounding rectangle.
-     */
-    public RectF getScreenSpaceBoundingRect(int marginsPx) {
-        BoundingRectangle worldSpaceRect = getBoundingRectangle();
-        PointF ul = this.mTransformer.worldSpaceToScreenSpace(
-                worldSpaceRect.getXMin(), worldSpaceRect.getYMin());
-        PointF lr = this.mTransformer.worldSpaceToScreenSpace(
-                worldSpaceRect.getXMax(), worldSpaceRect.getYMax());
-        return new RectF(ul.x - marginsPx, ul.y - marginsPx, lr.x + marginsPx,
-                lr.y + marginsPx);
-    }
-
-    /**
-     * @return The collection of background images.
-     */
-    public BackgroundImageCollection getBackgroundImages() {
-        return this.mBackgroundImages;
     }
 }

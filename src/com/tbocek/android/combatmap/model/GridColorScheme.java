@@ -2,10 +2,10 @@ package com.tbocek.android.combatmap.model;
 
 import java.io.IOException;
 
+import android.graphics.Color;
+
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
-
-import android.graphics.Color;
 
 /**
  * Stores a color scheme to use when drawing the grid.
@@ -18,10 +18,22 @@ public final class GridColorScheme {
     // BUILT-IN COLOR SCHEMES
 
     /**
-     * Grey on white.
+     * Green on black.
      */
-    public static final GridColorScheme STANDARD = new GridColorScheme(
-            Color.WHITE, Color.rgb(200, 200, 200), false);
+    public static final GridColorScheme CONSOLE = new GridColorScheme(
+            Color.rgb(0, 0, 0), Color.GREEN, true);
+
+    /**
+     * Dark red on grey.
+     */
+    public static final GridColorScheme DUNGEON = new GridColorScheme(
+            Color.rgb(64, 64, 64), Color.rgb(64, 0, 0), true);
+
+    /**
+     * Dark blue on dark green.
+     */
+    public static final GridColorScheme FOREST = new GridColorScheme(Color.rgb(
+            0, 128, 0), Color.rgb(0, 0, 100), true);
 
     /**
      * Green on light yellow, a classic graph paper look.
@@ -36,16 +48,16 @@ public final class GridColorScheme {
             63, 172, 41), Color.rgb(11, 121, 34), false);
 
     /**
+     * Light blue on black.
+     */
+    public static final GridColorScheme HOLOGRAM = new GridColorScheme(
+            Color.rgb(0, 0, 0), Color.rgb(41, 162, 255), true);
+
+    /**
      * Light blue on white.
      */
     public static final GridColorScheme ICE = new GridColorScheme(Color.WHITE,
             Color.rgb(160, 160, 255), false);
-
-    /**
-     * Dark blue on dark green.
-     */
-    public static final GridColorScheme FOREST = new GridColorScheme(Color.rgb(
-            0, 128, 0), Color.rgb(0, 0, 100), true);
 
     /**
      * Black on dark blue.
@@ -54,22 +66,44 @@ public final class GridColorScheme {
             0, 0, 102), Color.rgb(0, 0, 0), true);
 
     /**
-     * Dark red on grey.
+     * Grey on white.
      */
-    public static final GridColorScheme DUNGEON = new GridColorScheme(
-            Color.rgb(64, 64, 64), Color.rgb(64, 0, 0), true);
+    public static final GridColorScheme STANDARD = new GridColorScheme(
+            Color.WHITE, Color.rgb(200, 200, 200), false);
 
     /**
-     * Light blue on black.
+     * The color to draw in the background.
      */
-    public static final GridColorScheme HOLOGRAM = new GridColorScheme(
-            Color.rgb(0, 0, 0), Color.rgb(41, 162, 255), true);
+    private int mBackgroundColor;
 
     /**
-     * Green on black.
+     * Whether the color scheme has a dark background.
      */
-    public static final GridColorScheme CONSOLE = new GridColorScheme(
-            Color.rgb(0, 0, 0), Color.GREEN, true);
+    private boolean mIsDark;
+
+    /**
+     * The color to draw grid lines with.
+     */
+    private int mLineColor;
+
+    /**
+     * Reads and returns a color scheme from the given stream.
+     * 
+     * @param s
+     *            The stream to read from.
+     * @return The read color stream.
+     * @throws IOException
+     *             On read error.
+     */
+    public static GridColorScheme deserialize(MapDataDeserializer s)
+            throws IOException {
+        s.expectObjectStart();
+        int bkg = s.readInt();
+        int line = s.readInt();
+        boolean dark = s.readBoolean();
+        s.expectObjectEnd();
+        return new GridColorScheme(bkg, line, dark);
+    }
 
     /**
      * Given the name of a color scheme, returns the scheme represented by that
@@ -109,40 +143,6 @@ public final class GridColorScheme {
     }
 
     /**
-     * Reads and returns a color scheme from the given stream.
-     * 
-     * @param s
-     *            The stream to read from.
-     * @return The read color stream.
-     * @throws IOException
-     *             On read error.
-     */
-    public static GridColorScheme deserialize(MapDataDeserializer s)
-            throws IOException {
-        s.expectObjectStart();
-        int bkg = s.readInt();
-        int line = s.readInt();
-        boolean dark = s.readBoolean();
-        s.expectObjectEnd();
-        return new GridColorScheme(bkg, line, dark);
-    }
-
-    /**
-     * The color to draw in the background.
-     */
-    private int mBackgroundColor;
-
-    /**
-     * The color to draw grid lines with.
-     */
-    private int mLineColor;
-
-    /**
-     * Whether the color scheme has a dark background.
-     */
-    private boolean mIsDark;
-
-    /**
      * Constructor.
      * 
      * @param backgroundColor
@@ -164,21 +164,21 @@ public final class GridColorScheme {
      * @return The color to draw in the background.
      */
     public int getBackgroundColor() {
-        return mBackgroundColor;
+        return this.mBackgroundColor;
     }
 
     /**
      * @return The color to draw grid lines with.
      */
     public int getLineColor() {
-        return mLineColor;
+        return this.mLineColor;
     }
 
     /**
      * @return Whether the grid has a dark background.
      */
     boolean isDark() {
-        return mIsDark;
+        return this.mIsDark;
     }
 
     /**

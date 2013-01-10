@@ -22,14 +22,14 @@ import com.tbocek.android.combatmap.view.CombatView;
 public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
         implements OnGestureListener, OnDoubleTapListener {
     /**
-     * The CombatView that this interaction mode manipulates.
-     */
-    private CombatView mView;
-
-    /**
      * Number of fingers currently down.
      */
     private int mFingers;
+
+    /**
+     * The CombatView that this interaction mode manipulates.
+     */
+    private CombatView mView;
 
     /**
      * Constructor.
@@ -45,43 +45,7 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
      * Increments the number of fingers.
      */
     public final void addFinger() {
-        mFingers++;
-    }
-
-    /**
-     * Decrements the number of fingers.
-     */
-    public final void removeFinger() {
-        mFingers--;
-    }
-
-    /**
-     * @return Gets the number of fingers currently down.
-     */
-    protected int getNumberOfFingers() {
-        return mFingers;
-    }
-
-    /**
-     * Called when this interaction mode is started.
-     */
-    public void onStartMode() {
-
-    }
-
-    /**
-     * Called when this interaction mode is stopped.
-     */
-    public void onEndMode() {
-
-    }
-
-    @Override
-    public boolean onScale(final ScaleGestureDetector detector) {
-        getView().getWorldSpaceTransformer().zoom(detector.getScaleFactor(),
-                new PointF(detector.getFocusX(), detector.getFocusY()));
-        getView().refreshMap();
-        return true;
+        this.mFingers++;
     }
 
     /**
@@ -93,43 +57,22 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
     public void draw(final Canvas c) {
     }
 
+    protected MapData getData() {
+        return this.mView.getData();
+    }
+
     /**
-     * Action to take when a finger is lifted.
-     * 
-     * @param event
-     *            Event info.
+     * @return Gets the number of fingers currently down.
      */
-    public void onUp(final MotionEvent event) {
+    protected int getNumberOfFingers() {
+        return this.mFingers;
     }
 
-    @Override
-    public boolean onDown(final MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    public boolean onFling(final MotionEvent arg0, final MotionEvent arg1,
-            final float arg2, final float arg3) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(final MotionEvent arg0) {
-    }
-
-    @Override
-    public boolean onScroll(final MotionEvent arg0, final MotionEvent arg1,
-            final float arg2, final float arg3) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(final MotionEvent arg0) {
-    }
-
-    @Override
-    public boolean onSingleTapUp(final MotionEvent ev) {
-        return false;
+    /**
+     * @return The CombatView being manipulated.
+     */
+    protected CombatView getView() {
+        return this.mView;
     }
 
     @Override
@@ -143,18 +86,77 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
     }
 
     @Override
+    public boolean onDown(final MotionEvent event) {
+        return false;
+    }
+
+    /**
+     * Called when this interaction mode is stopped.
+     */
+    public void onEndMode() {
+
+    }
+
+    @Override
+    public boolean onFling(final MotionEvent arg0, final MotionEvent arg1,
+            final float arg2, final float arg3) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(final MotionEvent arg0) {
+    }
+
+    @Override
+    public boolean onScale(final ScaleGestureDetector detector) {
+        this.getView()
+                .getWorldSpaceTransformer()
+                .zoom(detector.getScaleFactor(),
+                        new PointF(detector.getFocusX(), detector.getFocusY()));
+        this.getView().refreshMap();
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(final MotionEvent arg0, final MotionEvent arg1,
+            final float arg2, final float arg3) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(final MotionEvent arg0) {
+    }
+
+    @Override
     public boolean onSingleTapConfirmed(final MotionEvent arg0) {
         return true;
     }
 
-    /**
-     * @return The CombatView being manipulated.
-     */
-    protected CombatView getView() {
-        return mView;
+    @Override
+    public boolean onSingleTapUp(final MotionEvent ev) {
+        return false;
     }
 
-    protected MapData getData() {
-        return mView.getData();
+    /**
+     * Called when this interaction mode is started.
+     */
+    public void onStartMode() {
+
+    }
+
+    /**
+     * Action to take when a finger is lifted.
+     * 
+     * @param event
+     *            Event info.
+     */
+    public void onUp(final MotionEvent event) {
+    }
+
+    /**
+     * Decrements the number of fingers.
+     */
+    public final void removeFinger() {
+        this.mFingers--;
     }
 }

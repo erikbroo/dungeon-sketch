@@ -24,6 +24,30 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 public class TabManager {
 
     /**
+     * Action bar that provides the tabs.
+     */
+    private ActionBar mActionBar;
+
+    protected Context mContext;
+
+    private int mLastSelectedMode = -1;
+
+    /**
+     * Reverse lookup so we know what tab to select when forced into an
+     * interaction mode.
+     */
+    private Map<Integer, ActionBar.Tab> mManipulationModeTabs =
+            new HashMap<Integer, ActionBar.Tab>();
+
+    private HashMap<Integer, Boolean> modesForGm =
+            new HashMap<Integer, Boolean>();
+
+    /**
+     * Listener that fires when a tab is selected.
+     */
+    private TabSelectedListener mTabSelectedListener;
+
+    /**
      * Constructor.
      * 
      * @param actionBar
@@ -34,32 +58,8 @@ public class TabManager {
         this.mContext = context;
     }
 
-    /**
-     * Listener that fires when a tab is selected.
-     */
-    private TabSelectedListener mTabSelectedListener;
-
-    private int mLastSelectedMode = -1;
-
-    private HashMap<Integer, Boolean> modesForGm =
-            new HashMap<Integer, Boolean>();
-
-    /**
-     * Action bar that provides the tabs.
-     */
-    private ActionBar mActionBar;
-
-    /**
-     * Reverse lookup so we know what tab to select when forced into an
-     * interaction mode.
-     */
-    private Map<Integer, ActionBar.Tab> mManipulationModeTabs =
-            new HashMap<Integer, ActionBar.Tab>();
-
-    protected Context mContext;
-
     public final void addTab(String description, final int mode, boolean forGm) {
-        ActionBar.Tab tab = mActionBar.newTab();
+        ActionBar.Tab tab = this.mActionBar.newTab();
         tab.setText(description);
         tab.setTabListener(new ActionBar.TabListener() {
             @Override
@@ -78,59 +78,15 @@ public class TabManager {
 
             }
         });
-        mActionBar.addTab(tab);
-        mManipulationModeTabs.put(mode, tab);
-        modesForGm.put(mode, forGm);
-    }
-
-    /**
-     * Sets the listener that implements the tab selection action.
-     * 
-     * @param listener
-     *            The new tab selected listener.
-     */
-    public void setTabSelectedListener(TabSelectedListener listener) {
-        mTabSelectedListener = listener;
-    }
-
-    /**
-     * Subclasses can call this to fire the tab selected listener.
-     * 
-     * @param mode
-     *            The integer identifier for the mode that was selected.
-     */
-    protected void onTabSelected(int mode) {
-        if (needGmScreenConfirmation(mode)) {
-            confirmGmScreenBeforeSwitchingTabs(mode);
-        } else {
-            if (mTabSelectedListener != null) {
-                mTabSelectedListener.onTabSelected(mode);
-            }
-            mLastSelectedMode = mode;
-        }
-    }
-
-    protected boolean needGmScreenConfirmation(int mode) {
-        if (mLastSelectedMode == -1) {
-            return false;
-        } // Do not need confirmation for first selection.
-        if (!PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getBoolean("gmscreen", false)) {
-            return false;
-        }
-        return this.modesForGm.get(mode).booleanValue()
-                && !this.modesForGm.get(this.mLastSelectedMode).booleanValue();
-    }
-
-    public void pickTab(int mode) {
-        mManipulationModeTabs.get(mode).select();
-        mLastSelectedMode = mode;
+        this.mActionBar.addTab(tab);
+        this.mManipulationModeTabs.put(mode, tab);
+        this.modesForGm.put(mode, forGm);
     }
 
     private void confirmGmScreenBeforeSwitchingTabs(final int destinationMode) {
         int switchBackMode = TabManager.this.mLastSelectedMode;
         TabManager.this.mLastSelectedMode = -1;
-        mManipulationModeTabs.get(switchBackMode).select();
+        this.mManipulationModeTabs.get(switchBackMode).select();
 
         new AlertDialog.Builder(this.mContext)
                 .setCancelable(true)
@@ -150,8 +106,8 @@ public class TabManager {
                                                                         // the
                                                                         // dialog
                                                                         // again!
-                                mManipulationModeTabs.get(destinationMode)
-                                        .select();
+                                TabManager.this.mManipulationModeTabs.get(
+                                        destinationMode).select();
 
                             }
 
@@ -165,6 +121,50 @@ public class TabManager {
 
                             }
                         }).create().show();
+    }
+
+    protected boolean needGmScreenConfirmation(int mode) {
+        if (this.mLastSelectedMode == -1) {
+            return false;
+        } // Do not need confirmation for first selection.
+        if (!PreferenceManager.getDefaultSharedPreferences(this.mContext)
+                .getBoolean("gmscreen", false)) {
+            return false;
+        }
+        return this.modesForGm.get(mode).booleanValue()
+                && !this.modesForGm.get(this.mLastSelectedMode).booleanValue();
+    }
+
+    /**
+     * Subclasses can call this to fire the tab selected listener.
+     * 
+     * @param mode
+     *            The integer identifier for the mode that was selected.
+     */
+    protected void onTabSelected(int mode) {
+        if (this.needGmScreenConfirmation(mode)) {
+            this.confirmGmScreenBeforeSwitchingTabs(mode);
+        } else {
+            if (this.mTabSelectedListener != null) {
+                this.mTabSelectedListener.onTabSelected(mode);
+            }
+            this.mLastSelectedMode = mode;
+        }
+    }
+
+    public void pickTab(int mode) {
+        this.mManipulationModeTabs.get(mode).select();
+        this.mLastSelectedMode = mode;
+    }
+
+    /**
+     * Sets the listener that implements the tab selection action.
+     * 
+     * @param listener
+     *            The new tab selected listener.
+     */
+    public void setTabSelectedListener(TabSelectedListener listener) {
+        this.mTabSelectedListener = listener;
     }
 
     /**

@@ -18,18 +18,6 @@ import android.graphics.Paint.Style;
 public final class SolidColorToken extends BaseToken {
 
     /**
-     * Format string that pads the sort order with 0s.
-     */
-    private static final DecimalFormat SORT_ORDER_FORMAT = new DecimalFormat(
-            "#0000.###");
-
-    /**
-     * Color to use when bloodying a token that is already colored red.
-     */
-    private static final int RED_TOKEN_BLOODIED_BORDER_COLOR = Color.rgb(127,
-            0, 0);
-
-    /**
      * Stroke width to use for drawing a red border around bloodied tokens.
      */
     private static final int BLOODIED_BORDER_STROKE_WIDTH = 8;
@@ -38,6 +26,18 @@ public final class SolidColorToken extends BaseToken {
      * Alpha channel value to use for ghost tokens.
      */
     private static final int GHOST_ALPHA = 128;
+
+    /**
+     * Color to use when bloodying a token that is already colored red.
+     */
+    private static final int RED_TOKEN_BLOODIED_BORDER_COLOR = Color.rgb(127,
+            0, 0);
+
+    /**
+     * Format string that pads the sort order with 0s.
+     */
+    private static final DecimalFormat SORT_ORDER_FORMAT = new DecimalFormat(
+            "#0000.###");
 
     /**
      * This token's color.
@@ -64,6 +64,30 @@ public final class SolidColorToken extends BaseToken {
         this.mSortOrder = sortOrder;
     }
 
+    @Override
+    public BaseToken clone() {
+        return this.copyAttributesTo(new SolidColorToken(this.mColor,
+                this.mSortOrder));
+    }
+
+    @Override
+    public void drawBloodiedImpl(final Canvas c, final float x, final float y,
+            final float radius, final boolean isManipulatable) {
+        this.drawImpl(c, x, y, radius, false, isManipulatable);
+
+        Paint p = new Paint();
+        // If token is already colored red, use a dark red border so it's
+        // visible
+        p.setColor(this.mColor != Color.RED
+                ? Color.RED
+                : RED_TOKEN_BLOODIED_BORDER_COLOR);
+        p.setStyle(Style.STROKE);
+        p.setStrokeWidth(BLOODIED_BORDER_STROKE_WIDTH);
+        // CHECKSTYLE:OFF
+        c.drawCircle(x, y, radius - 4, p);
+        // CHECKSTYLE:ON
+    }
+
     /**
      * Draws an indication of a past location of the token.
      * 
@@ -80,7 +104,7 @@ public final class SolidColorToken extends BaseToken {
     public void drawGhost(final Canvas c, final float x, final float y,
             final float radius) {
         Paint p = new Paint();
-        p.setColor(mColor);
+        p.setColor(this.mColor);
         p.setAlpha(GHOST_ALPHA);
         c.drawCircle(x, y, radius, p);
     }
@@ -90,40 +114,11 @@ public final class SolidColorToken extends BaseToken {
             final float radius, final boolean darkBackground,
             final boolean isManipulatable) {
         Paint p = new Paint();
-        p.setColor(mColor);
+        p.setColor(this.mColor);
         if (!isManipulatable) {
             p.setAlpha(GHOST_ALPHA);
         }
         c.drawCircle(x, y, radius, p);
-    }
-
-    @Override
-    public void drawBloodiedImpl(final Canvas c, final float x, final float y,
-            final float radius, final boolean isManipulatable) {
-        drawImpl(c, x, y, radius, false, isManipulatable);
-
-        Paint p = new Paint();
-        // If token is already colored red, use a dark red border so it's
-        // visible
-        p.setColor(mColor != Color.RED ? Color.RED
-                : RED_TOKEN_BLOODIED_BORDER_COLOR);
-        p.setStyle(Style.STROKE);
-        p.setStrokeWidth(BLOODIED_BORDER_STROKE_WIDTH);
-        // CHECKSTYLE:OFF
-        c.drawCircle(x, y, radius - 4, p);
-        // CHECKSTYLE:ON
-    }
-
-    @Override
-    public BaseToken clone() {
-        return copyAttributesTo(new SolidColorToken(mColor, mSortOrder));
-    }
-
-    @Override
-    protected String getTokenClassSpecificId() {
-        SORT_ORDER_FORMAT.setDecimalSeparatorAlwaysShown(false);
-        return SORT_ORDER_FORMAT.format(mSortOrder) + '_'
-                + Integer.toString(mColor);
     }
 
     @Override
@@ -132,5 +127,12 @@ public final class SolidColorToken extends BaseToken {
         s.add("built-in");
         s.add("solid color");
         return s;
+    }
+
+    @Override
+    protected String getTokenClassSpecificId() {
+        SORT_ORDER_FORMAT.setDecimalSeparatorAlwaysShown(false);
+        return SORT_ORDER_FORMAT.format(this.mSortOrder) + '_'
+                + Integer.toString(this.mColor);
     }
 }

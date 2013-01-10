@@ -18,28 +18,6 @@ import android.widget.TextView;
 public class TextPromptDialog extends Dialog {
 
     /**
-     * Listener used to specify the action to take when the user confirms text
-     * entry in a TextPromptDialog.
-     * 
-     * @author Tim Bocek
-     * 
-     */
-    public interface OnTextConfirmedListener {
-        /**
-         * Called when the user confirms the text entered.
-         * 
-         * @param text
-         *            The text entered by the user.
-         */
-        void onTextConfirmed(String text);
-    }
-
-    /**
-     * Text entry field.
-     */
-    private TextView mNameText;
-
-    /**
      * Button that the user clicks to confirm the text entered.
      */
     private Button mConfirmButton;
@@ -48,6 +26,11 @@ public class TextPromptDialog extends Dialog {
      * Listener that is called when the user clicks the confirm button.
      */
     private OnTextConfirmedListener mListener;
+
+    /**
+     * Text entry field.
+     */
+    private TextView mNameText;
 
     /**
      * Constructor.
@@ -70,18 +53,19 @@ public class TextPromptDialog extends Dialog {
         this.setTitle(title);
         this.mListener = listener;
 
-        mConfirmButton = (Button) this.findViewById(R.id.button_save);
-        mConfirmButton.setText(confirmText);
-        mNameText = (TextView) this.findViewById(R.id.save_file_name);
-        mNameText.requestFocus();
-        mNameText.setText("");
+        this.mConfirmButton = (Button) this.findViewById(R.id.button_save);
+        this.mConfirmButton.setText(confirmText);
+        this.mNameText = (TextView) this.findViewById(R.id.save_file_name);
+        this.mNameText.requestFocus();
+        this.mNameText.setText("");
 
-        mConfirmButton.setOnClickListener(new View.OnClickListener() {
+        this.mConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                String name = mNameText.getText().toString();
+                String name =
+                        TextPromptDialog.this.mNameText.getText().toString();
                 if (!"".equals(name)) {
-                    dismiss();
+                    TextPromptDialog.this.dismiss();
                     TextPromptDialog.this.mListener.onTextConfirmed(name);
                 }
             }
@@ -95,7 +79,24 @@ public class TextPromptDialog extends Dialog {
      *            The new text.
      */
     public final void fillText(String text) {
-        mNameText.setText(text);
+        this.mNameText.setText(text);
+    }
+
+    /**
+     * Listener used to specify the action to take when the user confirms text
+     * entry in a TextPromptDialog.
+     * 
+     * @author Tim Bocek
+     * 
+     */
+    public interface OnTextConfirmedListener {
+        /**
+         * Called when the user confirms the text entered.
+         * 
+         * @param text
+         *            The text entered by the user.
+         */
+        void onTextConfirmed(String text);
     }
 
 }

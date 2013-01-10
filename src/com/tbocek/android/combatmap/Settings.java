@@ -27,28 +27,28 @@ public final class Settings extends PreferenceActivity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.layout.settings);
+        this.addPreferencesFromResource(R.layout.settings);
 
         // Hook up the about preference
-        Preference dialogPref = findPreference("about");
+        Preference dialogPref = this.findPreference("about");
         dialogPref
                 .setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        showDialog(DIALOG_ID_ABOUT);
+                        Settings.this.showDialog(DIALOG_ID_ABOUT);
                         return true;
                     }
 
                 });
 
-        Preference artCreditPref = findPreference("artcredits");
+        Preference artCreditPref = this.findPreference("artcredits");
         artCreditPref
                 .setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        startActivity(new Intent(Settings.this,
+                        Settings.this.startActivity(new Intent(Settings.this,
                                 ArtCredits.class));
                         return true;
                     }
@@ -73,7 +73,7 @@ public final class Settings extends PreferenceActivity {
             // app icon in action bar clicked; go home
             Intent intent = new Intent(this, CombatMap.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            this.startActivity(intent);
             return true;
         default:
             return super.onOptionsItemSelected(item);

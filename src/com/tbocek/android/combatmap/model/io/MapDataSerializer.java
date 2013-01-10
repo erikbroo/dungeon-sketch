@@ -28,42 +28,23 @@ public class MapDataSerializer {
     }
 
     /**
-     * Writes a string value.
+     * Writes the tokens needed to signal an array end.
      * 
-     * @param value
-     *            String to write.
      * @throws IOException
      *             On write error.
      */
-    public void serializeString(String value) throws IOException {
-        mWriter.write(value);
-        mWriter.write('\n');
+    public void endArray() throws IOException {
+        this.mWriter.write("]\n");
     }
 
     /**
-     * Writes an integer value.
+     * Writes the tokens needed to signal an object end.
      * 
-     * @param value
-     *            Integer to write.
      * @throws IOException
      *             On write error.
      */
-    public void serializeInt(int value) throws IOException {
-        mWriter.write(Integer.toString(value));
-        mWriter.write('\n');
-    }
-
-    /**
-     * Writes a floating point value.
-     * 
-     * @param value
-     *            Float to write.
-     * @throws IOException
-     *             On write error.
-     */
-    public void serializeFloat(float value) throws IOException {
-        mWriter.write(Float.toString(value));
-        mWriter.write('\n');
+    public void endObject() throws IOException {
+        this.mWriter.write("}\n");
     }
 
     /**
@@ -75,7 +56,46 @@ public class MapDataSerializer {
      *             On write error.
      */
     public void serializeBoolean(boolean value) throws IOException {
-        mWriter.write(value ? "1\n" : "0\n");
+        this.mWriter.write(value ? "1\n" : "0\n");
+    }
+
+    /**
+     * Writes a floating point value.
+     * 
+     * @param value
+     *            Float to write.
+     * @throws IOException
+     *             On write error.
+     */
+    public void serializeFloat(float value) throws IOException {
+        this.mWriter.write(Float.toString(value));
+        this.mWriter.write('\n');
+    }
+
+    /**
+     * Writes an integer value.
+     * 
+     * @param value
+     *            Integer to write.
+     * @throws IOException
+     *             On write error.
+     */
+    public void serializeInt(int value) throws IOException {
+        this.mWriter.write(Integer.toString(value));
+        this.mWriter.write('\n');
+    }
+
+    /**
+     * Writes a string value.
+     * 
+     * @param value
+     *            String to write.
+     * @throws IOException
+     *             On write error.
+     */
+    public void serializeString(String value) throws IOException {
+        this.mWriter.write(value);
+        this.mWriter.write('\n');
     }
 
     /**
@@ -85,17 +105,7 @@ public class MapDataSerializer {
      *             On write error.
      */
     public void startArray() throws IOException {
-        mWriter.write("[\n");
-    }
-
-    /**
-     * Writes the tokens needed to signal an array end.
-     * 
-     * @throws IOException
-     *             On write error.
-     */
-    public void endArray() throws IOException {
-        mWriter.write("]\n");
+        this.mWriter.write("[\n");
     }
 
     /**
@@ -105,16 +115,6 @@ public class MapDataSerializer {
      *             On write error.
      */
     public void startObject() throws IOException {
-        mWriter.write("{\n");
-    }
-
-    /**
-     * Writes the tokens needed to signal an object end.
-     * 
-     * @throws IOException
-     *             On write error.
-     */
-    public void endObject() throws IOException {
-        mWriter.write("}\n");
+        this.mWriter.write("{\n");
     }
 }

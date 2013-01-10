@@ -39,14 +39,16 @@ public class BaseDrawInteractionMode extends CombatViewInteractionMode {
      */
     protected PointF getScreenSpacePoint(final MotionEvent e) {
         PointF p = new PointF(e.getX(), e.getY());
-        if (getView().shouldSnapToGrid()) {
-            CoordinateTransformer transformer = getView()
-                    .getGridSpaceTransformer();
-            p = transformer.worldSpaceToScreenSpace(getView()
-                    .getData()
-                    .getGrid()
-                    .getNearestSnapPoint(
-                            transformer.screenSpaceToWorldSpace(p), 0));
+        if (this.getView().shouldSnapToGrid()) {
+            CoordinateTransformer transformer =
+                    this.getView().getGridSpaceTransformer();
+            p =
+                    transformer.worldSpaceToScreenSpace(this
+                            .getView()
+                            .getData()
+                            .getGrid()
+                            .getNearestSnapPoint(
+                                    transformer.screenSpaceToWorldSpace(p), 0));
         }
         return p;
     }

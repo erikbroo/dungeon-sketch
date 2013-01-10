@@ -26,30 +26,29 @@ public final class MultiSelectManager {
     private SelectionChangedListener mSelectionChangedListener;
 
     /**
-     * Changes the callback to use when the selection changes.
-     * 
-     * @param listener
-     *            The new listener.
-     */
-    public void setSelectionChangedListener(SelectionChangedListener listener) {
-        mSelectionChangedListener = listener;
-    }
-
-    /**
      * Adds a token to the current selection.
      * 
      * @param t
      *            The token to add. Should be a unique clone.
      */
     public void addToken(final BaseToken t) {
-        if (mSelection.isEmpty() && mSelectionChangedListener != null) {
-            mSelectionChangedListener.selectionStarted();
+        if (this.mSelection.isEmpty() && this.mSelectionChangedListener != null) {
+            this.mSelectionChangedListener.selectionStarted();
         }
-        mSelection.add(t);
+        this.mSelection.add(t);
         t.setSelected(true);
-        if (mSelectionChangedListener != null) {
-            mSelectionChangedListener.selectionChanged();
+        if (this.mSelectionChangedListener != null) {
+            this.mSelectionChangedListener.selectionChanged();
         }
+    }
+
+    /**
+     * Returns the selected tokens, in no particular order.
+     * 
+     * @return The tokens.
+     */
+    public Collection<BaseToken> getSelectedTokens() {
+        return this.mSelection;
     }
 
     /**
@@ -60,13 +59,36 @@ public final class MultiSelectManager {
      */
     public void removeToken(final BaseToken token) {
         token.setSelected(false);
-        mSelection.remove(token);
-        if (mSelectionChangedListener != null) {
-            mSelectionChangedListener.selectionChanged();
-            if (mSelection.isEmpty()) {
-                mSelectionChangedListener.selectionEnded();
+        this.mSelection.remove(token);
+        if (this.mSelectionChangedListener != null) {
+            this.mSelectionChangedListener.selectionChanged();
+            if (this.mSelection.isEmpty()) {
+                this.mSelectionChangedListener.selectionEnded();
             }
         }
+    }
+
+    /**
+     * Clears the selection.
+     */
+    public void selectNone() {
+        for (BaseToken t : this.mSelection) {
+            t.setSelected(false);
+        }
+        this.mSelection.clear();
+        if (this.mSelectionChangedListener != null) {
+            this.mSelectionChangedListener.selectionEnded();
+        }
+    }
+
+    /**
+     * Changes the callback to use when the selection changes.
+     * 
+     * @param listener
+     *            The new listener.
+     */
+    public void setSelectionChangedListener(SelectionChangedListener listener) {
+        this.mSelectionChangedListener = listener;
     }
 
     /**
@@ -77,31 +99,9 @@ public final class MultiSelectManager {
      */
     public void toggleToken(BaseToken token) {
         if (token.isSelected()) {
-            removeToken(token);
+            this.removeToken(token);
         } else {
-            addToken(token);
-        }
-    }
-
-    /**
-     * Returns the selected tokens, in no particular order.
-     * 
-     * @return The tokens.
-     */
-    public Collection<BaseToken> getSelectedTokens() {
-        return mSelection;
-    }
-
-    /**
-     * Clears the selection.
-     */
-    public void selectNone() {
-        for (BaseToken t : mSelection) {
-            t.setSelected(false);
-        }
-        mSelection.clear();
-        if (mSelectionChangedListener != null) {
-            mSelectionChangedListener.selectionEnded();
+            this.addToken(token);
         }
     }
 
@@ -114,9 +114,9 @@ public final class MultiSelectManager {
     public interface SelectionChangedListener {
 
         /**
-         * Called when a new selection is started.
+         * Called when a single token is added or removed from the collection.
          */
-        void selectionStarted();
+        void selectionChanged();
 
         /**
          * Called when a selection is cleared.
@@ -124,8 +124,8 @@ public final class MultiSelectManager {
         void selectionEnded();
 
         /**
-         * Called when a single token is added or removed from the collection.
+         * Called when a new selection is started.
          */
-        void selectionChanged();
+        void selectionStarted();
     }
 }

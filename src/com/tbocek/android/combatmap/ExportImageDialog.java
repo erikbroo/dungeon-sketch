@@ -2,10 +2,6 @@ package com.tbocek.android.combatmap;
 
 import java.io.IOException;
 
-import com.tbocek.android.combatmap.model.MapData;
-import com.tbocek.android.combatmap.model.MapDrawer;
-import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,6 +18,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.tbocek.android.combatmap.model.MapData;
+import com.tbocek.android.combatmap.model.MapDrawer;
+import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
+
 /**
  * Provides a dialog for the user to export an image.
  * 
@@ -30,38 +30,19 @@ import android.widget.Toast;
  */
 public class ExportImageDialog extends Dialog {
 
-    RadioButton mRadioExportFullMap;
-    RadioButton mRadioExportCurrentView;
-    CheckBox mCheckGridLines;
-    CheckBox mCheckGmNotes;
-    CheckBox mCheckTokens;
     CheckBox mCheckAnnotations;
     CheckBox mCheckFogOfWar;
+    CheckBox mCheckGmNotes;
+    CheckBox mCheckGridLines;
+    CheckBox mCheckTokens;
+    private MapData mData;
     EditText mEditExportName;
     Button mExportButton;
-
-    private MapData mData;
-    private int mExportWidth;
     private int mExportHeight;
 
-    private class SetBooleanPreferenceHandler implements
-            CompoundButton.OnCheckedChangeListener {
-        String mPreference;
-
-        public SetBooleanPreferenceHandler(String preference) {
-            mPreference = preference;
-        }
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView,
-                boolean isChecked) {
-            SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(getContext());
-            Editor editor = sharedPreferences.edit();
-            editor.putBoolean(mPreference, isChecked);
-            editor.commit();
-        }
-    }
+    private int mExportWidth;
+    RadioButton mRadioExportCurrentView;
+    RadioButton mRadioExportFullMap;
 
     /**
      * Constructor.
@@ -74,46 +55,49 @@ public class ExportImageDialog extends Dialog {
         this.setTitle("Export Image");
         this.setContentView(R.layout.export_dialog);
 
-        mRadioExportFullMap =
+        this.mRadioExportFullMap =
                 (RadioButton) this.findViewById(R.id.radio_export_full_map);
-        mRadioExportCurrentView =
+        this.mRadioExportCurrentView =
                 (RadioButton) this.findViewById(R.id.radio_export_current_view);
-        mCheckGridLines =
+        this.mCheckGridLines =
                 (CheckBox) this.findViewById(R.id.checkbox_export_grid_lines);
-        mCheckGmNotes =
+        this.mCheckGmNotes =
                 (CheckBox) this.findViewById(R.id.checkbox_export_gm_notes);
-        mCheckTokens =
+        this.mCheckTokens =
                 (CheckBox) this.findViewById(R.id.checkbox_export_tokens);
-        mCheckAnnotations =
+        this.mCheckAnnotations =
                 (CheckBox) this.findViewById(R.id.checkbox_export_annotations);
-        mCheckFogOfWar =
+        this.mCheckFogOfWar =
                 (CheckBox) this.findViewById(R.id.checkbox_export_fog_of_war);
-        mEditExportName = (EditText) this.findViewById(R.id.edit_export_name);
-        mExportButton = (Button) this.findViewById(R.id.button_export);
+        this.mEditExportName =
+                (EditText) this.findViewById(R.id.edit_export_name);
+        this.mExportButton = (Button) this.findViewById(R.id.button_export);
 
-        associateControl(mRadioExportFullMap, "export_full_map", true);
-        associateControl(mRadioExportCurrentView, "export_current_view", false);
-        associateControl(mCheckGridLines, "export_grid_lines", true);
-        associateControl(mCheckGmNotes, "export_gm_notes", false);
-        associateControl(mCheckTokens, "export_tokens", true);
-        associateControl(mCheckAnnotations, "export_annotations", false);
-        associateControl(mCheckFogOfWar, "export_fog_of_war", false);
+        this.associateControl(this.mRadioExportFullMap, "export_full_map", true);
+        this.associateControl(this.mRadioExportCurrentView,
+                "export_current_view", false);
+        this.associateControl(this.mCheckGridLines, "export_grid_lines", true);
+        this.associateControl(this.mCheckGmNotes, "export_gm_notes", false);
+        this.associateControl(this.mCheckTokens, "export_tokens", true);
+        this.associateControl(this.mCheckAnnotations, "export_annotations",
+                false);
+        this.associateControl(this.mCheckFogOfWar, "export_fog_of_war", false);
 
-        mExportButton.setOnClickListener(new View.OnClickListener() {
+        this.mExportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    export();
+                    ExportImageDialog.this.export();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast toast =
                             Toast.makeText(
-                                    getContext(),
+                                    ExportImageDialog.this.getContext(),
                                     "Could not export.  Reason: "
                                             + e.toString(), Toast.LENGTH_LONG);
                     toast.show();
                 }
-                dismiss();
+                ExportImageDialog.this.dismiss();
             }
         });
     }
@@ -121,26 +105,20 @@ public class ExportImageDialog extends Dialog {
     private void associateControl(CompoundButton b, String pref,
             boolean defaultValue) {
         SharedPreferences prefs =
-                PreferenceManager.getDefaultSharedPreferences(getContext());
+                PreferenceManager
+                        .getDefaultSharedPreferences(this.getContext());
         b.setChecked(prefs.getBoolean(pref, defaultValue));
         b.setOnCheckedChangeListener(new SetBooleanPreferenceHandler(pref));
-    }
-
-    public void prepare(String name, MapData mapData, int width, int height) {
-        this.mEditExportName.setText(name);
-        mData = mapData;
-        mExportWidth = width;
-        mExportHeight = height;
     }
 
     private void export() throws IOException {
         int width;
         int height;
 
-        RectF wholeMapRect = mData.getScreenSpaceBoundingRect(30);
+        RectF wholeMapRect = this.mData.getScreenSpaceBoundingRect(30);
         if (this.mRadioExportCurrentView.isChecked()) {
-            width = mExportWidth;
-            height = mExportHeight;
+            width = this.mExportWidth;
+            height = this.mExportHeight;
         } else {
             width = (int) wholeMapRect.width();
             height = (int) wholeMapRect.height();
@@ -149,9 +127,9 @@ public class ExportImageDialog extends Dialog {
                 Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
-        if (!mRadioExportCurrentView.isChecked()) {
-            mData.getWorldSpaceTransformer().moveOrigin(-wholeMapRect.left,
-                    -wholeMapRect.top);
+        if (!this.mRadioExportCurrentView.isChecked()) {
+            this.mData.getWorldSpaceTransformer().moveOrigin(
+                    -wholeMapRect.left, -wholeMapRect.top);
         }
 
         new MapDrawer()
@@ -163,14 +141,43 @@ public class ExportImageDialog extends Dialog {
                 .gmNotesFogOfWar(FogOfWarMode.NOTHING)
                 .backgroundFogOfWar(
                         this.mCheckFogOfWar.isChecked() ? FogOfWarMode.CLIP
-                                : FogOfWarMode.NOTHING).draw(canvas, mData);
+                                : FogOfWarMode.NOTHING)
+                .draw(canvas, this.mData);
 
-        new DataManager(getContext()).exportImage(mEditExportName.getText()
-                .toString(), bitmap, Bitmap.CompressFormat.PNG);
+        new DataManager(this.getContext()).exportImage(this.mEditExportName
+                .getText().toString(), bitmap, Bitmap.CompressFormat.PNG);
 
-        if (!mRadioExportCurrentView.isChecked()) {
-            mData.getWorldSpaceTransformer().moveOrigin(wholeMapRect.left,
+        if (!this.mRadioExportCurrentView.isChecked()) {
+            this.mData.getWorldSpaceTransformer().moveOrigin(wholeMapRect.left,
                     wholeMapRect.top);
+        }
+    }
+
+    public void prepare(String name, MapData mapData, int width, int height) {
+        this.mEditExportName.setText(name);
+        this.mData = mapData;
+        this.mExportWidth = width;
+        this.mExportHeight = height;
+    }
+
+    private class SetBooleanPreferenceHandler implements
+            CompoundButton.OnCheckedChangeListener {
+        String mPreference;
+
+        public SetBooleanPreferenceHandler(String preference) {
+            this.mPreference = preference;
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView,
+                boolean isChecked) {
+            SharedPreferences sharedPreferences =
+                    PreferenceManager
+                            .getDefaultSharedPreferences(ExportImageDialog.this
+                                    .getContext());
+            Editor editor = sharedPreferences.edit();
+            editor.putBoolean(this.mPreference, isChecked);
+            editor.commit();
         }
     }
 }

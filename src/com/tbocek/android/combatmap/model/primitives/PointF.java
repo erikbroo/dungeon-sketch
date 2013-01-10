@@ -36,20 +36,6 @@ public class PointF extends android.graphics.PointF implements Serializable {
     }
 
     /**
-     * Serializes the PointF.
-     * 
-     * @param out
-     *            Stream to serialize to.
-     * @throws IOException
-     *             On output error.
-     */
-    private void writeObject(final java.io.ObjectOutputStream out)
-            throws IOException {
-        out.writeFloat(x);
-        out.writeFloat(y);
-    }
-
-    /**
      * Deserializes the PointF.
      * 
      * @param in
@@ -59,7 +45,21 @@ public class PointF extends android.graphics.PointF implements Serializable {
      */
     private void readObject(final java.io.ObjectInputStream in)
             throws IOException {
-        x = in.readFloat();
-        y = in.readFloat();
+        this.x = in.readFloat();
+        this.y = in.readFloat();
+    }
+
+    /**
+     * Serializes the PointF.
+     * 
+     * @param out
+     *            Stream to serialize to.
+     * @throws IOException
+     *             On output error.
+     */
+    private void writeObject(final java.io.ObjectOutputStream out)
+            throws IOException {
+        out.writeFloat(this.x);
+        out.writeFloat(this.y);
     }
 }

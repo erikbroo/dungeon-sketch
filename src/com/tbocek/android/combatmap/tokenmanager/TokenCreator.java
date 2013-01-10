@@ -47,32 +47,67 @@ public final class TokenCreator extends SherlockActivity {
     static final int PICK_IMAGE_REQUEST = 0;
 
     /**
-     * The view that implements drawing the selected image and allowing the user
-     * to sepcify a circle on it.
-     */
-    private TokenCreatorView mTokenCreatorView;
-
-    /**
      * Whether the image selector activity was started automatically. If true,
      * and the activity was cancelled, this activity should end as well.
      */
     private boolean mImageSelectorStartedAutomatically = false;
 
+    /**
+     * The view that implements drawing the selected image and allowing the user
+     * to sepcify a circle on it.
+     */
+    private TokenCreatorView mTokenCreatorView;
+
+    @Override
+    protected void onActivityResult(final int requestCode,
+            final int resultCode, final Intent data) {
+        // If an image was successfully picked, use it.
+        if (requestCode == PICK_IMAGE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    Uri selectedImage = data.getData();
+                    Bitmap bitmap =
+                            Util.loadImageWithMaxBounds(selectedImage,
+                                    MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION,
+                                    this.getContentResolver());
+                    this.mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
+
+                    Toast t =
+                            Toast.makeText(this.getApplicationContext(),
+                                    "Pinch to change the cut out region",
+                                    Toast.LENGTH_LONG);
+                    t.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast toast =
+                            Toast.makeText(this.getApplicationContext(),
+                                    "Couldn't load image: " + e.toString(),
+                                    Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                if (this.mImageSelectorStartedAutomatically) {
+                    this.finish();
+                }
+            }
+        }
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         DeveloperMode.strictMode();
         super.onCreate(savedInstanceState);
-        mTokenCreatorView = new TokenCreatorView(this);
-        setContentView(mTokenCreatorView);
+        this.mTokenCreatorView = new TokenCreatorView(this);
+        this.setContentView(this.mTokenCreatorView);
 
         // Automatically select a new image when the view starts.
-        mImageSelectorStartedAutomatically = true;
-        startImageSelectorActivity();
+        this.mImageSelectorStartedAutomatically = true;
+        this.startImageSelectorActivity();
     }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = this.getSupportMenuInflater();
         inflater.inflate(R.menu.token_image_creator, menu);
         return true;
     }
@@ -81,8 +116,8 @@ public final class TokenCreator extends SherlockActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         case R.id.token_image_creator_pick:
-            mImageSelectorStartedAutomatically = false;
-            startImageSelectorActivity();
+            this.mImageSelectorStartedAutomatically = false;
+            this.startImageSelectorActivity();
             return true;
         case R.id.token_image_creator_accept:
             try {
@@ -90,22 +125,23 @@ public final class TokenCreator extends SherlockActivity {
                 // ensures that the tokens load in the order added.
                 Date now = new Date();
                 String filename = Long.toString(now.getTime());
-                filename = saveToInternalImage(filename);
+                filename = this.saveToInternalImage(filename);
 
                 // Add this token to the token database
-                TokenDatabase tokenDatabase = TokenDatabase.getInstance(this
-                        .getApplicationContext());
+                TokenDatabase tokenDatabase =
+                        TokenDatabase.getInstance(this.getApplicationContext());
                 BaseToken t = new CustomBitmapToken(filename);
                 tokenDatabase.addTokenPrototype(t);
                 tokenDatabase.tagToken(t.getTokenId(), t.getDefaultTags());
 
-                setResult(Activity.RESULT_OK);
-                finish();
+                this.setResult(Activity.RESULT_OK);
+                this.finish();
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast toast = Toast.makeText(this.getApplicationContext(),
-                        "Couldn't save image: " + e.toString(),
-                        Toast.LENGTH_LONG);
+                Toast toast =
+                        Toast.makeText(this.getApplicationContext(),
+                                "Couldn't save image: " + e.toString(),
+                                Toast.LENGTH_LONG);
                 toast.show();
             }
             return true;
@@ -113,22 +149,11 @@ public final class TokenCreator extends SherlockActivity {
             // app icon in action bar clicked; go home
             Intent intent = new Intent(this, CombatMap.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            this.startActivity(intent);
             return true;
         default:
             return false;
         }
-    }
-
-    /**
-     * Starts the activity to pick an image. This will probably be the image
-     * gallery, but the user might have a different app installed that does the
-     * same thing.
-     */
-    private void startImageSelectorActivity() {
-        startActivityForResult(new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
-                PICK_IMAGE_REQUEST);
     }
 
     /**
@@ -142,7 +167,7 @@ public final class TokenCreator extends SherlockActivity {
      *             On write error.
      */
     private String saveToInternalImage(final String name) throws IOException {
-        Bitmap bitmap = mTokenCreatorView.getClippedBitmap();
+        Bitmap bitmap = this.mTokenCreatorView.getClippedBitmap();
         if (bitmap == null) {
             return null;
         }
@@ -150,35 +175,14 @@ public final class TokenCreator extends SherlockActivity {
                 name, bitmap);
     }
 
-    @Override
-    protected void onActivityResult(final int requestCode,
-            final int resultCode, final Intent data) {
-        // If an image was successfully picked, use it.
-        if (requestCode == PICK_IMAGE_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                try {
-                    Uri selectedImage = data.getData();
-                    Bitmap bitmap = Util.loadImageWithMaxBounds(selectedImage,
-                            MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION,
-                            getContentResolver());
-                    mTokenCreatorView.setImage(new BitmapDrawable(bitmap));
-
-                    Toast t = Toast.makeText(this.getApplicationContext(),
-                            "Pinch to change the cut out region",
-                            Toast.LENGTH_LONG);
-                    t.show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast toast = Toast.makeText(this.getApplicationContext(),
-                            "Couldn't load image: " + e.toString(),
-                            Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                if (mImageSelectorStartedAutomatically) {
-                    finish();
-                }
-            }
-        }
+    /**
+     * Starts the activity to pick an image. This will probably be the image
+     * gallery, but the user might have a different app installed that does the
+     * same thing.
+     */
+    private void startImageSelectorActivity() {
+        this.startActivityForResult(new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
+                PICK_IMAGE_REQUEST);
     }
 }

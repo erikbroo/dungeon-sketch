@@ -24,10 +24,11 @@ import com.tbocek.android.combatmap.model.primitives.BaseToken;
  * 
  */
 public class TokenLoadManager {
-    private TokenLoadManager() {
-    }
-
     private static TokenLoadManager mInstance = null;
+
+    private boolean isStarted;
+
+    BlockingQueue<JobHandle> mQueue = new LinkedBlockingQueue<JobHandle>();
 
     public static TokenLoadManager getInstance() {
         if (mInstance == null) {
@@ -36,61 +37,16 @@ public class TokenLoadManager {
         return mInstance;
     }
 
-    BlockingQueue<JobHandle> mQueue = new LinkedBlockingQueue<JobHandle>();
-
-    private boolean isStarted;
-
-    public interface JobCallback {
-        void onJobComplete(List<BaseToken> loadedTokens);
+    private TokenLoadManager() {
     }
 
-    public class JobHandle {
-        private List<BaseToken> mTokensToLoad;
-        private JobCallback mCallback;
-        private Handler mUiThreadHandler;
-
-        private boolean mIsCancelled = false;
-
-        private JobHandle(List<BaseToken> tokensToLoad, JobCallback callback,
-                Handler uiThreadHandler) {
-            mTokensToLoad = tokensToLoad;
-            mCallback = callback;
-            mUiThreadHandler = uiThreadHandler;
-        }
-
-        public void cancel() {
-            synchronized (this) {
-                mIsCancelled = true;
+    private void handleJob(JobHandle job) {
+        for (BaseToken t : job.mTokensToLoad) {
+            t.load();
+            if (job.isCancelled()) {
+                return;
             }
         }
-
-        private boolean isCancelled() {
-            synchronized (this) {
-                return mIsCancelled;
-            }
-        }
-
-        private void postResult() {
-            mUiThreadHandler.post(new JobCallbackRunnableWrapper(mCallback,
-                    mTokensToLoad));
-        }
-    }
-
-    private class JobCallbackRunnableWrapper implements Runnable {
-        private JobCallback mCallback;
-        private List<BaseToken> mLoadedTokens;
-
-        private JobCallbackRunnableWrapper(JobCallback callback,
-                List<BaseToken> loadedTokens) {
-            mCallback = callback;
-            mLoadedTokens = loadedTokens;
-        }
-
-        @Override
-        public void run() {
-            mCallback.onJobComplete(mLoadedTokens);
-        }
-
     }
 
     public JobHandle startJob(List<BaseToken> tokensToLoad,
@@ -98,7 +54,7 @@ public class TokenLoadManager {
         JobHandle handle =
                 new JobHandle(tokensToLoad, callback, uiThreadHandler);
         try {
-            mQueue.put(handle);
+            this.mQueue.put(handle);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -107,32 +63,85 @@ public class TokenLoadManager {
 
     public void startThread() {
         synchronized (this) {
-            if (!isStarted) {
+            if (!this.isStarted) {
                 new TokenLoadJobThread().start();
             }
-            isStarted = true;
+            this.isStarted = true;
+        }
+    }
+
+    public interface JobCallback {
+        void onJobComplete(List<BaseToken> loadedTokens);
+    }
+
+    private final class JobCallbackRunnableWrapper implements Runnable {
+        private JobCallback mCallback;
+        private List<BaseToken> mLoadedTokens;
+
+        private JobCallbackRunnableWrapper(JobCallback callback,
+                List<BaseToken> loadedTokens) {
+            this.mCallback = callback;
+            this.mLoadedTokens = loadedTokens;
+        }
+
+        @Override
+        public void run() {
+            this.mCallback.onJobComplete(this.mLoadedTokens);
+        }
+
+    }
+
+    /**
+     * Contains information pertaining to a single token load job. This class is
+     * passed back to the client that requested the job, allowing it to be
+     * cancelled.
+     * 
+     * @author Tim
+     * 
+     */
+    public final class JobHandle {
+        private JobCallback mCallback;
+        private boolean mIsCancelled = false;
+        private List<BaseToken> mTokensToLoad;
+
+        private Handler mUiThreadHandler;
+
+        private JobHandle(List<BaseToken> tokensToLoad, JobCallback callback,
+                Handler uiThreadHandler) {
+            this.mTokensToLoad = tokensToLoad;
+            this.mCallback = callback;
+            this.mUiThreadHandler = uiThreadHandler;
+        }
+
+        public void cancel() {
+            synchronized (this) {
+                this.mIsCancelled = true;
+            }
+        }
+
+        private boolean isCancelled() {
+            synchronized (this) {
+                return this.mIsCancelled;
+            }
+        }
+
+        private void postResult() {
+            this.mUiThreadHandler.post(new JobCallbackRunnableWrapper(
+                    this.mCallback, this.mTokensToLoad));
         }
     }
 
     private class TokenLoadJobThread extends Thread {
+        @Override
         public void run() {
             while (true) {
                 try {
-                    JobHandle currentJob = mQueue.take();
-                    handleJob(currentJob);
+                    JobHandle currentJob = TokenLoadManager.this.mQueue.take();
+                    TokenLoadManager.this.handleJob(currentJob);
                     currentJob.postResult();
                 } catch (InterruptedException e) {
                     return;
                 }
-            }
-        }
-    }
-
-    private void handleJob(JobHandle job) {
-        for (BaseToken t : job.mTokensToLoad) {
-            t.load();
-            if (job.isCancelled()) {
-                return;
             }
         }
     }

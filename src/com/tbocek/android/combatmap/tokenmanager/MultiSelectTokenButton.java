@@ -20,15 +20,15 @@ import com.tbocek.android.combatmap.view.TokenButton;
 public final class MultiSelectTokenButton extends TokenButton {
 
     /**
-     * Whether this token is currently selected.
-     */
-    private boolean mSelected;
-
-    /**
      * The manager that tracks which tokens are selected across a group of
      * MultiSelectTokenButton instances.
      */
     private MultiSelectManager mMultiSelect;
+
+    /**
+     * Whether this token is currently selected.
+     */
+    private boolean mSelected;
 
     /**
      * Constructor.
@@ -49,13 +49,18 @@ public final class MultiSelectTokenButton extends TokenButton {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View arg0) {
-                mSelected = !mSelected;
-                if (mSelected) {
-                    mMultiSelect.addToken(getPrototype());
+                MultiSelectTokenButton.this.mSelected =
+                        !MultiSelectTokenButton.this.mSelected;
+                if (MultiSelectTokenButton.this.mSelected) {
+                    MultiSelectTokenButton.this.mMultiSelect
+                            .addToken(MultiSelectTokenButton.this
+                                    .getPrototype());
                 } else {
-                    mMultiSelect.removeToken(getPrototype());
+                    MultiSelectTokenButton.this.mMultiSelect
+                            .removeToken(MultiSelectTokenButton.this
+                                    .getPrototype());
                 }
-                invalidate();
+                MultiSelectTokenButton.this.invalidate();
             }
         });
     }
@@ -63,12 +68,12 @@ public final class MultiSelectTokenButton extends TokenButton {
     @Override
     protected void onStartDrag() {
         // Add this token to the selection, so we are at least dragging it.
-        ArrayList<BaseToken> tokens = new ArrayList<BaseToken>(
-                this.mMultiSelect.getSelectedTokens());
+        ArrayList<BaseToken> tokens =
+                new ArrayList<BaseToken>(this.mMultiSelect.getSelectedTokens());
         if (!this.mSelected) {
-            tokens.add(0, getPrototype());
+            tokens.add(0, this.getPrototype());
         }
-        startDrag(null,
+        this.startDrag(null,
                 new TokenStackDragShadow(tokens, (int) this.getTokenRadius()),
                 tokens, 0);
     }
@@ -77,7 +82,7 @@ public final class MultiSelectTokenButton extends TokenButton {
      * Reloads whether this token is selected from the token database.
      */
     public void refreshSelectedState() {
-        this.mSelected = getPrototype().isSelected();
+        this.mSelected = this.getPrototype().isSelected();
     }
 
     /**
@@ -88,17 +93,18 @@ public final class MultiSelectTokenButton extends TokenButton {
      * @param selected
      *            Whether the token should be selected.
      */
+    @Override
     public void setSelected(boolean selected) {
-        boolean oldSelected = mSelected;
-        mSelected = selected;
+        boolean oldSelected = this.mSelected;
+        this.mSelected = selected;
         if (!oldSelected && selected) {
-            mMultiSelect.addToken(getPrototype());
+            this.mMultiSelect.addToken(this.getPrototype());
         } else if (oldSelected && !selected) {
-            mMultiSelect.removeToken(getPrototype());
+            this.mMultiSelect.removeToken(this.getPrototype());
         }
 
-        if (oldSelected != mSelected) {
-            invalidate();
+        if (oldSelected != this.mSelected) {
+            this.invalidate();
         }
     }
 }

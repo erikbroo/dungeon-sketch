@@ -31,29 +31,30 @@ public final class MultiSelectTokenViewFactory extends TokenViewFactory {
         super(context);
     }
 
-    @Override
-    protected TokenButton newTokenView(final BaseToken prototype) {
-        MultiSelectTokenButton b = new MultiSelectTokenButton(getContext(),
-                prototype, mMultiSelect);
-        b.refreshSelectedState();
-        return b;
-    }
-
-    @Override
-    public TokenButton getTokenView(final BaseToken prototype) {
-        MultiSelectTokenButton mstb = (MultiSelectTokenButton) super
-                .getTokenView(prototype);
-        mstb.refreshSelectedState();
-        return mstb;
-    }
-
     /**
      * 
      * @return The multi-select manager used by token views created by this
      *         view.
      */
     public MultiSelectManager getMultiSelectManager() {
-        return mMultiSelect;
+        return this.mMultiSelect;
+    }
+
+    @Override
+    public TokenButton getTokenView(final BaseToken prototype) {
+        MultiSelectTokenButton mstb =
+                (MultiSelectTokenButton) super.getTokenView(prototype);
+        mstb.refreshSelectedState();
+        return mstb;
+    }
+
+    @Override
+    protected TokenButton newTokenView(final BaseToken prototype) {
+        MultiSelectTokenButton b =
+                new MultiSelectTokenButton(this.getContext(), prototype,
+                        this.mMultiSelect);
+        b.refreshSelectedState();
+        return b;
     }
 
 }

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.graphics.Path;
+
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
-
-import android.graphics.Path;
 
 /**
  * Shape class that represents a single straight line segment. Contains methods
@@ -26,12 +26,6 @@ public class StraightLine extends Shape {
     public static final String SHAPE_TYPE = "sl";
 
     /**
-     * First endpoint on the line. X coordinate guaranteed to be less than x
-     * coordinate of mEnd.
-     */
-    private PointF mStart;
-
-    /**
      * Second endpoint on the line. X coordinate guaranteed to be greater than x
      * coordinate of mStart.
      */
@@ -43,6 +37,12 @@ public class StraightLine extends Shape {
      * the range [0,1].
      */
     private List<Float> mLineToggleParameterization;
+
+    /**
+     * First endpoint on the line. X coordinate guaranteed to be less than x
+     * coordinate of mEnd.
+     */
+    private PointF mStart;
 
     /**
      * Constructor.
@@ -58,62 +58,16 @@ public class StraightLine extends Shape {
     }
 
     @Override
-    public boolean contains(PointF p) {
-        // Cannot define a region.
-        return false;
-    }
-
-    @Override
-    public boolean needsOptimization() {
-        return mLineToggleParameterization != null;
-    }
-
-    @Override
-    public List<Shape> removeErasedPoints() {
-        List<Shape> shapes = new ArrayList<Shape>();
-
-        if (mLineToggleParameterization.size() > 0) {
-            for (int i = 0; i < mLineToggleParameterization.size(); i += 2) {
-                float startT = mLineToggleParameterization.get(i);
-                float endT = mLineToggleParameterization.get(i + 1);
-
-                StraightLine l = new StraightLine(this.getColor(),
-                        this.getWidth());
-                l.addPoint(parameterizationToPoint(startT));
-                l.addPoint(parameterizationToPoint(endT));
-                shapes.add(l);
-            }
-        }
-        mLineToggleParameterization = null;
-        invalidatePath();
-        return shapes;
-    }
-
-    @Override
-    public void erase(PointF center, float radius) {
-        if (mStart == null || mEnd == null
-                || !getBoundingRectangle().intersectsWithCircle(center, radius)) {
-            return;
-        }
-
-        canonicalizePointOrder();
-
-        // Special case - if we have only two points, this is probably
-        // a large straight line and we want to erase the line if the
-        // eraser intersects with it. However, this is an expensive
-        // test, so we don't want to do it for all line segments when
-        // they are generally small enough for the eraser to enclose.
-        Util.IntersectionPair intersection = Util.lineCircleIntersection(
-                mStart, mEnd, center, radius);
-
-        if (intersection != null) {
-            float intersect1T = this.pointToParameterization(intersection
-                    .getIntersection1());
-            float intersect2T = this.pointToParameterization(intersection
-                    .getIntersection2());
-
-            insertErasedSegment(intersect1T, intersect2T);
-            invalidatePath();
+    public void addPoint(PointF p) {
+        if (this.mStart == null) {
+            this.mStart = p;
+        } else {
+            this.mEnd = p;
+            // Re-create the bounding rectangle every time this is done.
+            this.getBoundingRectangle().clear();
+            this.getBoundingRectangle().updateBounds(this.mStart);
+            this.getBoundingRectangle().updateBounds(this.mEnd);
+            this.invalidatePath();
         }
     }
 
@@ -122,11 +76,77 @@ public class StraightLine extends Shape {
      * X coordinate. This assumption is used elsewhere.
      */
     private void canonicalizePointOrder() {
-        if (mEnd.x < mStart.x) {
+        if (this.mEnd.x < this.mStart.x) {
             PointF tmp;
-            tmp = mStart;
-            mStart = mEnd;
-            mEnd = tmp;
+            tmp = this.mStart;
+            this.mStart = this.mEnd;
+            this.mEnd = tmp;
+        }
+    }
+
+    @Override
+    public boolean contains(PointF p) {
+        // Cannot define a region.
+        return false;
+    }
+
+    @Override
+    public Path createPath() {
+        if (this.mStart == null || this.mEnd == null) {
+            return null;
+        }
+        Path path = new Path();
+
+        if (this.mLineToggleParameterization != null) {
+            // Erasing has happened, follow erasing instructions.
+            boolean on = false;
+            for (float toggleT : this.mLineToggleParameterization) {
+                PointF togglePoint = this.parameterizationToPoint(toggleT);
+                if (on) {
+                    path.lineTo(togglePoint.x, togglePoint.y);
+                } else {
+                    path.moveTo(togglePoint.x, togglePoint.y);
+                }
+                on = !on;
+            }
+        } else {
+            path.moveTo(this.mStart.x, this.mStart.y);
+            path.lineTo(this.mEnd.x, this.mEnd.y);
+        }
+
+        return path;
+    }
+
+    @Override
+    public void erase(PointF center, float radius) {
+        if (this.mStart == null
+                || this.mEnd == null
+                || !this.getBoundingRectangle().intersectsWithCircle(center,
+                        radius)) {
+            return;
+        }
+
+        this.canonicalizePointOrder();
+
+        // Special case - if we have only two points, this is probably
+        // a large straight line and we want to erase the line if the
+        // eraser intersects with it. However, this is an expensive
+        // test, so we don't want to do it for all line segments when
+        // they are generally small enough for the eraser to enclose.
+        Util.IntersectionPair intersection =
+                Util.lineCircleIntersection(this.mStart, this.mEnd, center,
+                        radius);
+
+        if (intersection != null) {
+            float intersect1T =
+                    this.pointToParameterization(intersection
+                            .getIntersection1());
+            float intersect2T =
+                    this.pointToParameterization(intersection
+                            .getIntersection2());
+
+            this.insertErasedSegment(intersect1T, intersect2T);
+            this.invalidatePath();
         }
     }
 
@@ -148,23 +168,25 @@ public class StraightLine extends Shape {
             segmentEnd = tmp;
         }
 
-        if (mLineToggleParameterization == null) {
-            mLineToggleParameterization = new ArrayList<Float>();
-            mLineToggleParameterization.add(0f);
-            mLineToggleParameterization.add(1f);
+        if (this.mLineToggleParameterization == null) {
+            this.mLineToggleParameterization = new ArrayList<Float>();
+            this.mLineToggleParameterization.add(0f);
+            this.mLineToggleParameterization.add(1f);
         }
 
         // Location in the array before which to insert the first segment
-        int segmentStartInsertion = Collections.binarySearch(
-                mLineToggleParameterization, segmentStart);
+        int segmentStartInsertion =
+                Collections.binarySearch(this.mLineToggleParameterization,
+                        segmentStart);
         if (segmentStartInsertion < 0) {
             segmentStartInsertion = -segmentStartInsertion - 1;
         }
         boolean startInDrawnRegion = segmentStartInsertion % 2 != 0;
 
         // Location in the array before which to insert the last segment.
-        int segmentEndInsertion = -Collections.binarySearch(
-                mLineToggleParameterization, segmentEnd) - 1;
+        int segmentEndInsertion =
+                -Collections.binarySearch(this.mLineToggleParameterization,
+                        segmentEnd) - 1;
         if (segmentEndInsertion < 0) {
             segmentEndInsertion = -segmentEndInsertion - 1;
         }
@@ -177,78 +199,31 @@ public class StraightLine extends Shape {
         // segmentStartInsertion.
         // Guard this by making sure we don't try to remove from the end of the
         // list.
-        if (segmentStartInsertion != mLineToggleParameterization.size()) {
+        if (segmentStartInsertion != this.mLineToggleParameterization.size()) {
             for (int i = 0; i < segmentEndInsertion - segmentStartInsertion; ++i) {
-                mLineToggleParameterization.remove(segmentStartInsertion);
+                this.mLineToggleParameterization.remove(segmentStartInsertion);
             }
         }
 
         if (endInDrawnRegion) {
-            mLineToggleParameterization.add(segmentStartInsertion, segmentEnd);
+            this.mLineToggleParameterization.add(segmentStartInsertion,
+                    segmentEnd);
         }
 
         if (startInDrawnRegion) {
-            mLineToggleParameterization
-                    .add(segmentStartInsertion, segmentStart);
+            this.mLineToggleParameterization.add(segmentStartInsertion,
+                    segmentStart);
         }
     }
 
     @Override
-    public Path createPath() {
-        if (mStart == null || mEnd == null) {
-            return null;
-        }
-        Path path = new Path();
-
-        if (this.mLineToggleParameterization != null) {
-            // Erasing has happened, follow erasing instructions.
-            boolean on = false;
-            for (float toggleT : mLineToggleParameterization) {
-                PointF togglePoint = parameterizationToPoint(toggleT);
-                if (on) {
-                    path.lineTo(togglePoint.x, togglePoint.y);
-                } else {
-                    path.moveTo(togglePoint.x, togglePoint.y);
-                }
-                on = !on;
-            }
-        } else {
-            path.moveTo(mStart.x, mStart.y);
-            path.lineTo(mEnd.x, mEnd.y);
-        }
-
-        return path;
+    public boolean isValid() {
+        return this.mStart != null && this.mEnd != null;
     }
 
     @Override
-    public void addPoint(PointF p) {
-        if (mStart == null) {
-            mStart = p;
-        } else {
-            mEnd = p;
-            // Re-create the bounding rectangle every time this is done.
-            getBoundingRectangle().clear();
-            getBoundingRectangle().updateBounds(mStart);
-            getBoundingRectangle().updateBounds(mEnd);
-            invalidatePath();
-        }
-    }
-
-    /**
-     * Given a point, gives a distance scaled to the length of the line where
-     * that point falls on the line.
-     * 
-     * @param p
-     *            The point to parameterize. Must fall on the line.
-     * @return Distance along the line segment where the point falls, scaled to
-     *         the range [0,1].
-     */
-    private float pointToParameterization(PointF p) {
-        if (Math.abs(mEnd.y - mStart.y) > Math.abs(mEnd.x - mStart.x)) {
-            return (p.y - mStart.y) / (mEnd.y - mStart.y);
-        } else {
-            return (p.x - mStart.x) / (mEnd.x - mStart.x);
-        }
+    public boolean needsOptimization() {
+        return this.mLineToggleParameterization != null;
     }
 
     /**
@@ -261,19 +236,58 @@ public class StraightLine extends Shape {
      * @return The point where that parameterization occurs on the line.
      */
     private PointF parameterizationToPoint(float t) {
-        return new PointF(mStart.x + t * (mEnd.x - mStart.x), mStart.y + t
-                * (mEnd.y - mStart.y));
+        return new PointF(this.mStart.x + t * (this.mEnd.x - this.mStart.x),
+                this.mStart.y + t * (this.mEnd.y - this.mStart.y));
+    }
+
+    /**
+     * Given a point, gives a distance scaled to the length of the line where
+     * that point falls on the line.
+     * 
+     * @param p
+     *            The point to parameterize. Must fall on the line.
+     * @return Distance along the line segment where the point falls, scaled to
+     *         the range [0,1].
+     */
+    private float pointToParameterization(PointF p) {
+        if (Math.abs(this.mEnd.y - this.mStart.y) > Math.abs(this.mEnd.x
+                - this.mStart.x)) {
+            return (p.y - this.mStart.y) / (this.mEnd.y - this.mStart.y);
+        } else {
+            return (p.x - this.mStart.x) / (this.mEnd.x - this.mStart.x);
+        }
+    }
+
+    @Override
+    public List<Shape> removeErasedPoints() {
+        List<Shape> shapes = new ArrayList<Shape>();
+
+        if (this.mLineToggleParameterization.size() > 0) {
+            for (int i = 0; i < this.mLineToggleParameterization.size(); i += 2) {
+                float startT = this.mLineToggleParameterization.get(i);
+                float endT = this.mLineToggleParameterization.get(i + 1);
+
+                StraightLine l =
+                        new StraightLine(this.getColor(), this.getWidth());
+                l.addPoint(this.parameterizationToPoint(startT));
+                l.addPoint(this.parameterizationToPoint(endT));
+                shapes.add(l);
+            }
+        }
+        this.mLineToggleParameterization = null;
+        this.invalidatePath();
+        return shapes;
     }
 
     @Override
     public void serialize(MapDataSerializer s) throws IOException {
-        serializeBase(s, SHAPE_TYPE);
+        this.serializeBase(s, SHAPE_TYPE);
 
         s.startObject();
-        s.serializeFloat(mStart.x);
-        s.serializeFloat(mStart.y);
-        s.serializeFloat(mEnd.x);
-        s.serializeFloat(mEnd.y);
+        s.serializeFloat(this.mStart.x);
+        s.serializeFloat(this.mStart.y);
+        s.serializeFloat(this.mEnd.x);
+        s.serializeFloat(this.mEnd.y);
         s.endObject();
     }
 
@@ -281,17 +295,12 @@ public class StraightLine extends Shape {
     protected void shapeSpecificDeserialize(MapDataDeserializer s)
             throws IOException {
         s.expectObjectStart();
-        mStart = new PointF();
-        mStart.x = s.readFloat();
-        mStart.y = s.readFloat();
-        mEnd = new PointF();
-        mEnd.x = s.readFloat();
-        mEnd.y = s.readFloat();
+        this.mStart = new PointF();
+        this.mStart.x = s.readFloat();
+        this.mStart.y = s.readFloat();
+        this.mEnd = new PointF();
+        this.mEnd.x = s.readFloat();
+        this.mEnd.y = s.readFloat();
         s.expectObjectEnd();
-    }
-
-    @Override
-    public boolean isValid() {
-        return mStart != null && mEnd != null;
     }
 }

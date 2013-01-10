@@ -17,14 +17,14 @@ import android.view.ViewGroup;
 public class GridLayout extends ViewGroup {
 
     /**
-     * The width of each cell.
-     */
-    private int mCellWidth;
-
-    /**
      * The height of each cell.
      */
     private int mCellHeight;
+
+    /**
+     * The width of each cell.
+     */
+    private int mCellWidth;
 
     /**
      * Constructor.
@@ -36,6 +36,53 @@ public class GridLayout extends ViewGroup {
         super(context);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int cellsPerRow = (r - l) / this.mCellWidth;
+
+        for (int i = 0; i < this.getChildCount(); ++i) {
+            int row = i / cellsPerRow;
+            int col = i % cellsPerRow;
+
+            int childLeft = col * this.mCellWidth;
+            int childTop = row * this.mCellHeight;
+
+            this.getChildAt(i).layout(childLeft, childTop,
+                    childLeft + this.mCellWidth, childTop + this.mCellHeight);
+        }
+
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = View.MeasureSpec.getSize(widthMeasureSpec);
+
+        int cellsPerRow = width / this.mCellWidth;
+        int numRows =
+                (int) Math.ceil(((float) this.getChildCount())
+                        / ((float) cellsPerRow));
+
+        int height = numRows * this.mCellHeight;
+
+        this.setMeasuredDimension(width, height);
+
+        // Measure children to give them the dimensions allowed.
+        int childWidthSpec =
+                View.MeasureSpec.makeMeasureSpec(this.mCellWidth,
+                        View.MeasureSpec.EXACTLY);
+        int childHeightSpec =
+                View.MeasureSpec.makeMeasureSpec(this.mCellHeight,
+                        View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < this.getChildCount(); ++i) {
+            this.getChildAt(i).measure(childWidthSpec, childHeightSpec);
+        }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
     /**
      * Sets the width and height for each cell.
      * 
@@ -45,52 +92,8 @@ public class GridLayout extends ViewGroup {
      *            The height of each cell.
      */
     public void setCellDimensions(int width, int height) {
-        mCellWidth = width;
-        mCellHeight = height;
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int cellsPerRow = (r - l) / mCellWidth;
-
-        for (int i = 0; i < this.getChildCount(); ++i) {
-            int row = i / cellsPerRow;
-            int col = i % cellsPerRow;
-
-            int childLeft = col * mCellWidth;
-            int childTop = row * mCellHeight;
-
-            this.getChildAt(i).layout(childLeft, childTop,
-                    childLeft + mCellWidth, childTop + mCellHeight);
-        }
-
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = View.MeasureSpec.getSize(widthMeasureSpec);
-
-        int cellsPerRow = width / mCellWidth;
-        int numRows = (int) Math.ceil(((float) this.getChildCount())
-                / ((float) cellsPerRow));
-
-        int height = numRows * mCellHeight;
-
-        setMeasuredDimension(width, height);
-
-        // Measure children to give them the dimensions allowed.
-        int childWidthSpec = View.MeasureSpec.makeMeasureSpec(mCellWidth,
-                View.MeasureSpec.EXACTLY);
-        int childHeightSpec = View.MeasureSpec.makeMeasureSpec(mCellHeight,
-                View.MeasureSpec.EXACTLY);
-        for (int i = 0; i < this.getChildCount(); ++i) {
-            this.getChildAt(i).measure(childWidthSpec, childHeightSpec);
-        }
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+        this.mCellWidth = width;
+        this.mCellHeight = height;
     }
 
 }

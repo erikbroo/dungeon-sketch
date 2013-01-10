@@ -25,21 +25,229 @@ import com.tbocek.android.combatmap.view.ToggleButtonGroup;
 
 public class GridPropertiesDialog extends Dialog {
 
-    public interface PropertiesChangedListener {
-        void onPropertiesChanged();
+    private ImageButton mBackgroundColor;
+
+    private MapData mData;
+    private ImageButton mForegroundColor;
+    private ToggleButtonGroup mGridTypeToggles = new ToggleButtonGroup();
+    private ImageToggleButton mHexGridButton;
+    private ArrayAdapter<CharSequence> mPresetAdapter;
+    private PropertiesChangedListener mPropertyListener;
+    private ImageToggleButton mRectGridButton;
+
+    private Button mThemePresetButton;
+
+    ColorPickerDialog picker;
+
+    public GridPropertiesDialog(Context context) {
+        super(context);
+        this.setTitle("Grid Properties");
+        this.setContentView(R.layout.grid_background_properties);
+        this.mForegroundColor =
+                (ImageButton) this.findViewById(R.id.button_foreground_color);
+        this.mBackgroundColor =
+                (ImageButton) this.findViewById(R.id.button_background_color);
+        this.mHexGridButton =
+                (ImageToggleButton) this
+                        .findViewById(R.id.button_toggle_hex_grid);
+        this.mRectGridButton =
+                (ImageToggleButton) this
+                        .findViewById(R.id.button_toggle_rect_grid);
+        this.mGridTypeToggles.add(this.mHexGridButton);
+        this.mGridTypeToggles.add(this.mRectGridButton);
+
+        this.mHexGridButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                GridPropertiesDialog.this.hexGridButtonClick();
+
+            }
+
+        });
+        this.mRectGridButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                GridPropertiesDialog.this.rectGridButtonClick();
+            }
+
+        });
+        this.mForegroundColor.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                GridPropertiesDialog.this.foregroundColorClick();
+            }
+
+        });
+        this.mBackgroundColor.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                GridPropertiesDialog.this.backgroundColorClick();
+            }
+
+        });
+        this.mPresetAdapter =
+                new GridPropertiesDialog.MapThemeArrayAdapter(this.getContext());
+        this.mThemePresetButton =
+                (Button) this.findViewById(R.id.button_theme_presets);
+
+        this.mThemePresetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GridPropertiesDialog.this.presetButtonClick();
+            }
+        });
+
     }
 
-    private ImageButton mForegroundColor;
-    private ImageButton mBackgroundColor;
-    private ImageToggleButton mHexGridButton;
-    private ImageToggleButton mRectGridButton;
-    private Button mThemePresetButton;
-    private MapData mData;
-    private ArrayAdapter<CharSequence> mPresetAdapter;
+    void backgroundColorClick() {
+        this.picker =
+                new ColorPickerDialog(this.getContext(), this.mData.getGrid()
+                        .getColorScheme().getBackgroundColor());
+        this.picker
+                .setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
 
-    private PropertiesChangedListener mPropertyListener;
+                    @Override
+                    public void onColorChanged(int color) {
+                        GridPropertiesDialog.this.mBackgroundColor
+                                .setImageBitmap(GridPropertiesDialog.this
+                                        .getPreviewBitmap(color));
+                        GridPropertiesDialog.this.mData
+                                .getGrid()
+                                .setColorScheme(
+                                        new GridColorScheme(color,
+                                                GridPropertiesDialog.this.mData
+                                                        .getGrid()
+                                                        .getColorScheme()
+                                                        .getLineColor(), false));
+                        GridPropertiesDialog.this.picker.dismiss();
+                        GridPropertiesDialog.this.propertiesChanged();
+                    }
+                });
+        this.picker.show();
+    }
 
-    private ToggleButtonGroup mGridTypeToggles = new ToggleButtonGroup();
+    private void colorThemeSelected(String colorTheme) {
+        GridColorScheme scheme = GridColorScheme.fromNamedScheme(colorTheme);
+        this.mForegroundColor.setImageBitmap(this.getPreviewBitmap(scheme
+                .getLineColor()));
+        this.mBackgroundColor.setImageBitmap(this.getPreviewBitmap(scheme
+                .getBackgroundColor()));
+        this.mData.getGrid().setColorScheme(scheme);
+        this.propertiesChanged();
+    }
+
+    void foregroundColorClick() {
+        this.picker =
+                new ColorPickerDialog(this.getContext(), this.mData.getGrid()
+                        .getColorScheme().getLineColor());
+        this.picker
+                .setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
+
+                    @Override
+                    public void onColorChanged(int color) {
+                        GridPropertiesDialog.this.mForegroundColor
+                                .setImageBitmap(GridPropertiesDialog.this
+                                        .getPreviewBitmap(color));
+                        GridPropertiesDialog.this.mData.getGrid()
+                                .setColorScheme(
+                                        new GridColorScheme(
+                                                GridPropertiesDialog.this.mData
+                                                        .getGrid()
+                                                        .getColorScheme()
+                                                        .getBackgroundColor(),
+                                                color, false));
+                        GridPropertiesDialog.this.picker.dismiss();
+                        GridPropertiesDialog.this.propertiesChanged();
+                    }
+                });
+        this.picker.show();
+    }
+
+    private Bitmap getPreviewBitmap(int color) {
+        float density =
+                this.getContext().getResources().getDisplayMetrics().density;
+        int d = (int) (density * 31); // 30dip
+        Bitmap bm = Bitmap.createBitmap(d, d, Config.ARGB_8888);
+        int w = bm.getWidth();
+        int h = bm.getHeight();
+        int c = color;
+        for (int i = 0; i < w; i++) {
+            for (int j = i; j < h; j++) {
+                c =
+                        (i <= 1 || j <= 1 || i >= w - 2 || j >= h - 2) ? Color.GRAY
+                                : color;
+                bm.setPixel(i, j, c);
+                if (i != j) {
+                    bm.setPixel(j, i, c);
+                }
+            }
+        }
+
+        return bm;
+    }
+
+    private void hexGridButtonClick() {
+        this.mGridTypeToggles.untoggle();
+        this.mHexGridButton.setToggled(true);
+        this.mData.getGrid().setDrawStrategy(new HexGridStrategy());
+        this.propertiesChanged();
+    }
+
+    private void presetButtonClick() {
+
+        new AlertDialog.Builder(this.getContext())
+                .setTitle("Grid Theme Presets")
+                .setAdapter(this.mPresetAdapter,
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                    int which) {
+                                GridPropertiesDialog.this
+                                        .colorThemeSelected(GridPropertiesDialog.this.mPresetAdapter
+                                                .getItem(which).toString());
+                                dialog.dismiss();
+                                GridPropertiesDialog.this.propertiesChanged();
+                            }
+                        }).create().show();
+    }
+
+    private void propertiesChanged() {
+        if (this.mPropertyListener != null) {
+            this.mPropertyListener.onPropertiesChanged();
+        }
+    }
+
+    private void rectGridButtonClick() {
+        this.mGridTypeToggles.untoggle();
+        this.mRectGridButton.setToggled(true);
+        this.mData.getGrid().setDrawStrategy(new RectangularGridStrategy());
+        this.propertiesChanged();
+    }
+
+    public void setMapData(MapData data) {
+        this.mBackgroundColor.setImageBitmap(this.getPreviewBitmap(data
+                .getGrid().getColorScheme().getBackgroundColor()));
+        this.mForegroundColor.setImageBitmap(this.getPreviewBitmap(data
+                .getGrid().getColorScheme().getLineColor()));
+        this.mGridTypeToggles.untoggle();
+        if (data.getGrid().getDrawStrategy() instanceof HexGridStrategy) {
+            this.mHexGridButton.setToggled(true);
+        } else {
+            this.mRectGridButton.setToggled(true);
+        }
+        this.mData = data;
+    }
+
+    public void setOnPropertiesChangedListener(
+            PropertiesChangedListener propertiesChangedListener) {
+        this.mPropertyListener = propertiesChangedListener;
+
+    }
 
     /**
      * Extends ArrayAdapter to be an adapter specific to map themes. Will theme
@@ -79,198 +287,8 @@ public class GridPropertiesDialog extends Dialog {
 
     }
 
-    public GridPropertiesDialog(Context context) {
-        super(context);
-        this.setTitle("Grid Properties");
-        this.setContentView(R.layout.grid_background_properties);
-        mForegroundColor =
-                (ImageButton) this.findViewById(R.id.button_foreground_color);
-        mBackgroundColor =
-                (ImageButton) this.findViewById(R.id.button_background_color);
-        mHexGridButton =
-                (ImageToggleButton) this
-                        .findViewById(R.id.button_toggle_hex_grid);
-        mRectGridButton =
-                (ImageToggleButton) this
-                        .findViewById(R.id.button_toggle_rect_grid);
-        mGridTypeToggles.add(mHexGridButton);
-        mGridTypeToggles.add(mRectGridButton);
-
-        mHexGridButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                hexGridButtonClick();
-
-            }
-
-        });
-        mRectGridButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                rectGridButtonClick();
-            }
-
-        });
-        mForegroundColor.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                foregroundColorClick();
-            }
-
-        });
-        mBackgroundColor.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                backgroundColorClick();
-            }
-
-        });
-        mPresetAdapter =
-                new GridPropertiesDialog.MapThemeArrayAdapter(this.getContext());
-        mThemePresetButton =
-                (Button) this.findViewById(R.id.button_theme_presets);
-
-        mThemePresetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presetButtonClick();
-            }
-        });
-
-    }
-
-    private void presetButtonClick() {
-
-        new AlertDialog.Builder(this.getContext())
-                .setTitle("Grid Theme Presets")
-                .setAdapter(mPresetAdapter,
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                    int which) {
-                                colorThemeSelected(mPresetAdapter
-                                        .getItem(which).toString());
-                                dialog.dismiss();
-                                propertiesChanged();
-                            }
-                        }).create().show();
-    }
-
-    private void hexGridButtonClick() {
-        mGridTypeToggles.untoggle();
-        mHexGridButton.setToggled(true);
-        mData.getGrid().setDrawStrategy(new HexGridStrategy());
-        propertiesChanged();
-    }
-
-    private void rectGridButtonClick() {
-        mGridTypeToggles.untoggle();
-        mRectGridButton.setToggled(true);
-        mData.getGrid().setDrawStrategy(new RectangularGridStrategy());
-        propertiesChanged();
-    }
-
-    private void colorThemeSelected(String colorTheme) {
-        GridColorScheme scheme = GridColorScheme.fromNamedScheme(colorTheme);
-        this.mForegroundColor.setImageBitmap(getPreviewBitmap(scheme
-                .getLineColor()));
-        this.mBackgroundColor.setImageBitmap(getPreviewBitmap(scheme
-                .getBackgroundColor()));
-        this.mData.getGrid().setColorScheme(scheme);
-        propertiesChanged();
-    }
-
-    ColorPickerDialog picker;
-
-    void foregroundColorClick() {
-        picker =
-                new ColorPickerDialog(getContext(), mData.getGrid()
-                        .getColorScheme().getLineColor());
-        picker.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
-
-            @Override
-            public void onColorChanged(int color) {
-                mForegroundColor.setImageBitmap(getPreviewBitmap(color));
-                mData.getGrid().setColorScheme(
-                        new GridColorScheme(mData.getGrid().getColorScheme()
-                                .getBackgroundColor(), color, false));
-                picker.dismiss();
-                propertiesChanged();
-            }
-        });
-        picker.show();
-    }
-
-    void backgroundColorClick() {
-        picker =
-                new ColorPickerDialog(getContext(), mData.getGrid()
-                        .getColorScheme().getBackgroundColor());
-        picker.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
-
-            @Override
-            public void onColorChanged(int color) {
-                mBackgroundColor.setImageBitmap(getPreviewBitmap(color));
-                mData.getGrid().setColorScheme(
-                        new GridColorScheme(color, mData.getGrid()
-                                .getColorScheme().getLineColor(), false));
-                picker.dismiss();
-                propertiesChanged();
-            }
-        });
-        picker.show();
-    }
-
-    public void setMapData(MapData data) {
-        mBackgroundColor.setImageBitmap(getPreviewBitmap(data.getGrid()
-                .getColorScheme().getBackgroundColor()));
-        mForegroundColor.setImageBitmap(getPreviewBitmap(data.getGrid()
-                .getColorScheme().getLineColor()));
-        mGridTypeToggles.untoggle();
-        if (data.getGrid().getDrawStrategy() instanceof HexGridStrategy) {
-            mHexGridButton.setToggled(true);
-        } else {
-            mRectGridButton.setToggled(true);
-        }
-        mData = data;
-    }
-
-    private Bitmap getPreviewBitmap(int color) {
-        float density = getContext().getResources().getDisplayMetrics().density;
-        int d = (int) (density * 31); // 30dip
-        Bitmap bm = Bitmap.createBitmap(d, d, Config.ARGB_8888);
-        int w = bm.getWidth();
-        int h = bm.getHeight();
-        int c = color;
-        for (int i = 0; i < w; i++) {
-            for (int j = i; j < h; j++) {
-                c =
-                        (i <= 1 || j <= 1 || i >= w - 2 || j >= h - 2) ? Color.GRAY
-                                : color;
-                bm.setPixel(i, j, c);
-                if (i != j) {
-                    bm.setPixel(j, i, c);
-                }
-            }
-        }
-
-        return bm;
-    }
-
-    private void propertiesChanged() {
-        if (mPropertyListener != null) {
-            mPropertyListener.onPropertiesChanged();
-        }
-    }
-
-    public void setOnPropertiesChangedListener(
-            PropertiesChangedListener propertiesChangedListener) {
-        mPropertyListener = propertiesChangedListener;
-
+    public interface PropertiesChangedListener {
+        void onPropertiesChanged();
     }
 
 }

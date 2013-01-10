@@ -40,26 +40,18 @@ import com.tbocek.android.combatmap.tokenmanager.TokenStackDragShadow;
  */
 public final class TokenSelectorView extends LinearLayout {
 
-    private static final int TOKENS_PER_ROW = 50;
     /**
      * Percentage to scale the radius.
      */
     private static final float RADIUS_SCALE = .9f;
 
     /**
-     * The inner layout that contains the tokens.
+     * Number of tokens each block should contain. Since these blocks are
+     * presented side by side, this should have no user-visible effect. It is
+     * only a performance tweak (e.g. more tokens per row means fewer image
+     * allocations but longer load times per block of tokens.
      */
-    private LinearLayout mTokenLayout;
-
-    /**
-     * Button that represents opening the tag selector.
-     */
-    private Button mGroupSelector;
-
-    /**
-     * Button that represents opening the token manager.
-     */
-    private ImageButton mTokenManager;
+    private static final int TOKENS_PER_BLOCK = 50;
 
     /**
      * Whether this control is being superimposed over a dark background.
@@ -67,10 +59,15 @@ public final class TokenSelectorView extends LinearLayout {
     private boolean mDrawDark;
 
     /**
-     * The current list of tokens. Must correspond to the order they appear in
-     * mBitmap.
+     * Button that represents opening the tag selector.
      */
-    private List<BaseToken> mTokens;
+    private Button mGroupSelector;
+
+    /**
+     * Whether this token selector has changed absolute position. We will poll
+     * every fraction of a second.
+     */
+    private boolean mIsPositionDirty;
 
     /**
      * Listener that fires when a token is selected.
@@ -83,10 +80,20 @@ public final class TokenSelectorView extends LinearLayout {
     private TokenDatabase mTokenDatabase;
 
     /**
-     * Whether this token selector has changed absolute position. We will poll
-     * every fraction of a second.
+     * The inner layout that contains the tokens.
      */
-    private boolean mIsPositionDirty;
+    private LinearLayout mTokenLayout;
+
+    /**
+     * Button that represents opening the token manager.
+     */
+    private ImageButton mTokenManager;
+
+    /**
+     * The current list of tokens. Must correspond to the order they appear in
+     * mBitmap.
+     */
+    private List<BaseToken> mTokens;
 
     /**
      * Constructor.
@@ -103,32 +110,49 @@ public final class TokenSelectorView extends LinearLayout {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-        mTokenLayout = new LinearLayout(context);
-        ((HorizontalScrollView) findViewById(R.id.token_scroll_view))
-                .addView(mTokenLayout);
+        this.mTokenLayout = new LinearLayout(context);
+        ((HorizontalScrollView) this.findViewById(R.id.token_scroll_view))
+                .addView(this.mTokenLayout);
 
-        mGroupSelector = (Button) findViewById(R.id.token_category_selector_button);
+        this.mGroupSelector =
+                (Button) this.findViewById(R.id.token_category_selector_button);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            mGroupSelector.setAlpha(1.0f);
-            mTokenManager = (ImageButton) findViewById(R.id.token_manager_button);
-            mTokenManager.setAlpha(1.0f);
+            this.mGroupSelector.setAlpha(1.0f);
+            this.mTokenManager =
+                    (ImageButton) this.findViewById(R.id.token_manager_button);
+            this.mTokenManager.setAlpha(1.0f);
         }
 
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (h != oldh && this.mTokens != null) {
+            new CreateImageTask(h, this.mDrawDark).execute(this.mTokens);
+        }
+    }
+
     /**
-     * Listener that fires when a token is selected.
+     * Sets an OnClickListener for the tag selector button.
      * 
-     * @author Tim Bocek
-     * 
+     * @param listener
+     *            The listener to use when the tag selector is clicked.
      */
-    public interface OnTokenSelectedListener {
-        /**
-         * 
-         * @param t
-         *            The selected token. This is already a unique clone.
-         */
-        void onTokenSelected(BaseToken t);
+    public void setOnClickGroupSelectorListener(
+            final View.OnClickListener listener) {
+        this.mGroupSelector.setOnClickListener(listener);
+    }
+
+    /**
+     * Sets an OnClickLIstener for the token manager button.
+     * 
+     * @param listener
+     *            The listener to use when the token manager button is clicked.
+     */
+    public void setOnClickTokenManagerListener(
+            final View.OnClickListener listener) {
+        this.mTokenManager.setOnClickListener(listener);
     }
 
     /**
@@ -143,25 +167,25 @@ public final class TokenSelectorView extends LinearLayout {
     }
 
     /**
-     * Sets an OnClickListener for the tag selector button.
+     * Sets the tag currently being displayed.
      * 
-     * @param listener
-     *            The listener to use when the tag selector is clicked.
+     * @param checkedTag
+     *            The tag currently being displayed.
+     * @param combatView
+     *            The CombatView to refresh when tokens are loaded.
      */
-    public void setOnClickGroupSelectorListener(
-            final View.OnClickListener listener) {
-        mGroupSelector.setOnClickListener(listener);
+    public void setSelectedTag(final String checkedTag,
+            final CombatView combatView) {
+        this.setTokenList(this.mTokenDatabase.getTokensForTag(checkedTag));
     }
 
     /**
-     * Sets an OnClickLIstener for the token manager button.
-     * 
-     * @param listener
-     *            The listener to use when the token manager button is clicked.
+     * @param drawDark
+     *            Whether tokens are drawn on a dark background.
      */
-    public void setOnClickTokenManagerListener(
-            final View.OnClickListener listener) {
-        mTokenManager.setOnClickListener(listener);
+    public void setShouldDrawDark(boolean drawDark) {
+        this.mDrawDark = drawDark;
+        this.mGroupSelector.setTextColor(drawDark ? Color.WHITE : Color.BLACK);
     }
 
     /**
@@ -172,20 +196,7 @@ public final class TokenSelectorView extends LinearLayout {
      */
     public void setTokenDatabase(final TokenDatabase database) {
         this.mTokenDatabase = database;
-        setTokenList(mTokenDatabase.getAllTokens());
-    }
-
-    /**
-     * Sets the tag currently being displayed.
-     * 
-     * @param checkedTag
-     *            The tag currently being displayed.
-     * @param combatView
-     *            The CombatView to refresh when tokens are loaded.
-     */
-    public void setSelectedTag(final String checkedTag,
-            final CombatView combatView) {
-        setTokenList(mTokenDatabase.getTokensForTag(checkedTag));
+        this.setTokenList(this.mTokenDatabase.getAllTokens());
     }
 
     /**
@@ -197,30 +208,20 @@ public final class TokenSelectorView extends LinearLayout {
     @SuppressWarnings("unchecked")
     private void setTokenList(final Collection<BaseToken> tokens) {
         if (tokens instanceof List<?>) {
-            mTokens = (List<BaseToken>) tokens;
+            this.mTokens = (List<BaseToken>) tokens;
         } else {
             this.mTokens = new ArrayList<BaseToken>(tokens);
         }
         // TODO: Make this work if height is then changed.
-        new CreateImageTask(this.getHeight(), this.mDrawDark).execute(mTokens);
+        new CreateImageTask(this.getHeight(), this.mDrawDark)
+                .execute(this.mTokens);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (h != oldh && mTokens != null) {
-            new CreateImageTask(h, this.mDrawDark).execute(mTokens);
-        }
-    }
-
-    private class TokenImageResult {
-        public TokenImageResult(Bitmap b, List<BaseToken> tokens) {
-            bitmap = b;
-            tokenList = tokens;
-        }
-
-        public Bitmap bitmap;
-        public List<BaseToken> tokenList;
+    /**
+     * @return Whether tokens are drawn on a dark background.
+     */
+    public boolean shouldDrawDark() {
+        return this.mDrawDark;
     }
 
     /**
@@ -233,14 +234,14 @@ public final class TokenSelectorView extends LinearLayout {
             AsyncTask<List<BaseToken>, Integer, List<TokenImageResult>> {
 
         /**
-         * Height of the view.
-         */
-        private int mHeight;
-
-        /**
          * Whether drawn on a dark background.
          */
         private boolean mDrawDark;
+
+        /**
+         * Height of the view.
+         */
+        private int mHeight;
 
         /**
          * Progress bar to show when loading.
@@ -257,52 +258,18 @@ public final class TokenSelectorView extends LinearLayout {
          *            Whether there is a dark background.
          */
         public CreateImageTask(int height, boolean drawDark) {
-            mHeight = height;
-            mDrawDark = drawDark;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mTokenLayout.removeAllViews();
-
-            TextView explanation = new TextView(getContext());
-            explanation.setText("Loading Tokens");
-            mTokenLayout.addView(explanation);
-
-            mProgressBar = new ProgressBar(getContext());
-            mTokenLayout.addView(mProgressBar);
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... args) {
-            int progress = args[0];
-            int max = args[1];
-
-            mProgressBar.setMax(max);
-            mProgressBar.setProgress(progress);
-        }
-
-        @Override
-        protected List<TokenImageResult> doInBackground(List<BaseToken>... args) {
-            List<BaseToken> tokens = args[0];
-            List<TokenImageResult> res = Lists.newArrayList();
-
-            for (List<BaseToken> partition : partitionTokens(tokens,
-                    TOKENS_PER_ROW)) {
-                res.add(new TokenImageResult(createBitmapFromTokens(partition),
-                        partition));
-            }
-
-            return res;
+            this.mHeight = height;
+            this.mDrawDark = drawDark;
         }
 
         private Bitmap createBitmapFromTokens(List<BaseToken> tokens) {
-            Bitmap b = mHeight > 0 ? Bitmap.createBitmap(
-                    mHeight * tokens.size(), mHeight, Bitmap.Config.ARGB_4444)
-                    : null;
+            Bitmap b =
+                    this.mHeight > 0 ? Bitmap.createBitmap(this.mHeight
+                            * tokens.size(), this.mHeight,
+                            Bitmap.Config.ARGB_4444) : null;
 
-            int drawY = mHeight / 2;
-            int drawX = mHeight / 2;
+            int drawY = this.mHeight / 2;
+            int drawX = this.mHeight / 2;
 
             if (b != null) {
                 b.eraseColor(Color.TRANSPARENT);
@@ -316,6 +283,57 @@ public final class TokenSelectorView extends LinearLayout {
              * tokens.size()); }
              */
             return b;
+        }
+
+        @Override
+        protected List<TokenImageResult>
+                doInBackground(List<BaseToken>... args) {
+            List<BaseToken> tokens = args[0];
+            List<TokenImageResult> res = Lists.newArrayList();
+
+            for (List<BaseToken> partition : this.partitionTokens(tokens,
+                    TOKENS_PER_BLOCK)) {
+                res.add(new TokenImageResult(this
+                        .createBitmapFromTokens(partition), partition));
+            }
+
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(List<TokenImageResult> results) {
+            TokenSelectorView.this.mTokenLayout.removeAllViews();
+            for (TokenImageResult r : results) {
+                TokenSelectorViewRow v =
+                        new TokenSelectorViewRow(
+                                TokenSelectorView.this.getContext(), r.bitmap,
+                                r.tokenList);
+                v.startLoadingTokenImages();
+                TokenSelectorView.this.mTokenLayout.addView(v);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            TokenSelectorView.this.mTokenLayout.removeAllViews();
+
+            TextView explanation =
+                    new TextView(TokenSelectorView.this.getContext());
+            explanation.setText("Loading Tokens");
+            TokenSelectorView.this.mTokenLayout.addView(explanation);
+
+            this.mProgressBar =
+                    new ProgressBar(TokenSelectorView.this.getContext());
+            TokenSelectorView.this.mTokenLayout.addView(this.mProgressBar);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... args) {
+            int progress = args[0];
+            int max = args[1];
+
+            this.mProgressBar.setMax(max);
+            this.mProgressBar.setProgress(progress);
         }
 
         /**
@@ -335,58 +353,90 @@ public final class TokenSelectorView extends LinearLayout {
 
             return ret;
         }
+    }
 
-        @Override
-        protected void onPostExecute(List<TokenImageResult> results) {
-            mTokenLayout.removeAllViews();
-            for (TokenImageResult r : results) {
-                TokenSelectorViewRow v = new TokenSelectorViewRow(getContext(),
-                        r.bitmap, r.tokenList);
-                v.startLoadingTokenImages();
-                mTokenLayout.addView(v);
-            }
+    /**
+     * Listener that fires when a token is selected.
+     * 
+     * @author Tim Bocek
+     * 
+     */
+    public interface OnTokenSelectedListener {
+        /**
+         * 
+         * @param t
+         *            The selected token. This is already a unique clone.
+         */
+        void onTokenSelected(BaseToken t);
+    }
+
+    private class TokenImageResult {
+        public Bitmap bitmap;
+
+        public List<BaseToken> tokenList;
+
+        public TokenImageResult(Bitmap b, List<BaseToken> tokens) {
+            this.bitmap = b;
+            this.tokenList = tokens;
         }
     }
 
-    /**
-     * @param drawDark
-     *            Whether tokens are drawn on a dark background.
-     */
-    public void setShouldDrawDark(boolean drawDark) {
-        this.mDrawDark = drawDark;
-        this.mGroupSelector.setTextColor(drawDark ? Color.WHITE : Color.BLACK);
-    }
-
-    /**
-     * @return Whether tokens are drawn on a dark background.
-     */
-    public boolean shouldDrawDark() {
-        return mDrawDark;
-    }
-
     private class TokenSelectorViewRow extends ImageView {
-        private List<BaseToken> mTokens;
+        Bitmap mBitmap;
 
         /**
          * Gesture detector for tapping or long pressing the list of tokens.
          */
         private GestureDetector mGestureDetector;
-        Bitmap mBitmap;
+        private List<BaseToken> mTokens;
 
         public TokenSelectorViewRow(Context context, Bitmap tokenRowImage,
                 List<BaseToken> tokens) {
             super(context);
             this.setImageBitmap(tokenRowImage);
-            mBitmap = tokenRowImage;
-            mTokens = tokens;
-            mGestureDetector = new GestureDetector(getContext(),
-                    new TouchTokenListener());
+            this.mBitmap = tokenRowImage;
+            this.mTokens = tokens;
+            this.mGestureDetector =
+                    new GestureDetector(this.getContext(),
+                            new TouchTokenListener());
         }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            mGestureDetector.onTouchEvent(event);
+            this.mGestureDetector.onTouchEvent(event);
             return true;
+        }
+
+        public void startLoadingTokenImages() {
+            // Load all the tokens that are currently placed on the map.
+            if (this.mBitmap == null) {
+                return;
+            }
+
+            TokenLoadManager.getInstance().startJob(this.mTokens,
+                    new TokenLoadManager.JobCallback() {
+                        @Override
+                        public void onJobComplete(List<BaseToken> loadedTokens) {
+                            Canvas c =
+                                    new Canvas(
+                                            TokenSelectorViewRow.this.mBitmap);
+
+                            int radius =
+                                    TokenSelectorViewRow.this.getHeight() / 2;
+                            int drawX = radius;
+
+                            int i = 0;
+                            for (BaseToken t : loadedTokens) {
+                                t.load();
+                                t.draw(c, drawX, radius, RADIUS_SCALE * radius,
+                                        TokenSelectorView.this.mDrawDark, true);
+                                drawX += radius * 2;
+                                i += 1;
+                            }
+                            TokenSelectorViewRow.this
+                                    .setImageBitmap(TokenSelectorViewRow.this.mBitmap);
+                        }
+                    }, new Handler());
         }
 
         /**
@@ -397,27 +447,6 @@ public final class TokenSelectorView extends LinearLayout {
          */
         private class TouchTokenListener extends
                 GestureDetector.SimpleOnGestureListener {
-            @SuppressLint("NewApi")
-            @Override
-            public void onLongPress(MotionEvent e) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                    BaseToken t = getTouchedToken(e.getX());
-                    List<BaseToken> stack = new ArrayList<BaseToken>();
-                    stack.add(t);
-                    startDrag(null, new TokenStackDragShadow(stack,
-                            (int) (RADIUS_SCALE * getHeight() / 2)), t, 0);
-                }
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                if (mOnTokenSelectedListener != null) {
-                    mOnTokenSelectedListener.onTokenSelected(getTouchedToken(e
-                            .getX()));
-                }
-                return true;
-            }
-
             /**
              * Returns the token touched in the token list given an X
              * coordinate.
@@ -427,38 +456,37 @@ public final class TokenSelectorView extends LinearLayout {
              * @return Clone of the token touched.
              */
             private BaseToken getTouchedToken(float x) {
-                int tokenIndex = ((int) x) / getHeight();
+                int tokenIndex =
+                        ((int) x) / TokenSelectorViewRow.this.getHeight();
 
-                return mTokens.get(tokenIndex).clone();
-            }
-        }
-
-        public void startLoadingTokenImages() {
-            // Load all the tokens that are currently placed on the map.
-            if (mBitmap == null) {
-                return;
+                return TokenSelectorViewRow.this.mTokens.get(tokenIndex)
+                        .clone();
             }
 
-            TokenLoadManager.getInstance().startJob(mTokens,
-                    new TokenLoadManager.JobCallback() {
-                        @Override
-                        public void onJobComplete(List<BaseToken> loadedTokens) {
-                            Canvas c = new Canvas(mBitmap);
+            @SuppressLint("NewApi")
+            @Override
+            public void onLongPress(MotionEvent e) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                    BaseToken t = this.getTouchedToken(e.getX());
+                    List<BaseToken> stack = new ArrayList<BaseToken>();
+                    stack.add(t);
+                    TokenSelectorViewRow.this.startDrag(
+                            null,
+                            new TokenStackDragShadow(stack,
+                                    (int) (RADIUS_SCALE
+                                            * TokenSelectorViewRow.this
+                                                    .getHeight() / 2)), t, 0);
+                }
+            }
 
-                            int radius = getHeight() / 2;
-                            int drawX = radius;
-
-                            int i = 0;
-                            for (BaseToken t : loadedTokens) {
-                                t.load();
-                                t.draw(c, drawX, radius, RADIUS_SCALE * radius,
-                                        mDrawDark, true);
-                                drawX += radius * 2;
-                                i += 1;
-                            }
-                            setImageBitmap(mBitmap);
-                        }
-                    }, new Handler());
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                if (TokenSelectorView.this.mOnTokenSelectedListener != null) {
+                    TokenSelectorView.this.mOnTokenSelectedListener
+                            .onTokenSelected(this.getTouchedToken(e.getX()));
+                }
+                return true;
+            }
         }
     }
 }

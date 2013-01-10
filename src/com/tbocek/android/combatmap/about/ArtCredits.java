@@ -44,23 +44,25 @@ public class ArtCredits extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.art_credits);
-        FrameLayout frame = (FrameLayout) this
-                .findViewById(R.id.art_credits_frame);
-        mCreditsView = new ArtCreditsView(this);
-        mCreditsView
+        FrameLayout frame =
+                (FrameLayout) this.findViewById(R.id.art_credits_frame);
+        this.mCreditsView = new ArtCreditsView(this);
+        this.mCreditsView
                 .setTokenButtonClickListener(new ArtCreditsView.TokenButtonClickListener() {
                     @Override
                     public void onTokenButtonClick(String url) {
                         if (url != null) {
-                            Intent browserIntent = new Intent(
-                                    Intent.ACTION_VIEW, Uri.parse(url));
-                            startActivity(browserIntent);
+                            Intent browserIntent =
+                                    new Intent(Intent.ACTION_VIEW, Uri
+                                            .parse(url));
+                            ArtCredits.this.startActivity(browserIntent);
                         }
                     }
                 });
 
         try {
-            InputStream is = getResources().openRawResource(R.raw.art_credits);
+            InputStream is =
+                    this.getResources().openRawResource(R.raw.art_credits);
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
@@ -82,7 +84,7 @@ public class ArtCredits extends Activity {
             e.printStackTrace();
         }
 
-        frame.addView(mCreditsView);
+        frame.addView(this.mCreditsView);
     }
 
     @Override
@@ -92,7 +94,7 @@ public class ArtCredits extends Activity {
             // app icon in action bar clicked; go home
             Intent intent = new Intent(this, CombatMap.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            this.startActivity(intent);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -108,35 +110,35 @@ public class ArtCredits extends Activity {
     private class ArtCreditHandler extends DefaultHandler {
 
         /**
-         * Name of the artist currently being parsed.
-         */
-        private String mCurrentArtist;
-
-        /**
          * List that accumulates all token buttons created to display art
          * credits; can be used to load their images as a batch.
          */
         private List<TokenButton> mCreatedTokenButtons = Lists.newArrayList();
 
-        @Override
-        public void startElement(String namespaceURI, String localName,
-                String qName, org.xml.sax.Attributes atts) throws SAXException {
-            if (localName.equalsIgnoreCase("artist")) {
-                mCurrentArtist = atts.getValue("name");
-                mCreditsView.addArtist(mCurrentArtist,
-                        atts.getValue("copyright"), atts.getValue("url"));
-            } else if (localName.equalsIgnoreCase("token")) {
-                mCreatedTokenButtons.add(mCreditsView.addArtCredit(
-                        mCurrentArtist, atts.getValue("res"),
-                        atts.getValue("url")));
-            }
-        }
+        /**
+         * Name of the artist currently being parsed.
+         */
+        private String mCurrentArtist;
 
         /**
          * @return List of all token buttons created as a result of the walk.
          */
         public List<TokenButton> getCreatedTokenButtons() {
-            return mCreatedTokenButtons;
+            return this.mCreatedTokenButtons;
+        }
+
+        @Override
+        public void startElement(String namespaceURI, String localName,
+                String qName, org.xml.sax.Attributes atts) throws SAXException {
+            if (localName.equalsIgnoreCase("artist")) {
+                this.mCurrentArtist = atts.getValue("name");
+                ArtCredits.this.mCreditsView.addArtist(this.mCurrentArtist,
+                        atts.getValue("copyright"), atts.getValue("url"));
+            } else if (localName.equalsIgnoreCase("token")) {
+                this.mCreatedTokenButtons.add(ArtCredits.this.mCreditsView
+                        .addArtCredit(this.mCurrentArtist,
+                                atts.getValue("res"), atts.getValue("url")));
+            }
         }
     }
 }

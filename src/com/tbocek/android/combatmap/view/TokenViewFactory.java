@@ -38,6 +38,13 @@ public class TokenViewFactory {
     }
 
     /**
+     * @return The context to use when constructing tokens.
+     */
+    protected final Context getContext() {
+        return this.mContext;
+    }
+
+    /**
      * Gets a view representing the given token.
      * 
      * @param prototype
@@ -45,12 +52,12 @@ public class TokenViewFactory {
      * @return The view for the given token.
      */
     public View getTokenView(final BaseToken prototype) {
-        if (mCachedViews.containsKey(prototype)) {
-            return mCachedViews.get(prototype);
+        if (this.mCachedViews.containsKey(prototype)) {
+            return this.mCachedViews.get(prototype);
         }
 
-        TokenButton b = newTokenView(prototype);
-        mCachedViews.put(prototype, b);
+        TokenButton b = this.newTokenView(prototype);
+        this.mCachedViews.put(prototype, b);
         return b;
     }
 
@@ -62,13 +69,6 @@ public class TokenViewFactory {
      * @return The created view.
      */
     protected TokenButton newTokenView(final BaseToken prototype) {
-        return new TokenButton(getContext(), prototype);
-    }
-
-    /**
-     * @return The context to use when constructing tokens.
-     */
-    protected final Context getContext() {
-        return mContext;
+        return new TokenButton(this.getContext(), prototype);
     }
 }

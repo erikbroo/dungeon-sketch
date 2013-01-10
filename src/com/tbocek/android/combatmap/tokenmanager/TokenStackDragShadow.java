@@ -2,11 +2,11 @@ package com.tbocek.android.combatmap.tokenmanager;
 
 import java.util.Collection;
 
-import com.tbocek.android.combatmap.model.primitives.BaseToken;
-
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.view.View;
+
+import com.tbocek.android.combatmap.model.primitives.BaseToken;
 
 /**
  * This drag shadow draws the given collection of tokens as a stack. It is used
@@ -23,14 +23,14 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
     private static final int MAX_DISPLAYED_TOKENS = 5;
 
     /**
-     * The tokens to display.
-     */
-    private Collection<BaseToken> mTokens;
-
-    /**
      * The radius of a single token.
      */
     private int mTokenRadius;
+
+    /**
+     * The tokens to display.
+     */
+    private Collection<BaseToken> mTokens;
 
     /**
      * Constructor.
@@ -43,23 +43,8 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
     public TokenStackDragShadow(final Collection<BaseToken> tokens,
             final int tokenRadius) {
         super();
-        mTokens = tokens;
-        mTokenRadius = tokenRadius;
-    }
-
-    @Override
-    /**
-     * Drag shadow should always be twice the size of a token, with the finger
-     * location in the middle of the first displayed token.
-     */
-    public void onProvideShadowMetrics(final Point shadowSize,
-            final Point shadowTouchPoint) {
-        // CHECKSTYLE:OFF
-        shadowSize.x = mTokenRadius * 4;
-        shadowSize.y = mTokenRadius * 4;
-        // CHECKSTYLE:ON
-        shadowTouchPoint.x = mTokenRadius;
-        shadowTouchPoint.y = mTokenRadius;
+        this.mTokens = tokens;
+        this.mTokenRadius = tokenRadius;
     }
 
     @Override
@@ -67,7 +52,8 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
      * Draws up to five tokens, offset.
      */
     public void onDrawShadow(final Canvas canvas) {
-        int displayedTokens = Math.min(mTokens.size(), MAX_DISPLAYED_TOKENS);
+        int displayedTokens =
+                Math.min(this.mTokens.size(), MAX_DISPLAYED_TOKENS);
         int tokenDiameter = canvas.getWidth() / 2;
 
         // If one token, display it alone. If two or three tokens, offset by
@@ -80,7 +66,7 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
         }
 
         int i = displayedTokens;
-        for (BaseToken t : mTokens) {
+        for (BaseToken t : this.mTokens) {
             if (i == 0) {
                 return;
             }
@@ -93,5 +79,20 @@ public final class TokenStackDragShadow extends View.DragShadowBuilder {
             t.setSelected(cachedSelected);
             i--;
         }
+    }
+
+    @Override
+    /**
+     * Drag shadow should always be twice the size of a token, with the finger
+     * location in the middle of the first displayed token.
+     */
+    public void onProvideShadowMetrics(final Point shadowSize,
+            final Point shadowTouchPoint) {
+        // CHECKSTYLE:OFF
+        shadowSize.x = this.mTokenRadius * 4;
+        shadowSize.y = this.mTokenRadius * 4;
+        // CHECKSTYLE:ON
+        shadowTouchPoint.x = this.mTokenRadius;
+        shadowTouchPoint.y = this.mTokenRadius;
     }
 }

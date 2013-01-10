@@ -22,9 +22,9 @@ public class Rectangle extends Shape {
     public static final String SHAPE_TYPE = "rct";
 
     /**
-     * Upper right corner of the rectangle.
+     * Line to use when erasing portions of the rectangle.
      */
-    private PointF mP2;
+    private FreehandLine mLineForErasing;
 
     /**
      * Lower left corner of the rectangle.
@@ -32,9 +32,9 @@ public class Rectangle extends Shape {
     private PointF mP1;
 
     /**
-     * Line to use when erasing portions of the rectangle.
+     * Upper right corner of the rectangle.
      */
-    private FreehandLine mLineForErasing;
+    private PointF mP2;
 
     /**
      * Constructor.
@@ -50,105 +50,107 @@ public class Rectangle extends Shape {
     }
 
     @Override
+    public void addPoint(PointF p) {
+        if (this.mP1 == null) {
+            this.mP1 = p;
+        } else {
+            this.mP2 = p;
+            // Re-create the bounding rectangle every time this is done.
+            this.getBoundingRectangle().clear();
+            this.getBoundingRectangle().updateBounds(this.mP1);
+            this.getBoundingRectangle().updateBounds(this.mP2);
+            this.invalidatePath();
+        }
+
+    }
+
+    @Override
     public boolean contains(PointF p) {
         return this.getBoundingRectangle().contains(p);
     }
 
     @Override
-    public boolean needsOptimization() {
-        return mLineForErasing != null;
-    }
-
-    @Override
-    public List<Shape> removeErasedPoints() {
-        List<Shape> l = new ArrayList<Shape>();
-        l.add(mLineForErasing);
-        mLineForErasing = null;
-        invalidatePath();
-        return l;
-    }
-
-    @Override
-    public void erase(PointF center, float radius) {
-        if (this.getBoundingRectangle().intersectsWithCircle(center, radius)) {
-            if (mLineForErasing == null) {
-                float xmin = Math.min(mP1.x, mP2.x);
-                float ymin = Math.min(mP1.y, mP2.y);
-                float xmax = Math.max(mP1.x, mP2.x);
-                float ymax = Math.max(mP1.y, mP2.y);
-                mLineForErasing = new FreehandLine(getColor(), getStrokeWidth());
-                mLineForErasing.addPoint(new PointF(xmin, ymin));
-                mLineForErasing.addPoint(new PointF(xmin, ymax));
-                mLineForErasing.addPoint(new PointF(xmax, ymax));
-                mLineForErasing.addPoint(new PointF(xmax, ymin));
-                mLineForErasing.addPoint(new PointF(xmin, ymin));
-            }
-            mLineForErasing.erase(center, radius);
-            invalidatePath();
-        }
-
-    }
-
-    @Override
     protected Path createPath() {
-        if (!isValid()) {
+        if (!this.isValid()) {
             return null;
         }
-        if (mLineForErasing != null) {
-            return mLineForErasing.createPath();
+        if (this.mLineForErasing != null) {
+            return this.mLineForErasing.createPath();
         } else {
             Path p = new Path();
 
-            p.addRect(Math.min(mP1.x, mP2.x), Math.min(mP1.y, mP2.y),
-                    Math.max(mP1.x, mP2.x), Math.max(mP1.y, mP2.y),
-                    Path.Direction.CW);
+            p.addRect(Math.min(this.mP1.x, this.mP2.x),
+                    Math.min(this.mP1.y, this.mP2.y),
+                    Math.max(this.mP1.x, this.mP2.x),
+                    Math.max(this.mP1.y, this.mP2.y), Path.Direction.CW);
             return p;
         }
     }
 
     @Override
-    public void addPoint(PointF p) {
-        if (mP1 == null) {
-            mP1 = p;
-        } else {
-            mP2 = p;
-            // Re-create the bounding rectangle every time this is done.
-            getBoundingRectangle().clear();
-            getBoundingRectangle().updateBounds(mP1);
-            getBoundingRectangle().updateBounds(mP2);
-            invalidatePath();
+    public void erase(PointF center, float radius) {
+        if (this.getBoundingRectangle().intersectsWithCircle(center, radius)) {
+            if (this.mLineForErasing == null) {
+                float xmin = Math.min(this.mP1.x, this.mP2.x);
+                float ymin = Math.min(this.mP1.y, this.mP2.y);
+                float xmax = Math.max(this.mP1.x, this.mP2.x);
+                float ymax = Math.max(this.mP1.y, this.mP2.y);
+                this.mLineForErasing =
+                        new FreehandLine(this.getColor(), this.getStrokeWidth());
+                this.mLineForErasing.addPoint(new PointF(xmin, ymin));
+                this.mLineForErasing.addPoint(new PointF(xmin, ymax));
+                this.mLineForErasing.addPoint(new PointF(xmax, ymax));
+                this.mLineForErasing.addPoint(new PointF(xmax, ymin));
+                this.mLineForErasing.addPoint(new PointF(xmin, ymin));
+            }
+            this.mLineForErasing.erase(center, radius);
+            this.invalidatePath();
         }
 
     }
 
     @Override
-    public void serialize(MapDataSerializer s) throws IOException {
-        serializeBase(s, SHAPE_TYPE);
-
-        s.startObject();
-        s.serializeFloat(mP1.x);
-        s.serializeFloat(mP1.y);
-        s.serializeFloat(mP2.x);
-        s.serializeFloat(mP2.y);
-        s.endObject();
-
+    public boolean isValid() {
+        return this.mP2 != null && this.mP1 != null;
     }
 
     @Override
-    public boolean isValid() {
-        return mP2 != null && mP1 != null;
+    public boolean needsOptimization() {
+        return this.mLineForErasing != null;
+    }
+
+    @Override
+    public List<Shape> removeErasedPoints() {
+        List<Shape> l = new ArrayList<Shape>();
+        l.add(this.mLineForErasing);
+        this.mLineForErasing = null;
+        this.invalidatePath();
+        return l;
+    }
+
+    @Override
+    public void serialize(MapDataSerializer s) throws IOException {
+        this.serializeBase(s, SHAPE_TYPE);
+
+        s.startObject();
+        s.serializeFloat(this.mP1.x);
+        s.serializeFloat(this.mP1.y);
+        s.serializeFloat(this.mP2.x);
+        s.serializeFloat(this.mP2.y);
+        s.endObject();
+
     }
 
     @Override
     protected void shapeSpecificDeserialize(MapDataDeserializer s)
             throws IOException {
         s.expectObjectStart();
-        mP1 = new PointF();
-        mP1.x = s.readFloat();
-        mP1.y = s.readFloat();
-        mP2 = new PointF();
-        mP2.x = s.readFloat();
-        mP2.y = s.readFloat();
+        this.mP1 = new PointF();
+        this.mP1.x = s.readFloat();
+        this.mP1.y = s.readFloat();
+        this.mP2 = new PointF();
+        this.mP2.x = s.readFloat();
+        this.mP2.y = s.readFloat();
         s.expectObjectEnd();
     }
 

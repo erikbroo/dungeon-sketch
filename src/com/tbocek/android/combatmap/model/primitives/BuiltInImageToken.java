@@ -15,26 +15,21 @@ import android.graphics.drawable.Drawable;
  */
 public final class BuiltInImageToken extends DrawableToken {
     /**
-     * Format string that pads the sort order with 0s.
-     */
-    private static final DecimalFormat SORT_ORDER_FORMAT = new DecimalFormat(
-            "#0000.###");
-
-    /**
      * HACK: The resources. This must be set prior to creating
      * BuildInImageTokens.
      */
     private static transient Resources res;
 
     /**
-     * Sets the resources that images will be loaded from.
-     * 
-     * @param resources
-     *            The resources object.
+     * Format string that pads the sort order with 0s.
      */
-    public static void registerResources(final Resources resources) {
-        res = resources;
-    }
+    private static final DecimalFormat SORT_ORDER_FORMAT = new DecimalFormat(
+            "#0000.###");
+
+    /**
+     * Tags loaded for this built-in token.
+     */
+    private Set<String> mDefaultTags;
 
     /**
      * The name of the resource to load for this token.
@@ -47,9 +42,14 @@ public final class BuiltInImageToken extends DrawableToken {
     private int mSortOrder;
 
     /**
-     * Tags loaded for this built-in token.
+     * Sets the resources that images will be loaded from.
+     * 
+     * @param resources
+     *            The resources object.
      */
-    private Set<String> mDefaultTags;
+    public static void registerResources(final Resources resources) {
+        res = resources;
+    }
 
     /**
      * Constructor from resource ID.
@@ -64,9 +64,15 @@ public final class BuiltInImageToken extends DrawableToken {
      */
     public BuiltInImageToken(final String resourceName, final int sortOrder,
             final Set<String> defaultTags) {
-        mResourceName = resourceName;
-        mSortOrder = sortOrder;
-        mDefaultTags = defaultTags;
+        this.mResourceName = resourceName;
+        this.mSortOrder = sortOrder;
+        this.mDefaultTags = defaultTags;
+    }
+
+    @Override
+    public BaseToken clone() {
+        return this.copyAttributesTo(new BuiltInImageToken(this.mResourceName,
+                this.mSortOrder, this.mDefaultTags));
     }
 
     @Override
@@ -75,20 +81,10 @@ public final class BuiltInImageToken extends DrawableToken {
             return null;
         }
 
-        int id = res.getIdentifier(mResourceName, "drawable",
-                "com.tbocek.android.combatmap");
+        int id =
+                res.getIdentifier(this.mResourceName, "drawable",
+                        "com.tbocek.android.combatmap");
         return res.getDrawable(id);
-    }
-
-    @Override
-    public BaseToken clone() {
-        return copyAttributesTo(new BuiltInImageToken(mResourceName,
-                mSortOrder, mDefaultTags));
-    }
-
-    @Override
-    protected String getTokenClassSpecificId() {
-        return mResourceName;
     }
 
     @Override
@@ -96,14 +92,19 @@ public final class BuiltInImageToken extends DrawableToken {
         Set<String> s = new HashSet<String>();
         s.add("built-in");
         s.add("image");
-        s.addAll(mDefaultTags);
+        s.addAll(this.mDefaultTags);
         return s;
+    }
+
+    @Override
+    protected String getTokenClassSpecificId() {
+        return this.mResourceName;
     }
 
     @Override
     protected String getTokenClassSpecificSortOrder() {
         SORT_ORDER_FORMAT.setDecimalSeparatorAlwaysShown(false);
-        return SORT_ORDER_FORMAT.format(mSortOrder);
+        return SORT_ORDER_FORMAT.format(this.mSortOrder);
 
     }
 }

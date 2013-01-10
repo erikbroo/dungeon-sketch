@@ -3,14 +3,14 @@ package com.tbocek.android.combatmap.model.primitives;
 import java.io.IOException;
 import java.util.List;
 
-import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
-import com.tbocek.android.combatmap.model.io.MapDataSerializer;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Region.Op;
+
+import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
+import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 /**
  * Abstract base class representing a shape.
@@ -31,6 +31,44 @@ public abstract class Shape {
      * war editor.
      */
     private static Paint fogOfWarPaint;
+
+    /**
+     * Cached rectangle that bounds all the points in this line. This could be
+     * computed on demand, but it is easy enough to update every time a point is
+     * added.
+     */
+    private BoundingRectangle mBoundingRectangle = new BoundingRectangle();
+
+    /**
+     * The color to draw this line with.
+     */
+    private int mColor = Color.BLACK;
+
+    /**
+     * X component of the pending move operation.
+     */
+    private float mDrawOffsetDeltaX = Float.NaN;
+
+    /**
+     * Y component of the pending move operation.
+     */
+    private float mDrawOffsetDeltaY = Float.NaN;
+
+    /**
+     * The paint object that will be used to draw this line.
+     */
+    private transient Paint mPaint;
+
+    /**
+     * Cached path that represents this line.
+     */
+    private transient Path mPath;
+
+    /**
+     * The stroke width to draw this line with. +Infinity will use a fill
+     * instead (to ensure that it draws beneath all lines).
+     */
+    private float mWidth;
 
     /**
      * Deserializes and returns a shape.
@@ -71,83 +109,6 @@ public abstract class Shape {
     }
 
     /**
-     * The paint object that will be used to draw this line.
-     */
-    private transient Paint mPaint;
-
-    /**
-     * X component of the pending move operation.
-     */
-    private float mDrawOffsetDeltaX = Float.NaN;
-
-    /**
-     * Y component of the pending move operation.
-     */
-    private float mDrawOffsetDeltaY = Float.NaN;
-
-    /**
-     * Cached path that represents this line.
-     */
-    private transient Path mPath;
-
-    /**
-     * The color to draw this line with.
-     */
-    private int mColor = Color.BLACK;
-
-    /**
-     * The stroke width to draw this line with. +Infinity will use a fill
-     * instead (to ensure that it draws beneath all lines).
-     */
-    private float mWidth;
-
-    /**
-     * Cached rectangle that bounds all the points in this line. This could be
-     * computed on demand, but it is easy enough to update every time a point is
-     * added.
-     */
-    private BoundingRectangle mBoundingRectangle = new BoundingRectangle();
-
-    /**
-     * Checks whether this shape contains the given point.
-     * 
-     * @param p
-     *            The point to check.
-     * @return True if that point falls within this shape.
-     */
-    public abstract boolean contains(PointF p);
-
-    /**
-     * @return True if this shape can be optimized.
-     */
-    public abstract boolean needsOptimization();
-
-    /**
-     * Optimizes this shape by removing erased points.
-     * 
-     * @return A list of shapes that this shape optimizes to, since removing
-     *         erased points may create disjoint line segments.
-     */
-    public abstract List<Shape> removeErasedPoints();
-
-    /**
-     * Erases the portion of this shape that falls within the given circle.
-     * 
-     * @param center
-     *            Center of the circle.
-     * @param radius
-     *            Radius of the circle.
-     */
-    public abstract void erase(final PointF center, final float radius);
-
-    /**
-     * Creates the Android graphics Path object used to draw this shape.
-     * 
-     * @return The created path.
-     */
-    protected abstract Path createPath();
-
-    /**
      * Adds a point to this shape. This is used when dragging, so depending on
      * implementation, this may either add a point or may modify the
      * size/position of the shape.
@@ -158,62 +119,37 @@ public abstract class Shape {
     public abstract void addPoint(final PointF p);
 
     /**
-     * Sets a temporary offset for drawing this shape, which can be thought of
-     * as a pending move operation. This will cause the shape to change the
-     * tranformation until the operation is committed, which wipes the offset
-     * data and returns a copy of the shape that is permanently modified with
-     * the new offset. We do not directly modify this shape so that we can
-     * support undo/redo.
-     * 
-     * @param deltaX
-     *            Amount to move the shape in X dimension.
-     * @param deltaY
-     *            Amount to move the shape in Y dimension.
-     */
-    public void setDrawOffset(float deltaX, float deltaY) {
-        mDrawOffsetDeltaX = deltaX;
-        mDrawOffsetDeltaY = deltaY;
-    }
-
-    /**
      * Changes the given canvas's transformation to apply this draw offset.
      * 
      * @param c
      *            The canvas to modify.
      */
     public void applyDrawOffsetToCanvas(Canvas c) {
-        if (hasOffset()) {
+        if (this.hasOffset()) {
             c.save();
-            c.translate(mDrawOffsetDeltaX, mDrawOffsetDeltaY);
+            c.translate(this.mDrawOffsetDeltaX, this.mDrawOffsetDeltaY);
         }
-    }
-
-    /**
-     * Changes the given canvas's transformation to remove this draw offset.
-     * 
-     * @param c
-     *            The canvas to modify.
-     */
-    public void revertDrawOffsetFromCanvas(Canvas c) {
-        if (hasOffset()) {
-            c.restore();
-        }
-    }
-
-    /**
-     * 
-     * @return Whether this shape has a temporary pending move operation.
-     */
-    public boolean hasOffset() {
-        return mDrawOffsetDeltaX == mDrawOffsetDeltaX;
     }
 
     /**
      * Removes the pending move operation.
      */
     private void clearDrawOffset() {
-        mDrawOffsetDeltaX = Float.NaN;
-        mDrawOffsetDeltaY = Float.NaN;
+        this.mDrawOffsetDeltaX = Float.NaN;
+        this.mDrawOffsetDeltaY = Float.NaN;
+    }
+
+    /**
+     * Clips out the region defined by this path on the fog of war.
+     * 
+     * @param c
+     *            Canvas to draw on.
+     */
+    public void clipFogOfWar(final Canvas c) {
+        this.ensurePathCreated();
+        if (this.mPath != null) {
+            c.clipPath(this.mPath, Op.UNION);
+        }
     }
 
     /**
@@ -225,36 +161,32 @@ public abstract class Shape {
      * @return Moved copy of the shape.
      */
     public Shape commitDrawOffset() {
-        if (!hasOffset()) {
+        if (!this.hasOffset()) {
             return null;
         }
 
-        Shape s = getMovedShape(mDrawOffsetDeltaX, mDrawOffsetDeltaY);
-        clearDrawOffset();
+        Shape s =
+                this.getMovedShape(this.mDrawOffsetDeltaX,
+                        this.mDrawOffsetDeltaY);
+        this.clearDrawOffset();
         return s;
     }
 
     /**
+     * Checks whether this shape contains the given point.
      * 
-     * @param deltaX
-     *            Amount to move by in x dimension.
-     * @param deltaY
-     *            Amount to move by in Y dimension.
-     * @return A *copy* of this shape that is moved by the given offset in world
-     *         space.
+     * @param p
+     *            The point to check.
+     * @return True if that point falls within this shape.
      */
-    protected Shape getMovedShape(float deltaX, float deltaY) {
-        // TODO: Implement this for each subclass, and make this abstract.
-        throw new RuntimeException(
-                "This shape does not support the move operation.");
-    }
+    public abstract boolean contains(PointF p);
 
     /**
-     * Invalidates the path so that it is recreated on the next draw operation.
+     * Creates the Android graphics Path object used to draw this shape.
+     * 
+     * @return The created path.
      */
-    protected void invalidatePath() {
-        this.mPath = null;
-    }
+    protected abstract Path createPath();
 
     /**
      * Draws the line on the given canvas.
@@ -263,10 +195,10 @@ public abstract class Shape {
      *            Canvas to draw on.
      */
     public void draw(final Canvas c) {
-        ensurePaintCreated();
-        ensurePathCreated();
-        if (mPath != null) {
-            c.drawPath(mPath, mPaint);
+        this.ensurePaintCreated();
+        this.ensurePathCreated();
+        if (this.mPath != null) {
+            c.drawPath(this.mPath, this.mPaint);
         }
     }
 
@@ -286,31 +218,9 @@ public abstract class Shape {
             fogOfWarPaint = p;
         }
 
-        ensurePathCreated();
-        if (mPath != null) {
-            c.drawPath(mPath, fogOfWarPaint);
-        }
-    }
-
-    /**
-     * Clips out the region defined by this path on the fog of war.
-     * 
-     * @param c
-     *            Canvas to draw on.
-     */
-    public void clipFogOfWar(final Canvas c) {
-        ensurePathCreated();
-        if (mPath != null) {
-            c.clipPath(mPath, Op.UNION);
-        }
-    }
-
-    /**
-     * Creates the path if it is currently invalid.
-     */
-    private void ensurePathCreated() {
-        if (mPath == null) {
-            mPath = createPath();
+        this.ensurePathCreated();
+        if (this.mPath != null) {
+            c.drawPath(this.mPath, fogOfWarPaint);
         }
     }
 
@@ -319,17 +229,36 @@ public abstract class Shape {
      * appropriate color and stroke width.
      */
     protected void ensurePaintCreated() {
-        if (mPaint == null) {
-            mPaint = new Paint();
-            mPaint.setColor(mColor);
-            if (getWidth() == Float.POSITIVE_INFINITY) {
-                mPaint.setStyle(Paint.Style.FILL);
+        if (this.mPaint == null) {
+            this.mPaint = new Paint();
+            this.mPaint.setColor(this.mColor);
+            if (this.getWidth() == Float.POSITIVE_INFINITY) {
+                this.mPaint.setStyle(Paint.Style.FILL);
             } else {
-                mPaint.setStrokeWidth(getWidth());
-                mPaint.setStyle(Paint.Style.STROKE);
+                this.mPaint.setStrokeWidth(this.getWidth());
+                this.mPaint.setStyle(Paint.Style.STROKE);
             }
         }
     }
+
+    /**
+     * Creates the path if it is currently invalid.
+     */
+    private void ensurePathCreated() {
+        if (this.mPath == null) {
+            this.mPath = this.createPath();
+        }
+    }
+
+    /**
+     * Erases the portion of this shape that falls within the given circle.
+     * 
+     * @param center
+     *            Center of the circle.
+     * @param radius
+     *            Radius of the circle.
+     */
+    public abstract void erase(final PointF center, final float radius);
 
     /**
      * Gets the smallest rectangle needed to fully enclose the line.
@@ -337,7 +266,37 @@ public abstract class Shape {
      * @return The bounding rectangle.
      */
     public BoundingRectangle getBoundingRectangle() {
-        return mBoundingRectangle;
+        return this.mBoundingRectangle;
+    }
+
+    /**
+     * @return This shape's color.
+     */
+    public int getColor() {
+        return this.mColor;
+    }
+
+    /**
+     * 
+     * @param deltaX
+     *            Amount to move by in x dimension.
+     * @param deltaY
+     *            Amount to move by in Y dimension.
+     * @return A *copy* of this shape that is moved by the given offset in world
+     *         space.
+     */
+    protected Shape getMovedShape(float deltaX, float deltaY) {
+        // TODO: Implement this for each subclass, and make this abstract.
+        throw new RuntimeException(
+                "This shape does not support the move operation.");
+    }
+
+    /**
+     * @return The paint object that should be used to draw this shape.
+     */
+    protected Paint getPaint() {
+        this.ensurePaintCreated();
+        return this.mPaint;
     }
 
     /**
@@ -348,12 +307,61 @@ public abstract class Shape {
     }
 
     /**
-     * @return True if this should be drawn below the grid based on its size,
-     *         false otherwise.
-     * @return
+     * @return This shape's line width
      */
-    public boolean shouldDrawBelowGrid() {
-        return this.getWidth() > 1.0f;
+    public float getWidth() {
+        return this.mWidth;
+    }
+
+    /**
+     * 
+     * @return Whether this shape has a temporary pending move operation.
+     */
+    public boolean hasOffset() {
+        return this.mDrawOffsetDeltaX == this.mDrawOffsetDeltaX;
+    }
+
+    /**
+     * Invalidates the path so that it is recreated on the next draw operation.
+     */
+    protected void invalidatePath() {
+        this.mPath = null;
+    }
+
+    /**
+     * Whether the shape is in a valid state. Subclasses should override this
+     * with their own checks. If returns false, the shape may be: - Removed from
+     * the line collection at any time. - Stopped from serializing.
+     * 
+     * @return True if the shape is in a valid state, False otherwise.
+     */
+    public boolean isValid() {
+        return true;
+    }
+
+    /**
+     * @return True if this shape can be optimized.
+     */
+    public abstract boolean needsOptimization();
+
+    /**
+     * Optimizes this shape by removing erased points.
+     * 
+     * @return A list of shapes that this shape optimizes to, since removing
+     *         erased points may create disjoint line segments.
+     */
+    public abstract List<Shape> removeErasedPoints();
+
+    /**
+     * Changes the given canvas's transformation to remove this draw offset.
+     * 
+     * @param c
+     *            The canvas to modify.
+     */
+    public void revertDrawOffsetFromCanvas(Canvas c) {
+        if (this.hasOffset()) {
+            c.restore();
+        }
     }
 
     /**
@@ -387,6 +395,44 @@ public abstract class Shape {
     }
 
     /**
+     * Sets the current shape's color.
+     * 
+     * @param color
+     *            The new color.
+     */
+    public void setColor(int color) {
+        this.mColor = color;
+    }
+
+    /**
+     * Sets a temporary offset for drawing this shape, which can be thought of
+     * as a pending move operation. This will cause the shape to change the
+     * tranformation until the operation is committed, which wipes the offset
+     * data and returns a copy of the shape that is permanently modified with
+     * the new offset. We do not directly modify this shape so that we can
+     * support undo/redo.
+     * 
+     * @param deltaX
+     *            Amount to move the shape in X dimension.
+     * @param deltaY
+     *            Amount to move the shape in Y dimension.
+     */
+    public void setDrawOffset(float deltaX, float deltaY) {
+        this.mDrawOffsetDeltaX = deltaX;
+        this.mDrawOffsetDeltaY = deltaY;
+    }
+
+    /**
+     * Sets the width of the current line.
+     * 
+     * @param width
+     *            The line width.
+     */
+    public void setWidth(float width) {
+        this.mWidth = width;
+    }
+
+    /**
      * Template method that loads shape-specific data from the deserialization
      * stream.
      * 
@@ -399,56 +445,12 @@ public abstract class Shape {
             throws IOException;
 
     /**
-     * @return This shape's color.
+     * @return True if this should be drawn below the grid based on its size,
+     *         false otherwise.
+     * @return
      */
-    public int getColor() {
-        return mColor;
-    }
-
-    /**
-     * Sets the current shape's color.
-     * 
-     * @param color
-     *            The new color.
-     */
-    public void setColor(int color) {
-        mColor = color;
-    }
-
-    /**
-     * @return This shape's line width
-     */
-    public float getWidth() {
-        return mWidth;
-    }
-
-    /**
-     * Sets the width of the current line.
-     * 
-     * @param width
-     *            The line width.
-     */
-    public void setWidth(float width) {
-        mWidth = width;
-    }
-
-    /**
-     * @return The paint object that should be used to draw this shape.
-     */
-    protected Paint getPaint() {
-        ensurePaintCreated();
-        return mPaint;
-    }
-
-    /**
-     * Whether the shape is in a valid state. Subclasses should override this
-     * with their own checks. If returns false, the shape may be: - Removed from
-     * the line collection at any time. - Stopped from serializing.
-     * 
-     * @return True if the shape is in a valid state, False otherwise.
-     */
-    public boolean isValid() {
-        return true;
+    public boolean shouldDrawBelowGrid() {
+        return this.getWidth() > 1.0f;
     }
 
 }

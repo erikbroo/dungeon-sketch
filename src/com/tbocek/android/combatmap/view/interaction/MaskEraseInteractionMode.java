@@ -13,14 +13,16 @@ public class MaskEraseInteractionMode extends ZoomPanInteractionMode {
 
     @Override
     public boolean onSingleTapUp(final MotionEvent ev) {
-        PointF pt = getView().getWorldSpaceTransformer()
-                .screenSpaceToWorldSpace(ev.getX(), ev.getY());
-        if (getView().isAFogOfWarLayerVisible()
-                && getView().getActiveFogOfWar() != null) {
-            Shape shapeUnderPress = getView().getActiveFogOfWar().findShape(pt);
+        PointF pt =
+                this.getView().getWorldSpaceTransformer()
+                        .screenSpaceToWorldSpace(ev.getX(), ev.getY());
+        if (this.getView().isAFogOfWarLayerVisible()
+                && this.getView().getActiveFogOfWar() != null) {
+            Shape shapeUnderPress =
+                    this.getView().getActiveFogOfWar().findShape(pt);
             if (shapeUnderPress != null) {
-                getView().getActiveFogOfWar().deleteShape(shapeUnderPress);
-                getView().refreshMap();
+                this.getView().getActiveFogOfWar().deleteShape(shapeUnderPress);
+                this.getView().refreshMap();
             }
         }
         return true;

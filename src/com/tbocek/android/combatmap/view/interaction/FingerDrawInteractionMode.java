@@ -1,13 +1,12 @@
 package com.tbocek.android.combatmap.view.interaction;
 
-import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Shape;
 import com.tbocek.android.combatmap.model.primitives.Util;
 import com.tbocek.android.combatmap.view.CombatView;
-
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 
 /**
  * Interaction mode that allows the user to draw a line on the CombatView. The
@@ -25,6 +24,17 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     private static final float POINT_RATE_LIMIT = 3;
 
     /**
+     * The line that the user is actively drawing. New points will be added to
+     * this line.
+     */
+    private Shape mCurrentLine;
+
+    /**
+     * Whether a draw operation is in progress.
+     */
+    private boolean mDrawing;
+
+    /**
      * The last x coordinate at which a point was added to the current line.
      */
     private float mLastPointX;
@@ -35,20 +45,9 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     private float mLastPointY;
 
     /**
-     * The line that the user is actively drawing. New points will be added to
-     * this line.
-     */
-    private Shape mCurrentLine;
-
-    /**
      * Whether a zoom operation is in progress.
      */
     private boolean mZooming;
-
-    /**
-     * Whether a draw operation is in progress.
-     */
-    private boolean mDrawing;
 
     /**
      * Constructor.
@@ -60,10 +59,45 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
         super(view);
     }
 
+    /**
+     * Adds the location of the given motion event to the line.
+     * 
+     * @param e
+     *            The motion event containing the point to add.
+     */
+    private void addLinePoint(final MotionEvent e) {
+        PointF p = this.getScreenSpacePoint(e);
+        // Need to transform to world space.
+        this.mCurrentLine.addPoint(this.getView().getWorldSpaceTransformer()
+                .screenSpaceToWorldSpace(p));
+
+        this.getView().refreshMap(); // Redraw the screen
+        this.mLastPointX = p.x;
+        this.mLastPointY = p.y;
+    }
+
+    /**
+     * Creates a line in the data tied to the manipulated view, and returns it.
+     * 
+     * @return The created line.
+     */
+    protected Shape createLine() {
+        return this.getView().createLine();
+    }
+
+    @Override
+    public boolean onDown(final MotionEvent e) {
+        this.mCurrentLine = this.createLine();
+        PointF p = this.getScreenSpacePoint(e);
+        this.mLastPointX = p.x;
+        this.mLastPointY = p.y;
+        return true;
+    }
+
     @Override
     public boolean onScale(final ScaleGestureDetector detector) {
-        mZooming = true;
-        if (!mDrawing) {
+        this.mZooming = true;
+        if (!this.mDrawing) {
             return super.onScale(detector);
         } else {
             return true;
@@ -73,40 +107,31 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
-        if (mZooming) {
-            getView().getWorldSpaceTransformer().moveOrigin(-distanceX,
-                    -distanceY);
-            getView().refreshMap();
+        if (this.mZooming) {
+            this.getView().getWorldSpaceTransformer()
+                    .moveOrigin(-distanceX, -distanceY);
+            this.getView().refreshMap();
             return true;
         }
 
-        if (mCurrentLine == null) {
+        if (this.mCurrentLine == null) {
             return true;
         }
 
-        mDrawing = true;
+        this.mDrawing = true;
 
-        if (shouldAddPoint(e2.getX(), e2.getY())) {
-            addLinePoint(e2);
+        if (this.shouldAddPoint(e2.getX(), e2.getY())) {
+            this.addLinePoint(e2);
         }
         return true;
     }
 
-    /**
-     * Adds the location of the given motion event to the line.
-     * 
-     * @param e
-     *            The motion event containing the point to add.
-     */
-    private void addLinePoint(final MotionEvent e) {
-        PointF p = getScreenSpacePoint(e);
-        // Need to transform to world space.
-        mCurrentLine.addPoint(getView().getWorldSpaceTransformer()
-                .screenSpaceToWorldSpace(p));
-
-        getView().refreshMap(); // Redraw the screen
-        mLastPointX = p.x;
-        mLastPointY = p.y;
+    @Override
+    public void onUp(final MotionEvent e) {
+        if (this.getNumberOfFingers() == 0) {
+            this.mZooming = false;
+            this.mDrawing = false;
+        }
     }
 
     /**
@@ -119,33 +144,9 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
      *            Y coordinate of the new point.
      * @return True if the point should be added
      */
-    private boolean shouldAddPoint(final float newPointX, final float newPointY) {
-        return Util.distance(mLastPointX, mLastPointY, newPointX, newPointY) > POINT_RATE_LIMIT;
-    }
-
-    @Override
-    public boolean onDown(final MotionEvent e) {
-        mCurrentLine = createLine();
-        PointF p = getScreenSpacePoint(e);
-        mLastPointX = p.x;
-        mLastPointY = p.y;
-        return true;
-    }
-
-    @Override
-    public void onUp(final MotionEvent e) {
-        if (getNumberOfFingers() == 0) {
-            mZooming = false;
-            mDrawing = false;
-        }
-    }
-
-    /**
-     * Creates a line in the data tied to the manipulated view, and returns it.
-     * 
-     * @return The created line.
-     */
-    protected Shape createLine() {
-        return getView().createLine();
+    private boolean
+            shouldAddPoint(final float newPointX, final float newPointY) {
+        return Util.distance(this.mLastPointX, this.mLastPointY, newPointX,
+                newPointY) > POINT_RATE_LIMIT;
     }
 }
