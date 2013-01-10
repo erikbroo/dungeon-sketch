@@ -18,8 +18,10 @@ public abstract class GridDrawStrategy {
      * 
      * @param canvas
      *            Canvas to draw on.
-     * @param worldToScreenTransformer
+     * @param transformer
      *            Transformation from world space to screen space.
+     * @param colorScheme
+     *            The color scheme used to draw the grid.
      */
     public abstract void drawGrid(final Canvas canvas,
             final CoordinateTransformer transformer,

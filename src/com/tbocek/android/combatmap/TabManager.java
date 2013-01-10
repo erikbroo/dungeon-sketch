@@ -28,8 +28,15 @@ public class TabManager {
      */
     private ActionBar mActionBar;
 
+    /**
+     * The Android context this tab manager is operating in.
+     */
     private Context mContext;
 
+    /**
+     * The currently selected tab mode. A value < 0 is undefined (and will be
+     * treated as a GM-selected tab for the purpose of GM screen confirmation).
+     */
     private int mLastSelectedMode = -1;
 
     /**
@@ -39,6 +46,10 @@ public class TabManager {
     private Map<Integer, ActionBar.Tab> mManipulationModeTabs =
             new HashMap<Integer, ActionBar.Tab>();
 
+    /**
+     * Whether each tab mode (identified by the integer code) requires GM screen
+     * confirmation.
+     */
     private HashMap<Integer, Boolean> modesForGm =
             new HashMap<Integer, Boolean>();
 
@@ -52,12 +63,25 @@ public class TabManager {
      * 
      * @param actionBar
      *            The action bar that will provide the tabs.
+     * @param context
+     *            The application context managing these tabs.
      */
     public TabManager(ActionBar actionBar, Context context) {
         this.mActionBar = actionBar;
         this.mContext = context;
     }
 
+    /**
+     * Adds a new tab to the tab manager.
+     * 
+     * @param description
+     *            Description of the tab. This string is what will be shown in
+     *            the UI.
+     * @param mode
+     *            Numerical code identifying the tab.
+     * @param forGm
+     *            Whether this tab will contain GM-only information.
+     */
     public final void addTab(String description, final int mode, boolean forGm) {
         ActionBar.Tab tab = this.mActionBar.newTab();
         tab.setText(description);
@@ -83,6 +107,14 @@ public class TabManager {
         this.modesForGm.put(mode, forGm);
     }
 
+    /**
+     * Opens the GM Screen dialog. If the dialog is confirmed, will switch to
+     * the requested tab. Otherwise, the previous tab will be used.
+     * 
+     * @param destinationMode
+     *            The requested tab. Will be the mode entered if the GM screen
+     *            dialog is confirmed.
+     */
     private void confirmGmScreenBeforeSwitchingTabs(final int destinationMode) {
         int switchBackMode = TabManager.this.mLastSelectedMode;
         TabManager.this.mLastSelectedMode = -1;
@@ -96,16 +128,9 @@ public class TabManager {
 
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
-                                TabManager.this.mLastSelectedMode = -1; // Make
-                                                                        // sure
-                                                                        // we
-                                                                        // don't
-                                                                        // get
-                                                                        // kicked
-                                                                        // into
-                                                                        // the
-                                                                        // dialog
-                                                                        // again!
+                                // Make sure we don't get kicked into the GM
+                                // Screen dialog again!
+                                TabManager.this.mLastSelectedMode = -1;
                                 TabManager.this.mManipulationModeTabs.get(
                                         destinationMode).select();
 
@@ -123,6 +148,13 @@ public class TabManager {
                         }).create().show();
     }
 
+    /**
+     * Checks whether selecting the given mode requires GM Screen confirmation.
+     * 
+     * @param mode
+     *            The mode to enter.
+     * @return True if GM Screen confirmation needed.
+     */
     protected boolean needGmScreenConfirmation(int mode) {
         if (this.mLastSelectedMode == -1) {
             return false;
@@ -152,6 +184,12 @@ public class TabManager {
         }
     }
 
+    /**
+     * Selects the given tab. Guaranteed to not open the GM Screen dialog.
+     * 
+     * @param mode
+     *            The new tab mode to select.
+     */
     public void pickTab(int mode) {
         this.mManipulationModeTabs.get(mode).select();
         this.mLastSelectedMode = mode;
