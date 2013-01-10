@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -89,21 +91,26 @@ public final class TokenSelectorView extends LinearLayout {
      * Constructor.
      * @param context The context to create this view in.
      */
-    public TokenSelectorView(final Context context) {
+    @SuppressLint("NewApi")
+	public TokenSelectorView(final Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.token_selector, this);
-        //Create and add the child layout, which will be a linear layout of
+        // Create and add the child layout, which will be a linear layout of
         // tokens.
-        this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        	this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
         mTokenLayout = new LinearLayout(context);
         ((HorizontalScrollView) findViewById(R.id.token_scroll_view))
         		.addView(mTokenLayout);
 
         mGroupSelector = (Button) findViewById(
         		R.id.token_category_selector_button);
-        mGroupSelector.setAlpha(1.0f);
-        mTokenManager = (ImageButton) findViewById(R.id.token_manager_button);
-        mTokenManager.setAlpha(1.0f);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	        mGroupSelector.setAlpha(1.0f);
+	        mTokenManager = (ImageButton) findViewById(R.id.token_manager_button);
+	        mTokenManager.setAlpha(1.0f);
+        }
         
     }
     
@@ -189,7 +196,7 @@ public final class TokenSelectorView extends LinearLayout {
     
     @SuppressWarnings("unchecked")
 	@Override
-    protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
     	if (h != oldh && mTokens != null) {
     		new CreateImageTask(h, this.mDrawDark).execute(mTokens);
     	}
@@ -370,7 +377,8 @@ public final class TokenSelectorView extends LinearLayout {
 	     */
 	    private class TouchTokenListener 
 	    		extends GestureDetector.SimpleOnGestureListener {
-	    	@Override
+	    	@SuppressLint("NewApi")
+			@Override
 	    	public void onLongPress(MotionEvent e) {
 	    		if (android.os.Build.VERSION.SDK_INT
 	        			>= android.os.Build.VERSION_CODES.HONEYCOMB) {
