@@ -64,20 +64,22 @@ public final class Load extends Activity {
     /**
      * Listener that creates a menu to delete the given save file.
      */
-    private View.OnCreateContextMenuListener mContextMenuListener = new View.OnCreateContextMenuListener() {
-        @Override
-        public void onCreateContextMenu(final ContextMenu menu,
-                final View view, final ContextMenuInfo menuInfo) {
-            View v = view;
-            while (!(v instanceof SaveFileButton)) {
-                v = (View) v.getParent();
-            }
-            mContextMenuTrigger = (SaveFileButton) v;
-            if (menu.size() == 0) {
-                getMenuInflater().inflate(R.menu.save_file_context_menu, menu);
-            }
-        }
-    };
+    private View.OnCreateContextMenuListener mContextMenuListener =
+            new View.OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(final ContextMenu menu,
+                        final View view, final ContextMenuInfo menuInfo) {
+                    View v = view;
+                    while (!(v instanceof SaveFileButton)) {
+                        v = (View) v.getParent();
+                    }
+                    mContextMenuTrigger = (SaveFileButton) v;
+                    if (menu.size() == 0) {
+                        getMenuInflater().inflate(
+                                R.menu.save_file_context_menu, menu);
+                    }
+                }
+            };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -123,8 +125,9 @@ public final class Load extends Activity {
     private View createLayout(final List<View> views) {
         TableLayout layout = new TableLayout(this);
         TableRow currentRow = null;
-        int viewsPerRow = getWindowManager().getDefaultDisplay().getWidth()
-                / (FILE_VIEW_WIDTH + 2 * FILE_VIEW_PADDING);
+        int viewsPerRow =
+                getWindowManager().getDefaultDisplay().getWidth()
+                        / (FILE_VIEW_WIDTH + 2 * FILE_VIEW_PADDING);
         int i = 0;
         for (View v : views) {
             if (i % viewsPerRow == 0) {
@@ -172,8 +175,9 @@ public final class Load extends Activity {
      *            The new filename to load.
      */
     private void setFilenamePreference(final String newFilename) {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(this.getApplicationContext());
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this
+                        .getApplicationContext());
 
         // Persist the filename that we saved to so that we can load from that
         // file again.
@@ -219,8 +223,9 @@ public final class Load extends Activity {
         switch (item.getItemId()) {
         case R.id.save_file_context_delete:
             mDataMgr.deleteSaveFile(mContextMenuTrigger.getFileName());
-            SharedPreferences sharedPreferences = PreferenceManager
-                    .getDefaultSharedPreferences(this.getApplicationContext());
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this
+                            .getApplicationContext());
 
             // If we deleted the currently open file, set us up to create a new
             // file when we return to the main activity.
@@ -265,9 +270,10 @@ public final class Load extends Activity {
             setFilenamePreference(name);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast toast = Toast.makeText(this.getApplicationContext(),
-                    "Could not load file.  Reason: " + e.toString(),
-                    Toast.LENGTH_LONG);
+            Toast toast =
+                    Toast.makeText(this.getApplicationContext(),
+                            "Could not load file.  Reason: " + e.toString(),
+                            Toast.LENGTH_LONG);
             toast.show();
 
             MapData.clear();

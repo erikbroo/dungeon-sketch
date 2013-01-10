@@ -172,7 +172,8 @@ public class ArtCreditsView extends LinearLayout {
      * @author Tim
      * 
      */
-    private class InnerTokenButtonClickListener implements View.OnClickListener {
+    private class InnerTokenButtonClickListener
+        implements View.OnClickListener {
 
         /**
          * URL for the full size image of the token.

@@ -160,7 +160,8 @@ public final class LineCollection implements UndoRedoTarget {
      *            The new line's stroke width.
      * @return The new line.
      */
-    public Shape createStraightLine(int newLineColor, float newLineStrokeWidth) {
+    public Shape createStraightLine(
+            int newLineColor, float newLineStrokeWidth) {
         StraightLine l = new StraightLine(newLineColor, newLineStrokeWidth);
         Command c = new Command(this);
         c.addCreatedShape(l);

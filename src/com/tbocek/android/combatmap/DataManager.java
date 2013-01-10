@@ -110,8 +110,8 @@ public final class DataManager {
      */
     public void saveMapName(final String name) throws IOException {
         // Save to temporary map.
-        FileOutputStream s = new FileOutputStream(
-                this.getSavedMapFile(TEMP_MAP_NAME));
+        FileOutputStream s =
+                new FileOutputStream(this.getSavedMapFile(TEMP_MAP_NAME));
         MapData.saveToStream(s);
         s.close();
 
@@ -214,8 +214,9 @@ public final class DataManager {
      *         images.
      */
     private File getExportedImageDir() {
-        File imageDir = Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File imageDir =
+                Environment
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File dir = new File(imageDir, "DungeonSketch");
         return dir;
     }
@@ -294,8 +295,8 @@ public final class DataManager {
      */
     public void savePreviewImage(final String name, final Bitmap preview)
             throws IOException {
-        FileOutputStream s = new FileOutputStream(
-                this.getSavedMapPreviewImageFile(name));
+        FileOutputStream s =
+                new FileOutputStream(this.getSavedMapPreviewImageFile(name));
         BufferedOutputStream buf = new BufferedOutputStream(s);
         preview.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION, buf);
         buf.close();
@@ -316,10 +317,10 @@ public final class DataManager {
      */
     public void exportImage(final String name, final Bitmap preview,
             final Bitmap.CompressFormat format) throws IOException {
-        String filename = name
-                + (format == Bitmap.CompressFormat.JPEG ? ".jpg" : ".png");
-        FileOutputStream s = new FileOutputStream(
-                this.getExportedImageFileName(filename));
+        String filename =
+                name + (format == Bitmap.CompressFormat.JPEG ? ".jpg" : ".png");
+        FileOutputStream s =
+                new FileOutputStream(this.getExportedImageFileName(filename));
         BufferedOutputStream buf = new BufferedOutputStream(s);
         preview.compress(format, JPEG_COMPRESSION, buf);
         buf.close();
@@ -353,8 +354,8 @@ public final class DataManager {
      *             On read error.
      */
     public Bitmap loadPreviewImage(final String saveFile) throws IOException {
-        FileInputStream s = new FileInputStream(
-                this.getSavedMapPreviewImageFile(saveFile));
+        FileInputStream s =
+                new FileInputStream(this.getSavedMapPreviewImageFile(saveFile));
         Bitmap b = BitmapFactory.decodeStream(s);
         s.close();
         return b;

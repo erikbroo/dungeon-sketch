@@ -53,7 +53,8 @@ public class TokenButton extends ImageView {
     private SimpleOnGestureListener mGestureListener = new SimpleOnGestureListener() {
         public void onLongPress(final MotionEvent e) {
             if (mAllowDrag
-                    && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                    && android.os.Build.VERSION.SDK_INT
+                        >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                 TokenButton.this.onStartDrag();
             }
         }

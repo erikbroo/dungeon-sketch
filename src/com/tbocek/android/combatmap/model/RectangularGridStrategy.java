@@ -62,12 +62,17 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
         float offsetX = origin.x % squareSize;
         float offsetY = origin.y % squareSize;
 
-        int thickLineStartX = (int) ((origin.x % (squareSize * MAJOR_GRID_LINE_FREQUENCY)) / squareSize);
-        int thickLineStartY = (int) ((origin.y % (squareSize * MAJOR_GRID_LINE_FREQUENCY)) / squareSize);
+        int thickLineStartX = (int) (
+                (origin.x % (squareSize * MAJOR_GRID_LINE_FREQUENCY))
+                / squareSize);
+        int thickLineStartY = (int) (
+                (origin.y % (squareSize * MAJOR_GRID_LINE_FREQUENCY))
+                / squareSize);
 
         for (int i = 0; i <= numSquaresHorizontal; ++i) {
             if ((i - thickLineStartX) % MAJOR_GRID_LINE_FREQUENCY == 0) {
-                paint.setStrokeWidth(shouldDrawMinorLines ? MAJOR_GRID_LINE_WIDTH
+                paint.setStrokeWidth(shouldDrawMinorLines
+                        ? MAJOR_GRID_LINE_WIDTH
                         : MINOR_GRID_LINE_WIDTH);
                 shouldDrawCurrentLine = shouldDrawMajorLines;
             } else {

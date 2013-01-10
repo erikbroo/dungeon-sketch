@@ -41,7 +41,8 @@ public class TabManager {
 
     private int mLastSelectedMode = -1;
 
-    private HashMap<Integer, Boolean> modesForGm = new HashMap<Integer, Boolean>();
+    private HashMap<Integer, Boolean> modesForGm =
+            new HashMap<Integer, Boolean>();
 
     /**
      * Action bar that provides the tabs.
@@ -52,7 +53,8 @@ public class TabManager {
      * Reverse lookup so we know what tab to select when forced into an
      * interaction mode.
      */
-    private Map<Integer, ActionBar.Tab> mManipulationModeTabs = new HashMap<Integer, ActionBar.Tab>();
+    private Map<Integer, ActionBar.Tab> mManipulationModeTabs =
+            new HashMap<Integer, ActionBar.Tab>();
 
     protected Context mContext;
 

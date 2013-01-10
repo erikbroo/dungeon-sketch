@@ -43,7 +43,7 @@ public class AlphaPatternDrawable extends Drawable {
     private int numRectanglesVertical;
 
     /**
-     * Bitmap in which the pattern will be cahched.
+     * Bitmap in which the pattern will be cached.
      */
     private Bitmap mBitmap;
 

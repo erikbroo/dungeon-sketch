@@ -39,7 +39,8 @@ public final class FreehandLine extends Shape {
      * When a segment of this freehand line has only a portion erased, the
      * resulting new line segments are placed in this array.
      */
-    private transient List<StraightLine> mPartiallyErasedLineSegments = new ArrayList<StraightLine>();
+    private transient List<StraightLine> mPartiallyErasedLineSegments =
+            new ArrayList<StraightLine>();
 
     /**
      * Constructor.

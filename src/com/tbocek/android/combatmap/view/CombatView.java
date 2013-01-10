@@ -49,6 +49,19 @@ import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
  * 
  */
 public final class CombatView extends SurfaceView {
+    
+    /**
+     * For the explanatory mask text, Y location of the first line in density-
+     * Independent pixels.
+     */
+    private static final int EXPLANATORY_TEXT_INITIAL_Y_DP = 16;
+    
+    /**
+     * For the explanatory mask text, height of each line in density-
+     * Independent pixels.
+     */
+    private static final int EXPLANATORY_TEXT_LINE_HEIGHT_DP = 20;
+    
     /**
      * Detector object to detect regular gestures.
      */
@@ -483,7 +496,8 @@ public final class CombatView extends SurfaceView {
                 .areTokensManipulable(mAreTokensManipulatable)
                 .drawAnnotations(this.mShouldDrawAnnotations)
                 .gmNotesFogOfWar(
-                        this.mActiveLines == getData().getGmNoteLines() ? FogOfWarMode.DRAW
+                        this.mActiveLines == getData().getGmNoteLines()
+                                ? FogOfWarMode.DRAW
                                 : FogOfWarMode.CLIP)
                 .backgroundFogOfWar(mFogOfWarMode).draw(canvas, getData());
 
@@ -491,13 +505,14 @@ public final class CombatView extends SurfaceView {
 
         if (mEditingMask) {
             String explanatoryText = getMaskExplanatoryText();
-            int i = 16;
+
+            int i = EXPLANATORY_TEXT_INITIAL_Y_DP;
             for (String s : explanatoryText.split("\n")) {
                 float scaledDensity = getContext().getResources()
                         .getDisplayMetrics().scaledDensity;
                 canvas.drawText(s, getWidth() / 2, i * scaledDensity,
                         mExplanatoryTextPaint);
-                i += 20;
+                i += EXPLANATORY_TEXT_LINE_HEIGHT_DP;
             }
 
         }

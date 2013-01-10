@@ -95,8 +95,8 @@ public class TokenLoadManager {
 
     public JobHandle startJob(List<BaseToken> tokensToLoad,
             JobCallback callback, Handler uiThreadHandler) {
-        JobHandle handle = new JobHandle(tokensToLoad, callback,
-                uiThreadHandler);
+        JobHandle handle =
+                new JobHandle(tokensToLoad, callback, uiThreadHandler);
         try {
             mQueue.put(handle);
         } catch (InterruptedException e) {

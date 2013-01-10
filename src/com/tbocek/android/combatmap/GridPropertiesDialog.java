@@ -57,18 +57,20 @@ public class GridPropertiesDialog extends Dialog {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView v = (TextView) super
-                    .getView(position, convertView, parent);
-            GridColorScheme scheme = GridColorScheme.fromNamedScheme(v
-                    .getText().toString());
+            TextView v =
+                    (TextView) super.getView(position, convertView, parent);
+            GridColorScheme scheme =
+                    GridColorScheme.fromNamedScheme(v.getText().toString());
             v.setTextColor(scheme.getLineColor());
             v.setBackgroundColor(scheme.getBackgroundColor());
 
             // With all these different colors, changing the padding works
             // wonders!
             // TODO: DO this in the XML!!!!
-            float dp16 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    16, this.getContext().getResources().getDisplayMetrics());
+            float dp16 =
+                    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
+                            this.getContext().getResources()
+                                    .getDisplayMetrics());
             v.setPadding(0, (int) dp16, 0, (int) dp16);
             v.setTextSize(2 * dp16);
 
@@ -81,14 +83,16 @@ public class GridPropertiesDialog extends Dialog {
         super(context);
         this.setTitle("Grid Properties");
         this.setContentView(R.layout.grid_background_properties);
-        mForegroundColor = (ImageButton) this
-                .findViewById(R.id.button_foreground_color);
-        mBackgroundColor = (ImageButton) this
-                .findViewById(R.id.button_background_color);
-        mHexGridButton = (ImageToggleButton) this
-                .findViewById(R.id.button_toggle_hex_grid);
-        mRectGridButton = (ImageToggleButton) this
-                .findViewById(R.id.button_toggle_rect_grid);
+        mForegroundColor =
+                (ImageButton) this.findViewById(R.id.button_foreground_color);
+        mBackgroundColor =
+                (ImageButton) this.findViewById(R.id.button_background_color);
+        mHexGridButton =
+                (ImageToggleButton) this
+                        .findViewById(R.id.button_toggle_hex_grid);
+        mRectGridButton =
+                (ImageToggleButton) this
+                        .findViewById(R.id.button_toggle_rect_grid);
         mGridTypeToggles.add(mHexGridButton);
         mGridTypeToggles.add(mRectGridButton);
 
@@ -125,10 +129,10 @@ public class GridPropertiesDialog extends Dialog {
             }
 
         });
-        mPresetAdapter = new GridPropertiesDialog.MapThemeArrayAdapter(
-                this.getContext());
-        mThemePresetButton = (Button) this
-                .findViewById(R.id.button_theme_presets);
+        mPresetAdapter =
+                new GridPropertiesDialog.MapThemeArrayAdapter(this.getContext());
+        mThemePresetButton =
+                (Button) this.findViewById(R.id.button_theme_presets);
 
         mThemePresetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,8 +188,9 @@ public class GridPropertiesDialog extends Dialog {
     ColorPickerDialog picker;
 
     void foregroundColorClick() {
-        picker = new ColorPickerDialog(getContext(), mData.getGrid()
-                .getColorScheme().getLineColor());
+        picker =
+                new ColorPickerDialog(getContext(), mData.getGrid()
+                        .getColorScheme().getLineColor());
         picker.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
 
             @Override
@@ -202,8 +207,9 @@ public class GridPropertiesDialog extends Dialog {
     }
 
     void backgroundColorClick() {
-        picker = new ColorPickerDialog(getContext(), mData.getGrid()
-                .getColorScheme().getBackgroundColor());
+        picker =
+                new ColorPickerDialog(getContext(), mData.getGrid()
+                        .getColorScheme().getBackgroundColor());
         picker.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
 
             @Override
@@ -242,8 +248,9 @@ public class GridPropertiesDialog extends Dialog {
         int c = color;
         for (int i = 0; i < w; i++) {
             for (int j = i; j < h; j++) {
-                c = (i <= 1 || j <= 1 || i >= w - 2 || j >= h - 2) ? Color.GRAY
-                        : color;
+                c =
+                        (i <= 1 || j <= 1 || i >= w - 2 || j >= h - 2) ? Color.GRAY
+                                : color;
                 bm.setPixel(i, j, c);
                 if (i != j) {
                     bm.setPixel(j, i, c);

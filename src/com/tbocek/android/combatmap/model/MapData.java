@@ -177,7 +177,8 @@ public final class MapData {
     /**
      * Command history to use for combat tokens.
      */
-    private CommandHistory mTokenCollectionCommandHistory = new CommandHistory();
+    private CommandHistory mTokenCollectionCommandHistory =
+            new CommandHistory();
 
     /**
      * Background lines.

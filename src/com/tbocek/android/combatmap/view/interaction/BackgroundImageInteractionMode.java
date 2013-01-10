@@ -345,9 +345,11 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
      * @param p
      */
     private void drawBorderSegment(Canvas c, PointF p1, PointF p2, Paint p) {
-        float horizontalClip = Math.abs(p1.x - p2.x) > Math.abs(p1.y - p2.y) ? handleCircleRadiusPx()
+        float horizontalClip = Math.abs(p1.x - p2.x) > Math.abs(p1.y - p2.y)
+                ? handleCircleRadiusPx()
                 : 0;
-        float verticalClip = Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y) ? handleCircleRadiusPx()
+        float verticalClip = Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y)
+                ? handleCircleRadiusPx()
                 : 0;
 
         c.drawLine(Math.min(p1.x, p2.x) + horizontalClip, Math.min(p1.y, p2.y)

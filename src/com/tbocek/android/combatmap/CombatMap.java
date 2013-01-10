@@ -188,139 +188,149 @@ public final class CombatMap extends SherlockActivity {
      * Listener that fires when a token has been selected in the token selector
      * view.
      */
-    private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener = new TokenSelectorView.OnTokenSelectedListener() {
-        @Override
-        public void onTokenSelected(final BaseToken t) {
-            mCombatView.placeToken(t);
-        }
-    };
+    private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener =
+            new TokenSelectorView.OnTokenSelectedListener() {
+                @Override
+                public void onTokenSelected(final BaseToken t) {
+                    mCombatView.placeToken(t);
+                }
+            };
 
     /**
      * Listener that fires when a new draw tool or color has been selected.
      */
-    private DrawOptionsView.OnChangeDrawToolListener mOnChangeDrawToolListener = new DrawOptionsView.OnChangeDrawToolListener() {
+    private DrawOptionsView.OnChangeDrawToolListener mOnChangeDrawToolListener =
+            new DrawOptionsView.OnChangeDrawToolListener() {
 
-        @Override
-        public void onChooseEraser() {
-            mCombatView.setEraseMode();
-        }
+                @Override
+                public void onChooseEraser() {
+                    mCombatView.setEraseMode();
+                }
 
-        @Override
-        public void onChooseColoredPen(final int color) {
-            mCombatView.setNewLineColor(color);
-        }
+                @Override
+                public void onChooseColoredPen(final int color) {
+                    mCombatView.setNewLineColor(color);
+                }
 
-        @Override
-        public void onChoosePanTool() {
-            mCombatView.setZoomPanMode();
-        }
+                @Override
+                public void onChoosePanTool() {
+                    mCombatView.setZoomPanMode();
+                }
 
-        @Override
-        public void onChooseStrokeWidth(final float width) {
-            mCombatView.setNewLineStrokeWidth(width);
-        }
+                @Override
+                public void onChooseStrokeWidth(final float width) {
+                    mCombatView.setNewLineStrokeWidth(width);
+                }
 
-        @Override
-        public void onChooseMaskTool() {
-            mCombatView.setFogOfWarDrawMode();
-            mCombatView.setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
-        }
+                @Override
+                public void onChooseMaskTool() {
+                    mCombatView.setFogOfWarDrawMode();
+                    mCombatView
+                            .setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
+                }
 
-        @Override
-        public void onChooseFreeHandTool() {
-            mCombatView.setDrawMode();
-            mCombatView.setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
-        }
+                @Override
+                public void onChooseFreeHandTool() {
+                    mCombatView.setDrawMode();
+                    mCombatView
+                            .setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
+                }
 
-        @Override
-        public void onChooseStraightLineTool() {
-            mCombatView.setDrawMode();
-            mCombatView.setNewLineStyle(CombatView.NewLineStyle.STRAIGHT);
-        }
+                @Override
+                public void onChooseStraightLineTool() {
+                    mCombatView.setDrawMode();
+                    mCombatView
+                            .setNewLineStyle(CombatView.NewLineStyle.STRAIGHT);
+                }
 
-        @Override
-        public void onChooseCircleTool() {
-            mCombatView.setDrawMode();
-            mCombatView.setNewLineStyle(CombatView.NewLineStyle.CIRCLE);
-        }
+                @Override
+                public void onChooseCircleTool() {
+                    mCombatView.setDrawMode();
+                    mCombatView.setNewLineStyle(CombatView.NewLineStyle.CIRCLE);
+                }
 
-        @Override
-        public void onChooseTextTool() {
-            mCombatView.setTextMode();
+                @Override
+                public void onChooseTextTool() {
+                    mCombatView.setTextMode();
 
-        }
+                }
 
-        @Override
-        public void onChooseRectangleTool() {
-            mCombatView.setDrawMode();
-            mCombatView.setNewLineStyle(CombatView.NewLineStyle.RECTANGLE);
-        }
+                @Override
+                public void onChooseRectangleTool() {
+                    mCombatView.setDrawMode();
+                    mCombatView
+                            .setNewLineStyle(CombatView.NewLineStyle.RECTANGLE);
+                }
 
-        @Override
-        public void onChooseImageTool() {
-            mCombatView.setBackgroundImageMode();
-        }
+                @Override
+                public void onChooseImageTool() {
+                    mCombatView.setBackgroundImageMode();
+                }
 
-        @Override
-        public void onChooseMaskEraser() {
-            mCombatView.setFogOfWarEraseMode();
-        }
+                @Override
+                public void onChooseMaskEraser() {
+                    mCombatView.setFogOfWarEraseMode();
+                }
 
-        @Override
-        public void onChangeMaskEditing(boolean editingMask) {
-            mCombatView.setEditingLayerMask(editingMask);
-        }
-    };
+                @Override
+                public void onChangeMaskEditing(boolean editingMask) {
+                    mCombatView.setEditingLayerMask(editingMask);
+                }
+            };
 
     /**
      * Callback that loads the correct interaction mode when a new tab is
      * selected.
      */
-    private TabManager.TabSelectedListener mTabSelectedListener = new TabManager.TabSelectedListener() {
-        @Override
-        public void onTabSelected(int tab) {
-            if (mData != null) {
-                setManipulationMode(tab);
-            }
-        }
-    };
+    private TabManager.TabSelectedListener mTabSelectedListener =
+            new TabManager.TabSelectedListener() {
+                @Override
+                public void onTabSelected(int tab) {
+                    if (mData != null) {
+                        setManipulationMode(tab);
+                    }
+                }
+            };
 
     /**
      * Listener that fires when a new token category is selected.
      */
-    private TagListView.OnTagListActionListener mOnTagListActionListener = new TagListView.OnTagListActionListener() {
+    private TagListView.OnTagListActionListener mOnTagListActionListener =
+            new TagListView.OnTagListActionListener() {
 
-        @Override
-        public void onDragTokensToTag(final Collection<BaseToken> tokens,
-                final String tag) {
-        }
+                @Override
+                public void onDragTokensToTag(
+                        final Collection<BaseToken> tokens, final String tag) {
+                }
 
-        @Override
-        public void onChangeSelectedTag(final String newTag) {
-            mTokenSelector.setSelectedTag(newTag, mCombatView);
-        }
-    };
+                @Override
+                public void onChangeSelectedTag(final String newTag) {
+                    mTokenSelector.setSelectedTag(newTag, mCombatView);
+                }
+            };
 
     /**
      * Callback to listen for text edit/creation requests and load the required
      * dialog, since dialogs need to be managed at the activity level.
      */
-    private CombatView.NewTextEntryListener mOnNewTextEntryListener = new CombatView.NewTextEntryListener() {
+    private CombatView.NewTextEntryListener mOnNewTextEntryListener =
+            new CombatView.NewTextEntryListener() {
 
-        @Override
-        public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
-            mEditedTextObject = null;
-            mNewTextLocationWorldSpace = newTextLocationWorldSpace;
-            showDialog(DIALOG_ID_DRAW_TEXT);
-        }
+                @Override
+                public void
+                        requestNewTextEntry(PointF newTextLocationWorldSpace) {
+                    mEditedTextObject = null;
+                    mNewTextLocationWorldSpace = newTextLocationWorldSpace;
+                    showDialog(DIALOG_ID_DRAW_TEXT);
+                }
 
-        @Override
-        public void requestEditTextObject(Text t) {
-            mEditedTextObject = t;
-            showDialog(DIALOG_ID_DRAW_TEXT);
-        }
+                @Override
+                public void requestEditTextObject(Text t) {
+                    mEditedTextObject = t;
+                    showDialog(DIALOG_ID_DRAW_TEXT);
+                }
 
-    };
+            };
 
     /**
      * Location at which to place text, in world space, should the new text
@@ -351,8 +361,9 @@ public final class CombatMap extends SherlockActivity {
         // android.os.Debug.startMethodTracing("main_activity_load");
         super.onCreate(savedInstanceState);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this
-                .getApplicationContext());
+        mSharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this
+                        .getApplicationContext());
 
         BuiltInImageToken.registerResources(this.getApplicationContext()
                 .getResources());
@@ -399,12 +410,12 @@ public final class CombatMap extends SherlockActivity {
         mDrawOptionsView = new DrawOptionsView(this.getApplicationContext());
         mDrawOptionsView.setOnChangeDrawToolListener(mOnChangeDrawToolListener);
 
-        FrameLayout mainContentFrame = (FrameLayout) this
-                .findViewById(R.id.mainContentFrame);
-        mBottomControlFrame = (FrameLayout) this
-                .findViewById(R.id.bottomControlAreaFrame);
-        mPopupFrame = (FrameLayout) this
-                .findViewById(R.id.popupControlAreaFrame);
+        FrameLayout mainContentFrame =
+                (FrameLayout) this.findViewById(R.id.mainContentFrame);
+        mBottomControlFrame =
+                (FrameLayout) this.findViewById(R.id.bottomControlAreaFrame);
+        mPopupFrame =
+                (FrameLayout) this.findViewById(R.id.popupControlAreaFrame);
 
         mTokenCategorySelector = new TagListView(this);
         mTokenCategorySelector.setLayoutParams(new FrameLayout.LayoutParams(
@@ -419,14 +430,16 @@ public final class CombatMap extends SherlockActivity {
         mainContentFrame.addView(mCombatView);
         mBottomControlFrame.addView(mTokenSelector);
 
-        final ImageButton collapseButton = (ImageButton) this
-                .findViewById(R.id.bottomControlAreaExpandButton);
+        final ImageButton collapseButton =
+                (ImageButton) this
+                        .findViewById(R.id.bottomControlAreaExpandButton);
         collapseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View arg0) {
                 mIsControlTrayExpanded = !mIsControlTrayExpanded;
                 if (mIsControlTrayExpanded) {
-                    mBottomControlFrame.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                    mBottomControlFrame.getLayoutParams().height =
+                            RelativeLayout.LayoutParams.WRAP_CONTENT;
                     collapseButton
                             .setImageResource(R.drawable.vertical_contract);
                 } else {
@@ -499,8 +512,9 @@ public final class CombatMap extends SherlockActivity {
      *            The new visibility.
      */
     private void setTagSelectorVisibility(boolean visible) {
-        mPopupFrame.getLayoutParams().width = visible ? (int) (getResources()
-                .getDisplayMetrics().density * POPUP_AREA_HEIGHT) : 0;
+        mPopupFrame.getLayoutParams().width =
+                visible ? (int) (getResources().getDisplayMetrics().density * POPUP_AREA_HEIGHT)
+                        : 0;
         findViewById(R.id.combatMapMainLayout).requestLayout();
         this.mTagSelectorVisible = visible;
     }
@@ -553,11 +567,13 @@ public final class CombatMap extends SherlockActivity {
      * Loads the snap preference associated with the current combat map mode.
      */
     private void loadModeSpecificSnapPreference() {
-        int manipulationMode = mSharedPreferences.getInt("manipulation_mode",
-                MODE_TOKENS);
+        int manipulationMode =
+                mSharedPreferences.getInt("manipulation_mode", MODE_TOKENS);
 
-        boolean shouldSnap = mSharedPreferences.getBoolean(
-                getModeSpecificSnapPreferenceName(manipulationMode), true);
+        boolean shouldSnap =
+                mSharedPreferences.getBoolean(
+                        getModeSpecificSnapPreferenceName(manipulationMode),
+                        true);
 
         mCombatView.setShouldSnapToGrid(shouldSnap);
         mCombatView.setTokensSnapToIntersections(mSharedPreferences.getBoolean(
@@ -575,8 +591,8 @@ public final class CombatMap extends SherlockActivity {
      *            True if should snap, false otherwise.
      */
     private void setModeSpecificSnapPreference(final boolean shouldSnap) {
-        int manipulationMode = mSharedPreferences.getInt("manipulation_mode",
-                MODE_TOKENS);
+        int manipulationMode =
+                mSharedPreferences.getInt("manipulation_mode", MODE_TOKENS);
 
         Editor editor = mSharedPreferences.edit();
         editor.putBoolean(getModeSpecificSnapPreferenceName(manipulationMode),
@@ -624,9 +640,10 @@ public final class CombatMap extends SherlockActivity {
             new DataManager(getApplicationContext()).loadMapName(name);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast toast = Toast.makeText(this.getApplicationContext(),
-                    "Could not load file.  Reason: " + e.toString(),
-                    Toast.LENGTH_LONG);
+            Toast toast =
+                    Toast.makeText(this.getApplicationContext(),
+                            "Could not load file.  Reason: " + e.toString(),
+                            Toast.LENGTH_LONG);
             toast.show();
 
             MapData.clear();
@@ -850,21 +867,28 @@ public final class CombatMap extends SherlockActivity {
                     }, getString(R.string.save_map), getString(R.string.save));
         case DIALOG_ID_DRAW_TEXT:
 
-            FontDialog d = new FontDialog(this,
-                    new FontDialog.OnTextConfirmedListener() {
-                        public void onTextConfirmed(final String text,
-                                final float size) {
-                            if (mEditedTextObject == null) {
-                                mCombatView.createNewText(
-                                        mNewTextLocationWorldSpace, text, size);
-                            } else {
-                                mCombatView.getActiveLines().editText(
-                                        mEditedTextObject, text, size,
-                                        mCombatView.getWorldSpaceTransformer());
-                                mCombatView.refreshMap();
-                            }
-                        }
-                    });
+            FontDialog d =
+                    new FontDialog(this,
+                            new FontDialog.OnTextConfirmedListener() {
+                                public void onTextConfirmed(final String text,
+                                        final float size) {
+                                    if (mEditedTextObject == null) {
+                                        mCombatView.createNewText(
+                                                mNewTextLocationWorldSpace,
+                                                text, size);
+                                    } else {
+                                        mCombatView
+                                                .getActiveLines()
+                                                .editText(
+                                                        mEditedTextObject,
+                                                        text,
+                                                        size,
+                                                        mCombatView
+                                                                .getWorldSpaceTransformer());
+                                        mCombatView.refreshMap();
+                                    }
+                                }
+                            });
 
             return d;
         case DIALOG_ID_SAVE_NAME_CONFIRM:
@@ -1002,9 +1026,11 @@ public final class CombatMap extends SherlockActivity {
 
                 // Log the error in a toast
                 e.printStackTrace();
-                Toast toast = Toast.makeText(mContext,
-                        "Could not save file.  Reason: " + e.toString(),
-                        Toast.LENGTH_LONG);
+                Toast toast =
+                        Toast.makeText(
+                                mContext,
+                                "Could not save file.  Reason: " + e.toString(),
+                                Toast.LENGTH_LONG);
                 toast.show();
 
                 if (DeveloperMode.DEVELOPER_MODE) {
@@ -1027,8 +1053,9 @@ public final class CombatMap extends SherlockActivity {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             // Get a *list* of the selected tokens.
-            List<BaseToken> tokens = new ArrayList<BaseToken>(mCombatView
-                    .getMultiSelect().getSelectedTokens());
+            List<BaseToken> tokens =
+                    new ArrayList<BaseToken>(mCombatView.getMultiSelect()
+                            .getSelectedTokens());
 
             switch (item.getItemId()) {
             case R.id.token_action_mode_bloodied:
@@ -1204,7 +1231,8 @@ public final class CombatMap extends SherlockActivity {
         @Override
         public void selectionStarted() {
             // TODO Auto-generated method stub
-            mMultiSelectActionMode = startActionMode(new TokenSelectionActionModeCallback());
+            mMultiSelectActionMode =
+                    startActionMode(new TokenSelectionActionModeCallback());
         }
 
         @Override
@@ -1218,8 +1246,8 @@ public final class CombatMap extends SherlockActivity {
 
         @Override
         public void selectionChanged() {
-            Collection<BaseToken> selected = mCombatView.getMultiSelect()
-                    .getSelectedTokens();
+            Collection<BaseToken> selected =
+                    mCombatView.getMultiSelect().getSelectedTokens();
             BaseToken[] selectedArr = selected.toArray(new BaseToken[0]);
             int numTokens = selected.size();
             if (mMultiSelectActionMode != null && selected.size() > 0) {

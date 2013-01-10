@@ -99,7 +99,8 @@ public class Circle extends Shape {
 
         float d = Util.distance(this.mCenter, center);
 
-        if (d <= radius + this.mRadius && d >= Math.abs(radius - this.mRadius)) {
+        if (d <= radius + this.mRadius 
+                && d >= Math.abs(radius - this.mRadius)) {
             createLineForErasing();
             mLineForErasing.erase(center, radius);
             invalidatePath();

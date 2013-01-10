@@ -100,17 +100,17 @@ public final class Util {
         palette.add(Color.WHITE);
 
         for (int h = 0; h < HUE_DEGREES; h += HUE_INCREMENT) {
-            float[] hsv = { h, 1, 1 };
+            float[] hsv = {h, 1, 1};
             palette.add(Color.HSVToColor(hsv));
         }
 
         for (int h = 0; h < HUE_DEGREES; h += HUE_INCREMENT) {
-            float[] hsv = { h, SAT_LUM_ADJUST, 1 };
+            float[] hsv = {h, SAT_LUM_ADJUST, 1};
             palette.add(Color.HSVToColor(hsv));
         }
 
         for (int h = 0; h < HUE_DEGREES; h += HUE_INCREMENT) {
-            float[] hsv = { h, 1, SAT_LUM_ADJUST };
+            float[] hsv = {h, 1, SAT_LUM_ADJUST};
             palette.add(Color.HSVToColor(hsv));
         }
 

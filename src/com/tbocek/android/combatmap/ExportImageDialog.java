@@ -55,8 +55,8 @@ public class ExportImageDialog extends Dialog {
         @Override
         public void onCheckedChanged(CompoundButton buttonView,
                 boolean isChecked) {
-            SharedPreferences sharedPreferences = PreferenceManager
-                    .getDefaultSharedPreferences(getContext());
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(getContext());
             Editor editor = sharedPreferences.edit();
             editor.putBoolean(mPreference, isChecked);
             editor.commit();
@@ -74,20 +74,20 @@ public class ExportImageDialog extends Dialog {
         this.setTitle("Export Image");
         this.setContentView(R.layout.export_dialog);
 
-        mRadioExportFullMap = (RadioButton) this
-                .findViewById(R.id.radio_export_full_map);
-        mRadioExportCurrentView = (RadioButton) this
-                .findViewById(R.id.radio_export_current_view);
-        mCheckGridLines = (CheckBox) this
-                .findViewById(R.id.checkbox_export_grid_lines);
-        mCheckGmNotes = (CheckBox) this
-                .findViewById(R.id.checkbox_export_gm_notes);
-        mCheckTokens = (CheckBox) this
-                .findViewById(R.id.checkbox_export_tokens);
-        mCheckAnnotations = (CheckBox) this
-                .findViewById(R.id.checkbox_export_annotations);
-        mCheckFogOfWar = (CheckBox) this
-                .findViewById(R.id.checkbox_export_fog_of_war);
+        mRadioExportFullMap =
+                (RadioButton) this.findViewById(R.id.radio_export_full_map);
+        mRadioExportCurrentView =
+                (RadioButton) this.findViewById(R.id.radio_export_current_view);
+        mCheckGridLines =
+                (CheckBox) this.findViewById(R.id.checkbox_export_grid_lines);
+        mCheckGmNotes =
+                (CheckBox) this.findViewById(R.id.checkbox_export_gm_notes);
+        mCheckTokens =
+                (CheckBox) this.findViewById(R.id.checkbox_export_tokens);
+        mCheckAnnotations =
+                (CheckBox) this.findViewById(R.id.checkbox_export_annotations);
+        mCheckFogOfWar =
+                (CheckBox) this.findViewById(R.id.checkbox_export_fog_of_war);
         mEditExportName = (EditText) this.findViewById(R.id.edit_export_name);
         mExportButton = (Button) this.findViewById(R.id.button_export);
 
@@ -106,9 +106,11 @@ public class ExportImageDialog extends Dialog {
                     export();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast toast = Toast.makeText(getContext(),
-                            "Could not export.  Reason: " + e.toString(),
-                            Toast.LENGTH_LONG);
+                    Toast toast =
+                            Toast.makeText(
+                                    getContext(),
+                                    "Could not export.  Reason: "
+                                            + e.toString(), Toast.LENGTH_LONG);
                     toast.show();
                 }
                 dismiss();
@@ -118,8 +120,8 @@ public class ExportImageDialog extends Dialog {
 
     private void associateControl(CompoundButton b, String pref,
             boolean defaultValue) {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getContext());
+        SharedPreferences prefs =
+                PreferenceManager.getDefaultSharedPreferences(getContext());
         b.setChecked(prefs.getBoolean(pref, defaultValue));
         b.setOnCheckedChangeListener(new SetBooleanPreferenceHandler(pref));
     }
@@ -143,8 +145,8 @@ public class ExportImageDialog extends Dialog {
             width = (int) wholeMapRect.width();
             height = (int) wholeMapRect.height();
         }
-        Bitmap bitmap = Bitmap.createBitmap(width, height,
-                Bitmap.Config.ARGB_8888);
+        Bitmap bitmap =
+                Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         if (!mRadioExportCurrentView.isChecked()) {

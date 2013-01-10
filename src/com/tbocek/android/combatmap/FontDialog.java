@@ -86,8 +86,8 @@ public class FontDialog extends Dialog {
             @Override
             public void onClick(final View v) {
                 String name = (String) mNameText.getText().toString();
-                float size = Float.parseFloat(mFontSize.getSelectedItem()
-                        .toString());
+                float size =
+                        Float.parseFloat(mFontSize.getSelectedItem().toString());
                 dismiss();
                 FontDialog.this.mListener.onTextConfirmed(name, size);
             }
@@ -109,8 +109,8 @@ public class FontDialog extends Dialog {
         // Iterate through the font size items, select the one that best fits
         // the provided number
         for (int i = 0; i < mFontSize.getCount(); ++i) {
-            float parsedItem = Float.parseFloat(mFontSize.getItemAtPosition(i)
-                    .toString());
+            float parsedItem =
+                    Float.parseFloat(mFontSize.getItemAtPosition(i).toString());
             if (Math.abs(textSize - parsedItem) < Util.FP_COMPARE_ERROR) {
                 mFontSize.setSelection(i);
             }

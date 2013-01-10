@@ -108,7 +108,8 @@ public final class TokenDatabase {
         d.populate(context);
 
         FileInputStream input = context.openFileInput("token_database");
-        BufferedReader dataIn = new BufferedReader(new InputStreamReader(input));
+        BufferedReader dataIn =
+                new BufferedReader(new InputStreamReader(input));
         d.load(dataIn);
         dataIn.close();
 
@@ -121,7 +122,8 @@ public final class TokenDatabase {
      * Mapping from a string representing a token ID to a set of tags that that
      * token has.
      */
-    private Map<String, Set<String>> mTokensForTag = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> mTokensForTag =
+            new HashMap<String, Set<String>>();
 
     /**
      * Mapping from a string representing a tag to a set of token IDs that have
@@ -419,8 +421,8 @@ public final class TokenDatabase {
      */
     private void loadBuiltInImageTokens(Context context) {
         try {
-            InputStream is = context.getResources().openRawResource(
-                    R.raw.art_credits);
+            InputStream is =
+                    context.getResources().openRawResource(R.raw.art_credits);
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
@@ -470,9 +472,10 @@ public final class TokenDatabase {
         public void startElement(String namespaceURI, String localName,
                 String qName, org.xml.sax.Attributes atts) throws SAXException {
             if (localName.equalsIgnoreCase("token")) {
-                int id = mContext.getResources().getIdentifier(
-                        atts.getValue("res"), "drawable",
-                        "com.tbocek.android.combatmap");
+                int id =
+                        mContext.getResources().getIdentifier(
+                                atts.getValue("res"), "drawable",
+                                "com.tbocek.android.combatmap");
                 String tagList = atts.getValue("tags");
                 Set<String> defaultTags = Sets.newHashSet();
                 if (tagList != null) {
@@ -502,8 +505,8 @@ public final class TokenDatabase {
      */
     private void addBuiltin(final String resourceName, final int resourceId,
             final int sortOrder, Set<String> defaultTags) {
-        BuiltInImageToken t = new BuiltInImageToken(resourceName, sortOrder,
-                defaultTags);
+        BuiltInImageToken t =
+                new BuiltInImageToken(resourceName, sortOrder, defaultTags);
         addTokenPrototype(t);
         mapOldId(t.getTokenId(),
                 "BuiltInImageToken" + Integer.toString(resourceId));
@@ -589,10 +592,10 @@ public final class TokenDatabase {
      *             on write error.
      */
     public void save(final Context context) throws IOException {
-        FileOutputStream output = context.openFileOutput("token_database",
-                Context.MODE_PRIVATE);
-        BufferedWriter dataOut = new BufferedWriter(new OutputStreamWriter(
-                output));
+        FileOutputStream output =
+                context.openFileOutput("token_database", Context.MODE_PRIVATE);
+        BufferedWriter dataOut =
+                new BufferedWriter(new OutputStreamWriter(output));
         save(dataOut);
         dataOut.close();
     }

@@ -36,12 +36,16 @@ public class ColorPickerPanelView extends View {
     /**
      * The width in pixels of the border surrounding the color panel.
      */
-    private final static float BORDER_WIDTH_PX = 1;
+    private static final float BORDER_WIDTH_PX = 1;
+    
+    private static final int DEFAULT_BORDER_COLOR = 0xff6E6E6E;
+    
+    private static final int DEFAULT_COLOR = 0xff000000;
 
     private float mDensity = 1f;
 
-    private int mBorderColor = 0xff6E6E6E;
-    private int mColor = 0xff000000;
+    private int mBorderColor = DEFAULT_BORDER_COLOR;
+    private int mColor = DEFAULT_COLOR;
 
     private Paint mBorderPaint;
     private Paint mColorPaint;

@@ -38,20 +38,26 @@ public abstract class DrawableToken extends BaseToken {
     /**
      * Color transformation matrix used to place a red tint on bloodied tokens.
      */
-    private static final float[] BLOODIED_COLOR_MATRIX = new float[] { 1, 0, 0,
-            0, 0, 0, .25f, 0, 0, 0, 0, 0, .25f, 0, 0, 0, 0, 0, 1, 0 };
+    // @formatter:off
+    private static final float[] BLOODIED_COLOR_MATRIX = new float[] 
+            {1, 0,    0,    0, 0, 
+             0, .25f, 0,    0, 0, 
+             0, 0,    .25f, 0, 0, 
+             0, 0,    0,    1, 0};
+    // @formatter:on
 
     /**
      * Filter created from the bloodied transformation matrix.
      */
-    private static final ColorMatrixColorFilter BLOODIED_FILTER = new ColorMatrixColorFilter(
-            new ColorMatrix(BLOODIED_COLOR_MATRIX));
+    private static final ColorMatrixColorFilter BLOODIED_FILTER =
+            new ColorMatrixColorFilter(new ColorMatrix(BLOODIED_COLOR_MATRIX));
 
     /**
      * Map between token ID and the the drawable that has been loaded for that
      * token ID, if it exists. Drawables already in this map will be reused.
      */
-    private static Map<String, Drawable> drawableCache = new HashMap<String, Drawable>();
+    private static Map<String, Drawable> drawableCache =
+            new HashMap<String, Drawable>();
 
     /**
      * The loaded drawable to use.
