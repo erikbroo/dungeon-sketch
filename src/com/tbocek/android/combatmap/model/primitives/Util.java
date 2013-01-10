@@ -192,6 +192,12 @@ public final class Util {
      * 
      * @param selectedImage
      *            Path to the image.
+     * @param maxWidth
+     *            The maximum width for the loaded image.
+     * @param maxHeight
+     *            The maximum height for the loaded image.
+     * @param contentResolver
+     *            Android ContentResolver instance to open the requested image.
      * @return Decoded image.
      * @throws FileNotFoundException
      *             If image couldn't be found.
@@ -206,14 +212,15 @@ public final class Util {
                 contentResolver.openInputStream(selectedImage), null, o);
 
         // Find the correct scale value. It should be the power of 2.
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int widthTmp = o.outWidth;
+        int heightTmp = o.outHeight;
         int scale = 1;
         while (true) {
-            if (width_tmp / 2 < maxWidth || height_tmp / 2 < maxHeight) {
+            if (widthTmp / 2 < maxWidth || heightTmp / 2 < maxHeight) {
                 break;
             }
-            width_tmp /= 2;
-            height_tmp /= 2;
+            widthTmp /= 2;
+            heightTmp /= 2;
             scale *= 2;
         }
 
