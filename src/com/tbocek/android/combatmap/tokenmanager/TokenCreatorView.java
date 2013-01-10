@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.tokenmanager;
 
 import com.tbocek.android.combatmap.model.primitives.PointF;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -106,7 +107,8 @@ public final class TokenCreatorView extends View {
      * Constructor.
      * @param context The context this view is being constructed in.
      */
-    public TokenCreatorView(final Context context) {
+    @SuppressLint("NewApi")
+	public TokenCreatorView(final Context context) {
         super(context);
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -139,7 +141,7 @@ public final class TokenCreatorView extends View {
 	@Override
     protected void onSizeChanged (int w, int h, int oldw, int oldh) {
     	if (!mHasCircle && w > 0 && h > 0) {
-    		setCircleToDefault(w,h);
+    		setCircleToDefault(w, h);
     	}
     }
     
