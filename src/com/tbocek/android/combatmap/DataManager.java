@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -13,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -407,12 +410,18 @@ public final class DataManager {
      * @return Path to the saved instance of this resource.
      * @throws IOException if the file copy failed.
      */
-    public String copyToMapDataFiles(String path) throws IOException {
-        File inputFile = new File(path);
-        File outputFile = new File(this.getMapDataDir(), inputFile.getName());
-        outputFile = this.makeFileNameUnique(outputFile);
-        FileUtils.copyFile(inputFile, outputFile);
-        return outputFile.getName();
+    public String copyToMapDataFiles(Uri path) throws IOException {
+        // Create a unique filename based on the date.
+        Date now = new Date();
+        String filename = Long.toString(now.getTime());
+
+        InputStream input = this.mContext.getContentResolver()
+                .openInputStream(path);
+
+        FileUtils.copyInputStreamToFile(input, this.getMapDataFile(filename));
+        input.close();
+
+        return filename;
     }
 
     /**
@@ -420,8 +429,8 @@ public final class DataManager {
      * @param filename The filename to load.
      * @return The full path to the file.
      */
-    public String getMapDataFile(String filename) {
-        return new File(this.getMapDataDir(), filename).toString();
+    public File getMapDataFile(String filename) {
+        return new File(this.getMapDataDir(), filename);
     }
 
     /**
@@ -440,17 +449,4 @@ public final class DataManager {
         s.close();
         return b;
     }
-
-    /**
-     * Generates a name for the given file at the given path that is guaranteed
-     * to be unique.
-     * @param file The file whose name we want to be unique.
-     * @return A guaranteed-unique filename.  Will have the same directory and
-     *      extension as the original.
-     */
-    private File makeFileNameUnique(File file) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

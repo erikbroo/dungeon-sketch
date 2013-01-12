@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
@@ -418,7 +419,7 @@ public final class CombatMap extends SherlockActivity {
         // If an image was successfully picked, use it.
         if (requestCode == REQUEST_PICK_BACKGROUND_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
-                String selectedImage = data.getData().toString();
+                Uri selectedImage = data.getData();
                 DataManager dm = new DataManager(this.getApplicationContext());
                 try {
                     String newFileName = dm.copyToMapDataFiles(selectedImage);
