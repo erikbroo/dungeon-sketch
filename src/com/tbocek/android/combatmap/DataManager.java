@@ -43,15 +43,15 @@ public final class DataManager {
     private static final String MAP_EXTENSION = ".map";
 
     /**
+     * Tag to add to files that are map previews.
+     */
+    private static final String PREVIEW_TAG = ".preview";
+
+    /**
      * Extension to use for preview files.
      */
     private static final String PREVIEW_EXTENSION = PREVIEW_TAG
             + IMAGE_EXTENSION;
-
-    /**
-     * Tag to add to files that are map previews.
-     */
-    private static final String PREVIEW_TAG = ".preview";
 
     /**
      * Name of the temporary map.
@@ -135,12 +135,18 @@ public final class DataManager {
      */
     private File getExportedImageDir() {
         File imageDir =
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES);
         File dir = new File(imageDir, "DungeonSketch");
         return dir;
     }
 
+
+    /**
+     * Given the name of the map, gets a path to export an image.
+     * @param mapName The name of the map to export.
+     * @return Path to the export image.
+     */
     private File getExportedImageFileName(String mapName) {
         File sdcard = this.getExportedImageDir();
         return new File(sdcard, mapName);
@@ -190,6 +196,15 @@ public final class DataManager {
     }
 
     /**
+     * @return File object representing the directory containing map data files.
+     */
+    private File getMapDataDir() {
+        File sdcard = this.mContext.getExternalFilesDir(null);
+        File dir = new File(sdcard, "mapdata");
+        return dir;
+    }
+
+    /**
      * Opens a file for the given token image.
      * 
      * @param filename
@@ -225,7 +240,7 @@ public final class DataManager {
      *             On read error.
      */
     public void loadMapName(final String name) throws IOException,
-            ClassNotFoundException {
+    ClassNotFoundException {
         File f = this.getSavedMapFile(name);
         if (f.exists()) {
             FileInputStream s = new FileInputStream(f);
@@ -383,6 +398,59 @@ public final class DataManager {
             }
         }
         return imageFiles;
+    }
+
+    /**
+     * Copies the given resource to a data directory for map resources (not
+     * tokens).
+     * @param path Path of the resource to copy.
+     * @return Path to the saved instance of this resource.
+     * @throws IOException if the file copy failed.
+     */
+    public String copyToMapDataFiles(String path) throws IOException {
+        File inputFile = new File(path);
+        File outputFile = new File(this.getMapDataDir(), inputFile.getName());
+        outputFile = this.makeFileNameUnique(outputFile);
+        FileUtils.copyFile(inputFile, outputFile);
+        return outputFile.getName();
+    }
+
+    /**
+     * Gets the full path to a map data file.
+     * @param filename The filename to load.
+     * @return The full path to the file.
+     */
+    public String getMapDataFile(String filename) {
+        return new File(this.getMapDataDir(), filename).toString();
+    }
+
+    /**
+     * Loads a preview image for the given save file.
+     * 
+     * @param filename
+     *            Image file name to load.
+     * @return Loaded image.
+     * @throws IOException
+     *             On read error.
+     */
+    public Bitmap loadMapDataImage(final String filename) throws IOException {
+        FileInputStream s =
+                new FileInputStream(this.getMapDataFile(filename));
+        Bitmap b = BitmapFactory.decodeStream(s);
+        s.close();
+        return b;
+    }
+
+    /**
+     * Generates a name for the given file at the given path that is guaranteed
+     * to be unique.
+     * @param file The file whose name we want to be unique.
+     * @return A guaranteed-unique filename.  Will have the same directory and
+     *      extension as the original.
+     */
+    private File makeFileNameUnique(File file) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

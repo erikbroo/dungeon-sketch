@@ -341,7 +341,11 @@ public final class TokenSelectorView extends LinearLayout {
          * given size.
          * 
          * @param tokens
-         * @return
+         *            The list of tokens to partition.
+         * @param maxSize
+         *            The maximum size of each sublist.
+         * @return A list of lists of tokens, each sublist of which contains no
+         *         more than maxSize tokens.
          */
         private List<List<BaseToken>> partitionTokens(List<BaseToken> tokens,
                 int maxSize) {

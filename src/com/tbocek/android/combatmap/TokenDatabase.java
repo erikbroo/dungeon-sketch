@@ -423,6 +423,8 @@ public final class TokenDatabase {
      * loaded from the token manager.
      * 
      * @param context
+     *            Application context that manages the resources loaded by this
+     *            database.
      */
     public void populate(Context context) {
         this.mPrePopulateTags = !this.tagsLoaded();

@@ -117,7 +117,7 @@ public final class CombatView extends SurfaceView {
      * new/edited text objects. This indirection is needed because this
      * operation requires a dialog, which the activity needs to open.
      */
-    private NewTextEntryListener mNewTextEntryListener;
+    private ActivityRequestListener mActivityRequestListener;
 
     /**
      * Drag and drop listener that allows the user to drop tokens onto the grid.
@@ -154,24 +154,24 @@ public final class CombatView extends SurfaceView {
      */
     private SurfaceHolder.Callback mSurfaceHolderCallback =
             new SurfaceHolder.Callback() {
-                @Override
-                public void surfaceChanged(SurfaceHolder arg0, int arg1,
-                        int arg2, int arg3) {
-                    CombatView.this.refreshMap();
-                }
+        @Override
+        public void surfaceChanged(SurfaceHolder arg0, int arg1,
+                int arg2, int arg3) {
+            CombatView.this.refreshMap();
+        }
 
-                @Override
-                public void surfaceCreated(SurfaceHolder arg0) {
-                    CombatView.this.mSurfaceReady = true;
-                    CombatView.this.refreshMap();
-                }
+        @Override
+        public void surfaceCreated(SurfaceHolder arg0) {
+            CombatView.this.mSurfaceReady = true;
+            CombatView.this.refreshMap();
+        }
 
-                @Override
-                public void surfaceDestroyed(SurfaceHolder arg0) {
-                    CombatView.this.mSurfaceReady = false;
+        @Override
+        public void surfaceDestroyed(SurfaceHolder arg0) {
+            CombatView.this.mSurfaceReady = false;
 
-                }
-            };
+        }
+    };
 
     /**
      * Whether the surface is ready to draw.
@@ -223,16 +223,16 @@ public final class CombatView extends SurfaceView {
                         BaseToken toAdd = (BaseToken) event.getLocalState();
                         PointF location =
                                 CombatView.this.getGridSpaceTransformer()
-                                        .screenSpaceToWorldSpace(
-                                                new PointF(event.getX(), event
-                                                        .getY()));
+                                .screenSpaceToWorldSpace(
+                                        new PointF(event.getX(), event
+                                                .getY()));
                         if (CombatView.this.mSnapToGrid) {
                             location =
                                     CombatView.this
-                                            .getData()
-                                            .getGrid()
-                                            .getNearestSnapPoint(location,
-                                                    toAdd.getSize());
+                                    .getData()
+                                    .getGrid()
+                                    .getNearestSnapPoint(location,
+                                            toAdd.getSize());
                         }
                         toAdd.setLocation(location);
                         CombatView.this.getData().getTokens().addToken(toAdd);
@@ -314,7 +314,7 @@ public final class CombatView extends SurfaceView {
         // Compute the text size as being one grid cell large.
         float textSize =
                 this.getData().getGrid().gridSpaceToWorldSpaceTransformer()
-                        .worldSpaceToScreenSpace(size);
+                .worldSpaceToScreenSpace(size);
         this.mActiveLines.createText(text, textSize, this.mNewLineColor,
                 Float.POSITIVE_INFINITY, newTextLocationWorldSpace,
                 this.getWorldSpaceTransformer());
@@ -329,17 +329,17 @@ public final class CombatView extends SurfaceView {
      */
     private void drawOnCanvas(final Canvas canvas) {
         new MapDrawer()
-                .drawGridLines(true)
-                .drawGmNotes(this.mShouldDrawGmNotes)
-                .drawTokens(true)
-                .areTokensManipulable(this.mAreTokensManipulatable)
-                .drawAnnotations(this.mShouldDrawAnnotations)
-                .gmNotesFogOfWar(
-                        this.mActiveLines == this.getData().getGmNoteLines()
-                                ? FogOfWarMode.DRAW
-                                : FogOfWarMode.CLIP)
-                .backgroundFogOfWar(this.mFogOfWarMode)
-                .draw(canvas, this.getData());
+        .drawGridLines(true)
+        .drawGmNotes(this.mShouldDrawGmNotes)
+        .drawTokens(true)
+        .areTokensManipulable(this.mAreTokensManipulatable)
+        .drawAnnotations(this.mShouldDrawAnnotations)
+        .gmNotesFogOfWar(
+                this.mActiveLines == this.getData().getGmNoteLines()
+                ? FogOfWarMode.DRAW
+                        : FogOfWarMode.CLIP)
+                        .backgroundFogOfWar(this.mFogOfWarMode)
+                        .draw(canvas, this.getData());
 
         this.mInteractionMode.draw(canvas);
 
@@ -472,10 +472,10 @@ public final class CombatView extends SurfaceView {
         Canvas canvas = new Canvas(bitmap);
 
         new MapDrawer().drawGridLines(false).drawGmNotes(false)
-                .drawTokens(true).areTokensManipulable(true)
-                .drawAnnotations(false).gmNotesFogOfWar(FogOfWarMode.NOTHING)
-                .backgroundFogOfWar(this.mFogOfWarMode)
-                .draw(canvas, this.getData());
+        .drawTokens(true).areTokensManipulable(true)
+        .drawAnnotations(false).gmNotesFogOfWar(FogOfWarMode.NOTHING)
+        .backgroundFogOfWar(this.mFogOfWarMode)
+        .draw(canvas, this.getData());
 
         return bitmap;
     }
@@ -554,10 +554,10 @@ public final class CombatView extends SurfaceView {
                         attemptedLocationScreenSpace);
 
         this.getData()
-                .getTokens()
-                .placeTokenNearby(t, attemptedLocationGridSpace,
-                        this.getData().getGrid(),
-                        this.mTokensSnapToIntersections);
+        .getTokens()
+        .placeTokenNearby(t, attemptedLocationGridSpace,
+                this.getData().getGrid(),
+                this.mTokensSnapToIntersections);
         this.getData().getTokens().addToken(t);
         this.refreshMap();
     }
@@ -589,7 +589,7 @@ public final class CombatView extends SurfaceView {
      *            The text object to edit.
      */
     public void requestEditTextObject(Text t) {
-        this.mNewTextEntryListener.requestEditTextObject(t);
+        this.mActivityRequestListener.requestEditTextObject(t);
     }
 
     /**
@@ -599,9 +599,9 @@ public final class CombatView extends SurfaceView {
      *            Location to place the new text object in world space.
      */
     public void requestNewTextEntry(PointF newTextLocationWorldSpace) {
-        if (this.mNewTextEntryListener != null) {
-            this.mNewTextEntryListener
-                    .requestNewTextEntry(newTextLocationWorldSpace);
+        if (this.mActivityRequestListener != null) {
+            this.mActivityRequestListener
+            .requestNewTextEntry(newTextLocationWorldSpace);
         }
     }
 
@@ -632,13 +632,13 @@ public final class CombatView extends SurfaceView {
 
         boolean useBackgroundLines =
                 (this.mData == null)
-                        || this.mActiveLines == this.mData.getBackgroundLines();
+                || this.mActiveLines == this.mData.getBackgroundLines();
         this.mData = data;
         this.mActiveLines =
                 useBackgroundLines
-                        ? this.mData.getBackgroundLines()
+                ? this.mData.getBackgroundLines()
                         : this.mData.getAnnotationLines();
-        this.refreshMap();
+                this.refreshMap();
     }
 
     /**
@@ -746,8 +746,8 @@ public final class CombatView extends SurfaceView {
      *            The listener to use.
      */
     public void setNewTextEntryListener(
-            NewTextEntryListener newTextEntryListener) {
-        this.mNewTextEntryListener = newTextEntryListener;
+            ActivityRequestListener newTextEntryListener) {
+        this.mActivityRequestListener = newTextEntryListener;
     }
 
     /**
@@ -820,6 +820,20 @@ public final class CombatView extends SurfaceView {
      */
     public boolean shouldSnapToGrid() {
         return this.mSnapToGrid;
+    }
+
+    /**
+     * Kicks off the process of adding a background image to this map.  Note
+     * that this method doesn't actually add the background image, since opening
+     * another activity to select the image is necessary.
+     * @param locationWorldSpace The location to add the background image, in
+     * world space.
+     */
+    public void startAddingBackgroundImage(PointF locationWorldSpace) {
+        if (mActivityRequestListener != null) {
+            mActivityRequestListener.requestNewBackgroundImage(
+                    locationWorldSpace);
+        }
     }
 
     /**
@@ -904,7 +918,7 @@ public final class CombatView extends SurfaceView {
      * @author Tim
      * 
      */
-    public interface NewTextEntryListener {
+    public interface ActivityRequestListener {
         /**
          * Called when an edit is requested on an existing text object.
          * 
@@ -916,10 +930,18 @@ public final class CombatView extends SurfaceView {
         /**
          * Called when a new text object is created.
          * 
-         * @param newTextLocationWorldSpace
+         * @param locationWorldSpace
          *            Location to place the new text object in world space.
          */
-        void requestNewTextEntry(PointF newTextLocationWorldSpace);
+        void requestNewTextEntry(PointF locationWorldSpace);
+
+        /**
+         * Called when a new background image is created.
+         * 
+         * @param locationWorldSpace
+         *            Location to place the new image in world space.
+         */
+        void requestNewBackgroundImage(PointF locationWorldSpace);
     }
 
     /**
@@ -934,5 +956,6 @@ public final class CombatView extends SurfaceView {
          */
         void onRefresh();
     }
+
 
 }

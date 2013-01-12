@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.BackgroundImage;
 import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.PointF;
@@ -42,14 +41,14 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
             // Convert bounding rectangle bounds to screen space.
             PointF upperLeft =
                     this.getData()
-                            .getWorldSpaceTransformer()
-                            .worldSpaceToScreenSpace(
-                                    new PointF(r.getXMin(), r.getYMin()));
+                    .getWorldSpaceTransformer()
+                    .worldSpaceToScreenSpace(
+                            new PointF(r.getXMin(), r.getYMin()));
             PointF lowerRight =
                     this.getData()
-                            .getWorldSpaceTransformer()
-                            .worldSpaceToScreenSpace(
-                                    new PointF(r.getXMax(), r.getYMax()));
+                    .getWorldSpaceTransformer()
+                    .worldSpaceToScreenSpace(
+                            new PointF(r.getXMax(), r.getYMax()));
             float xmin = upperLeft.x;
             float xmax = lowerRight.x;
             float ymin = upperLeft.y;
@@ -102,13 +101,13 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
         float horizontalClip =
                 Math.abs(p1.x - p2.x) > Math.abs(p1.y - p2.y) ? this
                         .handleCircleRadiusPx() : 0;
-        float verticalClip =
-                Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y) ? this
-                        .handleCircleRadiusPx() : 0;
+                        float verticalClip =
+                                Math.abs(p1.x - p2.x) < Math.abs(p1.y - p2.y) ? this
+                                        .handleCircleRadiusPx() : 0;
 
-        c.drawLine(Math.min(p1.x, p2.x) + horizontalClip, Math.min(p1.y, p2.y)
-                + verticalClip, Math.max(p1.x, p2.x) - horizontalClip,
-                Math.max(p1.y, p2.y) - verticalClip, p);
+                                        c.drawLine(Math.min(p1.x, p2.x) + horizontalClip, Math.min(p1.y, p2.y)
+                                                + verticalClip, Math.max(p1.x, p2.x) - horizontalClip,
+                                                Math.max(p1.y, p2.y) - verticalClip, p);
     }
 
     private void drawHandle(Canvas c, PointF location, Paint p) {
@@ -118,25 +117,25 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     private int handleCircleRadiusPx() {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 HANDLE_CIRCLE_RADIUS_DP, this.getView().getResources()
-                        .getDisplayMetrics());
+                .getDisplayMetrics());
     }
 
     @Override
     public boolean onDown(final MotionEvent e) {
         PointF locationWorldSpace =
                 this.getData()
-                        .getWorldSpaceTransformer()
-                        .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
+                .getWorldSpaceTransformer()
+                .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
 
         this.mSelectedImage =
                 this.getData()
-                        .getBackgroundImages()
-                        .getImageOnPoint(
-                                locationWorldSpace,
-                                this.getData()
-                                        .getWorldSpaceTransformer()
-                                        .screenSpaceToWorldSpace(
-                                                this.handleCircleRadiusPx()));
+                .getBackgroundImages()
+                .getImageOnPoint(
+                        locationWorldSpace,
+                        this.getData()
+                        .getWorldSpaceTransformer()
+                        .screenSpaceToWorldSpace(
+                                this.handleCircleRadiusPx()));
 
         this.mLastDragPoint = new PointF(e.getX(), e.getY());
 
@@ -147,14 +146,14 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
             // Convert bounding rectangle bounds to screen space.
             PointF upperLeft =
                     this.getData()
-                            .getWorldSpaceTransformer()
-                            .worldSpaceToScreenSpace(
-                                    new PointF(r.getXMin(), r.getYMin()));
+                    .getWorldSpaceTransformer()
+                    .worldSpaceToScreenSpace(
+                            new PointF(r.getXMin(), r.getYMin()));
             PointF lowerRight =
                     this.getData()
-                            .getWorldSpaceTransformer()
-                            .worldSpaceToScreenSpace(
-                                    new PointF(r.getXMax(), r.getYMax()));
+                    .getWorldSpaceTransformer()
+                    .worldSpaceToScreenSpace(
+                            new PointF(r.getXMax(), r.getYMax()));
             float xmin = upperLeft.x;
             float xmax = lowerRight.x;
             float ymin = upperLeft.y;
@@ -186,10 +185,10 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
         if (this.mSelectedImage != null) {
             float wsDistX =
                     this.getData().getWorldSpaceTransformer()
-                            .screenSpaceToWorldSpace(distanceX);
+                    .screenSpaceToWorldSpace(distanceX);
             float wsDistY =
                     this.getData().getWorldSpaceTransformer()
-                            .screenSpaceToWorldSpace(distanceY);
+                    .screenSpaceToWorldSpace(distanceY);
             switch (this.mHandleMode) {
             case LEFT:
                 this.mSelectedImage.moveLeft(wsDistX);
@@ -235,26 +234,28 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
     public boolean onSingleTapConfirmed(final MotionEvent e) {
         PointF locationWorldSpace =
                 this.getData()
-                        .getWorldSpaceTransformer()
-                        .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
+                .getWorldSpaceTransformer()
+                .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
 
         BackgroundImage tappedImage =
                 this.getData()
-                        .getBackgroundImages()
-                        .getImageOnPoint(
-                                locationWorldSpace,
-                                this.getData()
-                                        .getWorldSpaceTransformer()
-                                        .screenSpaceToWorldSpace(
-                                                this.handleCircleRadiusPx()));
+                .getBackgroundImages()
+                .getImageOnPoint(
+                        locationWorldSpace,
+                        this.getData()
+                        .getWorldSpaceTransformer()
+                        .screenSpaceToWorldSpace(
+                                this.handleCircleRadiusPx()));
 
         if (tappedImage == null) {
+            this.getView().startAddingBackgroundImage(locationWorldSpace);
+            /*
             BackgroundImage i =
                     new BackgroundImage(this.getView().getResources()
                             .getDrawable(R.drawable.add_image));
             i.setLocation(locationWorldSpace);
             this.getData().getBackgroundImages().addImage(i);
-            this.mSelectedImage = i;
+            this.mSelectedImage = i;*/
         }
         this.getView().refreshMap();
         return true;

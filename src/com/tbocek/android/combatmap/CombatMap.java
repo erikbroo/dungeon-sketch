@@ -1,9 +1,11 @@
 package com.tbocek.android.combatmap;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -34,6 +37,7 @@ import com.tbocek.android.combatmap.model.Grid;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
+import com.tbocek.android.combatmap.model.primitives.BackgroundImage;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.model.primitives.PointF;
@@ -109,6 +113,11 @@ public final class CombatMap extends SherlockActivity {
     private static final int TAG_LIST_TEXT_SIZE = 20;
 
     /**
+     * ID of the Intent request to pick a new background image.
+     */
+    private static final int REQUEST_PICK_BACKGROUND_IMAGE = 0;
+
+    /**
      * The attempted save name used when an extra saved prompt is needed (i.e.
      * when saving over a different map).
      */
@@ -148,10 +157,10 @@ public final class CombatMap extends SherlockActivity {
     private ActionMode mMultiSelectActionMode;
 
     /**
-     * Location at which to place text, in world space, should the new text
-     * dialog be accepted.
+     * Location at which to place requested objects such as text or background
+     * images, in world space.
      */
-    private PointF mNewTextLocationWorldSpace;
+    private PointF mNewObjectLocationWorldSpace;
 
     /**
      * Listener that fires when a new draw tool or color has been selected.
@@ -159,106 +168,114 @@ public final class CombatMap extends SherlockActivity {
     private DrawOptionsView.OnChangeDrawToolListener mOnChangeDrawToolListener =
             new DrawOptionsView.OnChangeDrawToolListener() {
 
-                @Override
-                public void onChangeMaskEditing(boolean editingMask) {
-                    CombatMap.this.mCombatView.setEditingLayerMask(editingMask);
-                }
+        @Override
+        public void onChangeMaskEditing(boolean editingMask) {
+            CombatMap.this.mCombatView.setEditingLayerMask(editingMask);
+        }
 
-                @Override
-                public void onChooseCircleTool() {
-                    CombatMap.this.mCombatView.setDrawMode();
-                    CombatMap.this.mCombatView
-                            .setNewLineStyle(CombatView.NewLineStyle.CIRCLE);
-                }
+        @Override
+        public void onChooseCircleTool() {
+            CombatMap.this.mCombatView.setDrawMode();
+            CombatMap.this.mCombatView
+            .setNewLineStyle(CombatView.NewLineStyle.CIRCLE);
+        }
 
-                @Override
-                public void onChooseColoredPen(final int color) {
-                    CombatMap.this.mCombatView.setNewLineColor(color);
-                }
+        @Override
+        public void onChooseColoredPen(final int color) {
+            CombatMap.this.mCombatView.setNewLineColor(color);
+        }
 
-                @Override
-                public void onChooseEraser() {
-                    CombatMap.this.mCombatView.setEraseMode();
-                }
+        @Override
+        public void onChooseEraser() {
+            CombatMap.this.mCombatView.setEraseMode();
+        }
 
-                @Override
-                public void onChooseFreeHandTool() {
-                    CombatMap.this.mCombatView.setDrawMode();
-                    CombatMap.this.mCombatView
-                            .setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
-                }
+        @Override
+        public void onChooseFreeHandTool() {
+            CombatMap.this.mCombatView.setDrawMode();
+            CombatMap.this.mCombatView
+            .setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
+        }
 
-                @Override
-                public void onChooseImageTool() {
-                    CombatMap.this.mCombatView.setBackgroundImageMode();
-                }
+        @Override
+        public void onChooseImageTool() {
+            CombatMap.this.mCombatView.setBackgroundImageMode();
+        }
 
-                @Override
-                public void onChooseMaskEraser() {
-                    CombatMap.this.mCombatView.setFogOfWarEraseMode();
-                }
+        @Override
+        public void onChooseMaskEraser() {
+            CombatMap.this.mCombatView.setFogOfWarEraseMode();
+        }
 
-                @Override
-                public void onChooseMaskTool() {
-                    CombatMap.this.mCombatView.setFogOfWarDrawMode();
-                    CombatMap.this.mCombatView
-                            .setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
-                }
+        @Override
+        public void onChooseMaskTool() {
+            CombatMap.this.mCombatView.setFogOfWarDrawMode();
+            CombatMap.this.mCombatView
+            .setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
+        }
 
-                @Override
-                public void onChoosePanTool() {
-                    CombatMap.this.mCombatView.setZoomPanMode();
-                }
+        @Override
+        public void onChoosePanTool() {
+            CombatMap.this.mCombatView.setZoomPanMode();
+        }
 
-                @Override
-                public void onChooseRectangleTool() {
-                    CombatMap.this.mCombatView.setDrawMode();
-                    CombatMap.this.mCombatView
-                            .setNewLineStyle(CombatView.NewLineStyle.RECTANGLE);
-                }
+        @Override
+        public void onChooseRectangleTool() {
+            CombatMap.this.mCombatView.setDrawMode();
+            CombatMap.this.mCombatView
+            .setNewLineStyle(CombatView.NewLineStyle.RECTANGLE);
+        }
 
-                @Override
-                public void onChooseStraightLineTool() {
-                    CombatMap.this.mCombatView.setDrawMode();
-                    CombatMap.this.mCombatView
-                            .setNewLineStyle(CombatView.NewLineStyle.STRAIGHT);
-                }
+        @Override
+        public void onChooseStraightLineTool() {
+            CombatMap.this.mCombatView.setDrawMode();
+            CombatMap.this.mCombatView
+            .setNewLineStyle(CombatView.NewLineStyle.STRAIGHT);
+        }
 
-                @Override
-                public void onChooseStrokeWidth(final float width) {
-                    CombatMap.this.mCombatView.setNewLineStrokeWidth(width);
-                }
+        @Override
+        public void onChooseStrokeWidth(final float width) {
+            CombatMap.this.mCombatView.setNewLineStrokeWidth(width);
+        }
 
-                @Override
-                public void onChooseTextTool() {
-                    CombatMap.this.mCombatView.setTextMode();
+        @Override
+        public void onChooseTextTool() {
+            CombatMap.this.mCombatView.setTextMode();
 
-                }
-            };
+        }
+    };
 
     /**
      * Callback to listen for text edit/creation requests and load the required
      * dialog, since dialogs need to be managed at the activity level.
      */
-    private CombatView.NewTextEntryListener mOnNewTextEntryListener =
-            new CombatView.NewTextEntryListener() {
+    private CombatView.ActivityRequestListener mOnNewTextEntryListener =
+            new CombatView.ActivityRequestListener() {
 
-                @Override
-                public void requestEditTextObject(Text t) {
-                    CombatMap.this.mEditedTextObject = t;
-                    CombatMap.this.showDialog(DIALOG_ID_DRAW_TEXT);
-                }
+        @Override
+        public void requestEditTextObject(Text t) {
+            CombatMap.this.mEditedTextObject = t;
+            CombatMap.this.showDialog(DIALOG_ID_DRAW_TEXT);
+        }
 
-                @Override
-                public void
-                        requestNewTextEntry(PointF newTextLocationWorldSpace) {
-                    CombatMap.this.mEditedTextObject = null;
-                    CombatMap.this.mNewTextLocationWorldSpace =
-                            newTextLocationWorldSpace;
-                    CombatMap.this.showDialog(DIALOG_ID_DRAW_TEXT);
-                }
+        @Override
+        public void
+        requestNewTextEntry(PointF newTextLocationWorldSpace) {
+            CombatMap.this.mEditedTextObject = null;
+            CombatMap.this.mNewObjectLocationWorldSpace =
+                    newTextLocationWorldSpace;
+            CombatMap.this.showDialog(DIALOG_ID_DRAW_TEXT);
+        }
 
-            };
+        @Override
+        public void
+        requestNewBackgroundImage(PointF locationWorldSpace) {
+            CombatMap.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
+                    REQUEST_PICK_BACKGROUND_IMAGE);
+        }
+
+    };
 
     /**
      * Listener that fires when a new token category is selected.
@@ -266,17 +283,17 @@ public final class CombatMap extends SherlockActivity {
     private TagListView.OnTagListActionListener mOnTagListActionListener =
             new TagListView.OnTagListActionListener() {
 
-                @Override
-                public void onChangeSelectedTag(final String newTag) {
-                    CombatMap.this.mTokenSelector.setSelectedTag(newTag,
-                            CombatMap.this.mCombatView);
-                }
+        @Override
+        public void onChangeSelectedTag(final String newTag) {
+            CombatMap.this.mTokenSelector.setSelectedTag(newTag,
+                    CombatMap.this.mCombatView);
+        }
 
-                @Override
-                public void onDragTokensToTag(
-                        final Collection<BaseToken> tokens, final String tag) {
-                }
-            };
+        @Override
+        public void onDragTokensToTag(
+                final Collection<BaseToken> tokens, final String tag) {
+        }
+    };
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -284,11 +301,11 @@ public final class CombatMap extends SherlockActivity {
      */
     private TokenSelectorView.OnTokenSelectedListener mOnTokenSelectedListener =
             new TokenSelectorView.OnTokenSelectedListener() {
-                @Override
-                public void onTokenSelected(final BaseToken t) {
-                    CombatMap.this.mCombatView.placeToken(t);
-                }
-            };
+        @Override
+        public void onTokenSelected(final BaseToken t) {
+            CombatMap.this.mCombatView.placeToken(t);
+        }
+    };
 
     /**
      * This view provides an area to render controls in a region that draws over
@@ -324,13 +341,13 @@ public final class CombatMap extends SherlockActivity {
      */
     private TabManager.TabSelectedListener mTabSelectedListener =
             new TabManager.TabSelectedListener() {
-                @Override
-                public void onTabSelected(int tab) {
-                    if (mData != null) {
-                        CombatMap.this.setManipulationMode(tab);
-                    }
-                }
-            };
+        @Override
+        public void onTabSelected(int tab) {
+            if (mData != null) {
+                CombatMap.this.setManipulationMode(tab);
+            }
+        }
+    };
 
     /**
      * Whether the tag selector is visible.
@@ -395,6 +412,27 @@ public final class CombatMap extends SherlockActivity {
         this.mCombatView.setData(mData);
     }
 
+    @Override
+    protected void onActivityResult(final int requestCode,
+            final int resultCode, final Intent data) {
+        // If an image was successfully picked, use it.
+        if (requestCode == REQUEST_PICK_BACKGROUND_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                String selectedImage = data.getData().toString();
+                DataManager dm = new DataManager(this.getApplicationContext());
+                try {
+                    String newFileName = dm.copyToMapDataFiles(selectedImage);
+                    mData.getBackgroundImages().addImage(
+                            newFileName, this.mNewObjectLocationWorldSpace);
+                    this.mCombatView.refreshMap();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     /**
      * Loads the preference that controls what the current manipulation mode is.
      */
@@ -410,7 +448,7 @@ public final class CombatMap extends SherlockActivity {
     private void loadModeSpecificSnapPreference() {
         int manipulationMode =
                 this.mSharedPreferences
-                        .getInt("manipulation_mode", MODE_TOKENS);
+                .getInt("manipulation_mode", MODE_TOKENS);
 
         boolean shouldSnap =
                 this.mSharedPreferences.getBoolean(this
@@ -453,6 +491,9 @@ public final class CombatMap extends SherlockActivity {
         BuiltInImageToken.registerResources(this.getApplicationContext()
                 .getResources());
 
+        BackgroundImage.registerDataManager(
+                new DataManager(this.getApplicationContext()));
+
         PreferenceManager.setDefaultValues(this, R.layout.settings, false);
 
         // Set up the tabs
@@ -474,31 +515,31 @@ public final class CombatMap extends SherlockActivity {
         // Set up listeners for the token selector's category and manager
         // buttons.
         this.mTokenSelector
-                .setOnTokenSelectedListener(this.mOnTokenSelectedListener);
+        .setOnTokenSelectedListener(this.mOnTokenSelectedListener);
         this.mTokenSelector
-                .setOnClickTokenManagerListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(final View arg0) {
-                        Debug.startMethodTracing("tokenmanager");
-                        CombatMap.this.startActivity(new Intent(CombatMap.this,
-                                TokenManager.class));
-                    }
-                });
+        .setOnClickTokenManagerListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View arg0) {
+                Debug.startMethodTracing("tokenmanager");
+                CombatMap.this.startActivity(new Intent(CombatMap.this,
+                        TokenManager.class));
+            }
+        });
 
         this.mTokenSelector
-                .setOnClickGroupSelectorListener(new View.OnClickListener() {
+        .setOnClickGroupSelectorListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(final View arg0) {
-                        CombatMap.this
-                                .setTagSelectorVisibility(!CombatMap.this.mTagSelectorVisible);
-                    }
-                });
+            @Override
+            public void onClick(final View arg0) {
+                CombatMap.this
+                .setTagSelectorVisibility(!CombatMap.this.mTagSelectorVisible);
+            }
+        });
 
         this.mDrawOptionsView =
                 new DrawOptionsView(this.getApplicationContext());
         this.mDrawOptionsView
-                .setOnChangeDrawToolListener(this.mOnChangeDrawToolListener);
+        .setOnChangeDrawToolListener(this.mOnChangeDrawToolListener);
 
         FrameLayout mainContentFrame =
                 (FrameLayout) this.findViewById(R.id.mainContentFrame);
@@ -509,11 +550,11 @@ public final class CombatMap extends SherlockActivity {
 
         this.mTokenCategorySelector = new TagListView(this);
         this.mTokenCategorySelector
-                .setLayoutParams(new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT));
+        .setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
         this.mTokenCategorySelector
-                .setOnTagListActionListener(this.mOnTagListActionListener);
+        .setOnTagListActionListener(this.mOnTagListActionListener);
         this.mTokenCategorySelector.setTextSize(TAG_LIST_TEXT_SIZE);
 
         this.mPopupFrame.addView(this.mTokenCategorySelector);
@@ -523,7 +564,7 @@ public final class CombatMap extends SherlockActivity {
 
         final ImageButton collapseButton =
                 (ImageButton) this
-                        .findViewById(R.id.bottomControlAreaExpandButton);
+                .findViewById(R.id.bottomControlAreaExpandButton);
         collapseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View arg0) {
@@ -533,14 +574,14 @@ public final class CombatMap extends SherlockActivity {
                     CombatMap.this.mBottomControlFrame.getLayoutParams().height =
                             RelativeLayout.LayoutParams.WRAP_CONTENT;
                     collapseButton
-                            .setImageResource(R.drawable.vertical_contract);
+                    .setImageResource(R.drawable.vertical_contract);
                 } else {
                     CombatMap.this.mBottomControlFrame.getLayoutParams().height =
                             0;
                     collapseButton.setImageResource(R.drawable.vertical_expand);
                 }
                 CombatMap.this.findViewById(R.id.combatMapMainLayout)
-                        .requestLayout();
+                .requestLayout();
             }
         });
 
@@ -561,15 +602,15 @@ public final class CombatMap extends SherlockActivity {
         this.reloadPreferences();
 
         this.mCombatView
-                .setOnRefreshListener(new CombatView.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        // When the map is refreshed, update the undo/redo
-                        // status as
-                        // well.
-                        CombatMap.this.setUndoRedoEnabled();
-                    }
-                });
+        .setOnRefreshListener(new CombatView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // When the map is refreshed, update the undo/redo
+                // status as
+                // well.
+                CombatMap.this.setUndoRedoEnabled();
+            }
+        });
 
         this.mCombatView.getMultiSelect().setSelectionChangedListener(
                 new SelectionChangedListener());
@@ -587,90 +628,91 @@ public final class CombatMap extends SherlockActivity {
         case DIALOG_ID_SAVE:
             return new TextPromptDialog(this,
                     new TextPromptDialog.OnTextConfirmedListener() {
-                        @Override
-                        public void onTextConfirmed(final String text) {
-                            // If the save file name exists and is not the
-                            // current file,
-                            // warn about overwriting.
-                            if (!text.equals(CombatMap.this.mSharedPreferences
-                                    .getString("filename", ""))
-                                    && new DataManager(CombatMap.this
-                                            .getApplicationContext())
-                                            .saveFileExists(text)) {
-                                CombatMap.this.mAttemptedMapName = text;
-                                CombatMap.this
-                                        .showDialog(CombatMap.DIALOG_ID_SAVE_NAME_CONFIRM);
-                            } else {
-                                CombatMap.this.setFilenamePreference(text);
-                                new MapSaver(text, CombatMap.this
-                                        .getApplicationContext()).run();
-                            }
-                        }
-                    }, this.getString(R.string.save_map), this
-                            .getString(R.string.save));
+                @Override
+                public void onTextConfirmed(final String text) {
+                    // If the save file name exists and is not the
+                    // current file,
+                    // warn about overwriting.
+                    if (!text.equals(CombatMap.this.mSharedPreferences
+                            .getString("filename", ""))
+                            && new DataManager(CombatMap.this
+                                    .getApplicationContext())
+                    .saveFileExists(text)) {
+                        CombatMap.this.mAttemptedMapName = text;
+                        CombatMap.this
+                        .showDialog(CombatMap.DIALOG_ID_SAVE_NAME_CONFIRM);
+                    } else {
+                        CombatMap.this.setFilenamePreference(text);
+                        new MapSaver(text, CombatMap.this
+                                .getApplicationContext()).run();
+                    }
+                }
+            }, this.getString(R.string.save_map), this
+            .getString(R.string.save));
         case DIALOG_ID_DRAW_TEXT:
 
             FontDialog d =
-                    new FontDialog(this,
-                            new FontDialog.OnTextConfirmedListener() {
-                                @Override
-                                public void onTextConfirmed(final String text,
-                                        final float size) {
-                                    if (CombatMap.this.mEditedTextObject == null) {
-                                        CombatMap.this.mCombatView
-                                                .createNewText(
-                                                        CombatMap.this.mNewTextLocationWorldSpace,
-                                                        text, size);
-                                    } else {
-                                        CombatMap.this.mCombatView
-                                                .getActiveLines()
-                                                .editText(
-                                                        CombatMap.this.mEditedTextObject,
-                                                        text,
-                                                        size,
-                                                        CombatMap.this.mCombatView
-                                                                .getWorldSpaceTransformer());
-                                        CombatMap.this.mCombatView.refreshMap();
-                                    }
-                                }
-                            });
+            new FontDialog(this,
+                    new FontDialog.OnTextConfirmedListener() {
+                @Override
+                public void onTextConfirmed(final String text,
+                        final float size) {
+                    if (CombatMap.this.mEditedTextObject == null) {
+                        CombatMap.this.mCombatView
+                        .createNewText(
+                                CombatMap.this.mNewObjectLocationWorldSpace,
+                                text, size);
+                    } else {
+                        CombatMap.this.mCombatView
+                        .getActiveLines()
+                        .editText(
+                                CombatMap.this.mEditedTextObject,
+                                text,
+                                size,
+                                CombatMap.this.mCombatView
+                                .getWorldSpaceTransformer());
+                        CombatMap.this.mCombatView.refreshMap();
+                    }
+                }
+            });
 
             return d;
         case DIALOG_ID_SAVE_NAME_CONFIRM:
             return new AlertDialog.Builder(CombatMap.this)
-                    .setMessage("Map already exists.  Save over it?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int id) {
-                                    CombatMap.this
-                                            .setFilenamePreference(CombatMap.this.mAttemptedMapName);
-                                    new MapSaver(
-                                            CombatMap.this.mAttemptedMapName,
-                                            CombatMap.this
-                                                    .getApplicationContext())
-                                            .run();
-                                }
-                            })
-                    .setNegativeButton("No",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int id) {
-                                    CombatMap.this.mAttemptedMapName = null;
-                                }
-                            }).create();
+            .setMessage("Map already exists.  Save over it?")
+            .setCancelable(false)
+            .setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog,
+                        int id) {
+                    CombatMap.this
+                    .setFilenamePreference(CombatMap.this.mAttemptedMapName);
+                    new MapSaver(
+                            CombatMap.this.mAttemptedMapName,
+                            CombatMap.this
+                            .getApplicationContext())
+                    .run();
+                }
+            })
+            .setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog,
+                        int id) {
+                    CombatMap.this.mAttemptedMapName = null;
+                }
+            }).create();
         case DIALOG_ID_GRID_PROPERTIES:
             GridPropertiesDialog gpd = new GridPropertiesDialog(this);
-            gpd.setOnPropertiesChangedListener(new GridPropertiesDialog.PropertiesChangedListener() {
+            gpd.setOnPropertiesChangedListener(
+                    new GridPropertiesDialog.PropertiesChangedListener() {
 
-                @Override
-                public void onPropertiesChanged() {
-                    CombatMap.this.mCombatView.refreshMap();
-                }
-            });
+                        @Override
+                        public void onPropertiesChanged() {
+                            CombatMap.this.mCombatView.refreshMap();
+                        }
+                    });
             return gpd;
         case DIALOG_ID_EXPORT:
             return new ExportImageDialog(this);
@@ -780,7 +822,8 @@ public final class CombatMap extends SherlockActivity {
             // Attempt to load map data. If we can't load map data, create a
             // new map.
             String filename = this.mSharedPreferences.getString("filename", "");
-            if (filename == null || filename.equals(DataManager.TEMP_MAP_NAME)) {
+            if (filename == null
+                    || filename.equals(DataManager.TEMP_MAP_NAME)) {
                 filename = "";
             }
             TextPromptDialog d = (TextPromptDialog) dialog;
@@ -808,7 +851,8 @@ public final class CombatMap extends SherlockActivity {
             // Attempt to load map data. If we can't load map data, create a
             // new map.
             filename = this.mSharedPreferences.getString("filename", "");
-            if (filename == null || filename.equals(DataManager.TEMP_MAP_NAME)) {
+            if (filename == null
+                    || filename.equals(DataManager.TEMP_MAP_NAME)) {
                 filename = "";
             }
             ExportImageDialog ed = (ExportImageDialog) dialog;
@@ -888,7 +932,7 @@ public final class CombatMap extends SherlockActivity {
             this.mDrawOptionsView.setDefault();
             this.mDrawOptionsView.setMaskToolVisibility(true);
             this.mDrawOptionsView
-                    .setBackgroundImageButtonVisibility(BuildConfig.DEBUG);
+            .setBackgroundImageButtonVisibility(BuildConfig.DEBUG);
             this.setTagSelectorVisibility(false);
             this.loadModeSpecificSnapPreference();
             return;
@@ -926,7 +970,7 @@ public final class CombatMap extends SherlockActivity {
             this.mCombatView.setFogOfWarMode(this.mSharedPreferences
                     .getBoolean("fogofwar", true)
                     ? FogOfWarMode.CLIP
-                    : FogOfWarMode.NOTHING);
+                            : FogOfWarMode.NOTHING);
             this.mBottomControlFrame.removeAllViews();
             this.mBottomControlFrame.addView(this.mTokenSelector);
             this.setModePreference(manipulationMode);
@@ -961,7 +1005,7 @@ public final class CombatMap extends SherlockActivity {
     private void setModeSpecificSnapPreference(final boolean shouldSnap) {
         int manipulationMode =
                 this.mSharedPreferences
-                        .getInt("manipulation_mode", MODE_TOKENS);
+                .getInt("manipulation_mode", MODE_TOKENS);
 
         Editor editor = this.mSharedPreferences.edit();
         editor.putBoolean(
@@ -981,10 +1025,10 @@ public final class CombatMap extends SherlockActivity {
     private void setTagSelectorVisibility(boolean visible) {
         this.mPopupFrame.getLayoutParams().width =
                 visible
-                        ? (int) (this.getResources().getDisplayMetrics().density * POPUP_AREA_HEIGHT)
+                ? (int) (this.getResources().getDisplayMetrics().density * POPUP_AREA_HEIGHT)
                         : 0;
-        this.findViewById(R.id.combatMapMainLayout).requestLayout();
-        this.mTagSelectorVisible = visible;
+                this.findViewById(R.id.combatMapMainLayout).requestLayout();
+                this.mTagSelectorVisible = visible;
     }
 
     /**
@@ -1002,14 +1046,14 @@ public final class CombatMap extends SherlockActivity {
                     .canUndo());
             this.mUndoMenuItem.setIcon(this.mUndoMenuItem.isEnabled()
                     ? R.drawable.undo
-                    : R.drawable.undo_greyscale);
+                            : R.drawable.undo_greyscale);
         }
         if (this.mRedoMenuItem != null) {
             this.mRedoMenuItem.setEnabled(this.mCombatView.getUndoRedoTarget()
                     .canRedo());
             this.mRedoMenuItem.setIcon(this.mRedoMenuItem.isEnabled()
                     ? R.drawable.redo
-                    : R.drawable.redo_greyscale);
+                            : R.drawable.redo_greyscale);
         }
     }
 
@@ -1088,13 +1132,13 @@ public final class CombatMap extends SherlockActivity {
      * 
      */
     private class SelectionChangedListener implements
-            MultiSelectManager.SelectionChangedListener {
+    MultiSelectManager.SelectionChangedListener {
 
         @Override
         public void selectionChanged() {
             Collection<BaseToken> selected =
                     CombatMap.this.mCombatView.getMultiSelect()
-                            .getSelectedTokens();
+                    .getSelectedTokens();
             BaseToken[] selectedArr = selected.toArray(new BaseToken[0]);
             int numTokens = selected.size();
             if (CombatMap.this.mMultiSelectActionMode != null
@@ -1121,7 +1165,7 @@ public final class CombatMap extends SherlockActivity {
                             break;
                         case Color.BLUE:
                             m.findItem(R.id.token_action_mode_border_color_blue)
-                                    .setChecked(true);
+                            .setChecked(true);
                             break;
                         case Color.BLACK:
                             m.findItem(
@@ -1130,7 +1174,7 @@ public final class CombatMap extends SherlockActivity {
                             break;
                         case Color.RED:
                             m.findItem(R.id.token_action_mode_border_color_red)
-                                    .setChecked(true);
+                            .setChecked(true);
                             break;
                         case Color.GREEN:
                             m.findItem(
@@ -1148,7 +1192,7 @@ public final class CombatMap extends SherlockActivity {
 
                     } else {
                         m.findItem(R.id.token_action_mode_border_color_none)
-                                .setChecked(true);
+                        .setChecked(true);
                     }
                 }
 
@@ -1157,13 +1201,13 @@ public final class CombatMap extends SherlockActivity {
                     // CHECKSTYLE:OFF
                     if (Math.abs(size - .1) < Util.FP_COMPARE_ERROR) {
                         m.findItem(R.id.token_action_mode_size_tenth)
-                                .setChecked(true);
+                        .setChecked(true);
                     } else if (Math.abs(size - .25) < Util.FP_COMPARE_ERROR) {
                         m.findItem(R.id.token_action_mode_size_quarter)
-                                .setChecked(true);
+                        .setChecked(true);
                     } else if (Math.abs(size - .5) < Util.FP_COMPARE_ERROR) {
                         m.findItem(R.id.token_action_mode_size_half)
-                                .setChecked(true);
+                        .setChecked(true);
                     } else if (Math.abs(size - 1) < Util.FP_COMPARE_ERROR) {
                         m.findItem(R.id.token_action_mode_size_1).setChecked(
                                 true);
@@ -1202,7 +1246,7 @@ public final class CombatMap extends SherlockActivity {
             // TODO Auto-generated method stub
             CombatMap.this.mMultiSelectActionMode =
                     CombatMap.this
-                            .startActionMode(new TokenSelectionActionModeCallback());
+                    .startActionMode(new TokenSelectionActionModeCallback());
         }
     }
 
@@ -1229,18 +1273,18 @@ public final class CombatMap extends SherlockActivity {
             MapData d = MapData.getInstance();
             d.getTokens().deplaceholderize(CombatMap.this.mTokenDatabase);
             CombatMap.this.mTokenSelector
-                    .setTokenDatabase(CombatMap.this.mTokenDatabase);
+            .setTokenDatabase(CombatMap.this.mTokenDatabase);
             CombatMap.this.mTokenCategorySelector
-                    .setTagList(CombatMap.this.mTokenDatabase.getTags());
+            .setTagList(CombatMap.this.mTokenDatabase.getTags());
 
             // Load all the tokens that are currently placed on the map.
             TokenLoadManager.getInstance().startJob(d.getTokens().asList(),
                     new TokenLoadManager.JobCallback() {
-                        @Override
-                        public void onJobComplete(List<BaseToken> loadedTokens) {
-                            CombatMap.this.mCombatView.refreshMap();
-                        }
-                    }, new Handler());
+                @Override
+                public void onJobComplete(List<BaseToken> loadedTokens) {
+                    CombatMap.this.mCombatView.refreshMap();
+                }
+            }, new Handler());
         }
     }
 
@@ -1251,7 +1295,7 @@ public final class CombatMap extends SherlockActivity {
      * 
      */
     private class TokenSelectionActionModeCallback implements
-            ActionMode.Callback {
+    ActionMode.Callback {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {

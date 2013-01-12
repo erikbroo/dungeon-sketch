@@ -44,15 +44,15 @@ public final class MapData {
     private static final int MAP_DATA_VERSION = 0;
 
     /**
+     * Command history to use for the annotations.
+     */
+    private CommandHistory mAnntationCommandHistory = new CommandHistory();
+
+    /**
      * Annotation lines.
      */
     private LineCollection mAnnotationLines = new LineCollection(
             this.mAnntationCommandHistory);
-
-    /**
-     * Command history to use for the annotations.
-     */
-    private CommandHistory mAnntationCommandHistory = new CommandHistory();
 
     /**
      * Command history object to use for the background and associated fog of
@@ -79,15 +79,15 @@ public final class MapData {
             this.mBackgroundCommandHistory);
 
     /**
+     * Command history to use for the GM notes and associated fog of war.
+     */
+    private CommandHistory mGmNotesCommandHistory = new CommandHistory();
+
+    /**
      * Notes for the GM that are not visible when combat is occurring.
      */
     private LineCollection mGmNoteLines = new LineCollection(
             this.mGmNotesCommandHistory);
-
-    /**
-     * Command history to use for the GM notes and associated fog of war.
-     */
-    private CommandHistory mGmNotesCommandHistory = new CommandHistory();
 
     /**
      * Lines that represent the fog of war.

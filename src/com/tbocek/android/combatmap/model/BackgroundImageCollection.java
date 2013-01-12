@@ -22,8 +22,14 @@ public class BackgroundImageCollection implements UndoRedoTarget {
         this.mCommandHistory = commandHistory;
     }
 
-    public void addImage(BackgroundImage backgroundImage) {
-        this.mImages.add(backgroundImage);
+    /**
+     * Adds a new background image.
+     * @param path Path to the image to add.
+     * @param initialLocation Location of the background image.
+     */
+    public void addImage(String path, PointF initialLocation) {
+        // TODO: Enable undo/redo.
+        this.mImages.add(new BackgroundImage(path, initialLocation));
     }
 
     @Override
@@ -62,7 +68,7 @@ public class BackgroundImageCollection implements UndoRedoTarget {
      * @return
      */
     public BackgroundImage
-            getImageOnPoint(PointF point, float borderWorldSpace) {
+    getImageOnPoint(PointF point, float borderWorldSpace) {
         for (BackgroundImage i : this.mImages) {
             if (i.getBoundingRectangle(borderWorldSpace).contains(point)) {
                 return i;
