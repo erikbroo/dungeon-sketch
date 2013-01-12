@@ -271,6 +271,8 @@ public final class CombatMap extends SherlockActivity {
         @Override
         public void
         requestNewBackgroundImage(PointF locationWorldSpace) {
+            CombatMap.this.mNewObjectLocationWorldSpace =
+                    locationWorldSpace;
             CombatMap.this.startActivityForResult(new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
                     REQUEST_PICK_BACKGROUND_IMAGE);
