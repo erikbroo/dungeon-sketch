@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 
 import com.tbocek.android.combatmap.DataManager;
 
-public class BackgroundImage {
+public class BackgroundImage implements Cloneable{
 
     /**
      * The data manager that is used to load custom images.
@@ -160,5 +160,10 @@ public class BackgroundImage {
 
     public void setLocation(PointF location) {
         this.mOriginWorldSpace = location;
+    }
+
+    @Override
+    public BackgroundImage clone() throws CloneNotSupportedException {
+        return (BackgroundImage) super.clone();
     }
 }
