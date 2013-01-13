@@ -95,7 +95,6 @@ public final class TokenCollection implements UndoRedoTarget {
      * list of tokens. The current state of these tokens will be duplicated and
      * saved for undo purposes.
      * 
-     * @param l
      *            List of tokens to checkpoint.
      */
     public void checkpointTokens(List<BaseToken> l) {
@@ -233,7 +232,7 @@ public final class TokenCollection implements UndoRedoTarget {
      *         intersection.
      */
     private boolean
-            isLocationUnoccupied(final PointF point, final double radius) {
+    isLocationUnoccupied(final PointF point, final double radius) {
         for (BaseToken t : this.mTokens) {
             if (Util.distance(point, t.getLocation()) < radius + t.getSize()
                     / 2) {
@@ -270,7 +269,7 @@ public final class TokenCollection implements UndoRedoTarget {
         point =
                 grid.getNearestSnapPoint(point, tokensSnapToIntersections
                         ? 0
-                        : t.getSize());
+                                : t.getSize());
         while (true) {
             // Go clockwise around the size of a square centered on the
             // originally attempted point and with sized of
