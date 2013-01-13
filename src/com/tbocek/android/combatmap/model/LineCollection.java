@@ -182,8 +182,8 @@ public final class LineCollection implements UndoRedoTarget {
      * @return The created text object.
      */
     public Shape
-            createText(String text, float size, int color, float strokeWidth,
-                    PointF location, CoordinateTransformer transform) {
+    createText(String text, float size, int color, float strokeWidth,
+            PointF location, CoordinateTransformer transform) {
         Text t = new Text(text, size, color, strokeWidth, location, transform);
         Command c = new Command(this);
         c.addCreatedShape(t);
@@ -377,7 +377,7 @@ public final class LineCollection implements UndoRedoTarget {
         ListIterator<Shape> it = this.mLines.listIterator();
         while (it.hasNext()
                 && this.mLines.get(it.nextIndex()).getStrokeWidth() >= line
-                        .getStrokeWidth()) {
+                .getStrokeWidth()) {
             it.next();
         }
         it.add(line);
@@ -530,7 +530,6 @@ public final class LineCollection implements UndoRedoTarget {
 
         /**
          * @return True if the command is a no-op, false if it modifies lines.
-         *         noop.
          */
         @Override
         public boolean isNoop() {
