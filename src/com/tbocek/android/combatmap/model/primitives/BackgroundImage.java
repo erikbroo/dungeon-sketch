@@ -8,6 +8,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import com.tbocek.android.combatmap.DataManager;
+import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
+import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 
 public class BackgroundImage implements Cloneable{
 
@@ -165,5 +167,29 @@ public class BackgroundImage implements Cloneable{
     @Override
     public BackgroundImage clone() throws CloneNotSupportedException {
         return (BackgroundImage) super.clone();
+    }
+
+    public void serialize(MapDataSerializer s) throws IOException {
+        s.startObject();
+        s.serializeString(this.mPath);
+        s.serializeFloat(this.mOriginWorldSpace.x);
+        s.serializeFloat(this.mOriginWorldSpace.y);
+        s.serializeFloat(this.mWidthWorldSpace);
+        s.serializeFloat(this.mHeightWorldSpace);
+        s.endObject();
+    }
+
+    public static BackgroundImage deserialize(MapDataDeserializer s) throws IOException {
+        s.expectObjectStart();
+        String imageName = s.readString();
+        float imageX = s.readFloat();
+        float imageY = s.readFloat();
+        float width = s.readFloat();
+        float height = s.readFloat();
+        s.expectObjectEnd();
+        BackgroundImage i = new BackgroundImage(imageName, new PointF(imageX, imageY));
+        i.mWidthWorldSpace = width;
+        i.mHeightWorldSpace = height;
+        return i;
     }
 }

@@ -1,23 +1,41 @@
 package com.tbocek.android.combatmap.model;
 
+import java.io.IOException;
 import java.util.List;
 
 import android.graphics.Canvas;
 
 import com.google.common.collect.Lists;
+import com.tbocek.android.combatmap.model.CommandHistory.Command;
+import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
+import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 import com.tbocek.android.combatmap.model.primitives.BackgroundImage;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 
-public class BackgroundImageCollection implements UndoRedoTarget {
+/**
+ * This class manages a collection of background images (e.g. predrawn maps that
+ * users have imported into Dungeon Sketch to play on.
+ * @author Tim
+ *
+ */
+public class BackgroundImageCollection {
 
     /**
      * Undo/Redo History.
      */
     private CommandHistory mCommandHistory;
 
+    /**
+     * List of managed images.
+     */
     private List<BackgroundImage> mImages = Lists.newArrayList();
 
+    /**
+     * Constructor.
+     * @param commandHistory The command history that modifications to this
+     *      collection will be added to.
+     */
     public BackgroundImageCollection(CommandHistory commandHistory) {
         this.mCommandHistory = commandHistory;
     }
@@ -29,27 +47,23 @@ public class BackgroundImageCollection implements UndoRedoTarget {
      */
     public void addImage(String path, PointF initialLocation) {
         // TODO: Enable undo/redo.
-        this.mImages.add(new BackgroundImage(path, initialLocation));
+        BackgroundImage image = new BackgroundImage(path, initialLocation);
+        Command c = new NewImageCommand(image);
+        this.mCommandHistory.execute(c);
     }
 
-    @Override
-    public boolean canRedo() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean canUndo() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
+    /**
+     * Draws the image on the given canvas.
+     * 
+     * 
+     * Because of the way image drawing works, we need to be able to make the
+     * assumption that the canvas is *untransformed*. But, we still want to
+     * respect the fog of war. So, we let the calling code assume that the
+     * canvas is transformed, and undo the transformation here.
+     * @param canvas The canvas to draw on.
+     * @param transformer Transformation from screen space to world space.
+     */
     public void draw(Canvas canvas, CoordinateTransformer transformer) {
-        // Because of the way image drawing works, we need to be able to make
-        // the assumption that the canvas is *untransformed*. But, we still
-        // want to respect the fog of war. So, we let the calling code assume
-        // that the canvas is transformed, and undo the transformation here.
-
         canvas.save();
         transformer.setInverseMatrix(canvas);
 
@@ -65,10 +79,17 @@ public class BackgroundImageCollection implements UndoRedoTarget {
      * 
      * @param point
      *            Location to check in world space.
-     * @return
+     * @param borderWorldSpace Width of a border to place around the image.
+     *      (for example, if the image's x bounds are (x1, x2), we will actually
+     *      test for (x1 - borderWorldSpace, x2 + borderWorldSpace).  This
+     *      allows some margin of error to detect "handles" which manipulate the
+     *      image but are not actually contained within the image's bounding
+     *      rectangle.
+     * @return The background image under the given point, or null if no image
+     *      found.
      */
-    public BackgroundImage
-    getImageOnPoint(PointF point, float borderWorldSpace) {
+    public BackgroundImage getImageOnPoint(
+            PointF point, float borderWorldSpace) {
         for (BackgroundImage i : this.mImages) {
             if (i.getBoundingRectangle(borderWorldSpace).contains(point)) {
                 return i;
@@ -77,15 +98,116 @@ public class BackgroundImageCollection implements UndoRedoTarget {
         return null;
     }
 
-    @Override
-    public void redo() {
-        // TODO Auto-generated method stub
-
+    /**
+     * Checkpoints the state of the given image so that whatever actions the
+     * user performs with it are already set up to be undoable.
+     * @param i The image to checkpoint.
+     */
+    public void checkpointImage(BackgroundImage i) {
+        Command c = new ModifyImageCommand(i);
+        // We are not ready to "execute" this command yet - instead we are
+        // checkpointing its state.
+        this.mCommandHistory.addToCommandHistory(c);
     }
 
-    @Override
-    public void undo() {
-        // TODO Auto-generated method stub
+    /**
+     * A Command that adds the given image to the list of images.
+     * @author Tim
+     *
+     */
+    private class NewImageCommand implements CommandHistory.Command {
 
+        /**
+         * The image added by this command.
+         */
+        private BackgroundImage mImage;
+
+        /**
+         * Constructor.
+         * @param image The image added by this command.
+         */
+        public NewImageCommand(BackgroundImage image) {
+            mImage = image;
+        }
+
+        @Override
+        public void execute() {
+            BackgroundImageCollection.this.mImages.add(mImage);
+        }
+
+        @Override
+        public boolean isNoop() {
+            return false;
+        }
+
+        @Override
+        public void undo() {
+            BackgroundImageCollection.this.mImages.remove(mImage);
+
+        }
+    }
+
+    /**
+     * A command that stores the state of the given image, so that undoing and
+     * redoing the action can swap the state in and out.
+     * @author Tim
+     *
+     */
+    private class ModifyImageCommand implements CommandHistory.Command {
+        /**
+         * Copy of the image's state before it was modified.
+         */
+        private BackgroundImage mBefore;
+
+        /**
+         * Copy of the image's state after it was modified.
+         */
+        private BackgroundImage mAfter;
+
+        /**
+         * Constructor.  Will make a copy of the BackgroundImage being modified.
+         * @param toModify The image to modify.
+         */
+        public ModifyImageCommand(BackgroundImage toModify) {
+            try {
+                mBefore = toModify.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(
+                        "Cloning BackgroundImage failed.", e);
+            }
+            mAfter = toModify;
+        }
+
+        @Override
+        public void execute() {
+            BackgroundImageCollection.this.mImages.remove(mBefore);
+            BackgroundImageCollection.this.mImages.add(mAfter);
+
+        }
+        @Override
+        public boolean isNoop() {
+            return false;
+        }
+        @Override
+        public void undo() {
+            BackgroundImageCollection.this.mImages.remove(mAfter);
+            BackgroundImageCollection.this.mImages.add(mBefore);
+        }
+    }
+
+    public void serialize(MapDataSerializer s) throws IOException {
+        s.startArray();
+        for (BackgroundImage image : this.mImages){
+            image.serialize(s);
+        }
+        s.endArray();
+    }
+
+    public void deserialize(MapDataDeserializer s) throws IOException {
+        int arrayLevel = s.expectArrayStart();
+        while (s.hasMoreArrayItems(arrayLevel)) {
+            this.mImages.add(BackgroundImage.deserialize(s));
+        }
+        s.expectArrayEnd();
     }
 }

@@ -40,8 +40,11 @@ public final class MapData {
 
     /**
      * Version level of this map data, used for saving/loading.
+     * Version History:
+     * 0: Initial Version
+     * 1: Added background image collection.
      */
-    private static final int MAP_DATA_VERSION = 0;
+    private static final int MAP_DATA_VERSION = 1;
 
     /**
      * Command history to use for the annotations.
@@ -157,6 +160,9 @@ public final class MapData {
         data.mGmNoteLines.deserialize(s);
         data.mGmNotesFogOfWar.deserialize(s);
         data.mAnnotationLines.deserialize(s);
+        if (mapDataVersion >= 1) {
+            data.mBackgroundImages.deserialize(s);
+        }
         return data;
     }
 
@@ -374,6 +380,7 @@ public final class MapData {
         this.mGmNoteLines.serialize(s);
         this.mGmNotesFogOfWar.serialize(s);
         this.mAnnotationLines.serialize(s);
+        this.mBackgroundImages.serialize(s);
     }
 
     /**

@@ -165,7 +165,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
                 this.mLastDragPoint =
                         handles.getClickedHandleCenter(this.mLastDragPoint);
             }
-
+            this.getData().getBackgroundImages().checkpointImage(
+                    this.mSelectedImage);
         }
 
         this.getView().refreshMap();
