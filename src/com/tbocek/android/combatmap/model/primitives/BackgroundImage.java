@@ -36,12 +36,12 @@ public class BackgroundImage implements Cloneable{
     /**
      * Height of the image's containing rectangle, in world space.
      */
-    private float mHeightWorldSpace = 1;
+    private float mHeightWorldSpace = 0;
 
     /**
      * Width of the image's containing rectangle, in world space.
      */
-    private float mWidthWorldSpace = 1;
+    private float mWidthWorldSpace = 0;
 
     /**
      * Location of the upper left corner of the image's containing rectangle, in
@@ -78,6 +78,14 @@ public class BackgroundImage implements Cloneable{
         try {
             b = dataManager.loadMapDataImage(this.mPath);
             this.mDrawable = new BitmapDrawable(b);
+            // If no width and height yet, set height = 1, width according to
+            // aspect ratio of the original image.
+            if (this.mWidthWorldSpace < Util.FP_COMPARE_ERROR
+                    && this.mHeightWorldSpace < Util.FP_COMPARE_ERROR) {
+                this.mHeightWorldSpace = 1;
+                this.mWidthWorldSpace =
+                        (((float) b.getWidth()) / b.getHeight());
+            }
         } catch (IOException e) {
             e.printStackTrace();
             this.mTriedToLoadDrawable = true;
