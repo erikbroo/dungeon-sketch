@@ -49,6 +49,9 @@ public class BackgroundImage implements Cloneable{
      */
     private PointF mOriginWorldSpace;
 
+    private boolean mKeepAspectRatio = true;
+    private float mOriginalAspectRatio = 1;
+
     /**
      * Constructor.
      * @param path Path to the resource to load.
@@ -82,9 +85,10 @@ public class BackgroundImage implements Cloneable{
             // aspect ratio of the original image.
             if (this.mWidthWorldSpace < Util.FP_COMPARE_ERROR
                     && this.mHeightWorldSpace < Util.FP_COMPARE_ERROR) {
+                this.mOriginalAspectRatio =
+                        ((float) b.getWidth()) / b.getHeight();
                 this.mHeightWorldSpace = 1;
-                this.mWidthWorldSpace =
-                        (((float) b.getWidth()) / b.getHeight());
+                this.mWidthWorldSpace = mOriginalAspectRatio;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -184,6 +188,8 @@ public class BackgroundImage implements Cloneable{
         s.serializeFloat(this.mOriginWorldSpace.y);
         s.serializeFloat(this.mWidthWorldSpace);
         s.serializeFloat(this.mHeightWorldSpace);
+        s.serializeFloat(this.mOriginalAspectRatio);
+        s.serializeBoolean(this.mKeepAspectRatio);
         s.endObject();
     }
 
@@ -194,10 +200,14 @@ public class BackgroundImage implements Cloneable{
         float imageY = s.readFloat();
         float width = s.readFloat();
         float height = s.readFloat();
+        float originalAspectRatio = s.readFloat();
+        boolean keepAspectRatio = s.readBoolean();
         s.expectObjectEnd();
         BackgroundImage i = new BackgroundImage(imageName, new PointF(imageX, imageY));
         i.mWidthWorldSpace = width;
         i.mHeightWorldSpace = height;
+        i.mOriginalAspectRatio = originalAspectRatio;
+        i.mKeepAspectRatio = keepAspectRatio;
         return i;
     }
 }
