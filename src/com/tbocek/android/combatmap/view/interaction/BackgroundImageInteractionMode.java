@@ -190,34 +190,75 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
             float wsDistY =
                     this.getData().getWorldSpaceTransformer()
                     .screenSpaceToWorldSpace(distanceY);
+
             switch (this.mHandleMode) {
             case LEFT:
                 this.mSelectedImage.moveLeft(wsDistX);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    this.mSelectedImage.recomputeHeight();
+                }
                 break;
             case RIGHT:
                 this.mSelectedImage.moveRight(wsDistX);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    this.mSelectedImage.recomputeHeight();
+                }
                 break;
             case TOP:
                 this.mSelectedImage.moveTop(wsDistY);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    this.mSelectedImage.recomputeWidth();
+                }
                 break;
             case BOTTOM:
                 this.mSelectedImage.moveBottom(wsDistY);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    this.mSelectedImage.recomputeWidth();
+                }
                 break;
             case UPPER_LEFT:
                 this.mSelectedImage.moveLeft(wsDistX);
                 this.mSelectedImage.moveTop(wsDistY);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
+                        this.mSelectedImage.recomputeHeight();
+                    } else {
+                        this.mSelectedImage.recomputeWidth();
+                    }
+                }
                 break;
             case LOWER_LEFT:
                 this.mSelectedImage.moveLeft(wsDistX);
                 this.mSelectedImage.moveBottom(wsDistY);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
+                        this.mSelectedImage.recomputeHeight();
+                    } else {
+                        this.mSelectedImage.recomputeWidth();
+                    }
+                }
                 break;
             case UPPER_RIGHT:
                 this.mSelectedImage.moveRight(wsDistX);
                 this.mSelectedImage.moveTop(wsDistY);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
+                        this.mSelectedImage.recomputeHeight();
+                    } else {
+                        this.mSelectedImage.recomputeWidth();
+                    }
+                }
                 break;
             case LOWER_RIGHT:
                 this.mSelectedImage.moveRight(wsDistX);
                 this.mSelectedImage.moveBottom(wsDistY);
+                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                    if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
+                        this.mSelectedImage.recomputeHeight();
+                    } else {
+                        this.mSelectedImage.recomputeWidth();
+                    }
+                }
                 break;
             default:
                 this.mSelectedImage.moveImage(wsDistX, wsDistY);

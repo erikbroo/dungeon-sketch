@@ -176,6 +176,33 @@ public class BackgroundImage implements Cloneable{
         this.mOriginWorldSpace = location;
     }
 
+    public boolean shouldMaintainAspectRatio() {
+        return this.mKeepAspectRatio;
+    }
+
+    public float getAspectRatio() {
+        return this.mWidthWorldSpace / this.mHeightWorldSpace;
+    }
+
+    /**
+     * Forces this image to recompute the width, given the height and the aspect
+     * ratio.
+     */
+    public void recomputeWidth() {
+        this.mWidthWorldSpace =
+                this.mHeightWorldSpace * this.mOriginalAspectRatio;
+    }
+
+
+    /**
+     * Forces this image to recompute the height, given the width and the aspect
+     * ratio.
+     */
+    public void recomputeHeight() {
+        this.mHeightWorldSpace =
+                this.mWidthWorldSpace * this.mOriginalAspectRatio;
+    }
+
     @Override
     public BackgroundImage clone() throws CloneNotSupportedException {
         return (BackgroundImage) super.clone();
@@ -193,7 +220,8 @@ public class BackgroundImage implements Cloneable{
         s.endObject();
     }
 
-    public static BackgroundImage deserialize(MapDataDeserializer s) throws IOException {
+    public static BackgroundImage deserialize(MapDataDeserializer s)
+            throws IOException {
         s.expectObjectStart();
         String imageName = s.readString();
         float imageX = s.readFloat();
@@ -203,7 +231,8 @@ public class BackgroundImage implements Cloneable{
         float originalAspectRatio = s.readFloat();
         boolean keepAspectRatio = s.readBoolean();
         s.expectObjectEnd();
-        BackgroundImage i = new BackgroundImage(imageName, new PointF(imageX, imageY));
+        BackgroundImage i = new BackgroundImage(
+                imageName, new PointF(imageX, imageY));
         i.mWidthWorldSpace = width;
         i.mHeightWorldSpace = height;
         i.mOriginalAspectRatio = originalAspectRatio;
