@@ -75,4 +75,5 @@
     <string name="delete_tag">Delete Tag</string>    
     <string name="help">Help</string>
     <string name="token_database">Token Database</string>
+    <string name="keep_aspect_ratio">Keep Aspect Ratio</string>
 </resources>
