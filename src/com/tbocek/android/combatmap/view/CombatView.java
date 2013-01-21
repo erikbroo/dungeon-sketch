@@ -24,6 +24,7 @@ import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.TokenCollection;
 import com.tbocek.android.combatmap.model.UndoRedoTarget;
+import com.tbocek.android.combatmap.model.primitives.BackgroundImage;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
@@ -128,6 +129,11 @@ public final class CombatView extends SurfaceView {
      * Listener to publish refresh requests to.
      */
     private OnRefreshListener mOnRefreshListener;
+
+    /**
+     * Listener for background image selection changes.
+     */
+    private ImageSelectionListener mImageSelectionListener;
 
     /**
      * Detector object to detect pinch zoom.
@@ -955,6 +961,46 @@ public final class CombatView extends SurfaceView {
          * Called when this combat view is refreshed.
          */
         void onRefresh();
+    }
+
+    /**
+     * Sets the currently selected background image, and bubbles this
+     * information up to the activity via the ImageSelectionListener.
+     * @param selectedImage The image that is now selected.
+     */
+    public void reportCurrentlySelectedImage(BackgroundImage selectedImage) {
+        if (mImageSelectionListener != null) {
+            mImageSelectionListener.onSelectBackgroundImage(selectedImage);
+        }
+    }
+
+    /**
+     * Listener to allow us to report to the activity whenever a new background
+     * image has been selected.
+     * @author Tim
+     *
+     */
+    public interface ImageSelectionListener {
+        /**
+         * Reports that the given image has been selected.
+         * @param selectedImage The image selected.
+         */
+        void onSelectBackgroundImage(BackgroundImage selectedImage);
+
+        /**
+         * Reports that no image is currently selected.  This may be called
+         * extraneously.
+         */
+        void onSelectNoBackgroundImage();
+    }
+
+
+    /**
+     * Sets the listener for changes in image selection.
+     * @param listener The listener to use.
+     */
+    public void setImageSeletionListener(ImageSelectionListener listener) {
+        mImageSelectionListener = listener;
     }
 
 

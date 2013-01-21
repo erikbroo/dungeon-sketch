@@ -167,6 +167,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
             }
             this.getData().getBackgroundImages().checkpointImage(
                     this.mSelectedImage);
+            this.getView().reportCurrentlySelectedImage(this.mSelectedImage);
         }
 
         this.getView().refreshMap();

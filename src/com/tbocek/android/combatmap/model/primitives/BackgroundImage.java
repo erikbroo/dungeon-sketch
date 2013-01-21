@@ -180,6 +180,10 @@ public class BackgroundImage implements Cloneable{
         return this.mKeepAspectRatio;
     }
 
+    public void setShouldMaintainAspectRatio(boolean keepAspectRatio) {
+        this.mKeepAspectRatio = keepAspectRatio;
+    }
+
     public float getAspectRatio() {
         return this.mWidthWorldSpace / this.mHeightWorldSpace;
     }
@@ -239,4 +243,5 @@ public class BackgroundImage implements Cloneable{
         i.mKeepAspectRatio = keepAspectRatio;
         return i;
     }
+
 }

@@ -155,7 +155,7 @@ public final class CombatMap extends SherlockActivity {
     /**
      * The action mode that was started to manage the selection.
      */
-    private ActionMode mMultiSelectActionMode;
+    private ActionMode mActionMode;
 
     /**
      * Location at which to place requested objects such as text or background
@@ -295,8 +295,43 @@ public final class CombatMap extends SherlockActivity {
         @Override
         public void onDragTokensToTag(
                 final Collection<BaseToken> tokens, final String tag) {
+
         }
     };
+
+    /**
+     * Listener that fires when an image has been selected in the CombatView.
+     */
+    private CombatView.ImageSelectionListener mOnImageSelectListener =
+            new CombatView.ImageSelectionListener() {
+
+        @Override
+        public void onSelectNoBackgroundImage() {
+            if (CombatMap.this.mActionMode != null) {
+                mActionMode.finish();
+                mActionMode = null;
+            }
+            mSelectedImage = null;
+        }
+
+        @Override
+        public void onSelectBackgroundImage(BackgroundImage selectedImage) {
+            if (mActionMode == null) {
+                CombatMap.this.mActionMode = CombatMap.this.startActionMode(
+                        new ImageSelectionActionModeCallback());
+            }
+
+            Menu m = CombatMap.this.mActionMode.getMenu();
+            m.findItem(R.id.background_image_maintain_aspect_ratio).setChecked(
+                    selectedImage.shouldMaintainAspectRatio());
+            mSelectedImage = selectedImage;
+        }
+    };
+
+    /**
+     * The BackgroundImage that has been selected.
+     */
+    private BackgroundImage mSelectedImage;
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -511,6 +546,7 @@ public final class CombatMap extends SherlockActivity {
         this.mCombatView = new CombatView(this);
         this.registerForContextMenu(this.mCombatView);
         this.mCombatView.setNewTextEntryListener(this.mOnNewTextEntryListener);
+        this.mCombatView.setImageSeletionListener(this.mOnImageSelectListener);
 
         this.mTokenSelector =
                 new TokenSelectorView(this.getApplicationContext());
@@ -1144,10 +1180,10 @@ public final class CombatMap extends SherlockActivity {
                     .getSelectedTokens();
             BaseToken[] selectedArr = selected.toArray(new BaseToken[0]);
             int numTokens = selected.size();
-            if (CombatMap.this.mMultiSelectActionMode != null
+            if (CombatMap.this.mActionMode != null
                     && selected.size() > 0) {
-                Menu m = CombatMap.this.mMultiSelectActionMode.getMenu();
-                CombatMap.this.mMultiSelectActionMode.setTitle(Integer
+                Menu m = CombatMap.this.mActionMode.getMenu();
+                CombatMap.this.mActionMode.setTitle(Integer
                         .toString(numTokens)
                         + (numTokens == 1 ? " Token " : " Tokens ")
                         + "Selected.");
@@ -1237,17 +1273,16 @@ public final class CombatMap extends SherlockActivity {
 
         @Override
         public void selectionEnded() {
-            if (CombatMap.this.mMultiSelectActionMode != null) {
-                ActionMode m = CombatMap.this.mMultiSelectActionMode;
-                CombatMap.this.mMultiSelectActionMode = null;
+            if (CombatMap.this.mActionMode != null) {
+                ActionMode m = CombatMap.this.mActionMode;
+                CombatMap.this.mActionMode = null;
                 m.finish();
             }
         }
 
         @Override
         public void selectionStarted() {
-            // TODO Auto-generated method stub
-            CombatMap.this.mMultiSelectActionMode =
+            CombatMap.this.mActionMode =
                     CombatMap.this
                     .startActionMode(new TokenSelectionActionModeCallback());
         }
@@ -1412,7 +1447,6 @@ public final class CombatMap extends SherlockActivity {
             CombatMap.this.mCombatView.refreshMap();
             return true;
         }
-
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             mode.getMenuInflater().inflate(R.menu.token_action_mode_menu, menu);
@@ -1467,4 +1501,45 @@ public final class CombatMap extends SherlockActivity {
             mData.getTokens().createCommandHistory();
         }
     }
+
+    /**
+     * Action Mode for selecting and manipulating a single image.
+     * @author Tim
+     *
+     */
+    private class ImageSelectionActionModeCallback
+    implements ActionMode.Callback {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.background_image_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+            case R.id.background_image_delete:
+                break;
+            case R.id.background_image_maintain_aspect_ratio:
+                mData.getBackgroundImages().checkpointImage(mSelectedImage);
+                mSelectedImage.setShouldMaintainAspectRatio(item.isChecked());
+                break;
+            default:
+                break;
+            }
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) { }
+
+    }
+
+
 }
