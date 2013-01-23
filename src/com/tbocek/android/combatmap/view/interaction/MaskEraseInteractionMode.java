@@ -6,7 +6,16 @@ import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Shape;
 import com.tbocek.android.combatmap.view.CombatView;
 
+/**
+ * Provides an interaction mode for erasing mask (fog of war) elements.
+ * @author Tim
+ */
 public class MaskEraseInteractionMode extends ZoomPanInteractionMode {
+
+    /**
+     * Constructor.
+     * @param view The CombatView being controlled.
+     */
     public MaskEraseInteractionMode(CombatView view) {
         super(view);
     }
