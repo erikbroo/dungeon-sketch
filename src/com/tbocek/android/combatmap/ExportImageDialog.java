@@ -102,6 +102,15 @@ public class ExportImageDialog extends Dialog {
         });
     }
 
+    /**
+     * Associates the given control with the the given preference such that
+     * modifying the control modifies the preference.
+     * @param b The CompoundButton to associate with a preference.
+     * @param pref Name of the preference to associate the control with.  Must
+     *     be a Boolean value (not enforced in this method!)
+     * @param defaultValue The default value to use if the preference has no
+     *     setting yet.
+     */
     private void associateControl(CompoundButton b, String pref,
             boolean defaultValue) {
         SharedPreferences prefs =
@@ -111,6 +120,10 @@ public class ExportImageDialog extends Dialog {
         b.setOnCheckedChangeListener(new SetBooleanPreferenceHandler(pref));
     }
 
+    /**
+     * Exports the image using the settings set up in this activity.
+     * @throws IOException if the export failed.
+     */
     private void export() throws IOException {
         int width;
         int height;
