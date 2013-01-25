@@ -1006,10 +1006,12 @@ public final class CombatMap extends SherlockActivity {
         case MODE_TOKENS:
             this.mCombatView.setAreTokensManipulatable(true);
             this.mCombatView.setTokenManipulationMode();
-            this.mCombatView.setFogOfWarMode(this.mSharedPreferences
-                    .getBoolean("fogofwar", true)
+            this.mCombatView.setFogOfWarMode(
+                    this.mSharedPreferences.getBoolean("fogofwar", true)
                     ? FogOfWarMode.CLIP
                             : FogOfWarMode.NOTHING);
+            this.mCombatView.setMaskAppliesToTokens(
+                    this.mSharedPreferences.getBoolean("mask_tokens", false));
             this.mBottomControlFrame.removeAllViews();
             this.mBottomControlFrame.addView(this.mTokenSelector);
             this.setModePreference(manipulationMode);

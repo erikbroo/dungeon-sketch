@@ -14,6 +14,8 @@ public class MapDrawer {
     private boolean mDrawTokens;
     private FogOfWarMode mGmNoteFogOfWar;
 
+    private boolean mApplyMaskToTokens;
+
     public MapDrawer areTokensManipulable(boolean val) {
         this.mAreTokensManipulable = val;
         return this;
@@ -78,7 +80,8 @@ public class MapDrawer {
 
         canvas.save();
         if (this.mBackgroundFogOfWar == FogOfWarMode.CLIP
-                && !m.getBackgroundFogOfWar().isEmpty()) {
+                && !m.getBackgroundFogOfWar().isEmpty()
+                && this.mApplyMaskToTokens) {
             m.getWorldSpaceTransformer().setMatrix(canvas);
             m.getBackgroundFogOfWar().clipFogOfWar(canvas);
             m.getWorldSpaceTransformer().setInverseMatrix(canvas);
@@ -118,6 +121,11 @@ public class MapDrawer {
         return this;
     }
 
+    public MapDrawer applyMaskToTokens(boolean applyMaskToTokens) {
+        mApplyMaskToTokens = applyMaskToTokens;
+        return this;
+    }
+
     /**
      * Options for what to do with the fog of war.
      * 
@@ -140,5 +148,7 @@ public class MapDrawer {
          */
         NOTHING
     }
+
+
 
 }

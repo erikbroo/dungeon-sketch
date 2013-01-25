@@ -156,6 +156,11 @@ public final class CombatView extends SurfaceView {
     private boolean mSnapToGrid;
 
     /**
+     * Whether the mask applies to tokens.
+     */
+    private boolean mApplyMaskToTokens;
+
+    /**
      * Callback for the Android graphics surface management system.
      */
     private SurfaceHolder.Callback mSurfaceHolderCallback =
@@ -344,6 +349,7 @@ public final class CombatView extends SurfaceView {
                 this.mActiveLines == this.getData().getGmNoteLines()
                 ? FogOfWarMode.DRAW
                         : FogOfWarMode.CLIP)
+                        .applyMaskToTokens(mApplyMaskToTokens)
                         .backgroundFogOfWar(this.mFogOfWarMode)
                         .draw(canvas, this.getData());
 
@@ -1002,6 +1008,15 @@ public final class CombatView extends SurfaceView {
     public void setImageSeletionListener(ImageSelectionListener listener) {
         mImageSelectionListener = listener;
     }
+
+    /**
+     * Sets whether the mask applies to tokens.
+     * @param applyMask Whether the mask applies to tokens.
+     */
+    public void setMaskAppliesToTokens(boolean applyMask) {
+        mApplyMaskToTokens = applyMask;
+    }
+
 
 
 }

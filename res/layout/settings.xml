@@ -4,13 +4,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <CheckBoxPreference
-        android:key="fogofwar"
-        android:title="@string/fog_of_war_enabled" 
-        android:defaultValue="true"
-        android:summary="Use this to temporarily disable the mask if you need to.  Note that the entire map will draw if no mask regions have been added yet."
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
     
     <CheckBoxPreference
         android:key="autosave"
@@ -19,6 +12,37 @@
         android:summary="If set, will save the latest version of your map when you exit."        
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
+        
+    <CheckBoxPreference 
+        android:key="gmscreen"
+        android:title="@string/gm_screen"
+        android:summary="@string/gm_screen_explanation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    </CheckBoxPreference>
+    
+    <PreferenceCategory
+        android:title="@string/mask_settings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        
+	    <CheckBoxPreference
+	        android:key="fogofwar"
+	        android:title="@string/fog_of_war_enabled" 
+	        android:defaultValue="true"
+	        android:summary="Use this to temporarily disable the mask if you need to.  Note that the entire map will draw if no mask regions have been added yet."
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"/>
+	    
+	     <CheckBoxPreference
+            android:key="mask_tokens"
+            android:title="@string/mask_tokens" 
+            android:defaultValue="false"
+            android:summary="@string/mask_tokens_explanation"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+        
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="Snap to Grid"
@@ -46,15 +70,7 @@
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
 	</PreferenceCategory>
-	
-    <CheckBoxPreference 
-        android:key="gmscreen"
-	    android:title="@string/gm_screen"
-	    android:summary="@string/gm_screen_explanation"
-	    android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-    </CheckBoxPreference>
+
 
 	<PreferenceCategory
 	    android:title="App Info"

@@ -76,4 +76,7 @@
     <string name="help">Help</string>
     <string name="token_database">Token Database</string>
     <string name="keep_aspect_ratio">Keep Aspect Ratio</string>
+    <string name="mask_settings">Mask Settings</string>
+    <string name="mask_tokens">Apply Mask to Tokens</string>
+    <string name="mask_tokens_explanation">If checked, the background mask will also apply to tokens.  Use this to hide monsters you have placed in rooms that PCs haven\'t discovered yet.</string>
 </resources>
