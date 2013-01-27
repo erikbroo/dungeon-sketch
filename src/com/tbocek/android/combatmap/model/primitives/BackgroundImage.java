@@ -204,7 +204,7 @@ public class BackgroundImage implements Cloneable{
      */
     public void recomputeHeight() {
         this.mHeightWorldSpace =
-                this.mWidthWorldSpace * this.mOriginalAspectRatio;
+                this.mWidthWorldSpace / this.mOriginalAspectRatio;
     }
 
     @Override
