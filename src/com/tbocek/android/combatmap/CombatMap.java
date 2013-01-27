@@ -311,7 +311,6 @@ public final class CombatMap extends SherlockActivity {
                 mActionMode.finish();
                 mActionMode = null;
             }
-            mSelectedImage = null;
         }
 
         @Override
@@ -324,14 +323,8 @@ public final class CombatMap extends SherlockActivity {
             Menu m = CombatMap.this.mActionMode.getMenu();
             m.findItem(R.id.background_image_maintain_aspect_ratio).setChecked(
                     selectedImage.shouldMaintainAspectRatio());
-            mSelectedImage = selectedImage;
         }
     };
-
-    /**
-     * The BackgroundImage that has been selected.
-     */
-    private BackgroundImage mSelectedImage;
 
     /**
      * Listener that fires when a token has been selected in the token selector
@@ -1525,12 +1518,21 @@ public final class CombatMap extends SherlockActivity {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            BackgroundImage selectedImage =
+                    mCombatView.getSelectedBackgroundImage();
+            if (selectedImage == null) {
+                return false;
+            }
+
             switch (item.getItemId()) {
             case R.id.background_image_delete:
+                mData.getBackgroundImages().deleteImage(selectedImage);
+                mCombatView.setSelectedBackgroundImage(null);
+                mCombatView.refreshMap();
                 break;
             case R.id.background_image_maintain_aspect_ratio:
-                mData.getBackgroundImages().checkpointImage(mSelectedImage);
-                mSelectedImage.setShouldMaintainAspectRatio(item.isChecked());
+                mData.getBackgroundImages().checkpointImage(selectedImage);
+                selectedImage.setShouldMaintainAspectRatio(item.isChecked());
                 break;
             default:
                 break;

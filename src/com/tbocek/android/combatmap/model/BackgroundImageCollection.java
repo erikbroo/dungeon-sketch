@@ -111,6 +111,16 @@ public class BackgroundImageCollection {
     }
 
     /**
+     * Deletes the given image from the background image collection.
+     * @param selectedImage The image to delete.  Must belong to this
+     *      collection.
+     */
+    public void deleteImage(BackgroundImage selectedImage) {
+        Command c = new DeleteImageCommand(selectedImage);
+        this.mCommandHistory.execute(c);
+    }
+
+    /**
      * A Command that adds the given image to the list of images.
      * @author Tim
      *
@@ -144,6 +154,42 @@ public class BackgroundImageCollection {
         public void undo() {
             BackgroundImageCollection.this.mImages.remove(mImage);
 
+        }
+    }
+
+    /**
+     * A Command that removes the given image to the list of images.
+     * @author Tim
+     *
+     */
+    private class DeleteImageCommand implements CommandHistory.Command {
+
+        /**
+         * The image added by this command.
+         */
+        private BackgroundImage mImage;
+
+        /**
+         * Constructor.
+         * @param image The image added by this command.
+         */
+        public DeleteImageCommand(BackgroundImage image) {
+            mImage = image;
+        }
+
+        @Override
+        public void execute() {
+            BackgroundImageCollection.this.mImages.remove(mImage);
+        }
+
+        @Override
+        public boolean isNoop() {
+            return false;
+        }
+
+        @Override
+        public void undo() {
+            BackgroundImageCollection.this.mImages.add(mImage);
         }
     }
 
@@ -210,4 +256,5 @@ public class BackgroundImageCollection {
         }
         s.expectArrayEnd();
     }
+
 }

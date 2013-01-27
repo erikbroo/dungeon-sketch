@@ -1434,6 +1434,8 @@ containing a value of this type.
         public static final int load=0x7f0a001a;
         public static final int map_preview=0x7f0a002e;
         public static final int mask_settings=0x7f0a0042;
+        public static final int mask_tokens=0x7f0a0043;
+        public static final int mask_tokens_explanation=0x7f0a0044;
         public static final int new_map=0x7f0a001b;
         public static final int new_tag=0x7f0a0028;
         public static final int new_token=0x7f0a0027;

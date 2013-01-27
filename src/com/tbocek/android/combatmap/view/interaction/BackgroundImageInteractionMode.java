@@ -26,17 +26,17 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 
     private PointF mLastDragPoint;
 
-    private BackgroundImage mSelectedImage;
-
     public BackgroundImageInteractionMode(CombatView view) {
         super(view);
     }
 
     @Override
     public void draw(Canvas c) {
+        BackgroundImage selectedImage =
+                this.getView().getSelectedBackgroundImage();
         // Draw border and handles on the selected image.
-        if (this.mSelectedImage != null) {
-            BoundingRectangle r = this.mSelectedImage.getBoundingRectangle();
+        if (selectedImage != null) {
+            BoundingRectangle r = selectedImage.getBoundingRectangle();
 
             // Convert bounding rectangle bounds to screen space.
             PointF upperLeft =
@@ -88,6 +88,12 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
         }
     }
 
+    @Override
+    public void onEndMode() {
+        // When ending this interaction mode, clear whatever image is selected.
+        getView().setSelectedBackgroundImage(null);
+    }
+
     /**
      * Helper function to draw a segment of the selection border. Accounts for
      * the presence of a circle handle and doesn't overlap it.
@@ -127,7 +133,7 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
                 .getWorldSpaceTransformer()
                 .screenSpaceToWorldSpace(new PointF(e.getX(), e.getY()));
 
-        this.mSelectedImage =
+        BackgroundImage selectedImage =
                 this.getData()
                 .getBackgroundImages()
                 .getImageOnPoint(
@@ -139,9 +145,10 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 
         this.mLastDragPoint = new PointF(e.getX(), e.getY());
 
-        if (this.mSelectedImage != null) {
+        if (selectedImage != null) {
+            this.getView().setSelectedBackgroundImage(selectedImage);
             // Select a handle mode based on what part of the image was touched.
-            BoundingRectangle r = this.mSelectedImage.getBoundingRectangle();
+            BoundingRectangle r = selectedImage.getBoundingRectangle();
 
             // Convert bounding rectangle bounds to screen space.
             PointF upperLeft =
@@ -166,8 +173,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
                         handles.getClickedHandleCenter(this.mLastDragPoint);
             }
             this.getData().getBackgroundImages().checkpointImage(
-                    this.mSelectedImage);
-            this.getView().reportCurrentlySelectedImage(this.mSelectedImage);
+                    selectedImage);
+            this.getView().reportCurrentlySelectedImage(selectedImage);
         }
 
         this.getView().refreshMap();
@@ -184,7 +191,10 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
         float distanceY = snapped.y - this.mLastDragPoint.y;
         this.mLastDragPoint = snapped;
 
-        if (this.mSelectedImage != null) {
+        BackgroundImage selectedImage =
+                this.getView().getSelectedBackgroundImage();
+
+        if (selectedImage != null) {
             float wsDistX =
                     this.getData().getWorldSpaceTransformer()
                     .screenSpaceToWorldSpace(distanceX);
@@ -194,75 +204,75 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
 
             switch (this.mHandleMode) {
             case LEFT:
-                this.mSelectedImage.moveLeft(wsDistX);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
-                    this.mSelectedImage.recomputeHeight();
+                selectedImage.moveLeft(wsDistX);
+                if (selectedImage.shouldMaintainAspectRatio()) {
+                    selectedImage.recomputeHeight();
                 }
                 break;
             case RIGHT:
-                this.mSelectedImage.moveRight(wsDistX);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
-                    this.mSelectedImage.recomputeHeight();
+                selectedImage.moveRight(wsDistX);
+                if (selectedImage.shouldMaintainAspectRatio()) {
+                    selectedImage.recomputeHeight();
                 }
                 break;
             case TOP:
-                this.mSelectedImage.moveTop(wsDistY);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
-                    this.mSelectedImage.recomputeWidth();
+                selectedImage.moveTop(wsDistY);
+                if (selectedImage.shouldMaintainAspectRatio()) {
+                    selectedImage.recomputeWidth();
                 }
                 break;
             case BOTTOM:
-                this.mSelectedImage.moveBottom(wsDistY);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
-                    this.mSelectedImage.recomputeWidth();
+                selectedImage.moveBottom(wsDistY);
+                if (selectedImage.shouldMaintainAspectRatio()) {
+                    selectedImage.recomputeWidth();
                 }
                 break;
             case UPPER_LEFT:
-                this.mSelectedImage.moveLeft(wsDistX);
-                this.mSelectedImage.moveTop(wsDistY);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                selectedImage.moveLeft(wsDistX);
+                selectedImage.moveTop(wsDistY);
+                if (selectedImage.shouldMaintainAspectRatio()) {
                     if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
-                        this.mSelectedImage.recomputeHeight();
+                        selectedImage.recomputeHeight();
                     } else {
-                        this.mSelectedImage.recomputeWidth();
+                        selectedImage.recomputeWidth();
                     }
                 }
                 break;
             case LOWER_LEFT:
-                this.mSelectedImage.moveLeft(wsDistX);
-                this.mSelectedImage.moveBottom(wsDistY);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                selectedImage.moveLeft(wsDistX);
+                selectedImage.moveBottom(wsDistY);
+                if (selectedImage.shouldMaintainAspectRatio()) {
                     if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
-                        this.mSelectedImage.recomputeHeight();
+                        selectedImage.recomputeHeight();
                     } else {
-                        this.mSelectedImage.recomputeWidth();
+                        selectedImage.recomputeWidth();
                     }
                 }
                 break;
             case UPPER_RIGHT:
-                this.mSelectedImage.moveRight(wsDistX);
-                this.mSelectedImage.moveTop(wsDistY);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                selectedImage.moveRight(wsDistX);
+                selectedImage.moveTop(wsDistY);
+                if (selectedImage.shouldMaintainAspectRatio()) {
                     if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
-                        this.mSelectedImage.recomputeHeight();
+                        selectedImage.recomputeHeight();
                     } else {
-                        this.mSelectedImage.recomputeWidth();
+                        selectedImage.recomputeWidth();
                     }
                 }
                 break;
             case LOWER_RIGHT:
-                this.mSelectedImage.moveRight(wsDistX);
-                this.mSelectedImage.moveBottom(wsDistY);
-                if (this.mSelectedImage.shouldMaintainAspectRatio()) {
+                selectedImage.moveRight(wsDistX);
+                selectedImage.moveBottom(wsDistY);
+                if (selectedImage.shouldMaintainAspectRatio()) {
                     if (Math.abs(wsDistX) > Math.abs(wsDistY)) {
-                        this.mSelectedImage.recomputeHeight();
+                        selectedImage.recomputeHeight();
                     } else {
-                        this.mSelectedImage.recomputeWidth();
+                        selectedImage.recomputeWidth();
                     }
                 }
                 break;
             default:
-                this.mSelectedImage.moveImage(wsDistX, wsDistY);
+                selectedImage.moveImage(wsDistX, wsDistY);
                 break;
             }
             this.getView().refreshMap();

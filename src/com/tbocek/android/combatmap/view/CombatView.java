@@ -206,6 +206,11 @@ public final class CombatView extends SurfaceView {
     private UndoRedoTarget mUndoRedoTarget;
 
     /**
+     * The currently selected background image.
+     */
+    private BackgroundImage mSelectedBackgroundImage;
+
+    /**
      * Constructor.
      * 
      * @param context
@@ -1015,6 +1020,20 @@ public final class CombatView extends SurfaceView {
      */
     public void setMaskAppliesToTokens(boolean applyMask) {
         mApplyMaskToTokens = applyMask;
+    }
+
+    public BackgroundImage getSelectedBackgroundImage() {
+        return mSelectedBackgroundImage;
+    }
+
+
+    public void setSelectedBackgroundImage(BackgroundImage selectedImage) {
+        mSelectedBackgroundImage = selectedImage;
+        if (selectedImage != null) {
+            this.mImageSelectionListener.onSelectBackgroundImage(selectedImage);
+        } else {
+            this.mImageSelectionListener.onSelectNoBackgroundImage();
+        }
     }
 
 
