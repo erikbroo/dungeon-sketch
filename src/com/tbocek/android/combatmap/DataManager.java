@@ -161,6 +161,9 @@ public final class DataManager {
     private File getSavedMapDir() {
         File sdcard = this.mContext.getExternalFilesDir(null);
         File dir = new File(sdcard, "maps");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         return dir;
     }
 
@@ -195,6 +198,9 @@ public final class DataManager {
     private File getTokenImageDir() {
         File sdcard = this.mContext.getExternalFilesDir(null);
         File dir = new File(sdcard, "tokens");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         return dir;
     }
 
@@ -204,6 +210,9 @@ public final class DataManager {
     private File getMapDataDir() {
         File sdcard = this.mContext.getExternalFilesDir(null);
         File dir = new File(sdcard, "mapdata");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         return dir;
     }
 
