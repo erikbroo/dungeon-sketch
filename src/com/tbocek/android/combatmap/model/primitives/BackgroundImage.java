@@ -244,4 +244,12 @@ public class BackgroundImage implements Cloneable{
         return i;
     }
 
+    public void copyLocationDataFrom(BackgroundImage from) {
+        mWidthWorldSpace = from.mWidthWorldSpace;
+        mHeightWorldSpace = from.mHeightWorldSpace;
+        mOriginalAspectRatio = from.mOriginalAspectRatio;
+        mKeepAspectRatio = from.mKeepAspectRatio;
+        mOriginWorldSpace = from.mOriginWorldSpace;
+    }
+
 }

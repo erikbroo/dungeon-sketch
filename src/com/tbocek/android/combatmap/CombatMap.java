@@ -1531,8 +1531,10 @@ public final class CombatMap extends SherlockActivity {
                 mCombatView.refreshMap();
                 break;
             case R.id.background_image_maintain_aspect_ratio:
-                mData.getBackgroundImages().checkpointImage(selectedImage);
+                mData.getBackgroundImages().checkpointImageBefore(
+                        selectedImage);
                 selectedImage.setShouldMaintainAspectRatio(item.isChecked());
+                mData.getBackgroundImages().checkpointImageAfter();
                 break;
             default:
                 break;

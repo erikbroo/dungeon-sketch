@@ -31,6 +31,8 @@ public class BackgroundImageCollection {
      */
     private List<BackgroundImage> mImages = Lists.newArrayList();
 
+    private ModifyImageCommand mCheckpointedImageCommand;
+
     /**
      * Constructor.
      * @param commandHistory The command history that modifications to this
@@ -103,11 +105,27 @@ public class BackgroundImageCollection {
      * user performs with it are already set up to be undoable.
      * @param i The image to checkpoint.
      */
-    public void checkpointImage(BackgroundImage i) {
-        Command c = new ModifyImageCommand(i);
+    public void checkpointImageBefore(BackgroundImage i) {
+        mCheckpointedImageCommand = new ModifyImageCommand(i);
+
+    }
+
+    /**
+     * Checkpoints the state of the the actively checkpointed image and adds
+     * the checkpoint data to the undo/redo stack.
+     * 
+     * The image checkpointed is the image passed to checkpointImageBefore.
+     * 
+     * Must be called in a pair with checkpointImageBefore.
+     */
+    public void checkpointImageAfter() {
         // We are not ready to "execute" this command yet - instead we are
         // checkpointing its state.
-        this.mCommandHistory.addToCommandHistory(c);
+        if (this.mCheckpointedImageCommand != null) {
+            this.mCheckpointedImageCommand.checkpointAfterState();
+            this.mCommandHistory.addToCommandHistory(mCheckpointedImageCommand);
+            mCheckpointedImageCommand = null;
+        }
     }
 
     /**
@@ -211,6 +229,11 @@ public class BackgroundImageCollection {
         private BackgroundImage mAfter;
 
         /**
+         * Reference to the "live" copy of the image.
+         */
+        private BackgroundImage mLiveImage;
+
+        /**
          * Constructor.  Will make a copy of the BackgroundImage being modified.
          * @param toModify The image to modify.
          */
@@ -221,23 +244,34 @@ public class BackgroundImageCollection {
                 throw new RuntimeException(
                         "Cloning BackgroundImage failed.", e);
             }
-            mAfter = toModify;
+            mLiveImage = toModify;
+        }
+
+        /**
+         * Saves the state of this image after all manipulation is finished.
+         */
+        public void checkpointAfterState() {
+            try {
+                mAfter = mLiveImage.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(
+                        "Cloning BackgroundImage failed.", e);
+            }
         }
 
         @Override
         public void execute() {
-            BackgroundImageCollection.this.mImages.remove(mBefore);
-            BackgroundImageCollection.this.mImages.add(mAfter);
-
+            this.mLiveImage.copyLocationDataFrom(this.mAfter);
         }
+
         @Override
         public boolean isNoop() {
             return false;
         }
+
         @Override
         public void undo() {
-            BackgroundImageCollection.this.mImages.remove(mAfter);
-            BackgroundImageCollection.this.mImages.add(mBefore);
+            this.mLiveImage.copyLocationDataFrom(this.mBefore);
         }
     }
 
