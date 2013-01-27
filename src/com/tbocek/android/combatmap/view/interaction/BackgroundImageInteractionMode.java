@@ -172,8 +172,6 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
                 this.mLastDragPoint =
                         handles.getClickedHandleCenter(this.mLastDragPoint);
             }
-            this.getData().getBackgroundImages().checkpointImageBefore(
-                    selectedImage);
             this.getView().reportCurrentlySelectedImage(selectedImage);
         }
 
@@ -200,6 +198,11 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
                 this.getView().getSelectedBackgroundImage();
 
         if (selectedImage != null) {
+            // Now that we are for sure modifying the image, checkpoint it if
+            // it hasn't been checkpointed already.
+            this.getData().getBackgroundImages().checkpointImageBefore(
+                    selectedImage);
+
             float wsDistX =
                     this.getData().getWorldSpaceTransformer()
                     .screenSpaceToWorldSpace(distanceX);

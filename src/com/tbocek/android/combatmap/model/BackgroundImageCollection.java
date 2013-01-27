@@ -103,10 +103,16 @@ public class BackgroundImageCollection {
     /**
      * Checkpoints the state of the given image so that whatever actions the
      * user performs with it are already set up to be undoable.
+     * 
+     * If called after another call to checkpointImageBefore and before the
+     * corresponding call to checkpointImageAfter, this is a noop.
+     * 
      * @param i The image to checkpoint.
      */
     public void checkpointImageBefore(BackgroundImage i) {
-        mCheckpointedImageCommand = new ModifyImageCommand(i);
+        if (mCheckpointedImageCommand == null) {
+            mCheckpointedImageCommand = new ModifyImageCommand(i);
+        }
 
     }
 
