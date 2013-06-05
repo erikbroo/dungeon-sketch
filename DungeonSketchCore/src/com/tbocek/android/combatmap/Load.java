@@ -50,20 +50,20 @@ public final class Load extends Activity {
      */
     private View.OnCreateContextMenuListener mContextMenuListener =
             new View.OnCreateContextMenuListener() {
-                @Override
-                public void onCreateContextMenu(final ContextMenu menu,
-                        final View view, final ContextMenuInfo menuInfo) {
-                    View v = view;
-                    while (!(v instanceof SaveFileButton)) {
-                        v = (View) v.getParent();
-                    }
-                    Load.this.mContextMenuTrigger = (SaveFileButton) v;
-                    if (menu.size() == 0) {
-                        Load.this.getMenuInflater().inflate(
-                                R.menu.save_file_context_menu, menu);
-                    }
-                }
-            };
+        @Override
+        public void onCreateContextMenu(final ContextMenu menu,
+                final View view, final ContextMenuInfo menuInfo) {
+            View v = view;
+            while (!(v instanceof SaveFileButton)) {
+                v = (View) v.getParent();
+            }
+            Load.this.mContextMenuTrigger = (SaveFileButton) v;
+            if (menu.size() == 0) {
+                Load.this.getMenuInflater().inflate(
+                        R.menu.save_file_context_menu, menu);
+            }
+        }
+    };
 
     /**
      * The save file button that last triggered a context menu open. Used to
@@ -93,7 +93,7 @@ public final class Load extends Activity {
         TableRow currentRow = null;
         int viewsPerRow =
                 this.getWindowManager().getDefaultDisplay().getWidth()
-                        / (FILE_VIEW_WIDTH + 2 * FILE_VIEW_PADDING);
+                / (FILE_VIEW_WIDTH + 2 * FILE_VIEW_PADDING);
         int i = 0;
         for (View v : views) {
             if (i % viewsPerRow == 0) {
@@ -162,14 +162,13 @@ public final class Load extends Activity {
 
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.save_file_context_delete:
+        int itemId = item.getItemId();
+        if (itemId == R.id.save_file_context_delete) {
             this.mDataMgr
-                    .deleteSaveFile(this.mContextMenuTrigger.getFileName());
+            .deleteSaveFile(this.mContextMenuTrigger.getFileName());
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this
                             .getApplicationContext());
-
             // If we deleted the currently open file, set us up to create a new
             // file when we return to the main activity.
             if (this.mContextMenuTrigger.getFileName().equals(
@@ -177,11 +176,10 @@ public final class Load extends Activity {
                 this.setFilenamePreference(null);
                 MapData.invalidate();
             }
-
             // Re-run the setup to remove the deleted file.
             this.setup();
             return true;
-        default:
+        } else {
             return super.onContextItemSelected(item);
         }
     }
@@ -262,7 +260,7 @@ public final class Load extends Activity {
      * 
      */
     public final class SaveFileButtonClickListener implements
-            View.OnClickListener {
+    View.OnClickListener {
         /**
          * Filename that this listener instance will load when it fires.
          */

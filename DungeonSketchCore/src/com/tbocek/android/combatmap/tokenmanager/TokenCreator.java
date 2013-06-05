@@ -114,12 +114,12 @@ public final class TokenCreator extends SherlockActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.token_image_creator_pick:
+        int itemId = item.getItemId();
+        if (itemId == R.id.token_image_creator_pick) {
             this.mImageSelectorStartedAutomatically = false;
             this.startImageSelectorActivity();
             return true;
-        case R.id.token_image_creator_accept:
+        } else if (itemId == R.id.token_image_creator_accept) {
             try {
                 // Pick a filename based on the current date and time. This
                 // ensures that the tokens load in the order added.
@@ -145,13 +145,13 @@ public final class TokenCreator extends SherlockActivity {
                 toast.show();
             }
             return true;
-        case android.R.id.home:
+        } else if (itemId == android.R.id.home) {
             // app icon in action bar clicked; go home
             Intent intent = new Intent(this, CombatMap.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             this.startActivity(intent);
             return true;
-        default:
+        } else {
             return false;
         }
     }

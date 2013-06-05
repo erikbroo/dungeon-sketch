@@ -93,20 +93,20 @@ public final class TokenManager extends SherlockActivity {
      */
     private TagListView.OnTagListActionListener mOnTagListActionListener =
             new TagListView.OnTagListActionListener() {
-                @Override
-                public void onChangeSelectedTag(final String newTag) {
-                    TokenManager.this.setScrollViewTag(newTag);
-                }
+        @Override
+        public void onChangeSelectedTag(final String newTag) {
+            TokenManager.this.setScrollViewTag(newTag);
+        }
 
-                @Override
-                public void onDragTokensToTag(
-                        final Collection<BaseToken> tokens, final String tag) {
-                    for (BaseToken t : tokens) {
-                        TokenManager.this.mTokenDatabase.tagToken(
-                                t.getTokenId(), tag);
-                    }
-                }
-            };
+        @Override
+        public void onDragTokensToTag(
+                final Collection<BaseToken> tokens, final String tag) {
+            for (BaseToken t : tokens) {
+                TokenManager.this.mTokenDatabase.tagToken(
+                        t.getTokenId(), tag);
+            }
+        }
+    };
 
     /**
      * Scroll view that wraps the layout of tokens for the currently selected
@@ -240,23 +240,22 @@ public final class TokenManager extends SherlockActivity {
 
     @Override
     public boolean onContextItemSelected(final android.view.MenuItem item) {
-        // TODO: Move more of this functionality into TokenDeleteButton.
-        switch (item.getItemId()) {
-        case R.id.token_delete_entire_token:
+        int itemId = item.getItemId();
+        if (itemId == R.id.token_delete_entire_token) {
             this.deleteTokens(this.mTrashButton.getManagedTokens());
             return true;
-        case R.id.token_delete_from_tag:
+        } else if (itemId == R.id.token_delete_from_tag) {
             this.removeTagFromTokens(this.mTrashButton.getManagedTokens(),
                     this.mTagListView.getTag());
             return true;
-        case R.id.tag_context_menu_delete:
+        } else if (itemId == R.id.tag_context_menu_delete) {
             if (this.mTagListView.getTag().equals(this.mContextMenuTag)) {
                 this.mTagListView.setHighlightedTag(TokenDatabase.ALL);
             }
             this.mTokenDatabase.deleteTag(this.mContextMenuTag);
             this.updateTagList();
             return true;
-        default:
+        } else {
             return super.onContextItemSelected(item);
         }
     }
@@ -275,7 +274,7 @@ public final class TokenManager extends SherlockActivity {
 
         this.mTagListView = new TagListView(this);
         this.mTagListView
-                .setOnTagListActionListener(this.mOnTagListActionListener);
+        .setOnTagListActionListener(this.mOnTagListActionListener);
         this.mTagListView.setRegisterChildrenForContextMenu(true);
 
         // On large screens, set up a seperate column of token tags and possibly
@@ -292,12 +291,12 @@ public final class TokenManager extends SherlockActivity {
             } else {
                 // If not Honeycomb, no need for the trash button.
                 this.findViewById(R.id.token_manager_delete_button_frame)
-                        .setVisibility(View.GONE);
+                .setVisibility(View.GONE);
             }
 
             FrameLayout tagListFrame =
                     (FrameLayout) this
-                            .findViewById(R.id.token_manager_taglist_frame);
+                    .findViewById(R.id.token_manager_taglist_frame);
             tagListFrame.addView(this.mTagListView);
         } else {
             this.mTagsInActionBar = true;
@@ -310,50 +309,50 @@ public final class TokenManager extends SherlockActivity {
                 (ScrollView) this.findViewById(R.id.token_manager_scroll_view);
 
         this.mTokenViewFactory.getMultiSelectManager()
-                .setSelectionChangedListener(
-                        new MultiSelectManager.SelectionChangedListener() {
+        .setSelectionChangedListener(
+                new MultiSelectManager.SelectionChangedListener() {
 
-                            @Override
-                            public void selectionChanged() {
-                                int numTokens =
-                                        TokenManager.this.mTokenViewFactory
-                                                .getMultiSelectManager()
-                                                .getSelectedTokens().size();
-                                if (TokenManager.this.mMultiSelectActionMode != null) {
-                                    TokenManager.this.mMultiSelectActionMode
-                                            .setTitle(Integer
-                                                    .toString(numTokens)
-                                                    + (numTokens == 1
-                                                            ? " Token "
-                                                            : " Tokens ")
-                                                    + "Selected.");
-                                }
-                            }
+                    @Override
+                    public void selectionChanged() {
+                        int numTokens =
+                                TokenManager.this.mTokenViewFactory
+                                .getMultiSelectManager()
+                                .getSelectedTokens().size();
+                        if (TokenManager.this.mMultiSelectActionMode != null) {
+                            TokenManager.this.mMultiSelectActionMode
+                            .setTitle(Integer
+                                    .toString(numTokens)
+                                    + (numTokens == 1
+                                    ? " Token "
+                                            : " Tokens ")
+                                            + "Selected.");
+                        }
+                    }
 
-                            @Override
-                            public void selectionEnded() {
-                                if (TokenManager.this.mMultiSelectActionMode != null) {
-                                    ActionMode m =
-                                            TokenManager.this.mMultiSelectActionMode;
-                                    TokenManager.this.mMultiSelectActionMode =
-                                            null;
-                                    m.finish();
-                                }
+                    @Override
+                    public void selectionEnded() {
+                        if (TokenManager.this.mMultiSelectActionMode != null) {
+                            ActionMode m =
+                                    TokenManager.this.mMultiSelectActionMode;
+                            TokenManager.this.mMultiSelectActionMode =
+                                    null;
+                            m.finish();
+                        }
 
-                                for (TokenButton b : TokenManager.this.mButtons) {
-                                    MultiSelectTokenButton msb =
-                                            (MultiSelectTokenButton) b;
-                                    msb.setSelected(false);
-                                }
-                            }
+                        for (TokenButton b : TokenManager.this.mButtons) {
+                            MultiSelectTokenButton msb =
+                                    (MultiSelectTokenButton) b;
+                            msb.setSelected(false);
+                        }
+                    }
 
-                            @Override
-                            public void selectionStarted() {
-                                TokenManager.this.mMultiSelectActionMode =
-                                        TokenManager.this
-                                                .startActionMode(new TokenSelectionActionModeCallback());
-                            }
-                        });
+                    @Override
+                    public void selectionStarted() {
+                        TokenManager.this.mMultiSelectActionMode =
+                                TokenManager.this
+                                .startActionMode(new TokenSelectionActionModeCallback());
+                    }
+                });
 
     }
 
@@ -374,7 +373,7 @@ public final class TokenManager extends SherlockActivity {
                 } else {
                     deleteText =
                             "Delete " + Integer.toString(tokens.size())
-                                    + " Tokens";
+                            + " Tokens";
                 }
 
                 menu.add(Menu.NONE, R.id.token_delete_entire_token, Menu.NONE,
@@ -388,7 +387,7 @@ public final class TokenManager extends SherlockActivity {
                 if (tokens.size() > 1) {
                     removeText +=
                             " from " + Integer.toString(tokens.size())
-                                    + " tokens";
+                            + " tokens";
                 }
                 menu.add(Menu.NONE, R.id.token_delete_from_tag, Menu.NONE,
                         removeText);
@@ -402,13 +401,13 @@ public final class TokenManager extends SherlockActivity {
         case DIALOG_ID_NEW_TAG:
             return new TextPromptDialog(this,
                     new TextPromptDialog.OnTextConfirmedListener() {
-                        @Override
-                        public void onTextConfirmed(final String text) {
-                            TokenManager.this.mTokenDatabase.addEmptyTag(text);
-                            TokenManager.this.updateTagList();
-                        }
-                    }, this.getString(R.string.new_tag),
-                    this.getString(R.string.create));
+                @Override
+                public void onTextConfirmed(final String text) {
+                    TokenManager.this.mTokenDatabase.addEmptyTag(text);
+                    TokenManager.this.updateTagList();
+                }
+            }, this.getString(R.string.new_tag),
+            this.getString(R.string.create));
         default:
             return null;
 
@@ -425,52 +424,53 @@ public final class TokenManager extends SherlockActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.token_manager_new_token:
+        int itemId = item.getItemId();
+        if (itemId == R.id.token_manager_new_token) {
             this.startActivity(new Intent(this, TokenCreator.class));
             return true;
-        case R.id.token_manager_new_tag:
+        } else if (itemId == R.id.token_manager_new_tag) {
             this.showDialog(DIALOG_ID_NEW_TAG);
             return true;
-        case R.id.token_manager_delete_tag:
+        } else if (itemId == R.id.token_manager_delete_tag) {
             // Confirm the tag deletion.
             new AlertDialog.Builder(this)
-                    .setMessage(
-                            "Really delete the " + this.getActiveTag()
-                                    + " tag?  This won't delete any tokens.")
+            .setMessage(
+                    "Really delete the " + this.getActiveTag()
+                    + " tag?  This won't delete any tokens.")
                     .setCancelable(false)
                     .setPositiveButton("Yes",
                             new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    TokenManager.this.mTokenDatabase
-                                            .deleteTag(TokenManager.this
-                                                    .getActiveTag());
-                                    TokenManager.this.updateTagList();
-                                }
-                            })
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                int which) {
+                            TokenManager.this.mTokenDatabase
+                            .deleteTag(TokenManager.this
+                                    .getActiveTag());
+                            TokenManager.this.updateTagList();
+                        }
+                    })
                     .setNegativeButton("No",
                             new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                        int which) {
-                                    dialog.cancel();
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                int which) {
+                            dialog.cancel();
 
-                                }
-                            }).create().show();
+                        }
+                    }).create().show();
             return true;
-        case android.R.id.home:
+        } else if (itemId == R.id.token_manager_help) {
+            Help.openHelp(this);
+            return true;
+        } else if (itemId == android.R.id.home) {
             // app icon in action bar clicked; go home
             Intent intent = new Intent(this, CombatMap.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             this.startActivity(intent);
-        case R.id.token_manager_help:
-            Help.openHelp(this);
             return true;
-        default:
+        } else {
             return false;
         }
     }
@@ -561,23 +561,23 @@ public final class TokenManager extends SherlockActivity {
             adapter.add("All Tokens");
             adapter.addAll(tags);
             int oldIndex = tags.indexOf(this.tagFromActionBar) + 1; // If not
-                                                                    // found,
-                                                                    // will
-                                                                    // result in
-                                                                    // "All Tokens"
-                                                                    // which is
-                                                                    // just what
-                                                                    // we want.
+            // found,
+            // will
+            // result in
+            // "All Tokens"
+            // which is
+            // just what
+            // we want.
             bar.setListNavigationCallbacks(adapter, new TagNavigationListener(
                     tags));
             this.setSuspendViewUpdates(oldIndex > 0); // If we are staying on
-                                                      // the same tag (i.e. not
-                                                      // changing back to
-                                                      // "All Tokens" because of
-                                                      // a deleted tag), do not
-                                                      // refresh the view so we
-                                                      // don't lose the scroll
-                                                      // position.
+            // the same tag (i.e. not
+            // changing back to
+            // "All Tokens" because of
+            // a deleted tag), do not
+            // refresh the view so we
+            // don't lose the scroll
+            // position.
             bar.setSelectedNavigationItem(oldIndex);
             this.setSuspendViewUpdates(false);
         } else {
@@ -586,7 +586,7 @@ public final class TokenManager extends SherlockActivity {
     }
 
     private class TagNavigationListener implements
-            ActionBar.OnNavigationListener {
+    ActionBar.OnNavigationListener {
         List<String> mTags;
 
         public TagNavigationListener(List<String> tags) {
@@ -615,48 +615,46 @@ public final class TokenManager extends SherlockActivity {
      * 
      */
     private class TokenSelectionActionModeCallback implements
-            ActionMode.Callback {
+    ActionMode.Callback {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             final Collection<BaseToken> tokens =
                     TokenManager.this.mTokenViewFactory.getMultiSelectManager()
-                            .getSelectedTokens();
-            switch (item.getItemId()) {
-            case R.id.token_manager_action_mode_remove_tag:
+                    .getSelectedTokens();
+            int itemId = item.getItemId();
+            if (itemId == R.id.token_manager_action_mode_remove_tag) {
                 TokenManager.this.removeTagFromTokens(tokens,
                         TokenManager.this.getActiveTag());
                 return true;
-            case R.id.token_manager_action_mode_delete:
+            } else if (itemId == R.id.token_manager_action_mode_delete) {
                 TokenManager.this.deleteTokens(tokens);
                 return true;
-            case R.id.token_manager_action_mode_add_to_tag:
+            } else if (itemId == R.id.token_manager_action_mode_add_to_tag) {
                 List<String> tags = TokenManager.this.mTokenDatabase.getTags();
-
                 final ArrayAdapter<String> adapter =
                         new ArrayAdapter<String>(TokenManager.this,
                                 R.layout.selection_dialog_text_view);
                 adapter.addAll(tags);
                 new AlertDialog.Builder(TokenManager.this)
-                        .setTitle("Select a Tag")
-                        .setAdapter(adapter,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                            int which) {
-                                        Set<String> tags =
-                                                Sets.newHashSet(adapter
-                                                        .getItem(which));
+                .setTitle("Select a Tag")
+                .setAdapter(adapter,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,
+                            int which) {
+                        Set<String> tags =
+                                Sets.newHashSet(adapter
+                                        .getItem(which));
 
-                                        for (BaseToken token : tokens) {
-                                            TokenManager.this.mTokenDatabase
-                                                    .tagToken(token, tags);
-                                        }
-                                    }
-                                }).create().show();
+                        for (BaseToken token : tokens) {
+                            TokenManager.this.mTokenDatabase
+                            .tagToken(token, tags);
+                        }
+                    }
+                }).create().show();
                 return true;
-            default:
-                break;
+            } else {
             }
             return false;
         }
@@ -671,7 +669,7 @@ public final class TokenManager extends SherlockActivity {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             TokenManager.this.mTokenViewFactory.getMultiSelectManager()
-                    .selectNone();
+            .selectNone();
         }
 
         @Override

@@ -769,17 +769,14 @@ public final class CombatMap extends SherlockActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-        case R.id.menu_clear_all:
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_clear_all) {
             // Save the current map, if autosave was requested.
             if (this.mSharedPreferences.getBoolean("autosave", true)) {
                 new MapSaver(this.mSharedPreferences.getString("filename", ""),
                         this.getApplicationContext()).run();
             }
-
             Grid g = mData.getGrid();
-
             MapData.clear();
             this.setFilenamePreference(null);
             mData = MapData.getInstance();
@@ -788,47 +785,47 @@ public final class CombatMap extends SherlockActivity {
             this.mCombatView.setData(mData);
             this.reloadPreferences();
             return true;
-        case R.id.menu_settings:
+        } else if (itemId == R.id.menu_settings) {
             this.startActivity(new Intent(this, Settings.class));
             return true;
-        case R.id.menu_resize_grid:
+        } else if (itemId == R.id.menu_resize_grid) {
             this.mCombatView.setResizeGridMode();
             this.mBottomControlFrame.removeAllViews();
             return true;
-        case R.id.menu_snap_to_grid:
+        } else if (itemId == R.id.menu_snap_to_grid) {
             this.mSnapToGridMenuItem.setChecked(!this.mSnapToGridMenuItem
                     .isChecked());
             this.setModeSpecificSnapPreference(this.mSnapToGridMenuItem
                     .isChecked());
             return true;
-        case R.id.menu_save:
+        } else if (itemId == R.id.menu_save) {
             this.showDialog(DIALOG_ID_SAVE);
             return true;
-        case R.id.menu_load:
+        } else if (itemId == R.id.menu_load) {
             this.startActivity(new Intent(this, Load.class));
             return true;
-        case R.id.menu_undo:
+        } else if (itemId == R.id.menu_undo) {
             this.mCombatView.getUndoRedoTarget().undo();
             this.mCombatView.refreshMap();
             return true;
-        case R.id.menu_redo:
+        } else if (itemId == R.id.menu_redo) {
             this.mCombatView.getUndoRedoTarget().redo();
             this.mCombatView.refreshMap();
             return true;
-        case R.id.menu_grid_properties:
+        } else if (itemId == R.id.menu_grid_properties) {
             this.showDialog(DIALOG_ID_GRID_PROPERTIES);
             return true;
-        case R.id.menu_export:
+        } else if (itemId == R.id.menu_export) {
             this.showDialog(DIALOG_ID_EXPORT);
             return true;
-        case R.id.menu_help:
+        } else if (itemId == R.id.menu_help) {
             Help.openHelp(this);
             return true;
-        case R.id.menu_token_database:
+        } else if (itemId == R.id.menu_token_database) {
             Debug.startMethodTracing("tokenmanager");
             this.startActivity(new Intent(CombatMap.this, TokenManager.class));
             return true;
-        default:
+        } else {
             return false;
         }
     }
@@ -1337,107 +1334,87 @@ public final class CombatMap extends SherlockActivity {
                     new ArrayList<BaseToken>(CombatMap.this.mCombatView
                             .getMultiSelect().getSelectedTokens());
 
-            switch (item.getItemId()) {
-            case R.id.token_action_mode_bloodied:
+            if (item.getItemId() == R.id.token_action_mode_bloodied) {
                 item.setChecked(!item.isChecked());
                 mData.getTokens().checkpointTokens(tokens);
                 for (BaseToken t : tokens) {
                     t.setBloodied(item.isChecked());
                 }
                 mData.getTokens().createCommandHistory();
-                break;
-            case R.id.token_action_mode_border_color_none:
+            } else if (item.getItemId() == R.id.token_action_mode_border_color_none) {
                 item.setChecked(true);
                 mData.getTokens().checkpointTokens(tokens);
                 for (BaseToken t : tokens) {
                     t.clearCustomBorderColor();
                 }
                 mData.getTokens().createCommandHistory();
-                break;
-            case R.id.token_action_mode_border_color_white:
+            } else if (item.getItemId() == R.id.token_action_mode_border_color_white) {
                 item.setChecked(true);
                 this.setTokenBorderColor(tokens, Color.WHITE);
-                break;
-            case R.id.token_action_mode_border_color_blue:
+            } else if (item.getItemId() == R.id.token_action_mode_border_color_blue) {
                 item.setChecked(true);
                 this.setTokenBorderColor(tokens, Color.BLUE);
-                break;
-            case R.id.token_action_mode_border_color_black:
+            } else if (item.getItemId() == R.id.token_action_mode_border_color_black) {
                 item.setChecked(true);
                 this.setTokenBorderColor(tokens, Color.BLACK);
-                break;
-            case R.id.token_action_mode_border_color_red:
+            } else if (item.getItemId() == R.id.token_action_mode_border_color_red) {
                 item.setChecked(true);
                 this.setTokenBorderColor(tokens, Color.RED);
-                break;
-            case R.id.token_action_mode_border_color_green:
+            } else if (item.getItemId() == R.id.token_action_mode_border_color_green) {
                 item.setChecked(true);
                 this.setTokenBorderColor(tokens, Color.GREEN);
-                break;
-            case R.id.token_action_mode_border_color_yellow:
+            } else if (item.getItemId() == R.id.token_action_mode_border_color_yellow) {
                 item.setChecked(true);
                 this.setTokenBorderColor(tokens, Color.YELLOW);
-                break;
-            case R.id.token_action_mode_size_tenth:
+            } else if (item.getItemId() == R.id.token_action_mode_size_tenth) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 0.1f);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_quarter:
+            } else if (item.getItemId() == R.id.token_action_mode_size_quarter) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 0.25f);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_half:
+            } else if (item.getItemId() == R.id.token_action_mode_size_half) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 0.5f);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_1:
+            } else if (item.getItemId() == R.id.token_action_mode_size_1) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 1);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_2:
+            } else if (item.getItemId() == R.id.token_action_mode_size_2) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 2);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_3:
+            } else if (item.getItemId() == R.id.token_action_mode_size_3) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 3);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_4:
+            } else if (item.getItemId() == R.id.token_action_mode_size_4) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 4);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_5:
+            } else if (item.getItemId() == R.id.token_action_mode_size_5) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 5);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_size_6:
+            } else if (item.getItemId() == R.id.token_action_mode_size_6) {
                 // CHECKSTYLE:OFF
                 item.setChecked(true);
                 this.setTokenSize(tokens, 6);
                 // CHECKSTYLE:ON
-                break;
-            case R.id.token_action_mode_delete:
+            } else if (item.getItemId() == R.id.token_action_mode_delete) {
                 mData.getTokens().removeAll(tokens);
                 // We just deleted all the tokens, select none.
                 CombatMap.this.mCombatView.getMultiSelect().selectNone();
-            default:
-                break;
             }
             CombatMap.this.mCombatView.refreshMap();
             return true;
@@ -1524,20 +1501,17 @@ public final class CombatMap extends SherlockActivity {
                 return false;
             }
 
-            switch (item.getItemId()) {
-            case R.id.background_image_delete:
+            int itemId = item.getItemId();
+            if (itemId == R.id.background_image_delete) {
                 mData.getBackgroundImages().deleteImage(selectedImage);
                 mCombatView.setSelectedBackgroundImage(null);
                 mCombatView.refreshMap();
-                break;
-            case R.id.background_image_maintain_aspect_ratio:
+            } else if (itemId == R.id.background_image_maintain_aspect_ratio) {
                 mData.getBackgroundImages().checkpointImageBefore(
                         selectedImage);
                 selectedImage.setShouldMaintainAspectRatio(item.isChecked());
                 mData.getBackgroundImages().checkpointImageAfter();
-                break;
-            default:
-                break;
+            } else {
             }
             return true;
         }
