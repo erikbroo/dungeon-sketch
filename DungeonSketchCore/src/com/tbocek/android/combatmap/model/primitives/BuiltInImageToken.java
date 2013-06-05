@@ -84,6 +84,9 @@ public final class BuiltInImageToken extends DrawableToken {
         int id =
                 res.getIdentifier(this.mResourceName, "drawable",
                         "com.tbocek.android.combatmap");
+        if (id == 0) {
+            return null;
+        }
         return res.getDrawable(id);
     }
 
