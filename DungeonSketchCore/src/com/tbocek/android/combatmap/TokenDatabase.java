@@ -669,6 +669,12 @@ public final class TokenDatabase {
                         this.mContext.getResources().getIdentifier(
                                 atts.getValue("res"), "drawable",
                                 "com.tbocek.android.combatmap");
+                if (id == 0) {
+                    Log.e("com.tbocek.android.combatmap.TokenDatabase",
+                            "Image resource for name='" + atts.getValue("res") +
+                            "' not found in database");
+                    return;
+                }
                 String tagList = atts.getValue("tags");
                 Set<String> defaultTags = Sets.newHashSet();
                 if (tagList != null) {
