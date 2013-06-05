@@ -297,4 +297,8 @@ public class BackgroundImageCollection {
         s.expectArrayEnd();
     }
 
+    public boolean contains(BackgroundImage selectedImage) {
+        return this.mImages.contains(selectedImage);
+    }
+
 }

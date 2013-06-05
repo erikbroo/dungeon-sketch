@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Dungeon Sketch</string>
     <string name="preferences">com.tbocek.combatmap_preferences</string>
     <string name="save">Save</string>
@@ -37,8 +38,7 @@
     <string name="filter_tokens">Filter Tokens</string>
     <string name="token_manager">Token Manager</string>
     <string name="autosave">Auto-Save</string>
-    <string name="about_text">
-        Dungeon Sketch Beta\n
+    <string name="about_text">        Dungeon Sketch Beta\n
         Written by Tim Bocek\n
         \n
         Licensed under the GNU Lesser General Public License, available at http://www.gnu.org/licenses/lgpl.html\n
@@ -52,19 +52,14 @@
         Uses icons from the Oxygen, available at http://www.oxygen-icons.org.\n
         Licensed under Creative Commons BY-SA 3.0, available at http://creativecommons.org/licenses/by-sa/3.0/.\n
         \n
-        Not all token images are compatible with the LGPL.  They are provided for this distribution of the application only.  Please ensure that you have artist permission before redistributing these icons or including them in a commercial distribution of Dungeon Sketch.
-    </string>
-    
-    <!-- GM Screen  -->
+        Not all token images are compatible with the LGPL.  They are provided for this distribution of the application only.  Please ensure that you have artist permission before redistributing these icons or including them in a commercial distribution of Dungeon Sketch.</string>
+
+    <!-- GM Screen -->
     <string name="gm_screen">GM Screen</string>
-    <string name="gm_screen_explanation">
-        Provides a prompt when switching to the Map or GM Notes layers.  
-        This is meant to prevent accidental spoilers, but will not stop players from snooping!
-    </string>
-    <string name="gm_screen_spoiler_warning">
-        The Game Master has enabled GM Screen.\n
-        There may be spoilers if you continue!
-    </string>
+    <string name="gm_screen_explanation">        Provides a prompt when switching to the Map or GM Notes layers.  
+        This is meant to prevent accidental spoilers, but will not stop players from snooping!</string>
+    <string name="gm_screen_spoiler_warning">        The Game Master has enabled GM Screen.\n
+        There may be spoilers if you continue!</string>
     <string name="gm_screen_mistchief_managed">I solemnly swear that I am up to no good!</string>
     <string name="gm_screen_cancel">Cancel</string>
     <!-- Color Picker -->
@@ -72,11 +67,15 @@
     <string name="press_color_to_apply">Press on Color to apply</string>
     <string name="grid_appearence">Grid Appearence</string>
     <string name="add_to_tag">Add to tag</string>
-    <string name="delete_tag">Delete Tag</string>    
+    <string name="delete_tag">Delete Tag</string>
     <string name="help">Help</string>
     <string name="token_database">Token Database</string>
     <string name="keep_aspect_ratio">Keep Aspect Ratio</string>
     <string name="mask_settings">Mask Settings</string>
     <string name="mask_tokens">Apply Mask to Tokens</string>
     <string name="mask_tokens_explanation">If checked, the background mask will also apply to tokens.  Use this to hide monsters you have placed in rooms that PCs haven\'t discovered yet.</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_beta">BetaActivity</string>
+
 </resources>

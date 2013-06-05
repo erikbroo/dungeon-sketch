@@ -402,11 +402,13 @@ public final class DataManager {
     public List<String> tokenFiles() {
         String[] files = this.getTokenImageDir().list();
         ArrayList<String> imageFiles = new ArrayList<String>();
-        for (String file : files) {
-            Log.d("tokenFiles", file);
-            if ((this.isImageFileName(file))
-                    && !file.endsWith(PREVIEW_EXTENSION)) {
-                imageFiles.add(file);
+        if (files != null) {
+            for (String file : files) {
+                Log.d("tokenFiles", file);
+                if ((this.isImageFileName(file))
+                        && !file.endsWith(PREVIEW_EXTENSION)) {
+                    imageFiles.add(file);
+                }
             }
         }
         return imageFiles;

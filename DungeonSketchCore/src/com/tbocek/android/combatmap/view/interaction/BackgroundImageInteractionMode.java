@@ -35,7 +35,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
         BackgroundImage selectedImage =
                 this.getView().getSelectedBackgroundImage();
         // Draw border and handles on the selected image.
-        if (selectedImage != null) {
+        if (selectedImage != null &&
+                this.getData().getBackgroundImages().contains(selectedImage)) {
             BoundingRectangle r = selectedImage.getBoundingRectangle();
 
             // Convert bounding rectangle bounds to screen space.
@@ -197,7 +198,8 @@ public class BackgroundImageInteractionMode extends BaseDrawInteractionMode {
         BackgroundImage selectedImage =
                 this.getView().getSelectedBackgroundImage();
 
-        if (selectedImage != null) {
+        if (selectedImage != null &&
+                this.getData().getBackgroundImages().contains(selectedImage)) {
             // Now that we are for sure modifying the image, checkpoint it if
             // it hasn't been checkpointed already.
             this.getData().getBackgroundImages().checkpointImageBefore(
