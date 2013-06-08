@@ -24,6 +24,11 @@ public final class Settings extends PreferenceActivity {
      */
     public static final int DIALOG_ID_ABOUT = 0;
 
+    /**
+     * ID for the migrate data dialog.
+     */
+    public static final int DIALOG_ID_MIGRATE_DATA = 1;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,28 +37,39 @@ public final class Settings extends PreferenceActivity {
         // Hook up the about preference
         Preference dialogPref = this.findPreference("about");
         dialogPref
-                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        .setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Settings.this.showDialog(DIALOG_ID_ABOUT);
-                        return true;
-                    }
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Settings.this.showDialog(DIALOG_ID_ABOUT);
+                return true;
+            }
 
-                });
+        });
 
         Preference artCreditPref = this.findPreference("artcredits");
         artCreditPref
-                .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        .setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        Settings.this.startActivity(new Intent(Settings.this,
-                                ArtCredits.class));
-                        return true;
-                    }
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Settings.this.startActivity(new Intent(Settings.this,
+                        ArtCredits.class));
+                return true;
+            }
 
-                });
+        });
+
+        Preference migrateDataPref = this.findPreference("migrate_data");
+        migrateDataPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference arg0) {
+                new ImportDataDialog(Settings.this).show();
+                return true;
+            }
+
+        });
     }
 
     @Override

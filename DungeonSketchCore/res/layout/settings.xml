@@ -88,5 +88,9 @@
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
     </PreferenceCategory>
-
+        <Preference
+            android:key="migrate_data"
+            android:title="@string/import_data"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
 </PreferenceScreen>
