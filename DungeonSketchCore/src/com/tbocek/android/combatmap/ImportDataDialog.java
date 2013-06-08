@@ -1,7 +1,7 @@
 package com.tbocek.android.combatmap;
 
-import android.app.Dialog;
-import android.content.Context;
+import roboguice.activity.RoboActivity;
+import android.os.Bundle;
 
 /**
  * Dialog that allows importing data from other installed instances of Dungeon
@@ -9,12 +9,11 @@ import android.content.Context;
  * @author Tim
  *
  */
-public class ImportDataDialog extends Dialog {
-
-    public ImportDataDialog(Context context) {
-        super(context);
-        this.setContentView(R.layout.draw_text);
-        this.setTitle(context.getString(R.string.import_data));
+public class ImportDataDialog extends RoboActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setContentView(R.layout.import_data);
     }
 
 }

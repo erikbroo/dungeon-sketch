@@ -65,7 +65,8 @@ public final class Settings extends PreferenceActivity {
 
             @Override
             public boolean onPreferenceClick(Preference arg0) {
-                new ImportDataDialog(Settings.this).show();
+                Settings.this.startActivity(new Intent(Settings.this,
+                        ImportDataDialog.class));
                 return true;
             }
 
