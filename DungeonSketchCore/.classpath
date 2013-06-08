@@ -5,7 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/guava-11.0.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="libs/android-query.0.24.3.jar"/>
 	<classpathentry kind="src" path="/library"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
