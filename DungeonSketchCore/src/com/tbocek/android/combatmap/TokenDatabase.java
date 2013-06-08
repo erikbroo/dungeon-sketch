@@ -649,7 +649,7 @@ public final class TokenDatabase {
         /**
          * Count of the tokens that have been loaded; used to sort them later.
          */
-        private int mCurrentSortOrder;
+        private int mCurrentSortOrder = 0;
 
         /**
          * Constructor.
@@ -664,6 +664,12 @@ public final class TokenDatabase {
         @Override
         public void startElement(String namespaceURI, String localName,
                 String qName, org.xml.sax.Attributes atts) throws SAXException {
+            // Possibly limit the number of built-in tokens loaded, for debug
+            // purposes.
+            if (mCurrentSortOrder > DeveloperMode.MAX_BUILTIN_TOKENS) {
+                return;
+            }
+
             if (localName.equalsIgnoreCase("token")) {
                 int id =
                         this.mContext.getResources().getIdentifier(

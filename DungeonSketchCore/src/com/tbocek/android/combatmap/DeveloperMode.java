@@ -15,6 +15,8 @@ public final class DeveloperMode {
      */
     public static final boolean DEVELOPER_MODE = BuildConfig.DEBUG;
 
+    public static final int MAX_BUILTIN_TOKENS = BuildConfig.DEBUG ? 3 : Integer.MAX_VALUE;
+
     /**
      * Starts the profiler only if developer mode is active.
      * 
@@ -43,9 +45,9 @@ public final class DeveloperMode {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD
                 && DEVELOPER_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll().penaltyLog().build());
+            .detectAll().penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectAll().penaltyLog().penaltyDeath().build());
+            .detectAll().penaltyLog().penaltyDeath().build());
         }
     }
 
