@@ -7,6 +7,8 @@ import java.util.Set;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 
+import com.tbocek.android.combatmap.DungeonSketchApp;
+
 /**
  * Creates a token for one of the built-in images.
  * 
@@ -83,7 +85,7 @@ public final class BuiltInImageToken extends DrawableToken {
 
         int id =
                 res.getIdentifier(this.mResourceName, "drawable",
-                        "com.tbocek.android.combatmap");
+                        DungeonSketchApp.getContext().getPackageName());
         if (id == 0) {
             return null;
         }
