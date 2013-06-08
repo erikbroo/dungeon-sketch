@@ -77,5 +77,14 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_beta">BetaActivity</string>
+    <string name="import_data">Migrate Data</string>
+    <string name="import_option_legacy_install">Legacy Install</string>
+    <string name="import_option_google_play_version">Current Google Play version</string>
+    <string name="import_from">Migrate From:</string>
+    <string name="import_option_alpha_version">Alpha Version</string>
+    <string name="import_overwrite_existing">Overwrite Existing:</string>
+    <string name="import_overwrite_tokens">Tokens</string>
+    <string name="import_overwrite_maps">Maps</string>
+    <string name="import_start">Migrate</string>
 
 </resources>
