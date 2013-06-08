@@ -54,7 +54,8 @@
         </activity>
         <activity
             android:name="com.tbocek.android.combatmap.ImportDataDialog"
-            android:label="Token Manager" >
+            android:label="Token Manager" 
+            android:theme="@android:style/Theme.Holo.Dialog">
         </activity>
     </application>
 
