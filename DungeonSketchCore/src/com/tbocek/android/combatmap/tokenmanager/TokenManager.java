@@ -39,7 +39,6 @@ import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
-import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.view.GridLayout;
 import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TokenButton;
@@ -266,9 +265,6 @@ public final class TokenManager extends SherlockActivity {
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.token_manager_layout);
-
-        BuiltInImageToken.registerResources(this.getApplicationContext()
-                .getResources());
 
         this.mTokenViewFactory = new MultiSelectTokenViewFactory(this);
 

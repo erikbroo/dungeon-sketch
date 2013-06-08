@@ -40,7 +40,6 @@ import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BackgroundImage;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
-import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Text;
 import com.tbocek.android.combatmap.model.primitives.Util;
@@ -518,9 +517,6 @@ public final class CombatMap extends SherlockActivity {
         this.mSharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this
                         .getApplicationContext());
-
-        BuiltInImageToken.registerResources(this.getApplicationContext()
-                .getResources());
 
         BackgroundImage.registerDataManager(
                 new DataManager(this.getApplicationContext()));

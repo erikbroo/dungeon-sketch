@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 
 import com.tbocek.android.combatmap.DungeonSketchApp;
@@ -16,12 +15,6 @@ import com.tbocek.android.combatmap.DungeonSketchApp;
  * 
  */
 public final class BuiltInImageToken extends DrawableToken {
-    /**
-     * HACK: The resources. This must be set prior to creating
-     * BuildInImageTokens.
-     */
-    private static transient Resources res;
-
     /**
      * Format string that pads the sort order with 0s.
      */
@@ -42,16 +35,6 @@ public final class BuiltInImageToken extends DrawableToken {
      * Relative order to sort this token in.
      */
     private int mSortOrder;
-
-    /**
-     * Sets the resources that images will be loaded from.
-     * 
-     * @param resources
-     *            The resources object.
-     */
-    public static void registerResources(final Resources resources) {
-        res = resources;
-    }
 
     /**
      * Constructor from resource ID.
@@ -79,17 +62,14 @@ public final class BuiltInImageToken extends DrawableToken {
 
     @Override
     protected Drawable createDrawable() {
-        if (res == null) {
-            return null;
-        }
-
         int id =
-                res.getIdentifier(this.mResourceName, "drawable",
+                DungeonSketchApp.getContext().getResources().getIdentifier(
+                        this.mResourceName, "drawable",
                         DungeonSketchApp.getContext().getPackageName());
         if (id == 0) {
             return null;
         }
-        return res.getDrawable(id);
+        return DungeonSketchApp.getContext().getResources().getDrawable(id);
     }
 
     @Override
