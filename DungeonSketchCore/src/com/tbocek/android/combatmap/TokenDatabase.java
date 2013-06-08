@@ -668,11 +668,11 @@ public final class TokenDatabase {
                 int id =
                         this.mContext.getResources().getIdentifier(
                                 atts.getValue("res"), "drawable",
-                                "com.tbocek.android.combatmap");
+                                mContext.getPackageName());
                 if (id == 0) {
                     Log.e("com.tbocek.android.combatmap.TokenDatabase",
-                            "Image resource for name='" + atts.getValue("res") +
-                            "' not found in database");
+                            "Image resource for name='" + atts.getValue("res")
+                            + "' not found in database");
                     return;
                 }
                 String tagList = atts.getValue("tags");
