@@ -17,23 +17,26 @@
         android:layout_height="wrap_content" >
 
         <RadioButton
-            android:id="@+id/radio0"
+            android:id="@+id/import_legacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/import_option_legacy_install" />
+            android:text="@string/import_option_legacy_install"
+            android:tag="import_legacy" />
 
         <RadioButton
-            android:id="@+id/radio1"
+            android:id="@+id/import_current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/import_option_google_play_version" />
+            android:text="@string/import_option_google_play_version" 
+            android:tag="import_current" />
 
         <RadioButton
-            android:id="@+id/radio2"
+            android:id="@+id/import_alpha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/import_option_alpha_version" />
+            android:text="@string/import_option_alpha_version"
+            android:tag="import_alpha"  />
     </RadioGroup>
 
     <TextView
@@ -44,21 +47,38 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <CheckBox
-        android:id="@+id/checkBox1"
+        android:id="@+id/import_overwrite_tokens"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/import_overwrite_tokens" />
+        android:text="@string/import_overwrite_tokens" 
+        android:tag="check_overwrite_tokens"/>
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/import_overwrite_maps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/import_overwrite_maps" />
+        android:text="@string/import_overwrite_maps" 
+        android:tag="check_overwrite_maps"/>
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/import_start" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/import_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="button_import"
+            android:text="@string/import_start" />
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="spinner_import_data"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
 </LinearLayout>
