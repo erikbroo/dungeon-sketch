@@ -16,6 +16,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -43,6 +44,7 @@ public class ImportDataDialog extends RoboActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("com.tbocek.android.combatmap.ImportDataDialog", "this.getPackageName() = " + this.getPackageName());
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.import_data);
 
@@ -52,7 +54,7 @@ public class ImportDataDialog extends RoboActivity {
         hasOption = hasOption || addImportOption(
                 importCurrent, "com.tbocek.dungeonsketch");
         hasOption = hasOption || addImportOption(
-                importCurrent, "com.tbocek.android.combatmap");
+                importLegacy, "com.tbocek.android.combatmap");
 
         if (!hasOption) { finish(); }
 
@@ -69,7 +71,7 @@ public class ImportDataDialog extends RoboActivity {
     }
 
     boolean addImportOption(RadioButton importOption, String packageName) {
-        if (packageName == this.getPackageName()) {
+        if (packageName.equals(this.getPackageName())) {
             importOption.setVisibility(View.GONE);
             return false;
         } else if (!getExternalFilesDirForPackage(packageName).exists()) {
@@ -82,8 +84,21 @@ public class ImportDataDialog extends RoboActivity {
         }
     }
 
+    File pathJoin(String ... path) {
+        File result = null;
+        for (String s: path) {
+            if (result == null) {
+                result = new File(s);
+            } else {
+                result = new File(result, s);
+            }
+        }
+        return result;
+    }
+
     File getExternalFilesDirForPackage(String packageName) {
-        return new File(new File(this.getExternalFilesDir(null), ".."), packageName);
+        return pathJoin(this.getExternalFilesDir(null).toString(),
+                "..", "..", packageName, "files");
     }
 
     File getSelectedSrcDir() {
