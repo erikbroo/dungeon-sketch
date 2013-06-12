@@ -39,6 +39,15 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
     private boolean mDragging;
 
     /**
+     * HORRIBLE HACK: This prevents drag actions from occurring when this mode
+     * has been instantiated with the user's finger already on the screen.
+     * Without this, when the mode is instantiated, it tries to respond to 
+     * move events without the state being properly initialized, leading to
+     * bugs like the view suddenly jumping.
+     */
+    private boolean mScrollingGoodState = false;
+    
+    /**
      * When moving tokens with snap to grid enabled, this is the last point that
      * was snapped to.
      */
@@ -74,6 +83,7 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
 
     @Override
     public boolean onDown(final MotionEvent e) {
+    	this.mScrollingGoodState = true;
         this.mCurrentToken =
                 this.getView()
                         .getTokens()
@@ -105,6 +115,10 @@ public class TokenMultiSelectInteractionMode extends ZoomPanInteractionMode {
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
+    	if (!this.mScrollingGoodState){
+    		return true;
+    	}
+    	
         if (this.mDragging) {
             this.mMoved = true;
             CoordinateTransformer transformer =
