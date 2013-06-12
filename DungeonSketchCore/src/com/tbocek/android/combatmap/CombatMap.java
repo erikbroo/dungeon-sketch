@@ -943,7 +943,9 @@ public final class CombatMap extends SherlockActivity {
 			this.mCombatView.getMultiSelect().selectNone();
 			this.mCombatView.setAreTokensManipulatable(false);
 			this.mCombatView.useAnnotationLayer();
-			this.mCombatView.setFogOfWarMode(FogOfWarMode.CLIP);
+			this.mCombatView.setFogOfWarMode(this.mSharedPreferences
+					.getBoolean("fogofwar", true) ? FogOfWarMode.CLIP
+					: FogOfWarMode.NOTHING);
 			this.mBottomControlFrame.removeAllViews();
 			this.mBottomControlFrame.addView(this.mDrawOptionsView);
 			this.setModePreference(manipulationMode);
