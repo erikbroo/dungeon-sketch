@@ -970,6 +970,7 @@ public final class CombatMap extends SherlockActivity {
 			this.loadModeSpecificSnapPreference();
 			return;
 		case MODE_TOKENS:
+			this.mCombatView.useBackgroundLayer();
 			this.mCombatView.setAreTokensManipulatable(true);
 			this.mCombatView.setTokenManipulationMode();
 			this.mCombatView.setFogOfWarMode(this.mSharedPreferences
