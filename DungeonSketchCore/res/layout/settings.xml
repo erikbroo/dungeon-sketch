@@ -88,7 +88,7 @@
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
     </PreferenceCategory>
-    <PreferernceCategory
+    <PreferenceCategory
         android:title="Data"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -98,5 +98,5 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:summary="Copy data from another installed version of Dungeon Sketch"/>
-        </PreferernceCategory>
+        </PreferenceCategory>
 </PreferenceScreen>
