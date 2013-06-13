@@ -30,6 +30,8 @@ import android.widget.RadioButton;
  *
  */
 public class ImportDataDialog extends RoboActivity {
+	
+	private static final String TAG = "com.tbocek.android.combatmap.ImportDataDialog";
 
     @InjectView(tag="import_alpha") RadioButton importAlpha;
     @InjectView(tag="import_legacy") RadioButton importLegacy;
@@ -115,21 +117,23 @@ public class ImportDataDialog extends RoboActivity {
         int totalFiles = 0;
 
         @Override
-        protected Void doInBackground(File... srcDir) {
+        protected Void doInBackground(File... srcDirs) {
             try {
-                if (srcDir == null) { return null; }
+                if (srcDirs == null) { return null; }
+                File srcDir = srcDirs[0].getCanonicalFile();
+                
                 CountFilesWalker walker = new CountFilesWalker();
-                walker.Count(new File(srcDir[0], "tokens"));
-                walker.Count(new File(srcDir[0], "maps"));
+                walker.Count(new File(srcDir, "tokens"));
+                walker.Count(new File(srcDir, "maps"));
                 totalFiles = walker.getCount();
 
                 File destDir = ImportDataDialog.this.getExternalFilesDir(null);
 
                 RecursiveCopyWalker copyWalker = new RecursiveCopyWalker();
-                copyWalker.Copy(new File(srcDir[0], "tokens"),
+                copyWalker.Copy(new File(srcDir, "tokens"),
                         new File(destDir, "tokens"),
                         ImportDataDialog.this.overwriteTokens.isChecked());
-                copyWalker.Copy(new File(srcDir[0], "maps"),
+                copyWalker.Copy(new File(srcDir, "maps"),
                         new File(destDir, "maps"),
                         ImportDataDialog.this.overwriteMaps.isChecked());
             } catch (IOException e) {
@@ -181,10 +185,16 @@ public class ImportDataDialog extends RoboActivity {
             @Override
             protected void handleFile(
                     File file, int depth, Collection<File> results) {
+            	// Never overwrite tmp.map, as it is the current "autosave".
+            	if (file.getName().equals("tmp.map")) {
+            		return;
+            	}
+            	
                 File destFile = replacePrefix(file, mSrc, mDest);
+                Log.d(TAG, "Copy " + file.toString() + " to " + destFile.toString());
                 if (!destFile.exists() || mOverwrite) {
                     try {
-                        FileUtils.copyFile(mSrc, mDest);
+                        FileUtils.copyFile(file, destFile);
                     } catch (IOException e) {
                         e.printStackTrace();
                         results.add(file);
