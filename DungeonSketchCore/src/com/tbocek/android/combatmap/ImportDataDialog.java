@@ -51,12 +51,12 @@ public class ImportDataDialog extends RoboActivity {
         this.setContentView(R.layout.import_data);
 
         boolean hasOption = false;
-        hasOption = hasOption || addImportOption(
-                importAlpha, "com.tbocek.dungeonsketchalpha");
-        hasOption = hasOption || addImportOption(
-                importCurrent, "com.tbocek.dungeonsketch");
-        hasOption = hasOption || addImportOption(
-                importLegacy, "com.tbocek.android.combatmap");
+        hasOption = addImportOption(importAlpha, "com.tbocek.dungeonsketchalpha")
+        		|| hasOption;
+        hasOption = addImportOption(importCurrent, "com.tbocek.dungeonsketch")
+        		|| hasOption;
+        hasOption = addImportOption(importLegacy, "com.tbocek.android.combatmap")
+        		|| hasOption;
 
         if (!hasOption) { finish(); }
 
@@ -67,6 +67,8 @@ public class ImportDataDialog extends RoboActivity {
                 File srcDir = getSelectedSrcDir();
                 spinner.setVisibility(View.VISIBLE);
                 buttonImport.setEnabled(false);
+                mImportFilesTask.overwriteTokens = overwriteTokens.isChecked();
+                mImportFilesTask.overwriteMaps = overwriteMaps.isChecked();
                 mImportFilesTask.execute(srcDir);
             }
         });
@@ -112,9 +114,12 @@ public class ImportDataDialog extends RoboActivity {
         return null;
     }
 
-    private AsyncTask<File, Integer, Void> mImportFilesTask = new  AsyncTask<File, Integer, Void>() {
+    class ImportFilesTask extends AsyncTask<File, Integer, Void>  {
         int filesRead = 0;
         int totalFiles = 0;
+        
+        public boolean overwriteTokens;
+        public boolean overwriteMaps;
 
         @Override
         protected Void doInBackground(File... srcDirs) {
@@ -132,10 +137,10 @@ public class ImportDataDialog extends RoboActivity {
                 RecursiveCopyWalker copyWalker = new RecursiveCopyWalker();
                 copyWalker.Copy(new File(srcDir, "tokens"),
                         new File(destDir, "tokens"),
-                        ImportDataDialog.this.overwriteTokens.isChecked());
+                        overwriteTokens);
                 copyWalker.Copy(new File(srcDir, "maps"),
                         new File(destDir, "maps"),
-                        ImportDataDialog.this.overwriteMaps.isChecked());
+                        overwriteMaps);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -187,18 +192,21 @@ public class ImportDataDialog extends RoboActivity {
                     File file, int depth, Collection<File> results) {
             	// Never overwrite tmp.map, as it is the current "autosave".
             	if (file.getName().equals("tmp.map")) {
+            		publishProgress(1);
             		return;
             	}
             	
                 File destFile = replacePrefix(file, mSrc, mDest);
-                Log.d(TAG, "Copy " + file.toString() + " to " + destFile.toString());
-                if (!destFile.exists() || mOverwrite) {
+                if (mOverwrite || !destFile.exists()) {
                     try {
+                    	Log.d(TAG, "Copy " + file.toString() + " to " + destFile.toString());
                         FileUtils.copyFile(file, destFile);
                     } catch (IOException e) {
                         e.printStackTrace();
                         results.add(file);
                     }
+                } else {
+                	Log.d(TAG, "Did not copy " + file.toString() + " to " + destFile.toString());
                 }
                 publishProgress(1);
             }
@@ -224,7 +232,9 @@ public class ImportDataDialog extends RoboActivity {
                 return count;
             }
         }
-    };
+    }
+    
+    ImportFilesTask mImportFilesTask = new ImportFilesTask();
 
 
 
