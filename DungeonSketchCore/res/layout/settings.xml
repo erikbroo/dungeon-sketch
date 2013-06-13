@@ -88,9 +88,15 @@
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
     </PreferenceCategory>
+    <PreferernceCategory
+        android:title="Data"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
         <Preference
             android:key="migrate_data"
             android:title="@string/import_data"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:summary="Copy data from another installed version of Dungeon Sketch"/>
+        </PreferernceCategory>
 </PreferenceScreen>
