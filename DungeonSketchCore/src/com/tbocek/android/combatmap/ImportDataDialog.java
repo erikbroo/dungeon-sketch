@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 /**
  * Dialog that allows importing data from other installed instances of Dungeon
@@ -43,7 +44,7 @@ public class ImportDataDialog extends RoboActivity {
 
     Map<File, RadioButton> mImportOptions =
             new HashMap<File, RadioButton>();
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("com.tbocek.android.combatmap.ImportDataDialog", "this.getPackageName() = " + this.getPackageName());
@@ -77,13 +78,16 @@ public class ImportDataDialog extends RoboActivity {
     boolean addImportOption(RadioButton importOption, String packageName) {
         if (packageName.equals(this.getPackageName())) {
             importOption.setVisibility(View.GONE);
+            importOption.setChecked(false);
             return false;
         } else if (!getExternalFilesDirForPackage(packageName).exists()) {
             importOption.setVisibility(View.GONE);
+            importOption.setChecked(false);
             return false;
         } else {
             importOption.setVisibility(View.VISIBLE);
             mImportOptions.put(getExternalFilesDirForPackage(packageName), importOption);
+            importOption.setChecked(true);
             return true;
         }
     }
