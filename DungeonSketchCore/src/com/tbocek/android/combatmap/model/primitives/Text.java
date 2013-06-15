@@ -20,6 +20,8 @@ import com.tbocek.android.combatmap.model.io.MapDataSerializer;
  * 
  */
 public class Text extends Shape {
+	
+	private static final float TEXT_SCALE_HACK_FACTOR = 20.0f;
 
     /**
      * Global flag to control whether bounding boxes should be drawn around the
@@ -109,15 +111,28 @@ public class Text extends Shape {
         // To do this, we need to create the Paint object so we know the size
         // of the text.
         this.ensurePaintCreated();
-        this.getPaint().setTextSize(this.mTextSize);
+        
+        // Because Android doesn't like to deal with small text sizes, we
+        // want to pretend that the text size is set to 10x what it really is,
+        // then scale that down.
+        // (This is because our text sizes are set as fractions of grid
+        // heights)
+        this.getPaint().setTextSize(this.mTextSize * TEXT_SCALE_HACK_FACTOR);
 
         Rect bounds = new Rect();
         this.getPaint().getTextBounds(this.mText, 0, this.mText.length(),
                 bounds);
+        float height = (float)(bounds.height()) / TEXT_SCALE_HACK_FACTOR;
+        
+        // We use measureText for the width because it more accurately
+        // measures padding.  See:
+        // http://stackoverflow.com/questions/7549182/android-paint-measuretext-vs-gettextbounds
+        float width = this.getPaint().measureText(this.mText) / TEXT_SCALE_HACK_FACTOR;
+        
         this.getBoundingRectangle().updateBounds(location);
         this.getBoundingRectangle().updateBounds(
-                new PointF(location.x + bounds.width(), location.y
-                        - bounds.height()));
+                new PointF(location.x + width, location.y
+                        - height));
     }
 
     /**
@@ -155,15 +170,27 @@ public class Text extends Shape {
 
     @Override
     public void draw(final Canvas c) {
+    	// Scale the canvas by .1, then upscale everything else by 10.  This is
+    	// because the text draw methods really do not want to deal with small
+    	// font sizes.
+        // (This is because our text sizes are set as fractions of grid
+        // heights)
+    	c.save();
+    	c.scale(1.0f / TEXT_SCALE_HACK_FACTOR, 1.0f / TEXT_SCALE_HACK_FACTOR);
         Paint p = this.getPaint();
-        p.setTextSize(this.mTextSize);
+        p.setTextSize(this.mTextSize * TEXT_SCALE_HACK_FACTOR);
+        c.drawText(
+        		this.mText,
+        		this.mLocation.x * TEXT_SCALE_HACK_FACTOR, 
+        		this.mLocation.y * TEXT_SCALE_HACK_FACTOR,
+                this.getPaint());
+        c.restore();
+        
         if (Text.drawBoundingBoxes) {
             this.getPaint().setStyle(Style.STROKE);
             c.drawRect(this.getBoundingRectangle().toRectF(), this.getPaint());
             p.setStyle(Style.FILL);
         }
-        c.drawText(this.mText, this.mLocation.x, this.mLocation.y,
-                this.getPaint());
     }
 
     @Override
