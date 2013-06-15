@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -128,6 +129,10 @@ public final class TokenDatabase {
     public static TokenDatabase getInstanceOrNull() {
         return instance;
     }
+    
+    private static File databaseFile(Context context) {
+    	return new File(context.getExternalFilesDir(null), "token_database");
+    }
 
     /**
      * Loads a token database from internal storage, and replaces the current
@@ -143,7 +148,7 @@ public final class TokenDatabase {
         TokenDatabase d = new TokenDatabase();
         d.populate(context);
 
-        FileInputStream input = context.openFileInput("token_database");
+        FileInputStream input = new FileInputStream(databaseFile(context));
         BufferedReader dataIn =
                 new BufferedReader(new InputStreamReader(input));
         d.load(dataIn);
@@ -517,8 +522,7 @@ public final class TokenDatabase {
      *             on write error.
      */
     public void save(final Context context) throws IOException {
-        FileOutputStream output =
-                context.openFileOutput("token_database", Context.MODE_PRIVATE);
+        FileOutputStream output = new FileOutputStream(databaseFile(context));
         BufferedWriter dataOut =
                 new BufferedWriter(new OutputStreamWriter(output));
         this.save(dataOut);
