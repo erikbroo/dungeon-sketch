@@ -207,8 +207,8 @@ public final class TokenDatabase {
      *            A context to use when loading data if needed.
      * @return The token database.
      */
-    public static TokenDatabase getInstance(final Context context) {
-        if (instance == null) {
+    public static TokenDatabase getInstance(final Context context, boolean forceReload) {
+        if (instance == null || forceReload) {
             try {
                 instance = TokenDatabase.load(context);
             } catch (Exception e) {
@@ -218,6 +218,10 @@ public final class TokenDatabase {
             }
         }
         return instance;
+    }
+    
+    public static TokenDatabase getInstance(final Context context) {
+    	return getInstance(context, false);
     }
 
     /**

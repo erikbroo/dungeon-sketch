@@ -154,6 +154,8 @@ public class ImportDataDialog extends RoboActivity {
                 			new File(srcDir, "token_database.xml"), 
                 			new File(destDir, "token_database.xml"));
                 }
+                // Force a reload of the token database.
+                TokenDatabase.getInstance(getApplicationContext(), true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
