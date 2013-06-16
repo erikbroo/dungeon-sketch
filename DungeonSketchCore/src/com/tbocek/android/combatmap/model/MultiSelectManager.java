@@ -128,4 +128,8 @@ public final class MultiSelectManager {
          */
         void selectionStarted();
     }
+
+	public boolean isActive() {
+		return this.getSelectedTokens().size() != 0;
+	}
 }

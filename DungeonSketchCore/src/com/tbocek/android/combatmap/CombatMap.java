@@ -1403,7 +1403,6 @@ public final class CombatMap extends SherlockActivity {
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			CombatMap.this.mCombatView.setMultiTokenMode();
 			return true;
 		}
 

@@ -1,5 +1,9 @@
 package com.tbocek.android.combatmap.view.interaction;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 
+import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
@@ -60,10 +65,11 @@ public final class TokenManipulationInteractionMode extends
     private boolean mCachedDark;
 
     /**
-     * The token currently being dragged around.
+     * The token that the user clicked on to start a drag operation. Will be
+     * used to determine snapping to grid.
      */
     private BaseToken mCurrentToken;
-
+    
     /**
      * Whether the use is currently dragging a token.
      */
@@ -73,11 +79,22 @@ public final class TokenManipulationInteractionMode extends
      * Whether the current token has been moved.
      */
     private boolean mMoved;
-
+    
     /**
-     * The original location of the token being dragged around.
+     * When moving tokens with snap to grid enabled, this is the last point that
+     * was snapped to.
      */
-    private PointF mOriginalLocation;
+    private PointF mLastSnappedLocation;
+    
+    /**
+     * The tokens being moved.
+     */
+    private Collection<BaseToken> mMovedTokens = Lists.newArrayList();
+    
+    /**
+     * Collection of ghost tokens to draw when moving a group of tokens.
+     */
+    private Collection<BaseToken> mUnmovedTokens = Lists.newArrayList();
 
     /**
      * Animated alpha value to use for the trash can; allows it to fade in and
@@ -89,6 +106,10 @@ public final class TokenManipulationInteractionMode extends
      * Animation object to fade the trash can.
      */
     private ValueAnimator mTrashCanAnimator;
+    
+    /**
+     * 
+     */
 
     /**
      * Animation update handler that changes the alpha value of the trash can.
@@ -127,11 +148,9 @@ public final class TokenManipulationInteractionMode extends
 
     @Override
     public void draw(final Canvas c) {
-        if (this.mCurrentToken != null && this.mDown) {
-            // Draw a ghost of the token at the location that it is being moved
-            // from.
-            this.mCurrentToken.drawGhost(c, this.getView()
-                    .getGridSpaceTransformer(), this.mOriginalLocation);
+        for (BaseToken t : this.mUnmovedTokens) {
+            t.drawGhost(c, this.getView().getGridSpaceTransformer(),
+                    t.getLocation());
         }
 
         if (this.mTrashCanAlpha != 0) {
@@ -231,10 +250,20 @@ public final class TokenManipulationInteractionMode extends
                                 this.getView().getGridSpaceTransformer());
 
         if (this.mCurrentToken != null) {
+        	this.mMovedTokens.clear();
+        	if (this.getView().getMultiSelect().isActive()) {
+        		this.mMovedTokens.addAll(this.getView().getMultiSelect().getSelectedTokens());
+        	} else {
+        		this.mMovedTokens.add(mCurrentToken);
+        	}
             this.mMoved = false;
-            this.mOriginalLocation = this.mCurrentToken.getLocation();
-            this.getView().getTokens().checkpointToken(this.mCurrentToken);
+            this.getView().getTokens().checkpointTokens(this.mMovedTokens);
             this.fadeTrashCanIn();
+            
+            for (BaseToken t: this.mMovedTokens) {
+            	this.mUnmovedTokens.add(t.clone());
+            }
+            this.mLastSnappedLocation = this.mCurrentToken.getLocation();
         }
 
         this.mDown = true;
@@ -248,6 +277,22 @@ public final class TokenManipulationInteractionMode extends
             this.getView().refreshMap();
         }
     }
+    
+    @Override
+    public boolean onSingleTapConfirmed(final MotionEvent e) {
+    	if (this.getView().getMultiSelect().isActive()) {
+	        BaseToken t =
+	                this.getView()
+	                        .getTokens()
+	                        .getTokenUnderPoint(new PointF(e.getX(), e.getY()),
+	                                this.getView().getGridSpaceTransformer());
+	        if (t != null) {
+	            this.getView().getMultiSelect().toggleToken(t);
+	            this.getView().refreshMap();
+	        }
+    	}
+        return true;
+    }
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
@@ -256,19 +301,28 @@ public final class TokenManipulationInteractionMode extends
             this.mMoved = true;
             CoordinateTransformer transformer =
                     this.getView().getGridSpaceTransformer();
-            PointF currentPointScreenSpace = new PointF(e2.getX(), e2.getY());
+            float deltaX;
+            float deltaY;
+
+            // If snap to grid is enabled, change the world space movement
+            // deltas to compensate for distance between the real point and
+            // the snap to grid point.
             if (this.getView().shouldSnapToGrid()) {
-                // Get the nearest snap point in screen space
+                PointF currentPointScreenSpace =
+                        new PointF(e2.getX(), e2.getY());
+                PointF currentPointWorldSpace =
+                        transformer
+                                .screenSpaceToWorldSpace(currentPointScreenSpace);
                 PointF nearestSnapPointWorldSpace =
                         this.getData()
                                 .getGrid()
                                 .getNearestSnapPoint(
-                                        transformer
-                                                .screenSpaceToWorldSpace(currentPointScreenSpace),
+                                        currentPointWorldSpace,
                                         this.getView()
                                                 .tokensSnapToIntersections()
                                                 ? 0
                                                 : this.mCurrentToken.getSize());
+
                 // Snap to that point if it is less than a threshold
                 float distanceToSnapPoint =
                         Util.distance(
@@ -276,18 +330,21 @@ public final class TokenManipulationInteractionMode extends
                                         .worldSpaceToScreenSpace(nearestSnapPointWorldSpace),
                                 currentPointScreenSpace);
 
-                this.debugSnapPoint =
-                        transformer
-                                .worldSpaceToScreenSpace(nearestSnapPointWorldSpace);
-
-                this.mCurrentToken
-                        .setLocation(distanceToSnapPoint < GRID_SNAP_THRESHOLD
+                PointF newLocationWorldSpace =
+                        distanceToSnapPoint < GRID_SNAP_THRESHOLD
                                 ? nearestSnapPointWorldSpace
-                                : transformer
-                                        .screenSpaceToWorldSpace(currentPointScreenSpace));
+                                : currentPointWorldSpace;
+
+                deltaX = this.mLastSnappedLocation.x - newLocationWorldSpace.x;
+                deltaY = this.mLastSnappedLocation.y - newLocationWorldSpace.y;
+                this.mLastSnappedLocation = newLocationWorldSpace;
+
             } else {
-                this.mCurrentToken.setLocation(transformer
-                        .screenSpaceToWorldSpace(currentPointScreenSpace));
+                deltaX = transformer.screenSpaceToWorldSpace(distanceX);
+                deltaY = transformer.screenSpaceToWorldSpace(distanceY);
+            }
+            for (BaseToken t : this.mMovedTokens) {
+                t.move(deltaX, deltaY);
             }
             this.mAboutToTrash =
                     TRASH_CAN_RECT.contains((int) e2.getX(), (int) e2.getY());
@@ -300,19 +357,23 @@ public final class TokenManipulationInteractionMode extends
 
     @Override
     public void onUp(final MotionEvent ev) {
+        if (this.mMoved) {
+            if (this.mAboutToTrash) {
+                this.getView().getTokens().restoreCheckpointedTokens();
+                this.getView().getTokens().removeAll(new ArrayList<BaseToken>(this.mMovedTokens));
+                this.getView().getMultiSelect().selectNone();
+                this.getView().refreshMap();
+            } else {
+                this.getView().getTokens().createCommandHistory();
+            }
+        }
+        
         this.mDown = false;
         this.debugSnapPoint = null;
         this.getView().refreshMap();
-        if (this.mCurrentToken != null) {
-            if (this.mAboutToTrash) {
-                this.getView().getTokens().restoreCheckpointedTokens();
-                this.getView().getTokens().remove(this.mCurrentToken);
-                this.getView().refreshMap();
-            } else if (this.mMoved) {
-                this.getView().getTokens().createCommandHistory();
-            }
-            this.fadeTrashCanOut();
-        }
+        this.mUnmovedTokens.clear();
+        this.mMovedTokens.clear();
+        this.fadeTrashCanOut();
     }
 
 }
