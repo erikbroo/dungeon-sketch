@@ -15,7 +15,7 @@ public final class DeveloperMode {
      */
     public static final boolean DEVELOPER_MODE = BuildConfig.DEBUG;
 
-    public static final int MAX_BUILTIN_TOKENS = BuildConfig.DEBUG ? 3 : Integer.MAX_VALUE;
+    public static final int MAX_BUILTIN_TOKENS = BuildConfig.DEBUG ? 10 : Integer.MAX_VALUE;
 
     /**
      * Starts the profiler only if developer mode is active.

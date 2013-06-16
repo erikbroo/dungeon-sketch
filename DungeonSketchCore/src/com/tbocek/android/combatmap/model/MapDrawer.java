@@ -64,12 +64,11 @@ public class MapDrawer {
                 m.getGmNotesFogOfWar().clipFogOfWar(canvas);
             }
             m.getGmNoteLines().drawAllLines(canvas);
-            if (this.mGmNoteFogOfWar == FogOfWarMode.CLIP) {
-                canvas.restore();
-            } else if (this.mGmNoteFogOfWar == FogOfWarMode.DRAW) {
+            if (this.mGmNoteFogOfWar == FogOfWarMode.DRAW) {
                 m.getGmNotesFogOfWar().drawFogOfWar(canvas);
             }
             canvas.restore();
+            
         }
 
         if (this.mDrawAnnotations) {
