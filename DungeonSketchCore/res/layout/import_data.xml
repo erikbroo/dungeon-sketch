@@ -46,7 +46,14 @@
         android:layout_height="wrap_content"
         android:text="@string/import_overwrite_existing"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
+    
+    <CheckBox
+        android:id="@+id/import_overwrite_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/import_overwrite_maps" 
+        android:tag="check_overwrite_maps"/>
+    
     <CheckBox
         android:id="@+id/import_overwrite_tokens"
         android:layout_width="wrap_content"
@@ -55,12 +62,12 @@
         android:tag="check_overwrite_tokens"/>
 
     <CheckBox
-        android:id="@+id/import_overwrite_maps"
+        android:id="@+id/import_overwrite_token_lib"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/import_overwrite_maps" 
-        android:tag="check_overwrite_maps"/>
-
+        android:text="@string/import_overwrite_token_lib" 
+        android:tag="check_overwrite_token_lib"/>
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >

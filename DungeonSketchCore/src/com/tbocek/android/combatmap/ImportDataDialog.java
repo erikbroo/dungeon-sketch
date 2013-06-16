@@ -38,6 +38,7 @@ public class ImportDataDialog extends RoboActivity {
     @InjectView(tag="import_legacy") RadioButton importLegacy;
     @InjectView(tag="import_current") RadioButton importCurrent;
     @InjectView(tag="check_overwrite_tokens") CheckBox overwriteTokens;
+    @InjectView(tag="check_overwrite_token_lib") CheckBox overwriteTokenLibrary;
     @InjectView(tag="check_overwrite_maps") CheckBox overwriteMaps;
     @InjectView(tag="button_import") Button buttonImport;
     @InjectView(tag="spinner_import_data") ProgressBar spinner;
@@ -70,6 +71,7 @@ public class ImportDataDialog extends RoboActivity {
                 buttonImport.setEnabled(false);
                 mImportFilesTask.overwriteTokens = overwriteTokens.isChecked();
                 mImportFilesTask.overwriteMaps = overwriteMaps.isChecked();
+                mImportFilesTask.overwriteTokenLibrary = overwriteTokenLibrary.isChecked();
                 mImportFilesTask.execute(srcDir);
             }
         });
@@ -124,6 +126,7 @@ public class ImportDataDialog extends RoboActivity {
         
         public boolean overwriteTokens;
         public boolean overwriteMaps;
+        public boolean overwriteTokenLibrary;
 
         @Override
         protected Void doInBackground(File... srcDirs) {
@@ -145,6 +148,12 @@ public class ImportDataDialog extends RoboActivity {
                 copyWalker.Copy(new File(srcDir, "maps"),
                         new File(destDir, "maps"),
                         overwriteMaps);
+                
+                if (overwriteTokenLibrary) {
+                	FileUtils.copyFile(
+                			new File(srcDir, "token_database.xml"), 
+                			new File(destDir, "token_database.xml"));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
