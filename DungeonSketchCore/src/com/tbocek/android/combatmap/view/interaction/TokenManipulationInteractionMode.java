@@ -147,6 +147,9 @@ public final class TokenManipulationInteractionMode extends
     }
 
     @Override
+    public boolean useDefaultLongPressLogic() { return false; }
+    
+    @Override
     public void draw(final Canvas c) {
         for (BaseToken t : this.mUnmovedTokens) {
             t.drawGhost(c, this.getView().getGridSpaceTransformer(),
@@ -267,6 +270,7 @@ public final class TokenManipulationInteractionMode extends
         }
 
         this.mDown = true;
+        this.customLongPressDetector.onDown(e);
         return true;
     }
 
@@ -352,6 +356,7 @@ public final class TokenManipulationInteractionMode extends
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
         this.getView().refreshMap();
+        this.customLongPressDetector.onScroll(e1, e2, distanceX, distanceY);
         return true;
     }
 
@@ -374,6 +379,7 @@ public final class TokenManipulationInteractionMode extends
         this.mUnmovedTokens.clear();
         this.mMovedTokens.clear();
         this.fadeTrashCanOut();
+        this.customLongPressDetector.onUp(ev);
     }
 
 }

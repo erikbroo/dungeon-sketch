@@ -1,14 +1,17 @@
 package com.tbocek.android.combatmap.view.interaction;
 
 import android.graphics.Canvas;
+import android.os.Handler;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.ViewConfiguration;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.primitives.PointF;
+import com.tbocek.android.combatmap.model.primitives.Util;
 import com.tbocek.android.combatmap.view.CombatView;
 
 /**
@@ -21,7 +24,9 @@ import com.tbocek.android.combatmap.view.CombatView;
  */
 public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
         implements OnGestureListener, OnDoubleTapListener {
-    /**
+    private static final float LONG_PRESS_CANCEL_THRESHOLD = 3;
+
+	/**
      * Number of fingers currently down.
      */
     private int mFingers;
@@ -30,6 +35,48 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
      * The CombatView that this interaction mode manipulates.
      */
     private CombatView mView;
+    
+    /**
+     * We are rolling our own long press in order to let a long press be
+     * followed by a scroll without lifting a finger!
+     */
+    protected class CustomLongPressDetector {
+        private Handler mLongPressHandler = new Handler();
+        private boolean mPossibleLongPress = false;
+        private MotionEvent mOriginalDownEvent = null;
+        private Runnable mLongPressRunnable = new Runnable() {
+        	@Override
+        	public void run() {
+        		if (mPossibleLongPress == true) {
+        			mPossibleLongPress = false;
+        			CombatViewInteractionMode.this.onLongPress(mOriginalDownEvent);
+        		}
+        	}
+        };
+        
+        public boolean onDown(final MotionEvent event) {
+        	mPossibleLongPress = true;
+        	mOriginalDownEvent = event;
+        	mLongPressHandler.postDelayed(this.mLongPressRunnable, ViewConfiguration.getLongPressTimeout());
+            return true;
+        }
+        
+        public boolean onScroll(final MotionEvent arg0, final MotionEvent arg1,
+                final float arg2, final float arg3) {
+        	// Check if this is still a possible long press
+        	if (Util.distance(arg0.getX(), arg0.getY(), arg1.getX(), arg1.getY()) > LONG_PRESS_CANCEL_THRESHOLD) {
+        		this.mPossibleLongPress = false;
+        		this.mLongPressHandler.removeCallbacks(this.mLongPressRunnable);
+        	}
+            return true;
+        }
+        
+        public void onUp(final MotionEvent event) {
+    		this.mPossibleLongPress = false;
+    		this.mLongPressHandler.removeCallbacks(this.mLongPressRunnable);
+        }
+    }
+    protected final CustomLongPressDetector customLongPressDetector = new CustomLongPressDetector();
 
     /**
      * Constructor.
@@ -47,6 +94,11 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
     public final void addFinger() {
         this.mFingers++;
     }
+    
+    /**
+     * @return true if the class wants to use Android's default long press logic, False otherwise.
+     */
+    public boolean useDefaultLongPressLogic() { return true; }
 
     /**
      * Allows the manipulation mode to draw custom user interface elements.
@@ -120,7 +172,7 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
     @Override
     public boolean onScroll(final MotionEvent arg0, final MotionEvent arg1,
             final float arg2, final float arg3) {
-        return false;
+    	return false;
     }
 
     @Override

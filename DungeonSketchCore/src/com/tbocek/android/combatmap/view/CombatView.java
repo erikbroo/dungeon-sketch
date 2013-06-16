@@ -714,6 +714,7 @@ public final class CombatView extends SurfaceView {
 
         this.mGestureDetector = new GestureDetector(this.getContext(), mode);
         this.mGestureDetector.setOnDoubleTapListener(mode);
+        this.mGestureDetector.setIsLongpressEnabled(mode.useDefaultLongPressLogic());
         this.mScaleDetector = new ScaleGestureDetector(this.getContext(), mode);
         this.mInteractionMode = mode;
 
