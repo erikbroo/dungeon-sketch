@@ -1,6 +1,8 @@
 package com.tbocek.android.combatmap.model.primitives;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,17 +201,17 @@ public final class Util {
      * @param contentResolver
      *            Android ContentResolver instance to open the requested image.
      * @return Decoded image.
-     * @throws FileNotFoundException
-     *             If image couldn't be found.
+     * @throws IOException 
      */
     public static Bitmap loadImageWithMaxBounds(Uri selectedImage,
             int maxWidth, int maxHeight, ContentResolver contentResolver)
-            throws FileNotFoundException {
+            throws IOException {
         // Decode image size
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(
-                contentResolver.openInputStream(selectedImage), null, o);
+        InputStream is = contentResolver.openInputStream(selectedImage);
+        BitmapFactory.decodeStream(is, null, o);
+        is.close();
 
         // Find the correct scale value. It should be the power of 2.
         int widthTmp = o.outWidth;
@@ -227,8 +229,12 @@ public final class Util {
         // Decode with inSampleSize
         BitmapFactory.Options o2 = new BitmapFactory.Options();
         o2.inSampleSize = scale;
-        return BitmapFactory.decodeStream(
+        is = contentResolver.openInputStream(selectedImage);
+        Bitmap b = BitmapFactory.decodeStream(
                 contentResolver.openInputStream(selectedImage), null, o2);
+        is.close();
+
+        return b;
     }
 
     /**
