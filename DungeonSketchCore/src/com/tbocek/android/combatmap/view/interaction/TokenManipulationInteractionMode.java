@@ -256,6 +256,9 @@ public final class TokenManipulationInteractionMode extends
         	this.mMovedTokens.clear();
         	if (this.getView().getMultiSelect().isActive()) {
         		this.mMovedTokens.addAll(this.getView().getMultiSelect().getSelectedTokens());
+        		if (!this.mMovedTokens.contains(this.mCurrentToken)) {
+        			this.mMovedTokens.add(this.mCurrentToken);
+        		}
         	} else {
         		this.mMovedTokens.add(mCurrentToken);
         	}
