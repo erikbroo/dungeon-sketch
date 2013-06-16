@@ -97,7 +97,7 @@ public final class TokenCollection implements UndoRedoTarget {
      * 
      *            List of tokens to checkpoint.
      */
-    public void checkpointTokens(List<BaseToken> l) {
+    public void checkpointTokens(Collection<BaseToken> l) {
         this.mBuildingCommand = new ModifyTokenCommand(l);
         this.mBuildingCommand.checkpointBeforeState();
     }
@@ -471,8 +471,8 @@ public final class TokenCollection implements UndoRedoTarget {
          * @param tokens
          *            List of tokens that this command modifies.
          */
-        public ModifyTokenCommand(List<BaseToken> tokens) {
-            this.mTokensToModify = tokens;
+        public ModifyTokenCommand(Collection<BaseToken> tokens) {
+            this.mTokensToModify = new ArrayList<BaseToken>(tokens);
         }
 
         /**
