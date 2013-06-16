@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -195,7 +196,7 @@ public final class CombatMap extends SherlockActivity {
 			CombatMap.this.mCombatView
 					.setNewLineStyle(CombatView.NewLineStyle.FREEHAND);
 		}
-
+		
 		@Override
 		public void onChooseImageTool() {
 			CombatMap.this.mCombatView.setBackgroundImageMode();
@@ -509,6 +510,23 @@ public final class CombatMap extends SherlockActivity {
 
 		PreferenceManager.setDefaultValues(this, R.layout.settings, false);
 
+		initializeUi();
+
+		// Set up and start the token load manager
+		TokenLoadManager.getInstance().startThread();
+	}
+	
+	//this is called when the screen rotates.
+	// (onCreate is no longer called when screen rotates due to manifest, see: android:configChanges)
+	@Override
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+	    super.onConfigurationChanged(newConfig);
+	    setContentView(R.layout.combat_map_layout);
+	    initializeUi();
+	}
+	
+	private void initializeUi() {
 		// Set up the tabs
 		this.setContentView(R.layout.combat_map_layout);
 		ActionBar actionBar = this.getSupportActionBar();
@@ -518,7 +536,9 @@ public final class CombatMap extends SherlockActivity {
 		// space for the tabs.
 		actionBar.setTitle("");
 
-		this.mCombatView = new CombatView(this);
+		if (mCombatView == null) {
+			this.mCombatView = new CombatView(this);
+		}
 		this.registerForContextMenu(this.mCombatView);
 		this.mCombatView.setNewTextEntryListener(this.mOnNewTextEntryListener);
 		this.mCombatView.setImageSeletionListener(this.mOnImageSelectListener);
@@ -627,9 +647,6 @@ public final class CombatMap extends SherlockActivity {
 
 		this.mCombatView.refreshMap();
 		this.mCombatView.requestFocus();
-
-		// Set up and start the token load manager
-		TokenLoadManager.getInstance().startThread();
 	}
 
 	@Override
@@ -816,6 +833,7 @@ public final class CombatMap extends SherlockActivity {
 				|| !this.mSharedPreferences.getBoolean("autosave", true)) {
 			filename = DataManager.TEMP_MAP_NAME;
 		}
+		this.mCombatView.getMultiSelect().selectNone();
 
 		new MapSaver(filename, this.getApplicationContext()).run();
 	}
