@@ -476,7 +476,7 @@ public final class TokenManager extends SherlockActivity {
         super.onPause();
         try {
             this.mTokenDatabase.save(this);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

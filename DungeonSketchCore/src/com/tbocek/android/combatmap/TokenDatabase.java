@@ -18,11 +18,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -49,6 +60,105 @@ import com.tbocek.android.combatmap.model.primitives.Util;
  * 
  */
 public final class TokenDatabase {
+	
+	public class TagTreeNode {
+		private Set<String> tokenNames = Sets.newHashSet();
+		private Map<String, TagTreeNode> childTags = Maps.newHashMap();
+		private TagTreeNode parent;
+		private String name;
+		
+		private String TAG = "com.tbocek.android.combatmap.TagTreeNode";
+		
+		public TagTreeNode(TagTreeNode parent, String name) {
+			this.parent = parent;
+			this.name = name;
+		}
+		
+		public TagTreeNode getOrAddChildTag(String tag) {
+			if (!childTags.containsKey(tag)) {
+				TagTreeNode node = new TagTreeNode(this, tag);
+				childTags.put(tag, node);
+				Log.d(TAG, "Adding child tag: " + tag + " to " + name);
+				Log.d(TAG, Integer.toString(childTags.size()));
+				return node;
+			} else {
+				return childTags.get(tag);
+			}
+		}
+		
+		public Collection<String> getImmediateTokens() {
+			return tokenNames;
+		}
+		
+		public Set<String> getAllTokens() {
+			Set<String> result = Sets.newHashSet();
+			this.getAllTokensHelper(result);
+			return result;
+		}
+		
+		private void getAllTokensHelper(Collection<String> result) {
+			result.addAll(this.getImmediateTokens());
+			for (TagTreeNode n: this.childTags.values()) {
+				n.getAllTokensHelper(result);
+			}
+		}
+		
+		public TagTreeNode getNamedChild(String tagPath, boolean createTags) {
+			TagTreeNode current = this;
+			for (String s: tagPath.split(":")) {
+				if (createTags) {
+					current = current.getOrAddChildTag(s);
+				} else {
+					// TODO: something sane if tag doesn't exist.
+					current = childTags.get(s);
+				}
+			}
+			return current;
+		}
+		
+		public Collection<String> getTagNames() {
+			return this.childTags.keySet();
+		}
+
+		public boolean hasChildren() {
+			return this.childTags.size() != 0;
+		}
+
+		public void deleteToken(String tokenId) {
+			this.tokenNames.remove(tokenId);
+			for (TagTreeNode childTag : this.childTags.values()) {
+				childTag.deleteToken(tokenId);
+				// TODO: Do we need to remove the childTag if it is now empty?
+			}
+			
+		}
+
+		public void deleteSelf() {
+			this.parent.childTags.remove(this.name);
+		}
+		
+		public Element toXml(Document document) {
+			Element el = document.createElement("tag");
+			el.setAttribute("name", this.name);
+			
+			for (String tokenId: this.tokenNames) {
+				Element tokenEl = document.createElement("token");
+				tokenEl.setAttribute("name", tokenId);
+				el.appendChild(tokenEl);
+			}
+			
+			for (TagTreeNode treeNode: this.childTags.values()) {
+				el.appendChild(treeNode.toXml(document));
+			}
+			
+			return el;
+		}
+
+		public void addToken(String tokenId) {
+			this.tokenNames.add(tokenId);
+			Log.d(TAG, "Adding token: " + tokenId + " to " + name);
+		}
+	}
 
     /**
      * Always-present member at the top of the tag list that selects all tokens.
@@ -84,22 +194,11 @@ public final class TokenDatabase {
     private transient boolean mPrePopulateTags = true;
 
     /**
-     * Mapping from a string representing a tag to a set of token IDs that have
-     * that tag.
-     */
-    private Map<String, Set<String>> mTagsForToken = Maps.newHashMap();
-
-    /**
      * Mapping from a Token ID to an instantiated token object that has that ID.
      */
     private transient Map<String, BaseToken> mTokenForId = Maps.newHashMap();
-
-    /**
-     * Mapping from a string representing a token ID to a set of tags that that
-     * token has.
-     */
-    private Map<String, Set<String>> mTokensForTag =
-            new HashMap<String, Set<String>>();
+    
+    private transient TagTreeNode mTagTreeRoot = new TagTreeNode(null, "root");
 
     /**
      * Returns the instance of the token database.
@@ -113,6 +212,7 @@ public final class TokenDatabase {
             try {
                 instance = TokenDatabase.load(context);
             } catch (Exception e) {
+            	e.printStackTrace();
                 instance = new TokenDatabase();
                 instance.populate(context);
             }
@@ -131,7 +231,7 @@ public final class TokenDatabase {
     }
     
     private static File databaseFile(Context context) {
-    	return new File(context.getExternalFilesDir(null), "token_database");
+    	return new File(context.getExternalFilesDir(null), "token_database.xml");
     }
 
     /**
@@ -155,7 +255,7 @@ public final class TokenDatabase {
         dataIn.close();
 
         d.removeDeletedBuiltins();
-
+        
         return d;
     }
 
@@ -194,7 +294,7 @@ public final class TokenDatabase {
      *            The tag to add.
      */
     public void addEmptyTag(final String tag) {
-        this.mTokensForTag.put(tag, new HashSet<String>());
+        this.mTagTreeRoot.getNamedChild(tag, true);
     }
 
     /**
@@ -234,10 +334,9 @@ public final class TokenDatabase {
      *            The tag to remove from the database.
      */
     public void deleteTag(String toDelete) {
-        this.mTokensForTag.remove(toDelete);
-        for (String tokenId : this.mTagsForToken.keySet()) {
-            this.mTagsForToken.get(tokenId).remove(toDelete);
-        }
+    	TagTreeNode node = this.mTagTreeRoot.getNamedChild(toDelete, false);
+    	node.deleteSelf();
+    	
     }
 
     /**
@@ -263,22 +362,28 @@ public final class TokenDatabase {
         }
         return tokenId;
     }
+    
+    String TAG = "com.tbocek.android.combatmap.TokenDatabase";
 
     /**
-     * Gets a list of all tags in the token collection, sorted alphabetically
+     * Gets a list of all root tags in the token collection, sorted alphabetically
      * and case-insensitively.
      * 
      * @return The sorted tags.
      */
     public List<String> getTags() {
         ArrayList<String> l =
-                new ArrayList<String>(this.mTokensForTag.keySet());
+                new ArrayList<String>(this.mTagTreeRoot.getTagNames());
+        Log.d(TAG, "getTags returning " + l.size() + "tags:");
         Collections.sort(l, new Comparator<String>() {
             @Override
             public int compare(final String s1, final String s2) {
                 return s1.toUpperCase().compareTo(s2.toUpperCase());
             }
         });
+        for (String s: l) {
+        	Log.d(TAG, s);
+        }
         return l;
     }
 
@@ -293,7 +398,7 @@ public final class TokenDatabase {
         if (tag.equals(ALL)) {
             return this.getAllTokens();
         }
-        Set<String> tokenIds = this.mTokensForTag.get(tag);
+        Set<String> tokenIds = this.mTagTreeRoot.getNamedChild(tag, false).getAllTokens();
         return this.tokenIdsToTokens(tokenIds);
     }
 
@@ -306,23 +411,16 @@ public final class TokenDatabase {
      *             On read error.
      */
     private void load(final BufferedReader dataIn) throws IOException {
-        String line;
-        while ((line = dataIn.readLine()) != null) {
-            String[] tokens = line.split(FILE_DELIMITER);
-            String tokenId = tokens[0];
-            if (tokenId.equals("DELETED_TOKENS")) {
-                for (int i = 1; i < tokens.length; ++i) {
-                    this.mDeletedBuiltInTokens.add(this
-                            .getNonDeprecatedTokenId(tokens[i]));
-                }
-            } else {
-                ArrayList<String> tags = new ArrayList<String>();
-                for (int i = 1; i < tokens.length; ++i) {
-                    tags.add(tokens[i]);
-                }
-                this.tagToken(tokenId, tags);
-            }
-        }
+    	try {
+	        SAXParserFactory spf = SAXParserFactory.newInstance();
+	        SAXParser sp = spf.newSAXParser();
+	        XMLReader xr = sp.getXMLReader();
+	        xr.setContentHandler(new DatabaseReadHandler(this));
+	        xr.parse(new InputSource(dataIn));
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+        
     }
 
     /**
@@ -460,8 +558,7 @@ public final class TokenDatabase {
      */
     public void removeTagFromToken(String tokenId, final String tag) {
         tokenId = this.getNonDeprecatedTokenId(tokenId);
-        this.mTagsForToken.get(tokenId).remove(tag);
-        this.mTokensForTag.get(tag).remove(tokenId);
+        this.mTagTreeRoot.getNamedChild(tag, false).deleteToken(tokenId);
 
     }
 
@@ -473,10 +570,7 @@ public final class TokenDatabase {
      *            The token to remove.
      */
     public void removeToken(final BaseToken token) {
-        for (String tag : this.mTagsForToken.get(token.getTokenId())) {
-            this.mTokensForTag.get(tag).remove(token.getTokenId());
-        }
-        this.mTagsForToken.remove(token.getTokenId());
+        this.mTagTreeRoot.deleteToken(token.getTokenId());
         this.mTokenForId.remove(token.getTokenId());
         if (token.isBuiltIn()) {
             this.mDeletedBuiltInTokens.add(token.getTokenId());
@@ -490,27 +584,36 @@ public final class TokenDatabase {
      *            The writer to write the token database to.
      * @throws IOException
      *             on write error.
+     * @throws ParserConfigurationException 
+     * @throws TransformerException 
      */
-    private void save(final BufferedWriter output) throws IOException {
-        // Start by writing a single line containing the deleted custom tokens
-        output.write("DELETED_TOKENS");
-        output.write(FILE_DELIMITER);
-        for (String tokenName : this.mDeletedBuiltInTokens) {
-            output.write(tokenName);
-            output.write(FILE_DELIMITER);
-        }
-        output.newLine();
-
-        // Write tags for each token.
-        for (String tokenName : this.mTagsForToken.keySet()) {
-            output.write(tokenName);
-            output.write(FILE_DELIMITER);
-            for (String tag : this.mTagsForToken.get(tokenName)) {
-                output.write(tag);
-                output.write(FILE_DELIMITER);
-            }
-            output.newLine();
-        }
+    private void save(final BufferedWriter output) throws IOException, ParserConfigurationException, TransformerException {
+    	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		
+		Document doc = docBuilder.newDocument();
+		Element root = doc.createElement("token_database");
+		doc.appendChild(root);
+		
+		
+    	// Write out deleted tokens
+		for (String tokenName : this.mDeletedBuiltInTokens) {
+			Element deletedTokenEl = doc.createElement("deleted_builtin_token");
+			root.appendChild(deletedTokenEl);
+			deletedTokenEl.setAttribute("name", tokenName);
+		}
+    	
+    	// Write out the token tag tree
+		for (TagTreeNode node: this.mTagTreeRoot.childTags.values()) {
+			root.appendChild(node.toXml(doc));
+		}
+		
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+		
+		StreamResult result = new StreamResult(output);
+		transformer.transform(source, result);
     }
 
     /**
@@ -520,8 +623,10 @@ public final class TokenDatabase {
      *            Context to use when saving the database.
      * @throws IOException
      *             on write error.
+     * @throws ParserConfigurationException 
+     * @throws TransformerException 
      */
-    public void save(final Context context) throws IOException {
+    public void save(final Context context) throws IOException, ParserConfigurationException, TransformerException {
         FileOutputStream output = new FileOutputStream(databaseFile(context));
         BufferedWriter dataOut =
                 new BufferedWriter(new OutputStreamWriter(output));
@@ -534,7 +639,7 @@ public final class TokenDatabase {
      *         they need to be pre-populated.
      */
     private boolean tagsLoaded() {
-        return this.mTokensForTag.size() != 0;
+        return this.mTagTreeRoot.hasChildren();
     }
 
     /**
@@ -560,16 +665,8 @@ public final class TokenDatabase {
     public void tagToken(String tokenId, final Collection<String> tags) {
         tokenId = this.getNonDeprecatedTokenId(tokenId);
         for (String tag : tags) {
-            if (!this.mTokensForTag.containsKey(tag)) {
-                this.mTokensForTag.put(tag, new HashSet<String>());
-            }
-            this.mTokensForTag.get(tag).add(tokenId);
+        	this.mTagTreeRoot.getOrAddChildTag(tag).addToken(tokenId);
         }
-
-        if (!this.mTagsForToken.containsKey(tokenId)) {
-            this.mTagsForToken.put(tokenId, new HashSet<String>());
-        }
-        this.mTagsForToken.get(tokenId).addAll(tags);
     }
 
     /**
@@ -632,10 +729,55 @@ public final class TokenDatabase {
     public List<BaseToken> tokensForTags(final Collection<String> tags) {
         Set<String> tokenIds = new HashSet<String>();
         for (String tag : tags) {
-            tokenIds.addAll(this.mTokensForTag.get(tag));
+            tokenIds.addAll(this.mTagTreeRoot.getNamedChild(tag, false).getAllTokens());
         }
         return this.tokenIdsToTokens(tokenIds);
     }
+    
+    private class DatabaseReadHandler extends DefaultHandler {
+    	
+    	/**
+    	 * The TokenDatabase instance to read data into.
+    	 */
+    	private TokenDatabase database;
+    	
+    	/**
+    	 * Argh I fucking hate having to emulate recursion.  But I need to in
+    	 * this case.
+    	 */
+    	private TagTreeNode currentTagTreeNode = null;
+    	
+    	public DatabaseReadHandler(TokenDatabase d) {
+    		database = d;
+    		currentTagTreeNode = d.mTagTreeRoot;
+    	}
+    	String TAG = "com.tbocek.android.combatmap.DatabaseReadHandler";
+    	public void startElement(String namespaceURI, String localName,
+                String qName, org.xml.sax.Attributes atts) {
+    		if (localName.equalsIgnoreCase("deleted_builtin_token")) {
+    			String tokenName = atts.getValue("name");
+    			Log.d(TAG, "PROCESS DELETED TOKEN: " + tokenName);
+    			database.mDeletedBuiltInTokens.add(tokenName);
+    		} else if (localName.equalsIgnoreCase("tag")) {
+    			String tagName = atts.getValue("name");
+    			Log.d(TAG, "START TAG: " + tagName);
+    			currentTagTreeNode = currentTagTreeNode.getNamedChild(tagName, true);
+    		} else if (localName.equalsIgnoreCase("token")) {
+    			String tokenName = atts.getValue("name");
+    			Log.d(TAG, "ADD TOKEN " + tokenName + " TO TAG " + currentTagTreeNode.name);
+    			currentTagTreeNode.addToken(tokenName);
+    		}
+    	}
+    	
+    	public void endElement(java.lang.String uri, java.lang.String localName, java.lang.String qName) {
+    		if (localName.equalsIgnoreCase("tag")) {
+    			Log.d(TAG, "LEAVE TAG: " + currentTagTreeNode.name);
+    			currentTagTreeNode = currentTagTreeNode.parent;
+    		}
+        }
+    }
+    
+    
 
     /**
      * SAX handler to load the resources that represent built-in tokens from the
