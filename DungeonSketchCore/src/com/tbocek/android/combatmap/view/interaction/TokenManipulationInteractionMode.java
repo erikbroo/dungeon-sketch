@@ -382,6 +382,7 @@ public final class TokenManipulationInteractionMode extends
         this.mUnmovedTokens.clear();
         this.mMovedTokens.clear();
         this.fadeTrashCanOut();
+        this.mAboutToTrash = false;
         this.customLongPressDetector.onUp(ev);
     }
 
