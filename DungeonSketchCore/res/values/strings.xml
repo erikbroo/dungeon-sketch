@@ -87,5 +87,6 @@
     <string name="import_overwrite_maps">Maps</string>
     <string name="import_start">Migrate</string>
     <string name="import_overwrite_token_lib">Token Tag Settings</string>
+    <string name="import_option_debug_version">Local Debugging Efforts</string>
 
 </resources>
