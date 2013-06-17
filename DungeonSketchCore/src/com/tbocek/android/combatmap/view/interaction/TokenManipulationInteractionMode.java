@@ -287,6 +287,8 @@ public final class TokenManipulationInteractionMode extends
     
     @Override
     public boolean onSingleTapConfirmed(final MotionEvent e) {
+    	if (this.customLongPressDetector.isLongPress()) { return true; }
+    	
     	if (this.getView().getMultiSelect().isActive()) {
 	        BaseToken t =
 	                this.getView()

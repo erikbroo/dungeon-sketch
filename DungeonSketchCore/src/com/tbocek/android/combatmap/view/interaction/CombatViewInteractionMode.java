@@ -43,12 +43,14 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
     protected class CustomLongPressDetector {
         private Handler mLongPressHandler = new Handler();
         private boolean mPossibleLongPress = false;
+        private boolean mDefiniteLongPress = false;
         private MotionEvent mOriginalDownEvent = null;
         private Runnable mLongPressRunnable = new Runnable() {
         	@Override
         	public void run() {
         		if (mPossibleLongPress == true) {
         			mPossibleLongPress = false;
+        			mDefiniteLongPress = true;
         			CombatViewInteractionMode.this.onLongPress(mOriginalDownEvent);
         		}
         	}
@@ -56,6 +58,7 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
         
         public boolean onDown(final MotionEvent event) {
         	mPossibleLongPress = true;
+        	mDefiniteLongPress = false;
         	mOriginalDownEvent = event;
         	mLongPressHandler.postDelayed(this.mLongPressRunnable, ViewConfiguration.getLongPressTimeout());
             return true;
@@ -74,6 +77,10 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
         public void onUp(final MotionEvent event) {
     		this.mPossibleLongPress = false;
     		this.mLongPressHandler.removeCallbacks(this.mLongPressRunnable);
+        }
+        
+        public boolean isLongPress() {
+        	return mDefiniteLongPress;
         }
     }
     protected final CustomLongPressDetector customLongPressDetector = new CustomLongPressDetector();
