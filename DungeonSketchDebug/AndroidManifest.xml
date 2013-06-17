@@ -1,0 +1,66 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tbocek.dungeonsketchalpha"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:smallScreens="false"
+        android:xlargeScreens="true" />
+
+    <uses-sdk android:minSdkVersion="11" 
+              android:targetSdkVersion="17"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
+
+
+    <application
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:largeHeap="true" 
+        android:allowBackup="true"
+        android:name="com.tbocek.android.combatmap.DungeonSketchApp">
+        <activity
+            android:name="com.tbocek.android.combatmap.CombatMap"
+            android:label="@string/app_name" 
+            android:configChanges="keyboardHidden|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tbocek.android.combatmap.Settings"
+            android:label="Settings" >
+        </activity>
+        <activity
+            android:name="com.tbocek.android.combatmap.Load"
+            android:label="Load" >
+        </activity>
+        <activity
+            android:name="com.tbocek.android.combatmap.about.ArtCredits"
+            android:label="Art Credits" >
+        </activity>
+        <activity
+            android:name="com.tbocek.android.combatmap.tokenmanager.TokenCreator"
+            android:hardwareAccelerated="false"
+            android:label="Token Creator" >
+        </activity>
+        <activity
+            android:name="com.tbocek.android.combatmap.tokenmanager.TokenManager"
+            android:label="Token Manager" >
+        </activity>
+        <activity
+            android:name="com.tbocek.android.combatmap.ImportDataDialog"
+            android:label="Token Manager" 
+            android:theme="@android:style/Theme.Holo.Dialog">
+        </activity>
+    </application>
+
+
+</manifest>
