@@ -53,10 +53,6 @@ import com.tbocek.android.combatmap.view.TokenLoadTask;
  * 
  */
 public final class TokenManager extends SherlockActivity {
-    /**
-     * ID for the dialog that will create a new tag.
-     */
-    private static final int DIALOG_ID_NEW_TAG = 0;
 
     /**
      * The minimum number of tokens to display in the grid across the smallest
@@ -395,25 +391,6 @@ public final class TokenManager extends SherlockActivity {
     }
 
     @Override
-    public Dialog onCreateDialog(final int id) {
-        switch (id) {
-        case DIALOG_ID_NEW_TAG:
-            return new TextPromptDialog(this,
-                    new TextPromptDialog.OnTextConfirmedListener() {
-                @Override
-                public void onTextConfirmed(final String text) {
-                    TokenManager.this.mTokenDatabase.addEmptyTag(text);
-                    TokenManager.this.updateTagList();
-                }
-            }, this.getString(R.string.new_tag),
-            this.getString(R.string.create));
-        default:
-            return null;
-
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = this.getSupportMenuInflater();
         inflater.inflate(R.menu.token_manager_menu, menu);
@@ -428,7 +405,9 @@ public final class TokenManager extends SherlockActivity {
             this.startActivity(new Intent(this, TokenCreator.class));
             return true;
         } else if (itemId == R.id.token_manager_new_tag) {
-            this.showDialog(DIALOG_ID_NEW_TAG);
+            Intent i = new Intent(this, NewTagDialog.class);
+            i.putExtra(NewTagDialog.SELECTED_TAG_PATH, this.getActiveTagPath());
+            this.startActivity(i);
             return true;
         } else if (itemId == R.id.token_manager_delete_tag) {
             // Confirm the tag deletion.
@@ -481,16 +460,6 @@ public final class TokenManager extends SherlockActivity {
             this.mTokenDatabase.save(this);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onPrepareDialog(int id, Dialog dialog) {
-        switch (id) {
-        case DIALOG_ID_NEW_TAG:
-            ((TextPromptDialog) dialog).fillText("");
-        default:
-            break;
         }
     }
 

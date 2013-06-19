@@ -1,5 +1,6 @@
 package com.tbocek.android.combatmap.tokenmanager;
 
+import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TokenDatabase;
 
 import android.os.Bundle;
@@ -22,14 +23,18 @@ public class NewTagDialog extends RoboActivity {
 	private TokenDatabase.TagTreeNode mSelectedTag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setContentView(R.layout.new_tag_layout);
+        
     	mDatabase = TokenDatabase.getInstance(this);
-    	mSelectedTag = mDatabase.getRootNode().getNamedChild(this.getIntent().getStringExtra(SELECTED_TAG_PATH), false);
-    	
-    	if (mSelectedTag.getParent() == null) {
+    	String tagPath = this.getIntent().getStringExtra(SELECTED_TAG_PATH);
+    	if (tagPath.equals(TokenDatabase.ALL)){
+    		mSelectedTag = mDatabase.getRootNode();
     		underTopLevel.setVisibility(View.INVISIBLE);
     		underSelected.setVisibility(View.INVISIBLE);
     		underTopLevel.setChecked(true);
     	} else {
+    		mSelectedTag = mDatabase.getRootNode().getNamedChild(tagPath, false);
     		underTopLevel.setVisibility(View.VISIBLE);
     		underSelected.setVisibility(View.VISIBLE);
     		underSelected.setText("Underneath " + mSelectedTag.getName());
@@ -46,9 +51,9 @@ public class NewTagDialog extends RoboActivity {
     
     protected void createTagClicked() {
     	if (underTopLevel.isChecked()) {
-    		mDatabase.getRootNode().getNamedChild((String) tagName.getText(), true);
+    		mDatabase.getRootNode().getNamedChild(tagName.getText().toString(), true);
     	} else {
-    		mSelectedTag.getNamedChild((String) tagName.getText(), true);
+    		mSelectedTag.getNamedChild(tagName.getText().toString(), true);
     	}
     	finish();
     }
