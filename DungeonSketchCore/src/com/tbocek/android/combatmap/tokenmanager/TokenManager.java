@@ -41,7 +41,6 @@ import com.tbocek.android.combatmap.TokenDatabase.TagTreeNode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.view.GridLayout;
-import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TagNavigator;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenLoadTask;
@@ -87,27 +86,6 @@ public final class TokenManager extends SherlockActivity {
      * The action mode that was started to manage the selection.
      */
     private ActionMode mMultiSelectActionMode;
-
-    /**
-     * Listener that reloads the token view when a new tag is selected, and tags
-     * a token when a token is dragged onto that tag.
-     */
-    private TagListView.OnTagListActionListener mOnTagListActionListener =
-            new TagListView.OnTagListActionListener() {
-        @Override
-        public void onChangeSelectedTag(final String newTag) {
-            TokenManager.this.setScrollViewTag(newTag);
-        }
-
-        @Override
-        public void onDragTokensToTag(
-                final Collection<BaseToken> tokens, final String tag) {
-            for (BaseToken t : tokens) {
-                TokenManager.this.mTokenDatabase.tagToken(
-                        t.getTokenId(), tag);
-            }
-        }
-    };
     
     private TagNavigator.TagSelectedListener mTagSelectedListener = 
     		new TagNavigator.TagSelectedListener() {
@@ -135,12 +113,6 @@ public final class TokenManager extends SherlockActivity {
     private ScrollView mScrollView;
 
     boolean mSuspendViewUpdates = false;
-
-    /**
-     * View that displays tags in the token database.
-     * DEPRECATED
-     */
-    private TagListView mTagListView;
     
     private TagNavigator mTagNavigator;
 
@@ -273,7 +245,7 @@ public final class TokenManager extends SherlockActivity {
             return true;
         } else if (itemId == R.id.tag_context_menu_delete) {
             if (this.mTagNavigator.getCurrentTag().equals(this.mContextMenuTag)) {
-                this.mTagListView.setHighlightedTag(TokenDatabase.ALL);
+                this.mTagNavigator.selectRoot();
             }
             this.mTokenDatabase.deleteTag(this.mContextMenuTag);
             this.updateTagList();
@@ -291,9 +263,6 @@ public final class TokenManager extends SherlockActivity {
         this.setContentView(R.layout.token_manager_layout);
 
         this.mTokenViewFactory = new MultiSelectTokenViewFactory(this);
-
-        this.mTagListView = new TagListView(this);
-        this.mTagListView.setRegisterChildrenForContextMenu(true);
         
         this.mTagNavigator = new TagNavigator(this);
         this.mTagNavigator.setTagSelectedListener(this.mTagSelectedListener);

@@ -48,7 +48,6 @@ import com.tbocek.android.combatmap.model.primitives.Util;
 import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
-import com.tbocek.android.combatmap.view.TagListView;
 import com.tbocek.android.combatmap.view.TagNavigator;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
@@ -278,25 +277,6 @@ public final class CombatMap extends SherlockActivity {
 		}
 
 	};
-
-	/**
-	 * Listener that fires when a new token category is selected.
-	 * DEPRECATED
-	 */
-	private TagListView.OnTagListActionListener mOnTagListActionListener = new TagListView.OnTagListActionListener() {
-
-		@Override
-		public void onChangeSelectedTag(final String newTag) {
-			CombatMap.this.mTokenSelector.setSelectedTag(newTag,
-					CombatMap.this.mCombatView);
-		}
-
-		@Override
-		public void onDragTokensToTag(final Collection<BaseToken> tokens,
-				final String tag) {
-
-		}
-	};
 	
 	private TagNavigator.TagSelectedListener mTagSelectedListener = new TagNavigator.TagSelectedListener() {
 		
@@ -393,13 +373,6 @@ public final class CombatMap extends SherlockActivity {
 	 * Whether the tag selector is visible.
 	 */
 	private boolean mTagSelectorVisible;
-
-	/**
-	 * The view that allows the user to select a token category to display in
-	 * the token selector.
-	 * DEPRECATED
-	 */
-	private TagListView mTokenCategorySelector;
 	
 	private TagNavigator mTagNavigator;
 
@@ -602,15 +575,6 @@ public final class CombatMap extends SherlockActivity {
 				.findViewById(R.id.bottomControlAreaFrame);
 		this.mPopupFrame = (FrameLayout) this
 				.findViewById(R.id.popupControlAreaFrame);
-
-		this.mTokenCategorySelector = new TagListView(this);
-		this.mTokenCategorySelector
-				.setLayoutParams(new FrameLayout.LayoutParams(
-						FrameLayout.LayoutParams.MATCH_PARENT,
-						FrameLayout.LayoutParams.MATCH_PARENT));
-		this.mTokenCategorySelector
-				.setOnTagListActionListener(this.mOnTagListActionListener);
-		this.mTokenCategorySelector.setTextSize(TAG_LIST_TEXT_SIZE);
 		
 		this.mTagNavigator = new TagNavigator(this);
 		this.mTagNavigator.setLayoutParams(new FrameLayout.LayoutParams(
@@ -1317,8 +1281,6 @@ public final class CombatMap extends SherlockActivity {
 			d.getTokens().deplaceholderize(CombatMap.this.mTokenDatabase);
 			CombatMap.this.mTokenSelector
 					.setTokenDatabase(CombatMap.this.mTokenDatabase);
-			CombatMap.this.mTokenCategorySelector
-					.setTagList(CombatMap.this.mTokenDatabase.getTags());
 			
 			CombatMap.this.mTagNavigator.setTokenDatabase(CombatMap.this.mTokenDatabase);
 

@@ -270,4 +270,12 @@ public class TagNavigator extends ScrollView {
 		return (v == this.mCurrentTag) || this.mTextViews.contains(v);
 	}
 
+	public void selectRoot() {
+		TagTreeNode n = this.mCurrentTagTreeNode;
+		while (n.getParent() != null) {
+			n = n.getParent();
+		}
+		selectTag(n, true);
+	}
+
 }
