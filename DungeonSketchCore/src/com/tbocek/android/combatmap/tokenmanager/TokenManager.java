@@ -37,10 +37,12 @@ import com.tbocek.android.combatmap.Help;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
+import com.tbocek.android.combatmap.TokenDatabase.TagTreeNode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.view.GridLayout;
 import com.tbocek.android.combatmap.view.TagListView;
+import com.tbocek.android.combatmap.view.TagNavigator;
 import com.tbocek.android.combatmap.view.TokenButton;
 import com.tbocek.android.combatmap.view.TokenLoadTask;
 
@@ -106,6 +108,25 @@ public final class TokenManager extends SherlockActivity {
             }
         }
     };
+    
+    private TagNavigator.TagSelectedListener mTagSelectedListener = 
+    		new TagNavigator.TagSelectedListener() {
+				@Override
+				public void onTagSelected(TagTreeNode selectedTag) {
+					TokenManager.this.setScrollViewTag(selectedTag.getPath());
+				}
+
+				@Override
+				public void onDragTokensToTag(Collection<BaseToken> tokens,
+						TagTreeNode tag) {
+		            for (BaseToken t : tokens) {
+		                TokenManager.this.mTokenDatabase.tagToken(
+		                        t.getTokenId(), tag.getPath());
+		                TokenManager.this.setScrollViewTag(tag.getPath());
+		            }
+					
+				}
+			};
 
     /**
      * Scroll view that wraps the layout of tokens for the currently selected
@@ -117,8 +138,11 @@ public final class TokenManager extends SherlockActivity {
 
     /**
      * View that displays tags in the token database.
+     * DEPRECATED
      */
     private TagListView mTagListView;
+    
+    private TagNavigator mTagNavigator;
 
     /**
      * Whether token tags are loaded into the action bar as tabs.
@@ -164,7 +188,7 @@ public final class TokenManager extends SherlockActivity {
                 toast.show();
             }
         }
-        this.setScrollViewTag(this.mTagListView.getTag());
+        this.setScrollViewTag(this.mTagNavigator.getCurrentTag());
     }
 
     /**
@@ -174,7 +198,7 @@ public final class TokenManager extends SherlockActivity {
         if (this.mTagsInActionBar) {
             return this.tagFromActionBar;
         } else {
-            return this.mTagListView.getTag();
+            return this.mTagNavigator.getCurrentTag();
         }
     }
 
@@ -245,10 +269,10 @@ public final class TokenManager extends SherlockActivity {
             return true;
         } else if (itemId == R.id.token_delete_from_tag) {
             this.removeTagFromTokens(this.mTrashButton.getManagedTokens(),
-                    this.mTagListView.getTag());
+                    this.mTagNavigator.getCurrentTagPath());
             return true;
         } else if (itemId == R.id.tag_context_menu_delete) {
-            if (this.mTagListView.getTag().equals(this.mContextMenuTag)) {
+            if (this.mTagNavigator.getCurrentTag().equals(this.mContextMenuTag)) {
                 this.mTagListView.setHighlightedTag(TokenDatabase.ALL);
             }
             this.mTokenDatabase.deleteTag(this.mContextMenuTag);
@@ -269,9 +293,11 @@ public final class TokenManager extends SherlockActivity {
         this.mTokenViewFactory = new MultiSelectTokenViewFactory(this);
 
         this.mTagListView = new TagListView(this);
-        this.mTagListView
-        .setOnTagListActionListener(this.mOnTagListActionListener);
         this.mTagListView.setRegisterChildrenForContextMenu(true);
+        
+        this.mTagNavigator = new TagNavigator(this);
+        this.mTagNavigator.setTagSelectedListener(this.mTagSelectedListener);
+        this.mTagNavigator.setAllowContextMenu(true);
 
         // On large screens, set up a seperate column of token tags and possibly
         // set up a trash can to drag tokens too if drag&drop is an option on
@@ -293,7 +319,7 @@ public final class TokenManager extends SherlockActivity {
             FrameLayout tagListFrame =
                     (FrameLayout) this
                     .findViewById(R.id.token_manager_taglist_frame);
-            tagListFrame.addView(this.mTagListView);
+            tagListFrame.addView(this.mTagNavigator);
         } else {
             this.mTagsInActionBar = true;
             this.getSupportActionBar().setNavigationMode(
@@ -355,7 +381,7 @@ public final class TokenManager extends SherlockActivity {
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v,
             final ContextMenuInfo menuInfo) {
-        if (this.mTagListView.isViewAChild(v)) {
+        if (this.mTagNavigator.isViewAChild(v)) {
             TextView tv = (TextView) v;
             this.mContextMenuTag = tv.getText().toString();
             this.getMenuInflater().inflate(R.menu.tag_context_menu, menu);
@@ -376,9 +402,9 @@ public final class TokenManager extends SherlockActivity {
                         deleteText);
             }
 
-            if (!this.mTagListView.getTag().equals(TokenDatabase.ALL)) {
+            if (!this.mTagNavigator.getCurrentTag().equals(TokenDatabase.ALL)) {
                 String removeText =
-                        "Remove '" + this.mTagListView.getTag() + "' Tag";
+                        "Remove '" + this.mTagNavigator.getCurrentTag() + "' Tag";
 
                 if (tokens.size() > 1) {
                     removeText +=
@@ -577,7 +603,7 @@ public final class TokenManager extends SherlockActivity {
             bar.setSelectedNavigationItem(oldIndex);
             this.setSuspendViewUpdates(false);
         } else {
-            this.mTagListView.setTagList(this.mTokenDatabase.getTags());
+            this.mTagNavigator.setTokenDatabase(this.mTokenDatabase);
         }
     }
 

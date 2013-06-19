@@ -44,6 +44,7 @@ import android.util.Log;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.tbocek.android.combatmap.TokenDatabase.TagTreeNode;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.BuiltInImageToken;
 import com.tbocek.android.combatmap.model.primitives.CustomBitmapToken;
@@ -110,7 +111,7 @@ public final class TokenDatabase {
 					current = current.getOrAddChildTag(s);
 				} else {
 					// TODO: something sane if tag doesn't exist.
-					current = childTags.get(s);
+					current = current.childTags.get(s);
 				}
 			}
 			return current;
@@ -158,6 +159,26 @@ public final class TokenDatabase {
 			this.tokenNames.add(tokenId);
 			Log.d(TAG, "Adding token: " + tokenId + " to " + name);
 		}
+
+		public TagTreeNode getParent() {
+			return this.parent;
+		}
+
+		public String getName() {
+			return this.name;
+		}
+
+		public String getPath() {
+			TagTreeNode current = this;
+			String result = this.getName();
+			while (current.parent != null) {
+				current = current.parent;
+				if (current.parent != null) { // Don't get "root" in there!
+					result = current.name + ":" + result;
+				}
+			}
+			return result;
+		}
 	}
 
     /**
@@ -198,7 +219,7 @@ public final class TokenDatabase {
      */
     private transient Map<String, BaseToken> mTokenForId = Maps.newHashMap();
     
-    private transient TagTreeNode mTagTreeRoot = new TagTreeNode(null, "root");
+    private transient TagTreeNode mTagTreeRoot = new TagTreeNode(null, TokenDatabase.ALL);
 
     /**
      * Returns the instance of the token database.
@@ -273,7 +294,7 @@ public final class TokenDatabase {
      * Adds a built-in image token with the given resource ID to the token
      * database.
      * 
-     * @param resourceName
+     * @param resourceName 
      *            The name of the drawable resource to add.
      * @param resourceId
      *            The ID of the drawable resource to add.
@@ -353,7 +374,7 @@ public final class TokenDatabase {
     }
 
     /**
-     * Gets a TokenId, dereferencing a deprecated ID into the new ID if
+     * Gets a TokenId, dereferencing a deprecated ID into the new I D if
      * necessary.
      * 
      * @param tokenId
@@ -669,7 +690,7 @@ public final class TokenDatabase {
     public void tagToken(String tokenId, final Collection<String> tags) {
         tokenId = this.getNonDeprecatedTokenId(tokenId);
         for (String tag : tags) {
-        	this.mTagTreeRoot.getOrAddChildTag(tag).addToken(tokenId);
+        	this.mTagTreeRoot.getNamedChild(tag, true).addToken(tokenId);
         }
     }
 
@@ -844,4 +865,10 @@ public final class TokenDatabase {
             }
         }
     }
+
+
+
+	public TagTreeNode getRootNode() {
+		return this.mTagTreeRoot;
+	}
 }

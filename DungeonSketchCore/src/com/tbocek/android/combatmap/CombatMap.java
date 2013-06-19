@@ -35,6 +35,7 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tbocek.android.combatmap.TokenDatabase.TagTreeNode;
 import com.tbocek.android.combatmap.model.Grid;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer.FogOfWarMode;
@@ -48,6 +49,7 @@ import com.tbocek.android.combatmap.tokenmanager.TokenManager;
 import com.tbocek.android.combatmap.view.CombatView;
 import com.tbocek.android.combatmap.view.DrawOptionsView;
 import com.tbocek.android.combatmap.view.TagListView;
+import com.tbocek.android.combatmap.view.TagNavigator;
 import com.tbocek.android.combatmap.view.TokenSelectorView;
 
 /**
@@ -119,7 +121,8 @@ public final class CombatMap extends SherlockActivity {
 	private static final int REQUEST_PICK_BACKGROUND_IMAGE = 0;
 
 	/**
-	 * The attempted save name used when an extra saved prompt is needed (i.e.
+	 * The attempted save name used when an extra saved prompt is need
+			}ed (i.e.
 	 * when saving over a different map).
 	 */
 	private String mAttemptedMapName;
@@ -137,6 +140,7 @@ public final class CombatMap extends SherlockActivity {
 	private CombatView mCombatView;
 
 	/**
+			}
 	 * The view that allows the user to select a drawing tool or color.
 	 */
 	private DrawOptionsView mDrawOptionsView;
@@ -277,6 +281,7 @@ public final class CombatMap extends SherlockActivity {
 
 	/**
 	 * Listener that fires when a new token category is selected.
+	 * DEPRECATED
 	 */
 	private TagListView.OnTagListActionListener mOnTagListActionListener = new TagListView.OnTagListActionListener() {
 
@@ -291,6 +296,19 @@ public final class CombatMap extends SherlockActivity {
 				final String tag) {
 
 		}
+	};
+	
+	private TagNavigator.TagSelectedListener mTagSelectedListener = new TagNavigator.TagSelectedListener() {
+		
+		@Override
+		public void onTagSelected(TagTreeNode selectedTag) {
+			CombatMap.this.mTokenSelector.setSelectedTag(selectedTag.getPath(),
+					CombatMap.this.mCombatView);
+		}
+
+		@Override
+		public void onDragTokensToTag(Collection<BaseToken> token,
+				TagTreeNode tag) { }
 	};
 
 	/**
@@ -379,8 +397,11 @@ public final class CombatMap extends SherlockActivity {
 	/**
 	 * The view that allows the user to select a token category to display in
 	 * the token selector.
+	 * DEPRECATED
 	 */
 	private TagListView mTokenCategorySelector;
+	
+	private TagNavigator mTagNavigator;
 
 	/**
 	 * Database of available combat tokens.
@@ -590,9 +611,16 @@ public final class CombatMap extends SherlockActivity {
 		this.mTokenCategorySelector
 				.setOnTagListActionListener(this.mOnTagListActionListener);
 		this.mTokenCategorySelector.setTextSize(TAG_LIST_TEXT_SIZE);
+		
+		this.mTagNavigator = new TagNavigator(this);
+		this.mTagNavigator.setLayoutParams(new FrameLayout.LayoutParams(
+						FrameLayout.LayoutParams.MATCH_PARENT,
+						FrameLayout.LayoutParams.MATCH_PARENT));
+		this.mTagNavigator.setTagSelectedListener(this.mTagSelectedListener);
 
-		this.mPopupFrame.addView(this.mTokenCategorySelector);
-
+		//this.mPopupFrame.addView(this.mTokenCategorySelector);
+		this.mPopupFrame.addView(this.mTagNavigator);
+		
 		mainContentFrame.addView(this.mCombatView);
 		this.mBottomControlFrame.addView(this.mTokenSelector);
 
@@ -1291,6 +1319,8 @@ public final class CombatMap extends SherlockActivity {
 					.setTokenDatabase(CombatMap.this.mTokenDatabase);
 			CombatMap.this.mTokenCategorySelector
 					.setTagList(CombatMap.this.mTokenDatabase.getTags());
+			
+			CombatMap.this.mTagNavigator.setTokenDatabase(CombatMap.this.mTokenDatabase);
 
 			// Load all the tokens that are currently placed on the map.
 			TokenLoadManager.getInstance().startJob(d.getTokens().asList(),

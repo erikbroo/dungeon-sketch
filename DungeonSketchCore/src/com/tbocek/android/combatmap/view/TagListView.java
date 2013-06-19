@@ -42,7 +42,6 @@ public final class TagListView extends ScrollView {
      * Number of pixels to pad the top and bottom of each text view with.
      */
     private static final int VERTICAL_PADDING = 8;
-
     /**
      * The tag that should be highlighted.
      */
@@ -89,6 +88,8 @@ public final class TagListView extends ScrollView {
         this.mInnerLayout = new LinearLayout(this.getContext());
         this.addView(this.mInnerLayout);
         this.mInnerLayout.setOrientation(LinearLayout.VERTICAL);
+        
+        // Create an initial cache of TextViews.s
     }
 
     /**
