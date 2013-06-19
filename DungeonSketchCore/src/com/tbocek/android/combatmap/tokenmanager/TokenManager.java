@@ -173,6 +173,14 @@ public final class TokenManager extends SherlockActivity {
             return this.mTagNavigator.getCurrentTag();
         }
     }
+    
+    private String getActiveTagPath() {
+        if (this.mTagsInActionBar) {
+            return this.tagFromActionBar;
+        } else {
+            return this.mTagNavigator.getCurrentTagPath();
+        }
+    }
 
     /**
      * Given a list of tokens, creates views representing the tokens and lays
@@ -437,7 +445,7 @@ public final class TokenManager extends SherlockActivity {
                                 int which) {
                             TokenManager.this.mTokenDatabase
                             .deleteTag(TokenManager.this
-                                    .getActiveTag());
+                                    .getActiveTagPath());
                             TokenManager.this.updateTagList();
                         }
                     })
@@ -616,7 +624,7 @@ public final class TokenManager extends SherlockActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.token_manager_action_mode_remove_tag) {
                 TokenManager.this.removeTagFromTokens(tokens,
-                        TokenManager.this.getActiveTag());
+                        TokenManager.this.getActiveTagPath());
                 return true;
             } else if (itemId == R.id.token_manager_action_mode_delete) {
                 TokenManager.this.deleteTokens(tokens);
