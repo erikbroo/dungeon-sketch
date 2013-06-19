@@ -1,6 +1,7 @@
 package com.tbocek.android.combatmap.view;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -126,6 +127,8 @@ public class TagNavigator extends ScrollView {
 		mBackButton.setTag(node.getParent());
 		
 		List<String> tagNames = Lists.newArrayList(node.getTagNames());
+		Collections.sort(tagNames);
+		
 		
 		// Make sure there are enough text views to go around.
 		for (int i = mTextViews.size(); i < tagNames.size(); ++i) {
