@@ -63,7 +63,7 @@
 		<token res="flamebeard" tags="humanoid:male"/>
 		<token res="gerymn" tags="humanoid:male"/>
 		<token res="glimnor" tags="humanoid:male"/>
-		<token res="green_dragon" tags="dragon"/>
+		<token res="green_dragon" tags="dragon:green"/>
 		<token res="gyrlang" tags="humanoid:male"/>
 		<token res="halfskull" tags="undead"/>
 		<token res="heretic" tags="undead"/>
@@ -121,7 +121,7 @@
 	</artist>
 	<artist name="Mac M 13" copyright="Lisenced under CC BY SA 3.0">
 		<token res="dragon_furioso"
-			url="http://commons.wikimedia.org/wiki/File:Furioso_dragon-13-.jpg" tags="dragon"/>
+			url="http://commons.wikimedia.org/wiki/File:Furioso_dragon-13-.jpg" tags="dragon:red"/>
 	</artist>
 	<artist name="Matěj Čadil" copyright="CC BY 3.0">
 		<token res="thorin"
@@ -142,7 +142,7 @@
 		<token res="flamesandshadows"
 			url="http://www.elfwood.com/~demodus/Of-Flames-and-Shadows.2676848.html" tags="demon"/>
 		<token res="dragon_roncke"
-			url="http://www.elfwood.com/~demodus/The-Dragon-s-Sky.2676846.html" tags="dragon"/>
+			url="http://www.elfwood.com/~demodus/The-Dragon-s-Sky.2676846.html" tags="dragon:red"/>
 		<token res="ancient_troll2" tags="monster"/>
 		<token res="angel_of_pain" tags="demon"/>
 		<token res="archmage_3" tags="humanoid:male"/>
@@ -176,7 +176,7 @@
 		<token res="siren2" tags="humanoid:female"/>
 		<token res="sothoth" tags="demon"/>
 		<token res="stargazer2" tags="giant"/>
-		<token res="sunset_dragon" tags="dragon"/>
+		<token res="sunset_dragon" tags="dragon:red"/>
 		<token res="swamp_trollop_2" tags="goblinoid"/>
 		<token res="titan" tags="giant"/>
 		<token res="titan2" tags="giant"/>
@@ -186,17 +186,17 @@
 	<artist name="Rinpoo Chuang" url="http://rinpoo-chuang.deviantart.com/"
 		copyright="For noncommercial use only.  Used with permission.">
 		<token res="aurak" tags="monster"/>
-		<token res="dragon_hurlant" tags="dragon"/>
-		<token res="female_dragon" tags="dragon"/>
+		<token res="dragon_hurlant" tags="dragon:black"/>
+		<token res="female_dragon" tags="dragon:green"/>
 		<token res="griffon" tags="monster"/>
 		<token res="la_nuit_des_lumieres" tags="monster"/>
 		<token res="manticore" tags="monster"/>
-		<token res="moi" tags="dragon"/>
+		<token res="moi" tags="dragon:black"/>
 		<token res="nocturne" tags="demon"/>
-		<token res="o_o_oooooo" tags="dragon"/>
+		<token res="o_o_oooooo" tags="dragon:green"/>
 		<token res="rakshase" tags="monster"/>
 		<token res="rascal" tags="monster"/>
-		<token res="rencontre_imprevue" tags="dragon"/>
+		<token res="rencontre_imprevue" tags="dragon:black"/>
 		<token res="roar" tags="monster"/>
 		<token res="shadowsaber" tags="monster"/>
 		<token res="tetaclak" tags="demon"/>
@@ -211,7 +211,7 @@
 		<token res="beastmaster"
 			url="http://francescabaerald.deviantart.com/art/The-Beastmaster-274600849" tags="humanoid:male"/>
 		<token res="beastmaster_dragon"
-			url="http://francescabaerald.deviantart.com/art/The-Beastmaster-274600849" tags="dragon"/>
+			url="http://francescabaerald.deviantart.com/art/The-Beastmaster-274600849" tags="dragon:green"/>
 		<token res="mothmans_lair"
 			url="http://francescabaerald.deviantart.com/gallery/#/d47fufw" tags="monster"/>
 		<token res="northern_winds"
