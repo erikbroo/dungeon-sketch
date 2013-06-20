@@ -175,6 +175,7 @@ public class TagNavigator extends ScrollView {
 		for (TextView v: this.mTextViews) {
 			v.setTextColor(v.getText().equals(this.mCurrentTagTreeNode.getName()) ? COLOR_SELECTED : COLOR_DEFAULT);
 		}
+		this.mCurrentTag.setTextColor(mCurrentTag.getText().equals(this.mCurrentTagTreeNode.getName()) ? COLOR_SELECTED : COLOR_DEFAULT);
 	}
 	
 	private void selectTag(TagTreeNode node, boolean updateColors) {
