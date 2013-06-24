@@ -707,8 +707,9 @@ public final class CombatView extends SurfaceView {
      * @param mode
      *            The interaction mode to use.
      */
-    private void setInteractionMode(final CombatViewInteractionMode mode) {
-        if (this.mInteractionMode != null) {
+    private void setInteractionMode(final CombatViewInteractionMode mode, boolean areTokensManipulatable) {
+    	this.setAreTokensManipulatable(areTokensManipulatable);
+    	if (this.mInteractionMode != null) {
             this.mInteractionMode.onEndMode();
         }
 
@@ -723,6 +724,10 @@ public final class CombatView extends SurfaceView {
         }
 
         this.refreshMap();
+    }
+    
+    private void setInteractionMode(final CombatViewInteractionMode mode) {
+    	this.setInteractionMode(mode, false);
     }
 
     /**
@@ -798,7 +803,7 @@ public final class CombatView extends SurfaceView {
      * not on a token. Note that annotations should always draw in this mode.
      */
     public void setTokenManipulationMode() {
-        this.setInteractionMode(new TokenManipulationInteractionMode(this));
+        this.setInteractionMode(new TokenManipulationInteractionMode(this), true);
         this.mShouldDrawAnnotations = true;
         this.mShouldDrawGmNotes = true;
         if (this.mData != null) {
