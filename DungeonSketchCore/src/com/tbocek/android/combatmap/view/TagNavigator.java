@@ -62,6 +62,11 @@ public class TagNavigator extends ScrollView {
 	private TextView mCurrentTag;
 	private TokenDatabase mTokenDatabase;
 	private TokenDatabase.TagTreeNode mCurrentTagTreeNode;
+	
+	/**
+	 * Whether the tag navigator should show tags that were marked as inactive.
+	 */
+	private boolean showInactiveTags = true;
 
 	private List<TextView> mTextViews = Lists.newArrayList();
 	
@@ -122,6 +127,10 @@ public class TagNavigator extends ScrollView {
 		return mCurrentTagTreeNode.getPath();
 	}
 	
+	public void setShowInactiveTags(boolean show) {
+		this.showInactiveTags = show;
+	}
+	
 	private void loadTokenData(TagTreeNode node) {
 		mCurrentTagTreeNode = node;
 		boolean root = node.getParent() == null;
@@ -138,11 +147,23 @@ public class TagNavigator extends ScrollView {
 		mBackButton.setTag(node.getParent());
 		
 		List<String> tagNames = Lists.newArrayList(node.getTagNames());
+		if (!this.showInactiveTags) {
+			List<String> activeTagNames = Lists.newArrayList();
+			for (String tag: tagNames) {
+				if (node.getNamedChild(tag, false).isActive()) {
+					activeTagNames.add(tag);
+				}
+			}
+			tagNames = activeTagNames;
+		}
+		
+		
 		Collections.sort(tagNames, new Comparator<String>() {
 		    @Override
 		    public int compare(String o1, String o2) {              
 		        return o1.compareToIgnoreCase(o2);
 		    }});
+		
 		
 		
 		// Make sure there are enough text views to go around.

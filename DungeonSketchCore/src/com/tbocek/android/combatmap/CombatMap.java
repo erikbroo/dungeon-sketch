@@ -1287,6 +1287,7 @@ public final class CombatMap extends SherlockActivity {
 			CombatMap.this.mTokenSelector
 					.setTokenDatabase(CombatMap.this.mTokenDatabase);
 			
+			CombatMap.this.mTagNavigator.setShowInactiveTags(false);
 			CombatMap.this.mTagNavigator.setTokenDatabase(CombatMap.this.mTokenDatabase);
 
 			// Load all the tokens that are currently placed on the map.
