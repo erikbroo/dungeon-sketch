@@ -68,6 +68,12 @@ public final class TokenDatabase {
 		private TagTreeNode parent;
 		private String name;
 		
+		/**
+		 * Whether this tag is active.  A tag that is inactive does not load
+		 * child tags or tokens.
+		 */
+		private boolean isActive = true;
+		
 		private String TAG = "com.tbocek.android.combatmap.TagTreeNode";
 		
 		public TagTreeNode(TagTreeNode parent, String name) {
@@ -88,7 +94,7 @@ public final class TokenDatabase {
 		}
 		
 		public Collection<String> getImmediateTokens() {
-			return tokenNames;
+			return this.isActive ? tokenNames : new ArrayList<String>();
 		}
 		
 		public Set<String> getAllTokens() {
@@ -98,6 +104,8 @@ public final class TokenDatabase {
 		}
 		
 		private void getAllTokensHelper(Collection<String> result) {
+			if (!this.isActive) return;
+			
 			result.addAll(this.getImmediateTokens());
 			for (TagTreeNode n: this.childTags.values()) {
 				n.getAllTokensHelper(result);
@@ -118,11 +126,11 @@ public final class TokenDatabase {
 		}
 		
 		public Collection<String> getTagNames() {
-			return this.childTags.keySet();
+			return this.isActive ? this.childTags.keySet() : new ArrayList<String>();
 		}
 
 		public boolean hasChildren() {
-			return this.childTags.size() != 0;
+			return this.childTags.size() != 0 && this.isActive;
 		}
 
 		public void deleteToken(String tokenId) {
@@ -141,7 +149,7 @@ public final class TokenDatabase {
 		public Element toXml(Document document) {
 			Element el = document.createElement("tag");
 			el.setAttribute("name", this.name);
-			
+			el.setAttribute("active", Boolean.toString(this.isActive));
 			for (String tokenId: this.tokenNames) {
 				Element tokenEl = document.createElement("token");
 				tokenEl.setAttribute("name", tokenId);
@@ -166,6 +174,14 @@ public final class TokenDatabase {
 
 		public String getName() {
 			return this.name;
+		}
+		
+		public boolean isActive() {
+			return this.isActive;
+		}
+		
+		public void setIsActive(boolean active) {
+			this.isActive = active;
 		}
 
 		public String getPath() {
@@ -785,8 +801,11 @@ public final class TokenDatabase {
     			database.mDeletedBuiltInTokens.add(tokenName);
     		} else if (localName.equalsIgnoreCase("tag")) {
     			String tagName = atts.getValue("name");
+    			String active = atts.getValue("active");
+    			boolean isActive = active != null ? Boolean.parseBoolean(active) : true;
     			Log.d(TAG, "START TAG: " + tagName);
     			currentTagTreeNode = currentTagTreeNode.getNamedChild(tagName, true);
+    			currentTagTreeNode.setIsActive(isActive);
     		} else if (localName.equalsIgnoreCase("token")) {
     			String tokenName = atts.getValue("name");
     			Log.d(TAG, "ADD TOKEN " + tokenName + " TO TAG " + currentTagTreeNode.name);
