@@ -246,6 +246,11 @@ public final class CombatMap extends SherlockActivity {
 			CombatMap.this.mCombatView.setTextMode();
 
 		}
+
+		@Override
+		public void onChooseMoveTokenTool() {
+			CombatMap.this.mCombatView.setTokenManipulationMode();
+		}
 	};
 
 	/**
@@ -888,7 +893,7 @@ public final class CombatMap extends SherlockActivity {
 		// android.os.Debug.stopMethodTracing();
 	}
 
-	/**
+	/**this.mCombatView.setTokenManipulationMode();
 	 * Modifies the current map data according to any preferences the user has
 	 * set.
 	 */

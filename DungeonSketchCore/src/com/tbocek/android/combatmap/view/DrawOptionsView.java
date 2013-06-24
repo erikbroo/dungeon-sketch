@@ -137,7 +137,9 @@ public final class DrawOptionsView extends LinearLayout {
         this.createAndAddTextButton();
 
         this.mBackgroundImageButton = this.createAndAddBackgroundImageButton();
-
+        this.createAndAddSeperator();
+        
+        this.createAndAddMoveTokenButton();
         this.createAndAddSeperator();
 
         this.addStrokeWidthButton(PENCIL_STROKE_WIDTH, R.drawable.pencil);
@@ -479,6 +481,33 @@ public final class DrawOptionsView extends LinearLayout {
         this.mToolsGroup.add(button);
     }
 
+    /**
+     * Creates a button to switch to the move token tool, and adds it to the view.
+     */
+    protected void createAndAddMoveTokenButton() {
+        final ImageToggleButton button =
+                new ImageToggleButton(this.getContext());
+
+        button.setImageResource(R.drawable.move_token);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                DrawOptionsView.this.mOnChangeDrawToolListener
+                        .onChooseMoveTokenTool();
+                DrawOptionsView.this.mToolsGroup.untoggle();
+                DrawOptionsView.this.mColorGroup
+                        .setGroupVisibility(View.GONE);
+                DrawOptionsView.this.mLineWidthGroup
+                        .setGroupVisibility(View.GONE);
+                button.setToggled(true);
+                DrawOptionsView.this.mLineWidthGroup.maybeSelectDefault();
+                DrawOptionsView.this.mColorGroup.maybeSelectDefault();
+            }
+        });
+        this.mLayout.addView(button);
+        this.mToolsGroup.add(button);
+    }
+    
     void returnToNonMaskState() {
         // Return to non-mask state.
         this.mToolsGroup.setGroupVisibility(View.VISIBLE);
@@ -565,7 +594,9 @@ public final class DrawOptionsView extends LinearLayout {
                     .onChooseColoredPen(this.mColor);
             DrawOptionsView.this.mColorGroup.untoggle();
             ((ImageToggleButton) v).setToggled(true);
-        }
+        }			// TODO Auto-generated method stub
+		
+		
     }
 
     /**
@@ -616,7 +647,9 @@ public final class DrawOptionsView extends LinearLayout {
 
         @Override
         public void onChooseRectangleTool() {
-        }
+        }			// TODO Auto-generated method stub
+		
+		
 
         @Override
         public void onChooseStraightLineTool() {
@@ -629,6 +662,10 @@ public final class DrawOptionsView extends LinearLayout {
         @Override
         public void onChooseTextTool() {
         }
+
+		@Override
+		public void onChooseMoveTokenTool() {
+		}
     }
 
     /**
@@ -639,7 +676,9 @@ public final class DrawOptionsView extends LinearLayout {
     public interface OnChangeDrawToolListener {
         void onChangeMaskEditing(boolean editingMask);
 
-        /**
+        void onChooseMoveTokenTool();
+
+		/**
          * Called when the circle draw tool is chosen.
          */
         void onChooseCircleTool();
