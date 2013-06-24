@@ -890,4 +890,9 @@ public final class TokenDatabase {
 	public TagTreeNode getRootNode() {
 		return this.mTagTreeRoot;
 	}
+
+	public boolean isTagActive(String tagPath) {
+		if (tagPath.equals(ALL)) { return true; }
+		return this.mTagTreeRoot.getNamedChild(tagPath, false).isActive();
+	}
 }

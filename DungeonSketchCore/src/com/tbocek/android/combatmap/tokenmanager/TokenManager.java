@@ -135,6 +135,8 @@ public final class TokenManager extends SherlockActivity {
 
     private String tagFromActionBar = null;
 
+	private MenuItem mTagActiveMenuItem;
+
     /**
      * Deletes the given list of tokens.
      * 
@@ -395,6 +397,7 @@ public final class TokenManager extends SherlockActivity {
         MenuInflater inflater = this.getSupportMenuInflater();
         inflater.inflate(R.menu.token_manager_menu, menu);
         this.mDeleteTagMenuItem = menu.findItem(R.id.token_manager_delete_tag);
+        this.mTagActiveMenuItem = menu.findItem(R.id.token_manager_is_active);
         return true;
     }
 
@@ -448,6 +451,10 @@ public final class TokenManager extends SherlockActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             this.startActivity(intent);
             return true;
+        } else if (itemId == R.id.token_manager_is_active) {
+        	mTagActiveMenuItem.setChecked(!mTagActiveMenuItem.isChecked());
+        	TokenManager.this.mTagNavigator.getCurrentTagNode().setIsActive(mTagActiveMenuItem.isChecked());
+        	return true;
         } else {
             return false;
         }
@@ -504,12 +511,18 @@ public final class TokenManager extends SherlockActivity {
                 if (this.mDeleteTagMenuItem != null) {
                     this.mDeleteTagMenuItem.setVisible(false);
                 }
+                if (this.mTagActiveMenuItem != null) {
+                	this.mTagActiveMenuItem.setVisible(false);
+                }	
             } else {
                 this.mScrollView.addView(this
                         .getTokenButtonLayout(this.mTokenDatabase
                                 .getTokensForTag(tag)));
                 this.mDeleteTagMenuItem.setVisible(true);
+                this.mTagActiveMenuItem.setChecked(mTokenDatabase.isTagActive(tag));
+                this.mTagActiveMenuItem.setVisible(true);
             }
+            
         }
     }
 
@@ -623,6 +636,7 @@ public final class TokenManager extends SherlockActivity {
                 }).create().show();
                 return true;
             } else {
+            	
             }
             return false;
         }

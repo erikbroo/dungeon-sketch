@@ -109,6 +109,10 @@ public class TagNavigator extends ScrollView {
 		selectTag(database.getRootNode(), true);
 	}
 	
+	public TagTreeNode getCurrentTagNode() {
+		return mCurrentTagTreeNode;
+	}
+	
 
 	public String getCurrentTag() {
 		return mCurrentTagTreeNode.getName();
