@@ -65,6 +65,12 @@ public class TagNavigator extends ScrollView {
 
 	private List<TextView> mTextViews = Lists.newArrayList();
 	
+	/**
+	 * The tag that was selected when a drag and drop operation started.
+	 * Used to return the user to that tag when the D&D operation ends.
+	 */
+	private TokenDatabase.TagTreeNode mTagOnDragStart = null;
+	
 	private int mTextSize;
 	private boolean mAllowContextMenu;
 
@@ -242,7 +248,16 @@ public class TagNavigator extends ScrollView {
                 mLongDragHandler.removeCallbacks(this.mLongDragRunnable);
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                return true;
+            	if (mTagOnDragStart == null) {
+            		TagNavigator.this.mTagOnDragStart = TagNavigator.this.mCurrentTagTreeNode;
+            	}
+            	return true;
+            } else if (event.getAction() == DragEvent.ACTION_DRAG_ENDED) {
+            	if (mTagOnDragStart != null) {
+            		TagNavigator.this.selectTag(TagNavigator.this.mTagOnDragStart, true);
+            		mTagOnDragStart = null;
+            	}
+            	return true;
             }
             return true;
 		}
