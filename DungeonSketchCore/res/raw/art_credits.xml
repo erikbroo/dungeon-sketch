@@ -231,6 +231,35 @@
 		<token res="vanya_altea"
 			url="http://francescabaerald.deviantart.com/gallery/#/d4fxldz" tags="monster"/>
 	</artist>
+		<artist name="Gauntes" copyright="Noncommercial use only.  Used with permission."
+	    url="http://gauntes.tumblr.com/">
+	    <token res="gauntes1" tags="humanoid:female"/>
+	    <token res="gauntes2" tags="goblinoid"/>
+	    <token res="gauntes3" tags="humanoid:female"/>
+	    <token res="gauntes4" tags="humanoid:male"/>
+	    <token res="gauntes5" tags="humanoid"/>
+	    <token res="gauntes6" tags="humanoid:male,demon"/>
+	    <token res="gauntes7" tags="animal"/>
+	    <token res="gauntes8" tags="humanoid:female"/>
+	    <token res="gauntes9" tags="demon"/>
+	    <token res="gauntes10" tags="humanoid:male,demon"/>
+	    <token res="gauntes11" tags="humanoid:female"/>
+	    <token res="gauntes12" tags="humanoid:female"/>
+	    <token res="gauntes13" tags="humanoid:female"/>
+	    <token res="gauntes14" tags="humanoid:male"/>
+	    <token res="gauntes15" tags="humanoid:female"/>
+	    <token res="gauntes16" tags="animal"/>
+	    <token res="gauntes17" tags="humanoid:male"/>
+	    <token res="gauntes18" tags="undead"/>
+	    <token res="gauntes19" tags="humanoid:male"/>
+	</artist>
+	<artist name="~bchart" copyright="Noncommercial use only.  Used with permission."
+	    url="http://www.bchart.deviantart.com/">
+	    <token res="adventuring_princess" tags="humanoid:female"/>
+	    <token res="daemon_blooded_dark_elf_sorcerer" tags="humanoid:female,demon"/>
+	    <token res="steampunk_gal" tags="humanoid:female"/>
+	    <token res="swordmage" tags="humanoid:female"/>
+	</artist>
 	<artist name="Sir Edwin Henry Landseer" copyright="Available in the public domain">
 		<token res="cheetah" tags="animal"/>
 		<token res="cougar" tags="animal"/>
