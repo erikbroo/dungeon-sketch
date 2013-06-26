@@ -61,6 +61,7 @@ import com.tbocek.android.combatmap.model.primitives.Util;
  * 
  */
 public final class TokenDatabase {
+	private static final Set<String> SYSTEM_TAG_NAMES = Sets.newHashSet("built-in","custom","image","letter","solid color");
 	
 	public class TagTreeNode {
 		private Set<String> tokenNames = Sets.newHashSet();
@@ -97,18 +98,55 @@ public final class TokenDatabase {
 			return this.isActive ? tokenNames : new ArrayList<String>();
 		}
 		
+		/**
+		 * Gets all tokens in this tag and all child tags.
+		 * Will not return tokens from disabled tags, unless that token appears in
+		 * another non-system tag.
+		 * Tokens from system tags will only appear if they have not been explicitly
+		 * disabled.
+		 * BIG ASSUMPTION HERE: System tags appear only as the child of the root tag.
+		 * @return
+		 */
 		public Set<String> getAllTokens() {
-			Set<String> result = Sets.newHashSet();
-			this.getAllTokensHelper(result);
-			return result;
+			// If this is a system tag, we also want to get the excluded tokens from non-system tags
+			// from the *parent*.
+			if (this.isSystemTag()) {
+				Set<String> parentResult = Sets.newHashSet();
+				Set<String> parentExcludedTokens = Sets.newHashSet();
+				if (this.parent.parent != null) {
+					throw new RuntimeException("System tags must be the child of the root element");
+				}
+				this.parent.getAllTokensHelper(parentResult, parentExcludedTokens, true, false);
+				parentExcludedTokens.removeAll(parentResult);
+				return Sets.difference(this.tokenNames, parentExcludedTokens);
+			} else {
+				Set<String> result = Sets.newHashSet();
+				Set<String> excludedTokens = Sets.newHashSet();
+				this.getAllTokensHelper(result, excludedTokens, true, false);
+				excludedTokens.removeAll(result);
+				
+				// Find the system tags seperately, and include ONLY those system tags that haven't been
+				// explicity excluded.
+				Set<String> tokensFromSystemTags = Sets.newHashSet();
+				this.getAllTokensHelper(tokensFromSystemTags, null, true, true);
+				
+				result.addAll(Sets.difference(tokensFromSystemTags, excludedTokens));
+				return result;
+			}
 		}
 		
-		private void getAllTokensHelper(Collection<String> result) {
-			if (!this.isActive) return;
+		private void getAllTokensHelper(Collection<String> result, Collection<String> excludedTokens, boolean respectExclusion, boolean systemTags) {
+			if (!this.isActive && respectExclusion) {
+				getAllTokensHelper(excludedTokens, null, false, systemTags);
+				return;
+			}
 			
-			result.addAll(this.getImmediateTokens());
+			if (this.isSystemTag() == systemTags && (this.isActive || !respectExclusion)) {
+				result.addAll(this.tokenNames);
+			}
+			
 			for (TagTreeNode n: this.childTags.values()) {
-				n.getAllTokensHelper(result);
+				n.getAllTokensHelper(result, excludedTokens, respectExclusion, systemTags);
 			}
 		}
 		
@@ -194,6 +232,10 @@ public final class TokenDatabase {
 				}
 			}
 			return result;
+		}
+		
+		public boolean isSystemTag() {
+			return SYSTEM_TAG_NAMES.contains(this.name);
 		}
 	}
 
@@ -386,7 +428,7 @@ public final class TokenDatabase {
      * @return The tokens.
      */
     public List<BaseToken> getAllTokens() {
-        return this.tokenIdsToTokens(this.mTokenForId.keySet());
+        return this.tokenIdsToTokens(this.mTagTreeRoot.getAllTokens());
     }
 
     /**
