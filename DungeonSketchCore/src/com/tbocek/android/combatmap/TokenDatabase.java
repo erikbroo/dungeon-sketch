@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
@@ -194,6 +195,46 @@ public final class TokenDatabase {
 				}
 			}
 			return result;
+		}
+	}
+	
+	/**
+	 * Extends TagTreeNode to limit the number of tags in the node.  Tags are
+	 * stored in a LIFO queue.  The queue order persists across app runs.
+	 * @author Tim
+	 *
+	 */
+	protected class LimitedTagTreeNode extends TagTreeNode {
+
+		private int maxSize;
+		private int nextAge;
+		private Map<String, Integer> nodeAges = Maps.newHashMap();
+		
+		public LimitedTagTreeNode(TagTreeNode parent, String name, int maxSize) {
+			super(parent, name);
+			this.maxSize = maxSize;
+		}
+		
+		public void addToken(String tokenId) {
+			addToken(tokenId, nextAge++);
+		}
+		
+		public void addToken(String tokenId, int age) {
+			if (nodeAges.size() == maxSize) {
+				this.deleteToken(this.getOldestToken());
+			}
+			super.addToken(tokenId);
+			nodeAges.put(tokenId, age);
+			nextAge = Math.max(age + 1, nextAge);
+		}
+
+		private String getOldestToken() {
+			String oldestToken = null;
+			int age = Integer.MIN_VALUE;
+			for (Entry<String, Integer> entry: this.nodeAges.entrySet()) {
+				if 
+			}
+			return oldestToken;
 		}
 	}
 
