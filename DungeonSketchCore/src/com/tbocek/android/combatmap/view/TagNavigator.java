@@ -16,6 +16,7 @@ import com.tbocek.android.combatmap.view.interaction.CombatViewInteractionMode;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.util.Log;
 import android.view.DragEvent;
@@ -180,6 +181,11 @@ public class TagNavigator extends ScrollView {
 				tv.setText(child.getName());
 				tv.setTag(child);
 				tv.setVisibility(View.VISIBLE);
+				if (node.getNamedChild(tagNames.get(i), false).isActive()) {
+					tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+				} else {
+					tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+				}
 			} else {
 				tv.setVisibility(View.GONE);
 			}
