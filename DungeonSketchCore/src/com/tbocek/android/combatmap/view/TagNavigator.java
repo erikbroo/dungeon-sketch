@@ -336,6 +336,15 @@ public class TagNavigator extends ScrollView {
 	public void setCurrentTagIsActive(boolean active) {
 		this.getCurrentTagNode().setIsActive(active);
 		selectTag(this.getCurrentTagNode(), true);
+		for (TextView tv: mTextViews) {
+			if (tv.getText().equals(this.getCurrentTagNode().getName())) {
+				if (active) {
+					tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+				} else {
+					tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+				}
+			}
+		}
 	}
 
 }
