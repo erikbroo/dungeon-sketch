@@ -62,7 +62,7 @@ import com.tbocek.android.combatmap.model.primitives.Util;
  * 
  */
 public final class TokenDatabase {
-	private static final Set<String> SYSTEM_TAG_NAMES = Sets.newHashSet("built-in","custom","image","letter","solid color");
+	private static final Set<String> SYSTEM_TAG_NAMES = Sets.newHashSet("built-in","custom","image","letter","solid color","recently added");
 	
 	public class TagTreeNode {
 		private Set<String> tokenNames = Sets.newHashSet();
