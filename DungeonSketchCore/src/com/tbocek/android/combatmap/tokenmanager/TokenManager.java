@@ -94,9 +94,17 @@ public final class TokenManager extends SherlockActivity {
 				public void onDragTokensToTag(Collection<BaseToken> tokens,
 						TagTreeNode tag) {
 		            for (BaseToken t : tokens) {
-		                TokenManager.this.mTokenDatabase.tagToken(
-		                        t.getTokenId(), tag.getPath());
-		                TokenManager.this.setScrollViewTag(tag.getPath());
+		            	if (!tag.isSystemTag()) {
+			                TokenManager.this.mTokenDatabase.tagToken(
+			                        t.getTokenId(), tag.getPath());
+			                TokenManager.this.setScrollViewTag(tag.getPath());
+		            	} else {
+		            		Toast toast = Toast.makeText(
+		            				TokenManager.this, 
+		            				"Cannot add token to tag " + tag.getName(), 
+		            				Toast.LENGTH_LONG);
+		            		toast.show();
+		            	}
 		            }
 					
 				}

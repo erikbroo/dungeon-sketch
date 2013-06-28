@@ -266,12 +266,17 @@ public class TagNavigator extends ScrollView {
                 mLongDragHandler.removeCallbacks(this.mLongDragRunnable);
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+            	TagTreeNode node = (TagTreeNode)v.getTag();
+            	if (node.isSystemTag()) {
+            		return true;
+            	}
+            	
             	try {
             		((TextView)v).setTextColor(COLOR_DRAG_TARGET);
             	} catch (Exception e) {
             		// Ignore - bad cast expected here
             	}
-            	mLongDragRunnable.mNode = (TagTreeNode)v.getTag();
+            	mLongDragRunnable.mNode = node;
                 mLongDragHandler.postDelayed(mLongDragRunnable, ViewConfiguration.getLongPressTimeout());
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
