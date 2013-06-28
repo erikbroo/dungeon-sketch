@@ -908,7 +908,7 @@ public final class TokenDatabase {
     	}
     	
     	public void endElement(java.lang.String uri, java.lang.String localName, java.lang.String qName) {
-    		if (localName.equalsIgnoreCase("tag")) {
+    		if (localName.equalsIgnoreCase("tag") || localName.equalsIgnoreCase("limited_tag")) {
     			Log.d(TAG, "LEAVE TAG: " + currentTagTreeNode.name);
     			currentTagTreeNode = currentTagTreeNode.parent;
     		}
