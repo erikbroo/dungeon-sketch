@@ -285,6 +285,10 @@ public final class TokenDatabase {
      */
     private static final String FILE_DELIMITER = "`";
 
+	public static final String RECENTLY_ADDED = "recently added";
+
+	private static final int RECENTLY_ADDED_LIMIT = 20;
+
     /**
      * The singleton token database instance.
      */
@@ -656,7 +660,7 @@ public final class TokenDatabase {
         this.loadLetterTokens();
         
         // Create the "recently added" tag.
-        this.mTagTreeRoot.createLimitedChild("recently added", 20);
+        this.mTagTreeRoot.createLimitedChild(RECENTLY_ADDED, RECENTLY_ADDED_LIMIT);
         this.mPrePopulateTags = false;
     }
 
