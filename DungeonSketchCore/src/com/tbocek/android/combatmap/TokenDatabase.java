@@ -108,6 +108,10 @@ public final class TokenDatabase {
 		 * @return
 		 */
 		public Set<String> getAllTokens() {
+			if (!this.isActive) {
+				return Sets.newHashSet();
+			}
+			
 			// If this is a system tag, we also want to get the excluded tokens from non-system tags
 			// from the *parent*.
 			if (this.isSystemTag()) {
@@ -137,7 +141,9 @@ public final class TokenDatabase {
 		
 		private void getAllTokensHelper(Collection<String> result, Collection<String> excludedTokens, boolean respectExclusion, boolean systemTags) {
 			if (!this.isActive && respectExclusion) {
-				getAllTokensHelper(excludedTokens, null, false, systemTags);
+				if (excludedTokens != null) {
+					getAllTokensHelper(excludedTokens, null, false, systemTags);
+				}
 				return;
 			}
 			
