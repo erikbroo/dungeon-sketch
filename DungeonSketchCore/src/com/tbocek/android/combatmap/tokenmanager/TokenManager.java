@@ -668,7 +668,8 @@ public final class TokenManager extends SherlockActivity {
             MenuItem removeTag =
                     menu.findItem(R.id.token_manager_action_mode_remove_tag);
             removeTag.setVisible(!TokenManager.this.getActiveTag().equals(
-                    TokenDatabase.ALL));
+                    TokenDatabase.ALL) && 
+                    !TokenManager.this.mTokenDatabase.isTagSystem(getActiveTag()));
             removeTag.setTitle("Remove tag '"
                     + TokenManager.this.getActiveTag() + "'");
             return true;
