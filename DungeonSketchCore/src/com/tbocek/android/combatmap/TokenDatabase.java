@@ -943,4 +943,8 @@ public final class TokenDatabase {
 		if (tagPath.equals(ALL)) { return true; }
 		return this.mTagTreeRoot.getNamedChild(tagPath, false).isActive();
 	}
+
+	public boolean isTagSystem(String tag) {
+		return TokenDatabase.SYSTEM_TAG_NAMES.contains(tag);
+	}
 }
