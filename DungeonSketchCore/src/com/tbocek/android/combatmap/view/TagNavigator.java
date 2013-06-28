@@ -333,4 +333,9 @@ public class TagNavigator extends ScrollView {
 		selectTag(n, true);
 	}
 
+	public void setCurrentTagIsActive(boolean active) {
+		this.getCurrentTagNode().setIsActive(active);
+		selectTag(this.getCurrentTagNode(), true);
+	}
+
 }

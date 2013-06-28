@@ -453,7 +453,7 @@ public final class TokenManager extends SherlockActivity {
             return true;
         } else if (itemId == R.id.token_manager_is_active) {
         	mTagActiveMenuItem.setChecked(!mTagActiveMenuItem.isChecked());
-        	TokenManager.this.mTagNavigator.getCurrentTagNode().setIsActive(mTagActiveMenuItem.isChecked());
+        	TokenManager.this.mTagNavigator.setCurrentTagIsActive(mTagActiveMenuItem.isChecked());
         	return true;
         } else {
             return false;
