@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
@@ -65,7 +66,7 @@ public final class TokenDatabase {
 	
 	public class TagTreeNode {
 		private Set<String> tokenNames = Sets.newHashSet();
-		private Map<String, TagTreeNode> childTags = Maps.newHashMap();
+		protected Map<String, TagTreeNode> childTags = Maps.newHashMap();
 		private TagTreeNode parent;
 		private String name;
 		
@@ -243,6 +244,83 @@ public final class TokenDatabase {
 		public boolean isSystemTag() {
 			return SYSTEM_TAG_NAMES.contains(this.name);
 		}
+
+		public TagTreeNode createLimitedChild(String tagName, int maxSize) {
+			if (!childTags.containsKey(tagName)) {
+				TagTreeNode node = new LimitedTagTreeNode(this, tagName, maxSize);
+				childTags.put(tagName, node);
+				return node;
+			} else {
+				return childTags.get(tagName);
+			}
+		}
+	}
+	
+	/**
+	 * Extends TagTreeNode to limit the number of tags in the node.  Tags are
+	 * stored in a LIFO queue.  The queue order persists across app runs.
+	 * @author Tim
+	 *
+	 */
+	protected class LimitedTagTreeNode extends TagTreeNode {
+
+		private int maxSize;
+		private int nextAge;
+		private Map<String, Integer> nodeAges = Maps.newHashMap();
+		
+		public LimitedTagTreeNode(TagTreeNode parent, String name, int maxSize) {
+			super(parent, name);
+			this.maxSize = maxSize;
+		}
+		
+		public void addToken(String tokenId) {
+			addToken(tokenId, nextAge++);
+		}
+		
+		public void addToken(String tokenId, int age) {
+			if (nodeAges.size() == maxSize) {
+				this.deleteToken(this.getOldestToken());
+			}
+			super.addToken(tokenId);
+			nodeAges.put(tokenId, age);
+			nextAge = Math.max(age + 1, nextAge);
+		}
+		
+		public void deleteToken(String tokenId) {
+			super.deleteToken(tokenId);
+			nodeAges.remove(tokenId);
+		}
+
+		private String getOldestToken() {
+			String oldestToken = null;
+			int age = Integer.MAX_VALUE;
+			for (Entry<String, Integer> entry: this.nodeAges.entrySet()) {
+				if (entry.getValue() < age) {
+					age = entry.getValue();
+					oldestToken = entry.getKey();
+				}
+			}
+			return oldestToken;
+		}
+		
+		public Element toXml(Document document) {
+			Element el = document.createElement("limited_tag");
+			el.setAttribute("name", this.getName());
+			el.setAttribute("active", Boolean.toString(this.isActive()));
+			el.setAttribute("maxSize", Integer.toString(this.maxSize));
+			for (String tokenId: this.getImmediateTokens()) {
+				Element tokenEl = document.createElement("token");
+				tokenEl.setAttribute("name", tokenId);
+				tokenEl.setAttribute("age", nodeAges.get(tokenId).toString());
+				el.appendChild(tokenEl);
+			}
+			
+			for (TagTreeNode treeNode: this.childTags.values()) {
+				el.appendChild(treeNode.toXml(document));
+			}
+			
+			return el;
+		}
 	}
 
     /**
@@ -254,6 +332,10 @@ public final class TokenDatabase {
      * Delimiter to use when saving the token database.
      */
     private static final String FILE_DELIMITER = "`";
+
+	public static final String RECENTLY_ADDED = "recently added";
+
+	private static final int RECENTLY_ADDED_LIMIT = 20;
 
     /**
      * The singleton token database instance.
@@ -624,6 +706,9 @@ public final class TokenDatabase {
         this.loadBuiltInImageTokens(context);
         this.loadColorTokens();
         this.loadLetterTokens();
+        
+        // Create the "recently added" tag.
+        this.mTagTreeRoot.createLimitedChild(RECENTLY_ADDED, RECENTLY_ADDED_LIMIT);
         this.mPrePopulateTags = false;
     }
 
@@ -854,15 +939,28 @@ public final class TokenDatabase {
     			Log.d(TAG, "START TAG: " + tagName);
     			currentTagTreeNode = currentTagTreeNode.getNamedChild(tagName, true);
     			currentTagTreeNode.setIsActive(isActive);
+    		} else if (localName.equalsIgnoreCase("limited_tag")) {
+    			String tagName = atts.getValue("name");
+    			int maxSize = Integer.parseInt(atts.getValue("maxSize"));
+    			String active = atts.getValue("active");
+    			boolean isActive = active != null ? Boolean.parseBoolean(active) : true;
+    			Log.d(TAG, "START TAG: " + tagName);
+    			currentTagTreeNode = currentTagTreeNode.createLimitedChild(tagName, maxSize);
+    			currentTagTreeNode.setIsActive(isActive);
     		} else if (localName.equalsIgnoreCase("token")) {
     			String tokenName = atts.getValue("name");
+    			String age = atts.getValue("age");
     			Log.d(TAG, "ADD TOKEN " + tokenName + " TO TAG " + currentTagTreeNode.name);
-    			currentTagTreeNode.addToken(tokenName);
+    			if (age != null) {
+    				((LimitedTagTreeNode)currentTagTreeNode).addToken(tokenName, Integer.parseInt(age));
+    			} else {
+    				currentTagTreeNode.addToken(tokenName);
+    			}
     		}
     	}
     	
     	public void endElement(java.lang.String uri, java.lang.String localName, java.lang.String qName) {
-    		if (localName.equalsIgnoreCase("tag")) {
+    		if (localName.equalsIgnoreCase("tag") || localName.equalsIgnoreCase("limited_tag")) {
     			Log.d(TAG, "LEAVE TAG: " + currentTagTreeNode.name);
     			currentTagTreeNode = currentTagTreeNode.parent;
     		}

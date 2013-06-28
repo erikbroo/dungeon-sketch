@@ -133,6 +133,7 @@ public final class TokenCreator extends SherlockActivity {
                 BaseToken t = new CustomBitmapToken(filename);
                 tokenDatabase.addTokenPrototype(t);
                 tokenDatabase.tagToken(t.getTokenId(), t.getDefaultTags());
+                tokenDatabase.tagToken(t.getTokenId(), TokenDatabase.RECENTLY_ADDED);
 
                 this.setResult(Activity.RESULT_OK);
                 this.finish();
