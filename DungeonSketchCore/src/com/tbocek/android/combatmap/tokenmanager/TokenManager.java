@@ -330,6 +330,9 @@ public final class TokenManager extends SherlockActivity {
                     super.onDrawerOpened(drawerView);
                 }
             };
+            drawer.setDrawerListener(actionBarDrawerToggle);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
         }
 
         this.mScrollView =
