@@ -13,12 +13,16 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -144,6 +148,14 @@ public final class TokenManager extends SherlockActivity {
     private String tagFromActionBar = null;
 
 	private MenuItem mTagActiveMenuItem;
+
+	private DrawerLayout drawer;
+
+	private Adapter adapter;
+
+	private ListView drawerList;
+
+	private ActionBarDrawerToggle actionBarDrawerToggle;
 
     /**
      * Deletes the given list of tokens.
@@ -308,6 +320,16 @@ public final class TokenManager extends SherlockActivity {
             this.getSupportActionBar().setNavigationMode(
                     ActionBar.NAVIGATION_MODE_LIST);
             this.getSupportActionBar().setDisplayShowTitleEnabled(false);
+            
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);     
+            drawerList = (ListView) findViewById(R.id.left_drawer);        
+            actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer, R.string.drawer_open , R.string.drawer_close) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    // TODO Auto-generated method stub
+                    super.onDrawerOpened(drawerView);
+                }
+            };
         }
 
         this.mScrollView =

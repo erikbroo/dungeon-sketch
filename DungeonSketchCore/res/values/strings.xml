@@ -89,5 +89,7 @@
     <string name="import_overwrite_token_lib">Token Tag Settings</string>
     <string name="import_option_debug_version">Local Debugging Efforts</string>
     <string name="token_manager_active">Active</string>
+    <string name="drawer_open">OPEN</string>
+    <string name="drawer_close">CLOSE</string>
 
 </resources>
