@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <com.tbocek.android.combatmap.view.TagNavigator 
+        android:id="@+id/select_tag_dialog_tag_navigator"
+        android:layout_columnSpan="2"/>
+    <ImageButton
+	    android:layout_columnSpan="1"
+	    android:drawable="@drawable/navigation_cancel"
+	    android:layout_gravity="fill_horizontal"
+	    android:id="@+id/select_tag_dialog_cancel"/>
+	<ImageButton
+	    android:layout_columnSpan="1"
+	    android:drawable="@drawable/navigation_accept"
+	    android:layout_gravity="fill_horizontal"
+	    android:id="@+id/select_tag_dialog_accept"/>
+</android.support.v7.widget.GridLayout>
