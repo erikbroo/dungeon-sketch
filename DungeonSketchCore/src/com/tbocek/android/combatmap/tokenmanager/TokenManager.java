@@ -651,23 +651,19 @@ public final class TokenManager extends SherlockActivity {
                         new ArrayAdapter<String>(TokenManager.this,
                                 R.layout.selection_dialog_text_view);
                 adapter.addAll(tags);
-                new AlertDialog.Builder(TokenManager.this)
-                .setTitle("Select a Tag")
-                .setAdapter(adapter,
-                        new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog,
-                            int which) {
-                        Set<String> tags =
-                                Sets.newHashSet(adapter
-                                        .getItem(which));
-
-                        for (BaseToken token : tokens) {
+                SelectTagDialog selectTagDlg = new SelectTagDialog(TokenManager.this);
+                selectTagDlg.setOnTagSelectedListener(new SelectTagDialog.TagSelectedListener() {	
+					@Override
+					public void onTagSelected(String tagPath) {
+						for (BaseToken token : tokens) {
+							Set<String> tags =
+	                                Sets.newHashSet(tagPath);
                             TokenManager.this.mTokenDatabase
-                            .tagToken(token, tags);
+                            	.tagToken(token, tags);
                         }
-                    }
-                }).create().show();
+					}
+				});
+                selectTagDlg.show();
                 return true;
             } else {
             	
