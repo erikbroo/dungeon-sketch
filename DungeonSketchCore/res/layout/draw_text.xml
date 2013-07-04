@@ -19,7 +19,7 @@
         android:text="@string/save" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/tag_widget_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/entered_text"
-        android:layout_toRightOf="@+id/textView1"
+        android:layout_toRightOf="@+id/tag_widget_name"
         android:entries="@array/text_size_values" />
 
 </RelativeLayout>

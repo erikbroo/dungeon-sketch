@@ -42,10 +42,6 @@ public class TagNavigator extends ScrollView {
      * Number of pixels to pad the top and bottom of each text view with.
      */
     private static final int VERTICAL_PADDING = 8;
-
-	private static final int COLOR_DEFAULT = Color.GRAY;
-	private static final int COLOR_SELECTED = Color.WHITE;
-	private static final int COLOR_DRAG_TARGET = Util.ICS_BLUE;
 	
 
 
@@ -75,7 +71,7 @@ public class TagNavigator extends ScrollView {
 	 */
 	private boolean showSystemTags = true;
 	
-	private List<TextView> mTextViews = Lists.newArrayList();
+	private List<TagTreeLineItem> mTagItems = Lists.newArrayList();
 	
 	/**
 	 * The tag that was selected when a drag and drop operation started.
@@ -112,8 +108,8 @@ public class TagNavigator extends ScrollView {
 		this.setTextSize(DEFAULT_TEXT_SIZE);
 		
 		for (int i = 0; i < INITIAL_TEXT_VIEW_POOL; ++i) {
-			TextView tv = createTextView();
-			mTextViews.add(tv);
+			TagTreeLineItem tv = createTextView();
+			mTagItems.add(tv);
 			mChildTagList.addView(tv);
 		}
 	}
@@ -121,7 +117,7 @@ public class TagNavigator extends ScrollView {
 	public void setTextSize(int size) {
 		this.mTextSize = size;
 		this.mCurrentTag.setTextSize(size);
-		for (TextView existingView : mTextViews) {
+		for (TagTreeLineItem existingView : mTagItems) {
 			existingView.setTextSize(mTextSize);
 		}
 	}
@@ -202,24 +198,18 @@ public class TagNavigator extends ScrollView {
 		
 		
 		// Make sure there are enough text views to go around.
-		for (int i = mTextViews.size(); i < tagNames.size(); ++i) {
-			TextView tv = createTextView();
-			mTextViews.add(tv);
+		for (int i = mTagItems.size(); i < tagNames.size(); ++i) {
+			TagTreeLineItem tv = createTextView();
+			mTagItems.add(tv);
 			mChildTagList.addView(tv);
 		}
 		
-		for (int i = 0; i < mTextViews.size(); ++i) {
-			TextView tv = mTextViews.get(i);
+		for (int i = 0; i < mTagItems.size(); ++i) {
+			TagTreeLineItem tv = mTagItems.get(i);
 			if (i < tagNames.size()) {
 				TagTreeNode child = node.getNamedChild(tagNames.get(i), false);
-				tv.setText(child.getName());
-				tv.setTag(child);
+				tv.setTagNode(child);
 				tv.setVisibility(View.VISIBLE);
-				if (node.getNamedChild(tagNames.get(i), false).isActive()) {
-					tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-				} else {
-					tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-				}
 			} else {
 				tv.setVisibility(View.GONE);
 			}
@@ -227,26 +217,31 @@ public class TagNavigator extends ScrollView {
 		setTextViewColors();
 	}
 	
-	private TextView createTextView() {
-		TextView textView = new TextView(this.getContext());
-		textView.setOnClickListener(new TagLabelClickedListener());
-		textView.setTextSize(this.mTextSize);
-		textView.setPadding(0, VERTICAL_PADDING, 0, VERTICAL_PADDING);
+	private TagTreeLineItem createTextView() {
+		TagTreeLineItem view = new TagTreeLineItem(this.getContext());
+		view.setOnClickListener(new TagLineItemClickedListener());
+		view.setTextSize(this.mTextSize);
+		view.setPadding(0, VERTICAL_PADDING, 0, VERTICAL_PADDING);
 		if (mAllowContextMenu) {
 			Activity activity = (Activity) this.getContext();
-	        activity.registerForContextMenu(textView);
+	        activity.registerForContextMenu(view);
 		}
-		textView.setOnDragListener(new OnDragListener());
-		textView.setVisibility(View.GONE);
+		view.setOnDragListener(new OnDragListener());
+		view.setVisibility(View.GONE);
 		
-		return textView;
+		return view;
 	}
 	
 	private void setTextViewColors() {
-		for (TextView v: this.mTextViews) {
-			v.setTextColor(v.getText().equals(this.mCurrentTagTreeNode.getName()) ? COLOR_SELECTED : COLOR_DEFAULT);
+		for (TagTreeLineItem v: this.mTagItems) {
+			v.setTextColor(v.getTagNode() == mCurrentTagTreeNode 
+			               ? TagTreeLineItem.COLOR_SELECTED 
+						   : TagTreeLineItem.COLOR_DEFAULT);
 		}
-		this.mCurrentTag.setTextColor(mCurrentTag.getText().equals(this.mCurrentTagTreeNode.getName()) ? COLOR_SELECTED : COLOR_DEFAULT);
+		this.mCurrentTag.setTextColor(
+				mCurrentTag.getText().equals(this.mCurrentTagTreeNode.getName()) 
+				? TagTreeLineItem.COLOR_SELECTED 
+				: TagTreeLineItem.COLOR_DEFAULT);
 	}
 	
 	private void selectTag(TagTreeNode node, boolean updateColors) {
@@ -272,6 +267,14 @@ public class TagNavigator extends ScrollView {
 		}
 	}
 	
+	private class TagLineItemClickedListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			selectTag(((TagTreeLineItem)v).getTagNode(), true);
+		}
+	}
+	
 	private class OnDragListener implements View.OnDragListener {
         private Handler mLongDragHandler = new Handler();
         
@@ -294,19 +297,19 @@ public class TagNavigator extends ScrollView {
                         (Collection<BaseToken>) event.getLocalState();
                 if (TagNavigator.this.mTagSelectedListener != null) {
                     TagNavigator.this.mTagSelectedListener
-                            .onDragTokensToTag(toAdd, (TagTreeNode)v.getTag());
+                            .onDragTokensToTag(toAdd, ((TagTreeLineItem)v).getTagNode());
                 }
                 setTextViewColors();
                 mLongDragHandler.removeCallbacks(this.mLongDragRunnable);
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-            	TagTreeNode node = (TagTreeNode)v.getTag();
+            	TagTreeNode node = ((TagTreeLineItem)v).getTagNode();
             	if (node.isSystemTag()) {
             		return true;
             	}
             	
             	try {
-            		((TextView)v).setTextColor(COLOR_DRAG_TARGET);
+            		((TextView)v).setTextColor(TagTreeLineItem.COLOR_DRAG_TARGET);
             	} catch (Exception e) {
             		// Ignore - bad cast expected here
             	}
@@ -361,7 +364,7 @@ public class TagNavigator extends ScrollView {
 	}
 
 	public boolean isViewAChild(View v) {
-		return (v == this.mCurrentTag) || this.mTextViews.contains(v);
+		return (v == this.mCurrentTag) || this.mTagItems.contains(v);
 	}
 
 	public void selectRoot() {
@@ -375,14 +378,12 @@ public class TagNavigator extends ScrollView {
 	public void setCurrentTagIsActive(boolean active) {
 		this.getCurrentTagNode().setIsActive(active);
 		selectTag(this.getCurrentTagNode(), true);
-		for (TextView tv: mTextViews) {
-			if (tv.getText().equals(this.getCurrentTagNode().getName())) {
-				if (active) {
-					tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-				} else {
-					tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-				}
+		for (TagTreeLineItem tv: mTagItems) {
+			if (tv.getTagNode() == this.getCurrentTagNode()) {
+				// Force reload of tag properties.
+				tv.setTagNode(this.getCurrentTagNode());
 			}
+				
 		}
 	}
 
