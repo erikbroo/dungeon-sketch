@@ -87,6 +87,7 @@ public final class TokenManager extends SherlockActivity {
 				@Override
 				public void onTagSelected(TagTreeNode selectedTag) {
 					TokenManager.this.setScrollViewTag(selectedTag.getPath());
+					TokenManager.this.getActionBar().setTitle(selectedTag.getName());
 				}
 
 				@Override
