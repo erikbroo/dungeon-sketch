@@ -153,7 +153,7 @@ public final class TokenManager extends SherlockActivity {
 
 	private Adapter adapter;
 
-	private ListView drawerList;
+	private FrameLayout drawerList;
 
 	private ActionBarDrawerToggle actionBarDrawerToggle;
 
@@ -298,6 +298,7 @@ public final class TokenManager extends SherlockActivity {
         // set up a trash can to drag tokens too if drag&drop is an option on
         // the platform.
         // Otherwise, use tabs in the action bar to display & select token tags.
+        FrameLayout tagListFrame;
         if (this.isLargeScreen()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 this.mTrashButton = new TokenDeleteButton(this);
@@ -311,10 +312,9 @@ public final class TokenManager extends SherlockActivity {
                 .setVisibility(View.GONE);
             }
 
-            FrameLayout tagListFrame =
+            tagListFrame =
                     (FrameLayout) this
                     .findViewById(R.id.token_manager_taglist_frame);
-            tagListFrame.addView(this.mTagNavigator);
         } else {
             this.mTagsInActionBar = true;
             this.getSupportActionBar().setNavigationMode(
@@ -322,7 +322,7 @@ public final class TokenManager extends SherlockActivity {
             this.getSupportActionBar().setDisplayShowTitleEnabled(false);
             
             drawer = (DrawerLayout) findViewById(R.id.drawer_layout);     
-            drawerList = (ListView) findViewById(R.id.left_drawer);        
+            drawerList = (FrameLayout) findViewById(R.id.left_drawer);        
             actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer, R.string.drawer_open , R.string.drawer_close) {
                 @Override
                 public void onDrawerOpened(View drawerView) {
@@ -333,7 +333,12 @@ public final class TokenManager extends SherlockActivity {
             drawer.setDrawerListener(actionBarDrawerToggle);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
+            tagListFrame =
+                    (FrameLayout) this
+                    .findViewById(R.id.left_drawer);
         }
+        
+        tagListFrame.addView(this.mTagNavigator);
 
         this.mScrollView =
                 (ScrollView) this.findViewById(R.id.token_manager_scroll_view);
