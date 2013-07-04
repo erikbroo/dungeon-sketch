@@ -23,6 +23,8 @@ public class SelectTagDialog extends Dialog {
 		mAccept = (ImageButton) this.findViewById(R.id.select_tag_dialog_accept);
 		mReject = (ImageButton) this.findViewById(R.id.select_tag_dialog_cancel);
 		mTagNavigator = (TagNavigator) this.findViewById(R.id.select_tag_dialog_tag_navigator);
+		mTagNavigator.setShowSystemTags(false);
+		mTagNavigator.setShowInactiveTags(false);
 		
 		mAccept.setOnClickListener(new View.OnClickListener() {
 			@Override
