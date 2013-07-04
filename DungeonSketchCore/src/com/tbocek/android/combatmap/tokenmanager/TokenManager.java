@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -22,12 +21,10 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
@@ -35,11 +32,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.tbocek.android.combatmap.CombatMap;
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.Help;
 import com.tbocek.android.combatmap.R;
-import com.tbocek.android.combatmap.TextPromptDialog;
 import com.tbocek.android.combatmap.TokenDatabase;
 import com.tbocek.android.combatmap.TokenDatabase.TagTreeNode;
 import com.tbocek.android.combatmap.model.MultiSelectManager;
@@ -125,11 +120,6 @@ public final class TokenManager extends SherlockActivity {
     private TagNavigator mTagNavigator;
 
     /**
-     * Whether token tags are loaded into the action bar as tabs.
-     */
-    private boolean mTagsInActionBar = false;
-
-    /**
      * The database to load tags and tokens from.
      */
     private TokenDatabase mTokenDatabase;
@@ -185,19 +175,11 @@ public final class TokenManager extends SherlockActivity {
      * @return
      */
     private String getActiveTag() {
-        if (this.mTagsInActionBar) {
-            return this.tagFromActionBar;
-        } else {
-            return this.mTagNavigator.getCurrentTag();
-        }
+    	return this.mTagNavigator.getCurrentTag();
     }
     
     private String getActiveTagPath() {
-        if (this.mTagsInActionBar) {
-            return this.tagFromActionBar;
-        } else {
-            return this.mTagNavigator.getCurrentTagPath();
-        }
+        return this.mTagNavigator.getCurrentTagPath();
     }
 
     /**
@@ -232,7 +214,7 @@ public final class TokenManager extends SherlockActivity {
             TokenButton b =
                     (TokenButton) this.mTokenViewFactory.getTokenView(t);
             b.setShouldDrawDark(true);
-            b.allowDrag(!this.mTagsInActionBar);
+            b.allowDrag(this.isLargeScreen());
             this.mButtons.add(b);
 
             // Remove all views from the parent, if there is one.
@@ -316,11 +298,6 @@ public final class TokenManager extends SherlockActivity {
                     (FrameLayout) this
                     .findViewById(R.id.token_manager_taglist_frame);
         } else {
-            this.mTagsInActionBar = true;
-            this.getSupportActionBar().setNavigationMode(
-                    ActionBar.NAVIGATION_MODE_LIST);
-            this.getSupportActionBar().setDisplayShowTitleEnabled(false);
-            
             drawer = (DrawerLayout) findViewById(R.id.drawer_layout);     
             drawerList = (FrameLayout) findViewById(R.id.left_drawer);        
             actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer, R.string.drawer_open , R.string.drawer_close) {
@@ -574,61 +551,7 @@ public final class TokenManager extends SherlockActivity {
     }
 
     private void updateTagList() {
-        if (this.mTagsInActionBar) {
-            ActionBar bar = this.getSupportActionBar(); // bar bar bar..
-            List<String> tags = this.mTokenDatabase.getTags();
-
-            ArrayAdapter<String> adapter =
-                    new ArrayAdapter<String>(this,
-                            android.R.layout.simple_spinner_item);
-            adapter.add("All Tokens");
-            adapter.addAll(tags);
-            int oldIndex = tags.indexOf(this.tagFromActionBar) + 1; // If not
-            // found,
-            // will
-            // result in
-            // "All Tokens"
-            // which is
-            // just what
-            // we want.
-            bar.setListNavigationCallbacks(adapter, new TagNavigationListener(
-                    tags));
-            this.setSuspendViewUpdates(oldIndex > 0); // If we are staying on
-            // the same tag (i.e. not
-            // changing back to
-            // "All Tokens" because of
-            // a deleted tag), do not
-            // refresh the view so we
-            // don't lose the scroll
-            // position.
-            bar.setSelectedNavigationItem(oldIndex);
-            this.setSuspendViewUpdates(false);
-        } else {
-            this.mTagNavigator.setTokenDatabase(this.mTokenDatabase);
-        }
-    }
-
-    private class TagNavigationListener implements
-    ActionBar.OnNavigationListener {
-        List<String> mTags;
-
-        public TagNavigationListener(List<String> tags) {
-            this.mTags = tags;
-        }
-
-        @Override
-        public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-            if (itemPosition == 0) {
-                TokenManager.this.setScrollViewTag(TokenDatabase.ALL);
-                TokenManager.this.tagFromActionBar = TokenDatabase.ALL;
-            } else {
-                TokenManager.this.setScrollViewTag(this.mTags
-                        .get(itemPosition - 1));
-                TokenManager.this.tagFromActionBar =
-                        this.mTags.get(itemPosition - 1);
-            }
-            return true;
-        }
+    	this.mTagNavigator.setTokenDatabase(this.mTokenDatabase);
     }
 
     /**
