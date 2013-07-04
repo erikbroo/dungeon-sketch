@@ -479,10 +479,13 @@ public final class TokenManager extends SherlockActivity {
             Help.openHelp(this);
             return true;
         } else if (itemId == android.R.id.home) {
-            // app icon in action bar clicked; go home
-            Intent intent = new Intent(this, CombatMap.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            this.startActivity(intent);
+        	if (!this.isLargeScreen()) {
+	        	if (drawer.isDrawerOpen(drawerList)) {
+	        		drawer.closeDrawer(drawerList);
+	        		} else {
+	        		drawer.openDrawer(drawerList);
+	        	}
+        	}
             return true;
         } else if (itemId == R.id.token_manager_is_active) {
         	mTagActiveMenuItem.setChecked(!mTagActiveMenuItem.isChecked());
