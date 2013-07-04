@@ -18,6 +18,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -80,8 +81,22 @@ public class TagNavigator extends ScrollView {
 	private int mTextSize;
 	private boolean mAllowContextMenu;
 
+	public TagNavigator(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		constructorImpl(context);
+	}
+	
+	public TagNavigator(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		constructorImpl(context);
+	}
+	
 	public TagNavigator(Context context) {
 		super(context);
+		constructorImpl(context);
+	}
+	
+	private void constructorImpl(Context context) {
 		LayoutInflater.from(context).inflate(R.layout.tagnavigator, this);
 		
 		mChildTagList = (LinearLayout)this.findViewById(R.id.tagnavigator_current_tag_list);
