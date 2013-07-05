@@ -62,9 +62,14 @@ import com.tbocek.android.combatmap.model.primitives.Util;
  * 
  */
 public final class TokenDatabase {
-	private static final Set<String> SYSTEM_TAG_NAMES = Sets.newHashSet("built-in","custom","image","letter","solid color","recently added");
+	private static final Set<String> SYSTEM_TAG_NAMES = Sets.newHashSet("built-in","custom","image","letter","solid color","recently added","artist");
 	
 	public static boolean isSystemTag(String tag) {
+		int colonIndex = tag.indexOf(':');
+		// All children of system tags are also system tags.
+		if (colonIndex >= 0) {
+			tag = tag.substring(0, colonIndex);
+		}
 		return SYSTEM_TAG_NAMES.contains(tag);
 	}
 	
@@ -109,7 +114,6 @@ public final class TokenDatabase {
 		 * another non-system tag.
 		 * Tokens from system tags will only appear if they have not been explicitly
 		 * disabled.
-		 * BIG ASSUMPTION HERE: System tags appear only as the child of the root tag.
 		 * @return
 		 */
 		public Set<String> getAllTokens() {
@@ -118,14 +122,17 @@ public final class TokenDatabase {
 			}
 			
 			// If this is a system tag, we also want to get the excluded tokens from non-system tags
-			// from the *parent*.
+			// from the root.
 			if (this.isSystemTag()) {
 				Set<String> parentResult = Sets.newHashSet();
 				Set<String> parentExcludedTokens = Sets.newHashSet();
-				if (this.parent.parent != null) {
-					throw new RuntimeException("System tags must be the child of the root element");
+				
+				TagTreeNode rootNode = this;
+				while (rootNode.getParent() != null) {
+					rootNode = rootNode.getParent();
 				}
-				this.parent.getAllTokensHelper(parentResult, parentExcludedTokens, true, false);
+				
+				rootNode.getAllTokensHelper(parentResult, parentExcludedTokens, true, false);
 				parentExcludedTokens.removeAll(parentResult);
 				return Sets.difference(this.tokenNames, parentExcludedTokens);
 			} else {
@@ -246,7 +253,7 @@ public final class TokenDatabase {
 		}
 		
 		public boolean isSystemTag() {
-			return SYSTEM_TAG_NAMES.contains(this.name);
+			return TokenDatabase.isSystemTag(this.getPath());
 		}
 
 		public TagTreeNode createLimitedChild(String tagName, int maxSize) {
@@ -1000,17 +1007,21 @@ public final class TokenDatabase {
         public ArtCreditHandler(Context context) {
             this.mContext = context;
         }
-
+        private String currentArtist;
         @Override
         public void startElement(String namespaceURI, String localName,
                 String qName, org.xml.sax.Attributes atts) throws SAXException {
+        	
             // Possibly limit the number of built-in tokens loaded, for debug
             // purposes.
             if (mCurrentSortOrder > DeveloperMode.MAX_BUILTIN_TOKENS) {
                 return;
             }
 
-            if (localName.equalsIgnoreCase("token")) {
+            if (localName.equalsIgnoreCase("artist")) {
+            	currentArtist = atts.getValue("name");
+            }
+            else if (localName.equalsIgnoreCase("token")) {
                 int id =
                         this.mContext.getResources().getIdentifier(
                                 atts.getValue("res"), "drawable",
@@ -1028,6 +1039,7 @@ public final class TokenDatabase {
                         defaultTags.add(s);
                     }
                 }
+                defaultTags.add("artist:" + currentArtist);
                 TokenDatabase.this.addBuiltin(atts.getValue("res"), id,
                         this.mCurrentSortOrder, defaultTags);
                 this.mCurrentSortOrder++;
@@ -1044,9 +1056,5 @@ public final class TokenDatabase {
 	public boolean isTagActive(String tagPath) {
 		if (tagPath.equals(ALL)) { return true; }
 		return this.mTagTreeRoot.getNamedChild(tagPath, false).isActive();
-	}
-
-	public boolean isTagSystem(String tag) {
-		return TokenDatabase.SYSTEM_TAG_NAMES.contains(tag);
 	}
 }

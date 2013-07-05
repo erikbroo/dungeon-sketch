@@ -588,7 +588,7 @@ public final class TokenManager extends SherlockActivity {
                 this.mScrollView.addView(this
                         .getTokenButtonLayout(this.mTokenDatabase
                                 .getTokensForTag(tag)));
-                this.mDeleteTagMenuItem.setVisible(!this.mTokenDatabase.isTagSystem(tag));
+                this.mDeleteTagMenuItem.setVisible(!TokenDatabase.isSystemTag(tag));
                 this.mTagActiveMenuItem.setChecked(mTokenDatabase.isTagActive(tag));
                 this.mTagActiveMenuItem.setVisible(true);
                 
@@ -682,7 +682,7 @@ public final class TokenManager extends SherlockActivity {
                     menu.findItem(R.id.token_manager_action_mode_remove_tag);
             removeTag.setVisible(!TokenManager.this.getActiveTag().equals(
                     TokenDatabase.ALL) && 
-                    !TokenManager.this.mTokenDatabase.isTagSystem(getActiveTag()));
+                    !TokenDatabase.isSystemTag(getActiveTag()));
             removeTag.setTitle("Remove tag '"
                     + TokenManager.this.getActiveTag() + "'");
             return true;
