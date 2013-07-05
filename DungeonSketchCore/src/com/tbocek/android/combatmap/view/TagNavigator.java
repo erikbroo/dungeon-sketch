@@ -313,6 +313,12 @@ public class TagNavigator extends ScrollView {
             	} catch (Exception e) {
             		// Ignore - bad cast expected here
             	}
+            	
+            	try {
+            		((TagTreeLineItem)v).setTextColor(TagTreeLineItem.COLOR_DRAG_TARGET);
+            	} catch (Exception e) {
+            		// Ignore - bad cast expected here
+            	}
             	mLongDragRunnable.mNode = node;
                 mLongDragHandler.postDelayed(mLongDragRunnable, ViewConfiguration.getLongPressTimeout());
                 return true;
