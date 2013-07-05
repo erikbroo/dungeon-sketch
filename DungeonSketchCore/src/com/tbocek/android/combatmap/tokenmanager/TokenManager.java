@@ -16,6 +16,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -320,6 +321,40 @@ public final class TokenManager extends SherlockActivity {
 
         this.mScrollView =
                 (ScrollView) this.findViewById(R.id.token_manager_scroll_view);
+
+        // Set up a drag handler so that the user can drop tokens onto the token
+        // view when it switches over after long-holding on a tag.
+        this.mScrollView.setOnDragListener(new View.OnDragListener() {
+			
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+				if (event.getAction() == DragEvent.ACTION_DROP) {
+					TagTreeNode tag = mTagNavigator.getCurrentTagNode();
+					Collection<BaseToken> tokens =
+	                        (Collection<BaseToken>) event.getLocalState();
+					
+					// TODO: De-dupe this with the drag handler above.
+		            for (BaseToken t : tokens) {
+		            	if (!tag.isSystemTag()) {
+			                TokenManager.this.mTokenDatabase.tagToken(
+			                        t.getTokenId(), tag.getPath());
+			                TokenManager.this.setScrollViewTag(tag.getPath());
+		            	} else {
+		            		Toast toast = Toast.makeText(
+		            				TokenManager.this, 
+		            				"Cannot add token to tag " + tag.getName(), 
+		            				Toast.LENGTH_LONG);
+		            		toast.show();
+		            	}
+		            }
+				} else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+					mTagNavigator.setDragStyleOnCurrentTag();
+				} else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
+					mTagNavigator.resetTextViewColors();
+				}
+				return true;
+			}
+		});
 
         this.mTokenViewFactory.getMultiSelectManager()
         .setSelectionChangedListener(

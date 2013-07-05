@@ -214,7 +214,7 @@ public class TagNavigator extends ScrollView {
 				tv.setVisibility(View.GONE);
 			}
 		}
-		setTextViewColors();
+		resetTextViewColors();
 	}
 	
 	private TagTreeLineItem createTextView() {
@@ -232,7 +232,7 @@ public class TagNavigator extends ScrollView {
 		return view;
 	}
 	
-	private void setTextViewColors() {
+	public void resetTextViewColors() {
 		for (TagTreeLineItem v: this.mTagItems) {
 			v.setTextColor(v.getTagNode() == mCurrentTagTreeNode 
 			               ? TagTreeLineItem.COLOR_SELECTED 
@@ -253,7 +253,7 @@ public class TagNavigator extends ScrollView {
 			loadTokenData(node);
 		} else {
 			if (updateColors) {
-				setTextViewColors();
+				resetTextViewColors();
 			}
 		}
 		
@@ -299,7 +299,7 @@ public class TagNavigator extends ScrollView {
                     TagNavigator.this.mTagSelectedListener
                             .onDragTokensToTag(toAdd, ((TagTreeLineItem)v).getTagNode());
                 }
-                setTextViewColors();
+                resetTextViewColors();
                 mLongDragHandler.removeCallbacks(this.mLongDragRunnable);
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
@@ -317,7 +317,7 @@ public class TagNavigator extends ScrollView {
                 mLongDragHandler.postDelayed(mLongDragRunnable, ViewConfiguration.getLongPressTimeout());
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
-            	setTextViewColors();
+            	resetTextViewColors();
                 mLongDragHandler.removeCallbacks(this.mLongDragRunnable);
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
@@ -330,6 +330,7 @@ public class TagNavigator extends ScrollView {
             		TagNavigator.this.selectTag(TagNavigator.this.mTagOnDragStart, true);
             		mTagOnDragStart = null;
             	}
+            	resetTextViewColors();
             	return true;
             }
             return true;
@@ -384,6 +385,15 @@ public class TagNavigator extends ScrollView {
 				tv.setTagNode(this.getCurrentTagNode());
 			}
 				
+		}
+	}
+
+	public void setDragStyleOnCurrentTag() {
+		// TODO Auto-generated method stub
+		for (TagTreeLineItem view: this.mTagItems){
+			if (view.getTagNode() == this.mCurrentTagTreeNode) {
+				view.setTextColor(TagTreeLineItem.COLOR_DRAG_TARGET);
+			}
 		}
 	}
 
