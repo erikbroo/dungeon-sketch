@@ -7,6 +7,8 @@ import com.tbocek.android.combatmap.model.primitives.Util;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,6 +54,11 @@ public class TagTreeLineItem extends LinearLayout {
 	
 	public void setTextColor(int color) {
 		mName.setTextColor(color);
+		
+		PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+		
+		mHasChildren.setColorFilter(colorFilter);
+		mIsSystem.setColorFilter(colorFilter);
 	}
 	
 	public void setTextSize(int size) {
