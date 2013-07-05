@@ -303,9 +303,16 @@ public class TagNavigator extends ScrollView {
                 mLongDragHandler.removeCallbacks(this.mLongDragRunnable);
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-            	TagTreeNode node = ((TagTreeLineItem)v).getTagNode();
-            	if (node.isSystemTag()) {
-            		return true;
+            	TagTreeNode node = null;
+            	try {
+	            	node = ((TagTreeLineItem)v).getTagNode();
+	            	if (node.isSystemTag()) {
+	            		return true;
+	            	}
+	            	((TagTreeLineItem)v).setTextColor(TagTreeLineItem.COLOR_DRAG_TARGET);
+	            	
+            	} catch (Exception e) {
+            		// Ignore - bad cast expected here
             	}
             	
             	try {
@@ -313,14 +320,14 @@ public class TagNavigator extends ScrollView {
             	} catch (Exception e) {
             		// Ignore - bad cast expected here
             	}
-            	
-            	try {
-            		((TagTreeLineItem)v).setTextColor(TagTreeLineItem.COLOR_DRAG_TARGET);
-            	} catch (Exception e) {
-            		// Ignore - bad cast expected here
+        		if (node == null) {
+        			node = (TagTreeNode) v.getTag();
+        		}
+        		
+            	if (node != null) {
+            		mLongDragRunnable.mNode = node;
+            		mLongDragHandler.postDelayed(mLongDragRunnable, ViewConfiguration.getLongPressTimeout());
             	}
-            	mLongDragRunnable.mNode = node;
-                mLongDragHandler.postDelayed(mLongDragRunnable, ViewConfiguration.getLongPressTimeout());
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
             	resetTextViewColors();
