@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -148,6 +149,10 @@ public final class TokenManager extends SherlockActivity {
 	private FrameLayout drawerList;
 
 	private ActionBarDrawerToggle actionBarDrawerToggle;
+	
+	private Button enableTagButton;
+	
+	private TextView disabledTagExplanation;
 
     /**
      * Deletes the given list of tokens.
@@ -401,6 +406,17 @@ public final class TokenManager extends SherlockActivity {
                                 .startActionMode(new TokenSelectionActionModeCallback());
                     }
                 });
+        
+        disabledTagExplanation = (TextView) this.findViewById(R.id.token_manager_disabled_explanation);
+        enableTagButton = (Button) this.findViewById(R.id.token_manager_enable_button);
+        
+        enableTagButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				mTagActiveMenuItem.setChecked(true);
+	        	TokenManager.this.mTagNavigator.setCurrentTagIsActive(true);
+			}
+        });
 
     }
 
@@ -577,6 +593,15 @@ public final class TokenManager extends SherlockActivity {
                 this.mTagActiveMenuItem.setVisible(true);
                 
             }
+            
+			
+			if (tag.equals(TokenDatabase.ALL) || mTokenDatabase.getRootNode().getNamedChild(tag, false).isActive()) {
+				enableTagButton.setVisibility(View.GONE);
+				disabledTagExplanation.setVisibility(View.GONE);
+			} else {
+				enableTagButton.setVisibility(View.VISIBLE);
+				disabledTagExplanation.setVisibility(View.VISIBLE);
+			}
             
         }
     }
