@@ -64,6 +64,10 @@ import com.tbocek.android.combatmap.model.primitives.Util;
 public final class TokenDatabase {
 	private static final Set<String> SYSTEM_TAG_NAMES = Sets.newHashSet("built-in","custom","image","letter","solid color","recently added");
 	
+	public static boolean isSystemTag(String tag) {
+		return SYSTEM_TAG_NAMES.contains(tag);
+	}
+	
 	public class TagTreeNode {
 		private Set<String> tokenNames = Sets.newHashSet();
 		protected Map<String, TagTreeNode> childTags = Maps.newHashMap();

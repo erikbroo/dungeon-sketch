@@ -191,7 +191,16 @@ public class TagNavigator extends ScrollView {
 		
 		Collections.sort(tagNames, new Comparator<String>() {
 		    @Override
-		    public int compare(String o1, String o2) {              
+		    public int compare(String o1, String o2) {
+		    	// Make sure system tags sort to the bottom
+		    	boolean o1System = TokenDatabase.isSystemTag(o1);
+		    	boolean o2System = TokenDatabase.isSystemTag(o2);
+		    	if (o1System && !o2System) {
+		    		return 1;
+		    	}
+		    	if (o2System && !o1System) {
+		    		return -1;
+		    	}
 		        return o1.compareToIgnoreCase(o2);
 		    }});
 		
