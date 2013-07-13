@@ -18,6 +18,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -69,6 +70,11 @@ public class TagNavigator extends ScrollView {
 	 */
 	private boolean showInactiveTags = true;
 
+	/**
+	 * Whether the tag navigator should show tags that were marked as "system".
+	 */
+	private boolean showSystemTags = true;
+	
 	private List<TextView> mTextViews = Lists.newArrayList();
 	
 	/**
@@ -80,8 +86,24 @@ public class TagNavigator extends ScrollView {
 	private int mTextSize;
 	private boolean mAllowContextMenu;
 
+
+
+	public TagNavigator(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		constructorImpl(context);
+	}
+	
+	public TagNavigator(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		constructorImpl(context);
+	}
+	
 	public TagNavigator(Context context) {
 		super(context);
+		constructorImpl(context);
+	}
+	
+	private void constructorImpl(Context context) {
 		LayoutInflater.from(context).inflate(R.layout.tagnavigator, this);
 		
 		mChildTagList = (LinearLayout)this.findViewById(R.id.tagnavigator_current_tag_list);
@@ -131,6 +153,18 @@ public class TagNavigator extends ScrollView {
 	public void setShowInactiveTags(boolean show) {
 		this.showInactiveTags = show;
 	}
+
+	public void setShowSystemTags(boolean show) {
+		this.showSystemTags  = show;
+	}
+	
+	private boolean shouldShowTag(TagTreeNode node) {
+		return (node.isActive() || showInactiveTags) && (!node.isSystemTag() || showSystemTags);
+	}
+	
+	private boolean hasTagRestrictions() {
+		return !this.showInactiveTags || !this.showSystemTags;
+	}
 	
 	private void loadTokenData(TagTreeNode node) {
 		mCurrentTagTreeNode = node;
@@ -148,10 +182,10 @@ public class TagNavigator extends ScrollView {
 		mBackButton.setTag(node.getParent());
 		
 		List<String> tagNames = Lists.newArrayList(node.getTagNames());
-		if (!this.showInactiveTags) {
+		if (hasTagRestrictions()) {
 			List<String> activeTagNames = Lists.newArrayList();
 			for (String tag: tagNames) {
-				if (node.getNamedChild(tag, false).isActive()) {
+				if (shouldShowTag(node.getNamedChild(tag, false))) {
 					activeTagNames.add(tag);
 				}
 			}
