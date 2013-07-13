@@ -49,6 +49,7 @@ public class MeasuringTapeInteractionMode extends BaseDrawInteractionMode {
     	PointF p = this.getScreenSpacePoint(e2);
     	this.mLastPointX = p.x;
     	this.mLastPointY = p.y;
+    	getView().refreshMap();
 		return true;
     }
     

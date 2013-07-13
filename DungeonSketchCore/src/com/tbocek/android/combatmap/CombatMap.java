@@ -614,6 +614,19 @@ public final class CombatMap extends SherlockActivity {
 						.requestLayout();
 			}
 		});
+		
+		this.mMeasuringToggle = (ToggleButton) this.findViewById(R.id.combat_map_toggle_measuring_tape);
+		this.mMeasuringToggle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ToggleButton tb = (ToggleButton)v;
+				if (tb.isChecked()) {
+					mCombatView.setMeasuringTapeMode();
+				} else {
+					mCombatView.setTokenManipulationMode();
+				}
+			}
+		});
 
 		this.loadOrCreateMap();
 
@@ -647,19 +660,6 @@ public final class CombatMap extends SherlockActivity {
 
 		this.mCombatView.refreshMap();
 		this.mCombatView.requestFocus();
-		
-		this.mMeasuringToggle = (ToggleButton) this.findViewById(R.id.combat_map_toggle_measuring_tape);
-		this.mMeasuringToggle.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ToggleButton tb = (ToggleButton)v;
-				if (tb.isChecked()) {
-					mCombatView.setMeasuringTapeMode();
-				} else {
-					mCombatView.setTokenManipulationMode();
-				}
-			}
-		});
 	}
 
 	@Override
