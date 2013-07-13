@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -165,6 +166,8 @@ public final class CombatMap extends SherlockActivity {
 	 * images, in world space.
 	 */
 	private PointF mNewObjectLocationWorldSpace;
+	
+	private ToggleButton mMeasuringToggle;
 
 	/**
 	 * Listener that fires when a new draw tool or color has been selected.
@@ -644,6 +647,19 @@ public final class CombatMap extends SherlockActivity {
 
 		this.mCombatView.refreshMap();
 		this.mCombatView.requestFocus();
+		
+		this.mMeasuringToggle = (ToggleButton) this.findViewById(R.id.combat_map_toggle_measuring_tape);
+		this.mMeasuringToggle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ToggleButton tb = (ToggleButton)v;
+				if (tb.isChecked()) {
+					mCombatView.setMeasuringTapeMode();
+				} else {
+					mCombatView.setTokenManipulationMode();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -953,6 +969,7 @@ public final class CombatMap extends SherlockActivity {
 					.setBackgroundImageButtonVisibility(BuildConfig.DEBUG);
 			this.setTagSelectorVisibility(false);
 			this.loadModeSpecificSnapPreference();
+			this.mMeasuringToggle.setVisibility(View.GONE);
 			return;
 		case MODE_DRAW_ANNOTATIONS:
 			this.mCombatView.getMultiSelect().selectNone();
@@ -969,6 +986,7 @@ public final class CombatMap extends SherlockActivity {
 			this.mDrawOptionsView.setBackgroundImageButtonVisibility(false);
 			this.setTagSelectorVisibility(false);
 			this.loadModeSpecificSnapPreference();
+			this.mMeasuringToggle.setVisibility(View.GONE);
 			return;
 		case MODE_DRAW_GM_NOTES:
 			this.mCombatView.getMultiSelect().selectNone();
@@ -983,6 +1001,7 @@ public final class CombatMap extends SherlockActivity {
 			this.mDrawOptionsView.setBackgroundImageButtonVisibility(false);
 			this.setTagSelectorVisibility(false);
 			this.loadModeSpecificSnapPreference();
+			this.mMeasuringToggle.setVisibility(View.GONE);
 			return;
 		case MODE_TOKENS:
 			this.mCombatView.useBackgroundLayer();
@@ -997,6 +1016,7 @@ public final class CombatMap extends SherlockActivity {
 			this.mBottomControlFrame.addView(this.mTokenSelector);
 			this.setModePreference(manipulationMode);
 			this.loadModeSpecificSnapPreference();
+			this.mMeasuringToggle.setVisibility(View.VISIBLE);
 			return;
 		default:
 			throw new IllegalArgumentException("Invalid manipulation mode: "

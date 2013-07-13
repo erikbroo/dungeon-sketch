@@ -53,4 +53,13 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <ToggleButton
+        android:id="@+id/combat_map_toggle_measuring_tape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomControlAreaExpandButton"
+        android:layout_alignParentLeft="true"
+        android:textOff="Measuring Tape"
+        android:textOn="Stop Measuring" />
+
 </RelativeLayout>

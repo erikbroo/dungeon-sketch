@@ -38,6 +38,7 @@ import com.tbocek.android.combatmap.view.interaction.FingerDrawInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.GridRepositioningInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.MaskDrawInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.MaskEraseInteractionMode;
+import com.tbocek.android.combatmap.view.interaction.MeasuringTapeInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.TokenManipulationInteractionMode;
 import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
 
@@ -1034,6 +1035,7 @@ public final class CombatView extends SurfaceView {
         }
     }
 
-
-
+	public void setMeasuringTapeMode() {
+		this.setInteractionMode(new MeasuringTapeInteractionMode(this));
+	}
 }
