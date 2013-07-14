@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry exported="true" kind="lib" path="libs/guava-11.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.1.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="src" path="src"/>
@@ -14,6 +13,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/actionbarsherlock"/>
 	<classpathentry exported="true" kind="lib" path="/actionbarsherlock/libs/android-support-v13.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/commons-collections-3.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/guava-14.0.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
