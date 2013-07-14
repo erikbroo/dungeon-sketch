@@ -1,5 +1,8 @@
 package com.tbocek.android.combatmap.view;
 
+
+import java.util.Queue;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,6 +20,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.model.LineCollection;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer;
@@ -50,6 +54,12 @@ import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
  * 
  */
 public final class CombatView extends SurfaceView {
+	
+	/**
+	 * For framerate tracking.  Number of seconds to use when finding the
+	 * framerate
+	 */
+	private static final int FRAMERATE_INTVL = 500;
 
     /**
      * For the explanatory mask text, Y location of the first line in density-
@@ -209,7 +219,18 @@ public final class CombatView extends SurfaceView {
      * The currently selected background image.
      */
     private BackgroundImage mSelectedBackgroundImage;
-
+    
+    Paint mFrameratePaint;
+    
+    /**
+     * Frames since the framerate was last computed
+     */
+    private int mFrameCount;
+    
+    private long mLastFramerateComputeTime;
+    
+    private float mFramerate;
+    
     /**
      * Constructor.
      * 
@@ -224,6 +245,11 @@ public final class CombatView extends SurfaceView {
         this.mExplanatoryTextPaint.setTextAlign(Align.CENTER);
         this.mExplanatoryTextPaint.setTextSize(24);
         this.mExplanatoryTextPaint.setColor(Color.RED);
+        
+        this.mFrameratePaint = new Paint();
+        this.mFrameratePaint.setTextAlign(Align.LEFT);
+        this.mFrameratePaint.setTextSize(24);
+        this.mFrameratePaint.setColor(Color.BLACK);
 
         this.setFocusable(true);
         this.setFocusableInTouchMode(true);
@@ -344,6 +370,7 @@ public final class CombatView extends SurfaceView {
      *            The canvas to draw on.
      */
     private void drawOnCanvas(final Canvas canvas) {
+    	long startTime = System.currentTimeMillis();
         new MapDrawer()
         .drawGridLines(true)
         .drawGmNotes(this.mShouldDrawGmNotes)
@@ -371,8 +398,19 @@ public final class CombatView extends SurfaceView {
                         this.mExplanatoryTextPaint);
                 i += EXPLANATORY_TEXT_LINE_HEIGHT_DP;
             }
-
         }
+        int renderTime = (int)(System.currentTimeMillis() - startTime);
+        
+	    if (DeveloperMode.shouldDisplayFramerate()) {
+	    	long time = System.currentTimeMillis();
+	    	if (time - mLastFramerateComputeTime >= this.FRAMERATE_INTVL) {
+	    		mFramerate = ((float)mFrameCount) / (((float)(time - mLastFramerateComputeTime))/1000);
+	    		mFrameCount = 0;
+	    		mLastFramerateComputeTime = time;
+	    	}
+	        canvas.drawText("Framerate: " + Float.toString(mFramerate) + " fps", 4, 16, this.mFrameratePaint);
+	        mFrameCount++;
+	    }
     }
 
     /**

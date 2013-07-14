@@ -51,6 +51,10 @@ public final class DeveloperMode {
         }
     }
 
+	public static boolean shouldDisplayFramerate() {
+		return true;
+	}
+
     /**
      * Private constructor because this is a utility class.
      */
