@@ -9,6 +9,7 @@ import java.util.ListIterator;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Region.Op;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
@@ -22,6 +23,7 @@ import com.tbocek.android.combatmap.model.primitives.Rectangle;
 import com.tbocek.android.combatmap.model.primitives.Shape;
 import com.tbocek.android.combatmap.model.primitives.StraightLine;
 import com.tbocek.android.combatmap.model.primitives.Text;
+import com.tbocek.android.combatmap.model.primitives.Util;
 
 /**
  * Provides operations over an aggregate collection of lines. Invariant: Lines
@@ -75,8 +77,9 @@ public final class LineCollection implements UndoRedoTarget {
      * 
      * @param canvas
      *            The canvas to draw on.
+     * @param worldSpaceBounds 
      */
-    public void clipFogOfWar(final Canvas canvas) {
+    public void clipFogOfWar(final Canvas canvas, RectF worldSpaceBounds) {
         Rect r = canvas.getClipBounds();
 
         // Remove the current clip.
@@ -84,7 +87,10 @@ public final class LineCollection implements UndoRedoTarget {
 
         // Union together the regions that are supposed to draw.
         for (int i = 0; i < this.mLines.size(); ++i) {
-            this.mLines.get(i).clipFogOfWar(canvas);
+        	Shape maskRegion = this.mLines.get(i);
+        	if (maskRegion.getBoundingRectangle().testClip(worldSpaceBounds)) {
+        		maskRegion.clipFogOfWar(canvas);
+        	}
         }
 
         canvas.clipRect(r, Op.INTERSECT);
@@ -226,12 +232,15 @@ public final class LineCollection implements UndoRedoTarget {
      * 
      * @param canvas
      *            The canvas to draw on.
+     * @param worldSpaceBounds 
      */
-    public void drawAllLines(final Canvas canvas) {
+    public void drawAllLines(final Canvas canvas, RectF worldSpaceBounds) {
         for (int i = 0; i < this.mLines.size(); ++i) {
-            this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
-            this.mLines.get(i).draw(canvas);
-            this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+        	if (mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
+	            this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
+	            this.mLines.get(i).draw(canvas);
+	            this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+        	}
         }
     }
 
@@ -240,10 +249,11 @@ public final class LineCollection implements UndoRedoTarget {
      * 
      * @param canvas
      *            The canvas to draw on.
+     * @param worldSpaceBounds 
      */
-    public void drawAllLinesAboveGrid(final Canvas canvas) {
+    public void drawAllLinesAboveGrid(final Canvas canvas, RectF worldSpaceBounds) {
         for (int i = 0; i < this.mLines.size(); ++i) {
-            if (!this.mLines.get(i).shouldDrawBelowGrid()) {
+            if (!this.mLines.get(i).shouldDrawBelowGrid() && mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
                 this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
                 this.mLines.get(i).draw(canvas);
                 this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
@@ -256,10 +266,11 @@ public final class LineCollection implements UndoRedoTarget {
      * 
      * @param canvas
      *            The canvas to draw on.
+     * @param worldSpaceBounds 
      */
-    public void drawAllLinesBelowGrid(final Canvas canvas) {
+    public void drawAllLinesBelowGrid(final Canvas canvas, RectF worldSpaceBounds) {
         for (int i = 0; i < this.mLines.size(); ++i) {
-            if (this.mLines.get(i).shouldDrawBelowGrid()) {
+            if (this.mLines.get(i).shouldDrawBelowGrid() && mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
                 this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
                 this.mLines.get(i).draw(canvas);
                 this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
@@ -272,10 +283,13 @@ public final class LineCollection implements UndoRedoTarget {
      * 
      * @param canvas
      *            The canvas to draw on.
+     * @param worldSpaceBounds 
      */
-    public void drawFogOfWar(final Canvas canvas) {
+    public void drawFogOfWar(final Canvas canvas, RectF worldSpaceBounds) {
         for (int i = 0; i < this.mLines.size(); ++i) {
-            this.mLines.get(i).drawFogOfWar(canvas);
+        	if (mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
+        		this.mLines.get(i).drawFogOfWar(canvas);
+        	}
         }
     }
 

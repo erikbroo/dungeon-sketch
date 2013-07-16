@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import android.graphics.Canvas;
+import android.graphics.RectF;
 
 import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.model.CommandHistory.Command;
@@ -64,13 +65,16 @@ public class BackgroundImageCollection {
      * canvas is transformed, and undo the transformation here.
      * @param canvas The canvas to draw on.
      * @param transformer Transformation from screen space to world space.
+     * @param worldSpaceBounds 
      */
-    public void draw(Canvas canvas, CoordinateTransformer transformer) {
+    public void draw(Canvas canvas, CoordinateTransformer transformer, RectF worldSpaceBounds) {
         canvas.save();
         transformer.setInverseMatrix(canvas);
 
         for (BackgroundImage i : this.mImages) {
-            i.draw(canvas, transformer);
+        	if (i.getBoundingRectangle().testClip(worldSpaceBounds)) {
+        		i.draw(canvas, transformer);
+        	}
         }
 
         canvas.restore();

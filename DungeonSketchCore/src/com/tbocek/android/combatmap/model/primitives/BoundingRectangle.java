@@ -239,5 +239,16 @@ public final class BoundingRectangle {
         this.mYMin = Math.min(this.mYMin, p.y);
         this.mYMax = Math.max(this.mYMax, p.y);
     }
+    
+    /**
+     * Tests whether this rectangle partially falls within the given rectangle.
+     * @param clipRegion The rectangle to test against.
+     */
+    public boolean testClip(final RectF clipRegion) {
+    	return !((this.mXMin < clipRegion.left && this.mXMax < clipRegion.left) || 
+    		     (this.mXMin > clipRegion.right && this.mXMax > clipRegion.right) ||
+    		     (this.mYMin < clipRegion.top && this.mYMax < clipRegion.top) ||
+    		     (this.mYMin > clipRegion.bottom && this.mYMax > clipRegion.bottom));
+    }
 
 }

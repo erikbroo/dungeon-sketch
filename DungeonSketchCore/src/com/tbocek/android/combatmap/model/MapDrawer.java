@@ -1,6 +1,8 @@
 package com.tbocek.android.combatmap.model;
 
 import android.graphics.Canvas;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 
@@ -27,16 +29,21 @@ public class MapDrawer {
     }
 
     public void draw(Canvas canvas, MapData m) {
-        m.getGrid().drawBackground(canvas);
+    	PointF wsOrigin = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(0, 0);
+    	float wsWidth = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(canvas.getWidth());
+    	float wsHeight = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(canvas.getHeight());
+    	RectF worldSpaceBounds = new RectF(wsOrigin.x, wsOrigin.y, wsOrigin.x + wsWidth, wsOrigin.y + wsHeight);
+        
+    	m.getGrid().drawBackground(canvas);
 
         canvas.save();
         m.getWorldSpaceTransformer().setMatrix(canvas);
         if (this.mBackgroundFogOfWar == FogOfWarMode.CLIP
                 && !m.getBackgroundFogOfWar().isEmpty()) {
-            m.getBackgroundFogOfWar().clipFogOfWar(canvas);
+            m.getBackgroundFogOfWar().clipFogOfWar(canvas, worldSpaceBounds);
         }
-        m.getBackgroundLines().drawAllLinesBelowGrid(canvas);
-        m.getBackgroundImages().draw(canvas, m.getWorldSpaceTransformer());
+        m.getBackgroundLines().drawAllLinesBelowGrid(canvas, worldSpaceBounds);
+        m.getBackgroundImages().draw(canvas, m.getWorldSpaceTransformer(), worldSpaceBounds);
         canvas.restore();
 
         if (this.mDrawGridLines) {
@@ -47,11 +54,11 @@ public class MapDrawer {
         m.getWorldSpaceTransformer().setMatrix(canvas);
         if (this.mBackgroundFogOfWar == FogOfWarMode.CLIP
                 && !m.getBackgroundFogOfWar().isEmpty()) {
-            m.getBackgroundFogOfWar().clipFogOfWar(canvas);
+            m.getBackgroundFogOfWar().clipFogOfWar(canvas, worldSpaceBounds);
         }
-        m.getBackgroundLines().drawAllLinesAboveGrid(canvas);
+        m.getBackgroundLines().drawAllLinesAboveGrid(canvas, worldSpaceBounds);
         if (this.mBackgroundFogOfWar == FogOfWarMode.DRAW) {
-            m.getBackgroundFogOfWar().drawFogOfWar(canvas);
+            m.getBackgroundFogOfWar().drawFogOfWar(canvas, worldSpaceBounds);
         }
         canvas.restore();
 
@@ -61,11 +68,11 @@ public class MapDrawer {
         if (this.mDrawGmNotes) {
             canvas.save();
             if (this.mGmNoteFogOfWar == FogOfWarMode.CLIP) {
-                m.getGmNotesFogOfWar().clipFogOfWar(canvas);
+                m.getGmNotesFogOfWar().clipFogOfWar(canvas, worldSpaceBounds);
             }
-            m.getGmNoteLines().drawAllLines(canvas);
+            m.getGmNoteLines().drawAllLines(canvas, worldSpaceBounds);
             if (this.mGmNoteFogOfWar == FogOfWarMode.DRAW) {
-                m.getGmNotesFogOfWar().drawFogOfWar(canvas);
+                m.getGmNotesFogOfWar().drawFogOfWar(canvas, worldSpaceBounds);
             }
             canvas.restore();
             
@@ -73,7 +80,7 @@ public class MapDrawer {
 
         if (this.mDrawAnnotations) {
 
-            m.getAnnotationLines().drawAllLines(canvas);
+            m.getAnnotationLines().drawAllLines(canvas, worldSpaceBounds);
         }
         canvas.restore();
 
@@ -82,7 +89,7 @@ public class MapDrawer {
                 && !m.getBackgroundFogOfWar().isEmpty()
                 && this.mApplyMaskToTokens) {
             m.getWorldSpaceTransformer().setMatrix(canvas);
-            m.getBackgroundFogOfWar().clipFogOfWar(canvas);
+            m.getBackgroundFogOfWar().clipFogOfWar(canvas, worldSpaceBounds);
             m.getWorldSpaceTransformer().setInverseMatrix(canvas);
         }
         CoordinateTransformer gridSpace =
