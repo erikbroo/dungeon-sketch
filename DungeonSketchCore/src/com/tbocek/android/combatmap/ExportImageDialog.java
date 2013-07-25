@@ -155,7 +155,7 @@ public class ExportImageDialog extends Dialog {
                 .backgroundFogOfWar(
                         this.mCheckFogOfWar.isChecked() ? FogOfWarMode.CLIP
                                 : FogOfWarMode.NOTHING)
-                .draw(canvas, this.mData);
+                .draw(canvas, this.mData, canvas.getClipBounds());
 
         new DataManager(this.getContext()).exportImage(this.mEditExportName
                 .getText().toString(), bitmap, Bitmap.CompressFormat.PNG);

@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.model;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
@@ -28,10 +29,10 @@ public class MapDrawer {
         return this;
     }
 
-    public void draw(Canvas canvas, MapData m) {
-    	PointF wsOrigin = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(0, 0);
-    	float wsWidth = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(canvas.getWidth());
-    	float wsHeight = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(canvas.getHeight());
+    public void draw(Canvas canvas, MapData m, Rect bounds) {
+    	PointF wsOrigin = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(bounds.left, bounds.top);
+    	float wsWidth = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(bounds.width());
+    	float wsHeight = m.getWorldSpaceTransformer().screenSpaceToWorldSpace(bounds.height());
     	RectF worldSpaceBounds = new RectF(wsOrigin.x, wsOrigin.y, wsOrigin.x + wsWidth, wsOrigin.y + wsHeight);
         
     	m.getGrid().drawBackground(canvas);

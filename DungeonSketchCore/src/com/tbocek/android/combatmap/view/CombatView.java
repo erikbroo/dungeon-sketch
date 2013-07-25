@@ -10,6 +10,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.Log;
 import android.view.DragEvent;
@@ -369,7 +371,7 @@ public final class CombatView extends SurfaceView {
      * @param canvas
      *            The canvas to draw on.
      */
-    private void drawOnCanvas(final Canvas canvas) {
+    private void drawOnCanvas(final Canvas canvas, final Rect dirty) {
     	long startTime = System.currentTimeMillis();
         new MapDrawer()
         .drawGridLines(true)
@@ -383,7 +385,7 @@ public final class CombatView extends SurfaceView {
                         : FogOfWarMode.CLIP)
                         .applyMaskToTokens(mApplyMaskToTokens)
                         .backgroundFogOfWar(this.mFogOfWarMode)
-                        .draw(canvas, this.getData());
+                        .draw(canvas, this.getData(), dirty);
 
         this.mInteractionMode.draw(canvas);
 
@@ -530,7 +532,7 @@ public final class CombatView extends SurfaceView {
         .drawTokens(true).areTokensManipulable(true)
         .drawAnnotations(false).gmNotesFogOfWar(FogOfWarMode.NOTHING)
         .backgroundFogOfWar(this.mFogOfWarMode)
-        .draw(canvas, this.getData());
+        .draw(canvas, this.getData(), canvas.getClipBounds());
 
         return bitmap;
     }
@@ -619,22 +621,41 @@ public final class CombatView extends SurfaceView {
 
     /**
      * Redraws the contents of the map.
+     * @param invalidBounds Screen space portion to redraw.s
      */
-    public void refreshMap() {
+    public void refreshMap(Rect invalidBounds) {
         if (!this.mSurfaceReady) {
             return;
         }
 
         SurfaceHolder holder = this.getHolder();
-        Canvas canvas = holder.lockCanvas();
+        Canvas canvas = holder.lockCanvas(invalidBounds);
         if (canvas != null) {
-            this.drawOnCanvas(canvas);
+        	canvas.clipRect(invalidBounds);
+            this.drawOnCanvas(canvas, invalidBounds);
             holder.unlockCanvasAndPost(canvas);
         }
 
         if (this.mOnRefreshListener != null) {
             this.mOnRefreshListener.onRefresh();
         }
+    }
+    
+    /**
+     * Refreshes the entire map.
+     */
+    public void refreshMap() {
+    	refreshMap(new Rect(0,0,this.getWidth(),this.getHeight()));
+    }
+    
+    /**
+     * Refreshes the portion of the map, using the given transformer to transform to screen space.
+     */
+    public void refreshMap(RectF invalidBounds, CoordinateTransformer transformer) {
+    	int left = (int) Math.max(0, transformer.worldSpaceToScreenSpace(invalidBounds.left));
+    	int bottom = (int) Math.min(this.getHeight(), transformer.worldSpaceToScreenSpace(invalidBounds.bottom));
+    	int right = (int) Math.min(this.getWidth(), transformer.worldSpaceToScreenSpace(invalidBounds.right));
+    	int top = (int) Math.max(0, transformer.worldSpaceToScreenSpace(invalidBounds.top));
     }
 
     /**
@@ -764,6 +785,7 @@ public final class CombatView extends SurfaceView {
 
         this.refreshMap();
     }
+    
     
     private void setInteractionMode(final CombatViewInteractionMode mode) {
     	this.setInteractionMode(mode, false);
