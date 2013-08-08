@@ -42,9 +42,17 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
     public void drawGrid(final Canvas canvas,
             final CoordinateTransformer transformer,
             final GridColorScheme colorScheme) {
-        Paint paint = new Paint();
-        paint.setColor(colorScheme.getLineColor());
-
+    	
+    	// TODO: Create and cache these when the color is updated instead of every time
+    	// a draw is requested.
+        Paint thinPaint = new Paint();
+        thinPaint.setColor(colorScheme.getLineColor());
+        thinPaint.setStrokeWidth(MINOR_GRID_LINE_WIDTH);
+        
+        Paint thickPaint = new Paint();
+        thickPaint.setColor(colorScheme.getLineColor());
+        thickPaint.setStrokeWidth(MAJOR_GRID_LINE_WIDTH);
+        
         int width = canvas.getWidth();
         int height = canvas.getHeight();
 
@@ -67,37 +75,38 @@ public final class RectangularGridStrategy extends GridDrawStrategy {
         int thickLineStartY =
                 (int) ((origin.y % (squareSize * MAJOR_GRID_LINE_FREQUENCY)) / squareSize);
 
+        Paint currentPaint = thinPaint;
         for (int i = 0; i <= numSquaresHorizontal; ++i) {
             if ((i - thickLineStartX) % MAJOR_GRID_LINE_FREQUENCY == 0) {
-                paint.setStrokeWidth(shouldDrawMinorLines
-                        ? MAJOR_GRID_LINE_WIDTH
-                        : MINOR_GRID_LINE_WIDTH);
+                currentPaint = (shouldDrawMinorLines
+                        ? thickPaint
+                        : thinPaint);
                 shouldDrawCurrentLine = shouldDrawMajorLines;
             } else {
-                paint.setStrokeWidth(1);
+                currentPaint = thinPaint;
                 shouldDrawCurrentLine = shouldDrawMinorLines;
             }
 
             if (shouldDrawCurrentLine) {
                 canvas.drawLine(i * squareSize + offsetX, 0, i * squareSize
-                        + offsetX, height, paint);
+                        + offsetX, height, currentPaint);
             }
         }
 
         for (int i = 0; i <= numSquaresVertical; ++i) {
             if ((i - thickLineStartY) % MAJOR_GRID_LINE_FREQUENCY == 0) {
-                paint.setStrokeWidth(shouldDrawMinorLines
-                        ? MAJOR_GRID_LINE_WIDTH
-                        : MINOR_GRID_LINE_WIDTH);
+                currentPaint = (shouldDrawMinorLines
+                        ? thickPaint
+                        : thinPaint);
                 shouldDrawCurrentLine = shouldDrawMajorLines;
             } else {
-                paint.setStrokeWidth(MINOR_GRID_LINE_WIDTH);
+            	currentPaint = thinPaint;
                 shouldDrawCurrentLine = shouldDrawMinorLines;
             }
 
             if (shouldDrawCurrentLine) {
                 canvas.drawLine(0, i * squareSize + offsetY, width, i
-                        * squareSize + offsetY, paint);
+                        * squareSize + offsetY, currentPaint);
             }
         }
     }
