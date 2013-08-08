@@ -42,7 +42,7 @@ public final class LineCollection implements UndoRedoTarget {
     /**
      * The internal list of lines.
      */
-    private List<Shape> mLines = new LinkedList<Shape>();
+    private List<Shape> mLines = new ArrayList<Shape>();
 
     /**
      * Constructor allowing multiple line collections to share one undo/redo
@@ -235,11 +235,11 @@ public final class LineCollection implements UndoRedoTarget {
      * @param worldSpaceBounds 
      */
     public void drawAllLines(final Canvas canvas, RectF worldSpaceBounds) {
-        for (int i = 0; i < this.mLines.size(); ++i) {
-        	if (mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
-	            this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
-	            this.mLines.get(i).draw(canvas);
-	            this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+        for (Shape shape: mLines) {
+        	if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
+	            shape.applyDrawOffsetToCanvas(canvas);
+	            shape.draw(canvas);
+	            shape.revertDrawOffsetFromCanvas(canvas);
         	}
         }
     }
@@ -252,11 +252,11 @@ public final class LineCollection implements UndoRedoTarget {
      * @param worldSpaceBounds 
      */
     public void drawAllLinesAboveGrid(final Canvas canvas, RectF worldSpaceBounds) {
-        for (int i = 0; i < this.mLines.size(); ++i) {
-            if (!this.mLines.get(i).shouldDrawBelowGrid() && mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
-                this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
-                this.mLines.get(i).draw(canvas);
-                this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+        for (Shape shape: mLines) {
+            if (!shape.shouldDrawBelowGrid() && shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
+                shape.applyDrawOffsetToCanvas(canvas);
+                shape.draw(canvas);
+                shape.revertDrawOffsetFromCanvas(canvas);
             }
         }
     }
@@ -269,11 +269,11 @@ public final class LineCollection implements UndoRedoTarget {
      * @param worldSpaceBounds 
      */
     public void drawAllLinesBelowGrid(final Canvas canvas, RectF worldSpaceBounds) {
-        for (int i = 0; i < this.mLines.size(); ++i) {
-            if (this.mLines.get(i).shouldDrawBelowGrid() && mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
-                this.mLines.get(i).applyDrawOffsetToCanvas(canvas);
-                this.mLines.get(i).draw(canvas);
-                this.mLines.get(i).revertDrawOffsetFromCanvas(canvas);
+        for (Shape shape: mLines) {
+            if (shape.shouldDrawBelowGrid() && shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
+                shape.applyDrawOffsetToCanvas(canvas);
+                shape.draw(canvas);
+                shape.revertDrawOffsetFromCanvas(canvas);
             }
         }
     }
@@ -286,9 +286,9 @@ public final class LineCollection implements UndoRedoTarget {
      * @param worldSpaceBounds 
      */
     public void drawFogOfWar(final Canvas canvas, RectF worldSpaceBounds) {
-        for (int i = 0; i < this.mLines.size(); ++i) {
-        	if (mLines.get(i).getBoundingRectangle().testClip(worldSpaceBounds)) {
-        		this.mLines.get(i).drawFogOfWar(canvas);
+        for (Shape shape: mLines) {
+        	if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
+        		shape.drawFogOfWar(canvas);
         	}
         }
     }
