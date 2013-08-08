@@ -3,6 +3,7 @@ package com.tbocek.android.combatmap.view.interaction;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Shape;
 import com.tbocek.android.combatmap.model.primitives.Util;
@@ -67,11 +68,21 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
      */
     private void addLinePoint(final MotionEvent e) {
         PointF p = this.getScreenSpacePoint(e);
+        
+        // Get the bounding box both before and after the draw op, since
+        // if the shape gets smaller we want to redraw the part of the screen
+        // that the shape is no longer in.
+        BoundingRectangle redrawRect = new BoundingRectangle();
+        redrawRect.updateBounds(mCurrentLine.getBoundingRectangle());
+        
         // Need to transform to world space.
         this.mCurrentLine.addPoint(this.getView().getWorldSpaceTransformer()
                 .screenSpaceToWorldSpace(p));
 
-        this.getView().refreshMap(); // Redraw the screen
+        redrawRect.updateBounds(mCurrentLine.getBoundingRectangle());
+        this.getView().refreshMap(
+        		redrawRect.toRectF(),
+        		this.getView().getWorldSpaceTransformer()); 
         this.mLastPointX = p.x;
         this.mLastPointY = p.y;
     }
