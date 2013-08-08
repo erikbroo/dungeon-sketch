@@ -373,7 +373,6 @@ public final class CombatView extends SurfaceView {
      */
     private void drawOnCanvas(final Canvas canvas, final Rect dirty) {
     	long startTime = System.currentTimeMillis();
-    	DeveloperMode.startProfiler("draw_loop");
         new MapDrawer()
         .drawGridLines(true)
         .drawGmNotes(this.mShouldDrawGmNotes)
@@ -414,7 +413,6 @@ public final class CombatView extends SurfaceView {
 	        canvas.drawText("Framerate: " + Float.toString(mFramerate) + " fps", 4, 16, this.mFrameratePaint);
 	        mFrameCount++;
 	    }
-	    DeveloperMode.stopProfiler();
     }
 
     /**

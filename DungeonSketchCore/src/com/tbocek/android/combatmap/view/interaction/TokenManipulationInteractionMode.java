@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 
 import com.google.common.collect.Lists;
+import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
@@ -246,6 +247,7 @@ public final class TokenManipulationInteractionMode extends
 
     @Override
     public boolean onDown(final MotionEvent e) {
+    	DeveloperMode.startProfiler("token_manip_down");
         this.mCurrentToken =
                 this.getView()
                         .getTokens()
@@ -386,6 +388,7 @@ public final class TokenManipulationInteractionMode extends
         this.fadeTrashCanOut();
         this.mAboutToTrash = false;
         this.customLongPressDetector.onUp(ev);
+        DeveloperMode.stopProfiler();
     }
 
 }
