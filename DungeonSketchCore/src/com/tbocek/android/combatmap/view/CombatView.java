@@ -657,7 +657,7 @@ public final class CombatView extends SurfaceView {
     	int right = (int) Math.min(this.getWidth(), transformer.worldSpaceToScreenSpace(invalidBounds.right));
     	int top = (int) Math.max(0, transformer.worldSpaceToScreenSpace(invalidBounds.top));
     	
-    	refreshMap(new Rect(left, top, right - left, bottom - top));
+    	refreshMap(new Rect(left, top, right, bottom));
     }
 
     /**

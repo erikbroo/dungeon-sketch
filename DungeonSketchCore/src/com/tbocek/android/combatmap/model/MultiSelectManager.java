@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 
 /**
  * This class tracks a selection of multiple tokens in a way that each token
@@ -131,5 +132,13 @@ public final class MultiSelectManager {
 
 	public boolean isActive() {
 		return this.getSelectedTokens().size() != 0;
+	}
+	
+	public BoundingRectangle getSelectionBoundingRect() {
+		BoundingRectangle rect = new BoundingRectangle();
+		for (BaseToken t: this.mSelection){
+			rect.updateBounds(t.getBoundingRectangle());
+		}
+		return rect;
 	}
 }

@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
 import com.tbocek.android.combatmap.model.primitives.CoordinateTransformer;
 import com.tbocek.android.combatmap.model.primitives.PointF;
 import com.tbocek.android.combatmap.model.primitives.Util;
@@ -241,8 +242,9 @@ public final class TokenManipulationInteractionMode extends
             this.getView().getTokens().checkpointToken(this.mCurrentToken);
             this.mCurrentToken.setBloodied(!this.mCurrentToken.isBloodied());
             this.getView().getTokens().createCommandHistory();
+            this.getView().refreshMap(this.mCurrentToken.getBoundingRectangle().toRectF(),
+            		                  this.getView().getGridSpaceTransformer());
         }
-        this.getView().refreshMap();
         return true;
     }
 
@@ -284,7 +286,8 @@ public final class TokenManipulationInteractionMode extends
     public void onLongPress(final MotionEvent e) {
         if (this.mCurrentToken != null) {
             this.getView().getMultiSelect().addToken(this.mCurrentToken);
-            this.getView().refreshMap();
+            this.getView().refreshMap(this.mCurrentToken.getBoundingRectangle().toRectF(),
+	                  this.getView().getGridSpaceTransformer());
         }
     }
     
@@ -300,7 +303,8 @@ public final class TokenManipulationInteractionMode extends
 	                                this.getView().getGridSpaceTransformer());
 	        if (t != null) {
 	            this.getView().getMultiSelect().toggleToken(t);
-	            this.getView().refreshMap();
+	            this.getView().refreshMap(t.getBoundingRectangle().toRectF(),
+		                  this.getView().getGridSpaceTransformer());
 	        }
     	}
         return true;
@@ -355,15 +359,21 @@ public final class TokenManipulationInteractionMode extends
                 deltaX = transformer.screenSpaceToWorldSpace(distanceX);
                 deltaY = transformer.screenSpaceToWorldSpace(distanceY);
             }
+            BoundingRectangle redrawRect = new BoundingRectangle();
             for (BaseToken t : this.mMovedTokens) {
+            	// Update the redraw bounds with both the before and after state
+            	// of this token.
+            	redrawRect.updateBounds(t.getBoundingRectangle());
                 t.move(deltaX, deltaY);
+                redrawRect.updateBounds(t.getBoundingRectangle());
             }
             this.mAboutToTrash =
                     TRASH_CAN_RECT.contains((int) e2.getX(), (int) e2.getY());
+            
+            this.getView().refreshMap(redrawRect.toRectF(), this.getView().getGridSpaceTransformer());
         } else {
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
-        this.getView().refreshMap();
         this.customLongPressDetector.onScroll(e1, e2, distanceX, distanceY);
         return true;
     }
@@ -375,7 +385,6 @@ public final class TokenManipulationInteractionMode extends
                 this.getView().getTokens().restoreCheckpointedTokens();
                 this.getView().getTokens().removeAll(new ArrayList<BaseToken>(this.mMovedTokens));
                 this.getView().getMultiSelect().selectNone();
-                this.getView().refreshMap();
             } else {
                 this.getView().getTokens().createCommandHistory();
             }
