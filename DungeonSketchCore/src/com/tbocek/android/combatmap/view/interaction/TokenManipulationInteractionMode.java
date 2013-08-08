@@ -122,6 +122,7 @@ public final class TokenManipulationInteractionMode extends
                 public void onAnimationUpdate(ValueAnimator animation) {
                     TokenManipulationInteractionMode.this.mTrashCanAlpha =
                             (Integer) animation.getAnimatedValue();
+                    // TODO: See if it is better to lump this in with the token move refresh.
                     TokenManipulationInteractionMode.this.getView()
                             .refreshMap();
                 }
