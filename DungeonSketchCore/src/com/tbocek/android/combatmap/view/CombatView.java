@@ -616,7 +616,7 @@ public final class CombatView extends SurfaceView {
                 this.getData().getGrid(),
                 this.mTokensSnapToIntersections);
         this.getData().getTokens().addToken(t);
-        this.refreshMap();
+        this.refreshMap(t.getBoundingRectangle().toRectF(), this.getGridSpaceTransformer());
     }
 
     /**
@@ -656,6 +656,8 @@ public final class CombatView extends SurfaceView {
     	int bottom = (int) Math.min(this.getHeight(), transformer.worldSpaceToScreenSpace(invalidBounds.bottom));
     	int right = (int) Math.min(this.getWidth(), transformer.worldSpaceToScreenSpace(invalidBounds.right));
     	int top = (int) Math.max(0, transformer.worldSpaceToScreenSpace(invalidBounds.top));
+    	
+    	refreshMap(new Rect(left, top, right - left, bottom - top));
     }
 
     /**
