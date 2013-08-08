@@ -124,7 +124,7 @@ public final class TokenManipulationInteractionMode extends
                             (Integer) animation.getAnimatedValue();
                     // TODO: See if it is better to lump this in with the token move refresh.
                     TokenManipulationInteractionMode.this.getView()
-                            .refreshMap();
+                            .refreshMap(TRASH_CAN_RECT);
                 }
             };
 
