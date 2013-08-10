@@ -3,6 +3,8 @@ package com.tbocek.android.combatmap.model.primitives;
 import java.io.IOException;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
@@ -130,6 +132,7 @@ public final class CoordinateTransformer {
         return new PointF((x - this.mOriginX) / this.mZoomLevel,
                 (y - this.mOriginY) / this.mZoomLevel);
     }
+    
 
     /**
      * Converts the given point in screen space to world space.
@@ -141,6 +144,7 @@ public final class CoordinateTransformer {
     public PointF screenSpaceToWorldSpace(final PointF sscoord) {
         return this.screenSpaceToWorldSpace(sscoord.x, sscoord.y);
     }
+   
 
     /**
      * Saves this coordinate transform to the given stream.
@@ -241,6 +245,13 @@ public final class CoordinateTransformer {
      */
     public PointF worldSpaceToScreenSpace(final PointF wscoord) {
         return this.worldSpaceToScreenSpace(wscoord.x, wscoord.y);
+    }
+    
+    public Rect worldSpaceToScreenSpace(final RectF wsrect) {
+    	PointF topLeft = worldSpaceToScreenSpace(wsrect.left, wsrect.top);
+    	PointF bottomRight = worldSpaceToScreenSpace(wsrect.right, wsrect.bottom);
+    	
+    	return new Rect((int)topLeft.x, (int)topLeft.y, (int)bottomRight.x, (int)bottomRight.y);
     }
 
     /**

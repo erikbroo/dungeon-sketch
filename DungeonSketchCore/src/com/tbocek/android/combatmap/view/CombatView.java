@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
@@ -224,6 +225,8 @@ public final class CombatView extends SurfaceView {
     
     Paint mFrameratePaint;
     
+    Paint mDrawRectDebugPaint;
+    
     /**
      * Frames since the framerate was last computed
      */
@@ -252,6 +255,11 @@ public final class CombatView extends SurfaceView {
         this.mFrameratePaint.setTextAlign(Align.LEFT);
         this.mFrameratePaint.setTextSize(24);
         this.mFrameratePaint.setColor(Color.BLACK);
+        
+        this.mDrawRectDebugPaint = new Paint();
+        this.mDrawRectDebugPaint.setColor(Color.RED);
+        this.mDrawRectDebugPaint.setStyle(Style.STROKE);
+        this.mDrawRectDebugPaint.setStrokeWidth(3.0f);
 
         this.setFocusable(true);
         this.setFocusableInTouchMode(true);
@@ -412,6 +420,7 @@ public final class CombatView extends SurfaceView {
 	    	}
 	        canvas.drawText("Framerate: " + Float.toString(mFramerate) + " fps", 4, 16, this.mFrameratePaint);
 	        mFrameCount++;
+	        canvas.drawRect(dirty, this.mDrawRectDebugPaint);
 	    }
     }
 
@@ -652,12 +661,8 @@ public final class CombatView extends SurfaceView {
      * Refreshes the portion of the map, using the given transformer to transform to screen space.
      */
     public void refreshMap(RectF invalidBounds, CoordinateTransformer transformer) {
-    	int left = (int) Math.max(0, transformer.worldSpaceToScreenSpace(invalidBounds.left));
-    	int bottom = (int) Math.min(this.getHeight(), transformer.worldSpaceToScreenSpace(invalidBounds.bottom));
-    	int right = (int) Math.min(this.getWidth(), transformer.worldSpaceToScreenSpace(invalidBounds.right));
-    	int top = (int) Math.max(0, transformer.worldSpaceToScreenSpace(invalidBounds.top));
     	
-    	refreshMap(new Rect(left, top, right, bottom));
+    	refreshMap(transformer.worldSpaceToScreenSpace(invalidBounds));
     }
 
     /**
