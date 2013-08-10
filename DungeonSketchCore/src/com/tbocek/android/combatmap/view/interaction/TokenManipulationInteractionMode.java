@@ -392,12 +392,23 @@ public final class TokenManipulationInteractionMode extends
         
         this.mDown = false;
         this.debugSnapPoint = null;
-        this.getView().refreshMap();
-        this.mUnmovedTokens.clear();
+        
+        // Set up a bounding rectangle that will clear out any ghost tokens. 
+	    if (!mUnmovedTokens.isEmpty()) {
+	        BoundingRectangle redrawRect = new BoundingRectangle();
+	        for (BaseToken t : this.mUnmovedTokens) {
+	            redrawRect.updateBounds(t.getBoundingRectangle());
+	        }
+	        this.mUnmovedTokens.clear();
+	        this.getView().refreshMap(redrawRect.toRectF(), this.getView().getGridSpaceTransformer());
+	    }
+	        
         this.mMovedTokens.clear();
+        
         this.fadeTrashCanOut();
         this.mAboutToTrash = false;
         this.customLongPressDetector.onUp(ev);
+        
         DeveloperMode.stopProfiler();
     }
 
