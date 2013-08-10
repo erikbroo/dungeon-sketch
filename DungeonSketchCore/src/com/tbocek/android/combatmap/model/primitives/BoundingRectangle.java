@@ -20,7 +20,7 @@ public final class BoundingRectangle {
     /**
      * Current right bounds.
      */
-    private float mXMax = Float.MIN_NORMAL;
+    private float mXMax = -Float.MAX_VALUE;
 
     /**
      * Current left bounds.
@@ -30,7 +30,7 @@ public final class BoundingRectangle {
     /**
      * Current bottom bounds.
      */
-    private float mYMax = Float.MIN_NORMAL;
+    private float mYMax = -Float.MAX_VALUE;
 
     /**
      * Current top bounds.
@@ -239,6 +239,8 @@ public final class BoundingRectangle {
         this.mYMin = Math.min(this.mYMin, p.y);
         this.mYMax = Math.max(this.mYMax, p.y);
     }
+    
+    
     
     /**
      * Tests whether this rectangle partially falls within the given rectangle.
