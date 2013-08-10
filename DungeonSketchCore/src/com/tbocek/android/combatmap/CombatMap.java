@@ -1080,17 +1080,18 @@ public final class CombatMap extends SherlockActivity {
 				|| this.mCombatView.getUndoRedoTarget() == null) {
 			return;
 		}
+		
+		boolean canUndo = this.mCombatView.getUndoRedoTarget().canUndo();
+		boolean canRedo = this.mCombatView.getUndoRedoTarget().canRedo();
 
-		if (this.mUndoMenuItem != null) {
-			this.mUndoMenuItem.setEnabled(this.mCombatView.getUndoRedoTarget()
-					.canUndo());
+		if (this.mUndoMenuItem != null && mUndoMenuItem.isEnabled() != canUndo) {
+			this.mUndoMenuItem.setEnabled(canUndo);
 			this.mUndoMenuItem
 					.setIcon(this.mUndoMenuItem.isEnabled() ? R.drawable.undo
 							: R.drawable.undo_greyscale);
 		}
-		if (this.mRedoMenuItem != null) {
-			this.mRedoMenuItem.setEnabled(this.mCombatView.getUndoRedoTarget()
-					.canRedo());
+		if (this.mRedoMenuItem != null && mRedoMenuItem.isEnabled() != canRedo) {
+			this.mRedoMenuItem.setEnabled(canRedo);
 			this.mRedoMenuItem
 					.setIcon(this.mRedoMenuItem.isEnabled() ? R.drawable.redo
 							: R.drawable.redo_greyscale);
