@@ -420,7 +420,10 @@ public final class CombatView extends SurfaceView {
 	    	}
 	        canvas.drawText("Framerate: " + Float.toString(mFramerate) + " fps", 4, 16, this.mFrameratePaint);
 	        mFrameCount++;
-	        canvas.drawRect(dirty, this.mDrawRectDebugPaint);
+	    }
+	    
+	    if (DeveloperMode.DEVELOPER_MODE) {
+	    	canvas.drawRect(dirty, this.mDrawRectDebugPaint);
 	    }
     }
 
