@@ -24,6 +24,7 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.tbocek.android.combatmap.DeveloperMode;
+import com.tbocek.android.combatmap.ScrollBuffer;
 import com.tbocek.android.combatmap.model.LineCollection;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer;
@@ -235,6 +236,8 @@ public final class CombatView extends SurfaceView {
     private long mLastFramerateComputeTime;
     
     private float mFramerate;
+    
+    private ScrollBuffer mScrollBuffer = new ScrollBuffer();
     
     /**
      * Constructor.
@@ -1107,5 +1110,58 @@ public final class CombatView extends SurfaceView {
 
 	public void setMeasuringTapeMode() {
 		this.setInteractionMode(new MeasuringTapeInteractionMode(this));
+	}
+	
+	@Override
+	protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+		mScrollBuffer.allocateBitmaps(w, h);
+	}
+	
+	public void startScrolling() {
+		Canvas c = mScrollBuffer.startScrolling();
+		this.drawOnCanvas(c, new Rect(0, 0, c.getWidth(), c.getHeight()));
+		
+        if (!this.mSurfaceReady) {
+            return;
+        }
+
+        SurfaceHolder holder = this.getHolder();
+        Canvas canvas = holder.lockCanvas();
+        if (canvas != null) {
+            canvas.drawBitmap(mScrollBuffer.getActiveBuffer(), 0, 0, null);
+            holder.unlockCanvasAndPost(canvas);
+        }
+	}
+	
+	public void scroll(float deltaXF, float deltaYF) {
+		Canvas c = mScrollBuffer.scroll(deltaXF, deltaYF);
+		if (c == null) return;
+		
+		int deltaX = mScrollBuffer.lastXScroll();
+		int deltaY = mScrollBuffer.lastYScroll();
+		
+        if (deltaX > 0) {
+        	this.drawOnCanvas(c, new Rect(0, 0, deltaX, this.getHeight()));
+        } else if (deltaX < 0) {
+        	this.drawOnCanvas(c, new Rect(this.getWidth() + deltaX, 0, this.getWidth(), this.getHeight()));
+        }
+        
+        if (deltaY > 0) {
+        	this.drawOnCanvas(c, new Rect(0, 0, this.getWidth(), deltaY));
+        } else if (deltaY < 0) {
+        	this.drawOnCanvas(c, new Rect(0, this.getHeight() + deltaY, this.getWidth(), this.getHeight()));
+        }
+		
+        if (!this.mSurfaceReady) {
+            return;
+        }
+
+        SurfaceHolder holder = this.getHolder();
+        Canvas canvas = holder.lockCanvas();
+        if (canvas != null) {
+            canvas.drawBitmap(mScrollBuffer.getActiveBuffer(), 0, 0, null);
+
+            holder.unlockCanvasAndPost(canvas);
+        }
 	}
 }

@@ -20,13 +20,19 @@ public class ZoomPanInteractionMode extends BaseDrawInteractionMode {
     public ZoomPanInteractionMode(final CombatView view) {
         super(view);
     }
+    
+    @Override
+    public boolean onDown(final MotionEvent e) {
+    	this.getView().startScrolling();
+    	return true;
+    }
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
         this.getView().getWorldSpaceTransformer()
                 .moveOrigin(-distanceX, -distanceY);
-        this.getView().refreshMap();
+        this.getView().scroll((int)-distanceX, (int)-distanceY);
         return true;
     }
 }

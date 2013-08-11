@@ -275,6 +275,8 @@ public final class TokenManipulationInteractionMode extends
             	this.mUnmovedTokens.add(t.clone());
             }
             this.mLastSnappedLocation = this.mCurrentToken.getLocation();
+        } else {
+        	super.onDown(e);
         }
 
         this.mDown = true;
