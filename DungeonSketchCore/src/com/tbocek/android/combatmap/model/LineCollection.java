@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
 
+import com.google.common.collect.Lists;
 import com.tbocek.android.combatmap.model.io.MapDataDeserializer;
 import com.tbocek.android.combatmap.model.io.MapDataSerializer;
 import com.tbocek.android.combatmap.model.primitives.BoundingRectangle;
@@ -42,7 +43,17 @@ public final class LineCollection implements UndoRedoTarget {
     /**
      * The internal list of lines.
      */
-    private List<Shape> mLines = new ArrayList<Shape>();
+    private List<Shape> mLines = Lists.newArrayList();
+    
+    /**
+     * Cache of lines that should be drawn above the grid.
+     */
+    private List<Shape> mAboveGridLines = Lists.newArrayList();
+    
+    /**
+     * Cache of lines that should be drawn below the grid.
+     */
+    private List<Shape> mBelowGridLines = Lists.newArrayList();
 
     /**
      * Constructor allowing multiple line collections to share one undo/redo
@@ -222,7 +233,13 @@ public final class LineCollection implements UndoRedoTarget {
     public void deserialize(MapDataDeserializer s) throws IOException {
         int arrayLevel = s.expectArrayStart();
         while (s.hasMoreArrayItems(arrayLevel)) {
-            this.mLines.add(Shape.deserialize(s));
+        	Shape shape = Shape.deserialize(s);
+            this.mLines.add(shape);
+            if (shape.shouldDrawBelowGrid()) {
+            	mBelowGridLines.add(shape);
+            } else {
+            	mAboveGridLines.add(shape);
+            }
         }
         s.expectArrayEnd();
     }
@@ -252,8 +269,8 @@ public final class LineCollection implements UndoRedoTarget {
      * @param worldSpaceBounds 
      */
     public void drawAllLinesAboveGrid(final Canvas canvas, RectF worldSpaceBounds) {
-        for (Shape shape: mLines) {
-            if (!shape.shouldDrawBelowGrid() && shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
+        for (Shape shape: mAboveGridLines) {
+            if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
                 shape.applyDrawOffsetToCanvas(canvas);
                 shape.draw(canvas);
                 shape.revertDrawOffsetFromCanvas(canvas);
@@ -269,8 +286,8 @@ public final class LineCollection implements UndoRedoTarget {
      * @param worldSpaceBounds 
      */
     public void drawAllLinesBelowGrid(final Canvas canvas, RectF worldSpaceBounds) {
-        for (Shape shape: mLines) {
-            if (shape.shouldDrawBelowGrid() && shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
+        for (Shape shape: mBelowGridLines) {
+            if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
                 shape.applyDrawOffsetToCanvas(canvas);
                 shape.draw(canvas);
                 shape.revertDrawOffsetFromCanvas(canvas);
@@ -395,6 +412,24 @@ public final class LineCollection implements UndoRedoTarget {
             it.next();
         }
         it.add(line);
+        
+        if (line.shouldDrawBelowGrid()) {
+	        it = this.mBelowGridLines.listIterator();
+	        while (it.hasNext()
+	                && this.mLines.get(it.nextIndex()).getStrokeWidth() >= line
+	                .getStrokeWidth()) {
+	            it.next();
+	        }
+	        it.add(line);
+        } else {
+	        it = this.mAboveGridLines.listIterator();
+	        while (it.hasNext()
+	                && this.mLines.get(it.nextIndex()).getStrokeWidth() >= line
+	                .getStrokeWidth()) {
+	            it.next();
+	        }
+	        it.add(line);
+        }
     }
 
     /**
@@ -460,6 +495,19 @@ public final class LineCollection implements UndoRedoTarget {
     @Override
     public void undo() {
         this.mCommandHistory.undo();
+    }
+    
+    private void partitionLinesBelowAboveGrid() {
+    	mBelowGridLines.clear();
+    	mAboveGridLines.clear();
+    	
+    	for (Shape s: mLines) {
+    		if (s.shouldDrawBelowGrid()) {
+    			mBelowGridLines.add(s);
+    		} else {
+    			mAboveGridLines.add(s);
+    		}
+    	}
     }
 
     /**
@@ -540,6 +588,7 @@ public final class LineCollection implements UndoRedoTarget {
             for (Shape l : this.mCreated) {
                 this.mLineCollection.insertLine(l);
             }
+            this.mLineCollection.partitionLinesBelowAboveGrid();
         }
 
         /**
@@ -566,6 +615,7 @@ public final class LineCollection implements UndoRedoTarget {
             for (Shape l : this.mDeleted) {
                 this.mLineCollection.insertLine(l);
             }
+            this.mLineCollection.partitionLinesBelowAboveGrid();
         }
     }
 
