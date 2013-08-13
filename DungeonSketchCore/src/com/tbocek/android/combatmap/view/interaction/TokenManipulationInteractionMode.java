@@ -226,6 +226,10 @@ public final class TokenManipulationInteractionMode extends
      * Begins an animation to fade the trash can out.
      */
     private void fadeTrashCanOut() {
+    	if (this.mTrashCanAlpha == 0) {
+    		return;
+    	}
+
         if (this.mTrashCanAnimator != null
                 && this.mTrashCanAnimator.isRunning()) {
             this.mTrashCanAnimator.cancel();
