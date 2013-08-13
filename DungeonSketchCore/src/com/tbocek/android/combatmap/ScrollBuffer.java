@@ -13,6 +13,8 @@ public class ScrollBuffer {
 	public class DrawRequest {
 		public Canvas canvas;
 		public List<Rect> invalidRegions = Lists.newArrayList();
+		public int deltaX;
+		public int deltaY;
 		
 	}
 	private Bitmap primary;
@@ -37,7 +39,7 @@ public class ScrollBuffer {
 		deltaYAccumulator += deltaY;
 		
 		mLastXScroll = (int) deltaX;
-		mLastYScroll= (int) deltaY;
+		mLastYScroll = (int) deltaY;
 		
 		if (mLastXScroll == 0 && mLastYScroll == 0) {
 			return null;
@@ -46,28 +48,26 @@ public class ScrollBuffer {
 		deltaXAccumulator -= mLastXScroll;
 		deltaYAccumulator -= mLastYScroll;
 		
-		
 		req.canvas = new Canvas(secondary);
 		Rect dst = new Rect(mLastXScroll, mLastYScroll, req.canvas.getWidth() + mLastXScroll, req.canvas.getHeight() + mLastYScroll);
 		req.canvas.drawBitmap(primary, null, dst, null);
 
 		swapBuffers();
 		
-		Region.Op yOp = Region.Op.UNION;
-		if (deltaX > 0) {
-			req.invalidRegions.add(new Rect(0, 0, mLastXScroll, req.canvas.getHeight()));
-		} else if (deltaX < 0) {
-			req.invalidRegions.add(new Rect(req.canvas.getWidth() + mLastXScroll, 0, req.canvas.getWidth(), req.canvas.getHeight()));
-		} else {
-			// No x clip, the Y clip needs a union
-			yOp = Region.Op.REPLACE;
+		if (mLastXScroll > 0) {
+			req.invalidRegions.add(new Rect(0, 0, mLastXScroll +1 , req.canvas.getHeight()));
+		} else if (mLastXScroll < 0) {
+			req.invalidRegions.add(new Rect(req.canvas.getWidth() + mLastXScroll - 1, 0, req.canvas.getWidth(), req.canvas.getHeight()));
 		}
 		
-		if (deltaY > 0) {
-			req.invalidRegions.add((new Rect(0, 0, req.canvas.getWidth(), mLastYScroll)));
-		} else if (deltaY < 0) {
-			req.invalidRegions.add(new Rect(0, req.canvas.getHeight() + mLastYScroll, req.canvas.getWidth(), req.canvas.getHeight()));
+		if (mLastYScroll > 0) {
+			req.invalidRegions.add((new Rect(0, 0, req.canvas.getWidth(), mLastYScroll + 1)));
+		} else if (mLastYScroll < 0) {
+			req.invalidRegions.add(new Rect(0, req.canvas.getHeight() + mLastYScroll - 1, req.canvas.getWidth(), req.canvas.getHeight()));
 		}
+		
+		req.deltaX = mLastXScroll;
+		req.deltaY = mLastYScroll;
 		
 		return req;
 	}

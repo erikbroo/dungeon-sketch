@@ -30,9 +30,7 @@ public class ZoomPanInteractionMode extends BaseDrawInteractionMode {
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
             final float distanceX, final float distanceY) {
-        this.getView().getWorldSpaceTransformer()
-                .moveOrigin(-distanceX, -distanceY);
-        this.getView().scroll((int)-distanceX, (int)-distanceY);
+        this.getView().scroll(-distanceX, -distanceY);
         return true;
     }
 }

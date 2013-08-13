@@ -428,7 +428,7 @@ public final class CombatView extends SurfaceView {
 	    }
 	    
 	    if (DeveloperMode.DEVELOPER_MODE) {
-	    	canvas.drawRect(dirty, this.mDrawRectDebugPaint);
+	    	//canvas.drawRect(dirty, this.mDrawRectDebugPaint);
 	    }
     }
 
@@ -1138,6 +1138,9 @@ public final class CombatView extends SurfaceView {
 	public void scroll(float deltaXF, float deltaYF) {
 		DrawRequest req = mScrollBuffer.scroll(deltaXF, deltaYF);
 		if (req == null) return;
+		
+        getWorldSpaceTransformer()
+        	.moveOrigin(req.deltaX, req.deltaY);
 		
 		for (Rect r: req.invalidRegions) {
 			req.canvas.clipRect(r, Op.REPLACE);
