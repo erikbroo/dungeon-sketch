@@ -1,11 +1,20 @@
 package com.tbocek.android.combatmap;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Region;
 
 public class ScrollBuffer {
+	public class DrawRequest {
+		public Canvas canvas;
+		public List<Rect> invalidRegions = Lists.newArrayList();
+		
+	}
 	private Bitmap primary;
 	private Bitmap secondary;
 	
@@ -22,7 +31,8 @@ public class ScrollBuffer {
 		
 	}
 	
-	public Canvas scroll(float deltaX, float deltaY) {
+	public DrawRequest scroll(float deltaX, float deltaY) {
+		DrawRequest req = new DrawRequest();
 		deltaXAccumulator += deltaX;
 		deltaYAccumulator += deltaY;
 		
@@ -37,29 +47,29 @@ public class ScrollBuffer {
 		deltaYAccumulator -= mLastYScroll;
 		
 		
-		Canvas c = new Canvas(secondary);
-		Rect dst = new Rect(mLastXScroll, mLastYScroll, c.getWidth() + mLastXScroll, c.getHeight() + mLastYScroll);
-		c.drawBitmap(primary, null, dst, null);
+		req.canvas = new Canvas(secondary);
+		Rect dst = new Rect(mLastXScroll, mLastYScroll, req.canvas.getWidth() + mLastXScroll, req.canvas.getHeight() + mLastYScroll);
+		req.canvas.drawBitmap(primary, null, dst, null);
 
 		swapBuffers();
 		
 		Region.Op yOp = Region.Op.UNION;
 		if (deltaX > 0) {
-			c.clipRect(new Rect(0, 0, mLastXScroll, c.getHeight()), Region.Op.REPLACE);
+			req.invalidRegions.add(new Rect(0, 0, mLastXScroll, req.canvas.getHeight()));
 		} else if (deltaX < 0) {
-			c.clipRect(new Rect(c.getWidth() + mLastXScroll, 0, c.getWidth(), c.getHeight()), Region.Op.REPLACE);
+			req.invalidRegions.add(new Rect(req.canvas.getWidth() + mLastXScroll, 0, req.canvas.getWidth(), req.canvas.getHeight()));
 		} else {
 			// No x clip, the Y clip needs a union
 			yOp = Region.Op.REPLACE;
 		}
 		
 		if (deltaY > 0) {
-			c.clipRect(new Rect(0, 0, c.getWidth(), mLastYScroll), yOp);
+			req.invalidRegions.add((new Rect(0, 0, req.canvas.getWidth(), mLastYScroll)));
 		} else if (deltaY < 0) {
-			c.clipRect(new Rect(0, c.getHeight() + mLastYScroll, c.getWidth(), c.getHeight()), yOp);
+			req.invalidRegions.add(new Rect(0, req.canvas.getHeight() + mLastYScroll, req.canvas.getWidth(), req.canvas.getHeight()));
 		}
 		
-		return c;
+		return req;
 	}
 	
 	public Canvas startScrolling() {

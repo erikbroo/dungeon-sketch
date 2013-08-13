@@ -13,6 +13,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region.Op;
 import android.os.Build;
 import android.util.Log;
 import android.view.DragEvent;
@@ -25,6 +26,7 @@ import android.view.View;
 
 import com.tbocek.android.combatmap.DeveloperMode;
 import com.tbocek.android.combatmap.ScrollBuffer;
+import com.tbocek.android.combatmap.ScrollBuffer.DrawRequest;
 import com.tbocek.android.combatmap.model.LineCollection;
 import com.tbocek.android.combatmap.model.MapData;
 import com.tbocek.android.combatmap.model.MapDrawer;
@@ -1134,27 +1136,13 @@ public final class CombatView extends SurfaceView {
 	}
 	
 	public void scroll(float deltaXF, float deltaYF) {
-		Canvas c = mScrollBuffer.scroll(deltaXF, deltaYF);
-		if (c == null) return;
+		DrawRequest req = mScrollBuffer.scroll(deltaXF, deltaYF);
+		if (req == null) return;
 		
-		int deltaX = mScrollBuffer.lastXScroll();
-		int deltaY = mScrollBuffer.lastYScroll();
-		
-        if (deltaX > 0) {
-        	this.drawOnCanvas(c, new Rect(0, 0, deltaX, this.getHeight()));
-        } else if (deltaX < 0) {
-        	this.drawOnCanvas(c, new Rect(this.getWidth() + deltaX, 0, this.getWidth(), this.getHeight()));
-        }
-        
-        if (deltaY > 0) {
-        	this.drawOnCanvas(c, new Rect(0, 0, this.getWidth(), deltaY));
-        } else if (deltaY < 0) {
-        	this.drawOnCanvas(c, new Rect(0, this.getHeight() + deltaY, this.getWidth(), this.getHeight()));
-        }
-		
-        if (!this.mSurfaceReady) {
-            return;
-        }
+		for (Rect r: req.invalidRegions) {
+			req.canvas.clipRect(r, Op.REPLACE);
+			this.drawOnCanvas(req.canvas, r);
+		}
 
         SurfaceHolder holder = this.getHolder();
         Canvas canvas = holder.lockCanvas();
