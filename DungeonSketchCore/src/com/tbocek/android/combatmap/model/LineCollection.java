@@ -416,7 +416,7 @@ public final class LineCollection implements UndoRedoTarget {
         if (line.shouldDrawBelowGrid()) {
 	        it = this.mBelowGridLines.listIterator();
 	        while (it.hasNext()
-	                && this.mLines.get(it.nextIndex()).getStrokeWidth() >= line
+	                && this.mBelowGridLines.get(it.nextIndex()).getStrokeWidth() >= line
 	                .getStrokeWidth()) {
 	            it.next();
 	        }
@@ -424,7 +424,7 @@ public final class LineCollection implements UndoRedoTarget {
         } else {
 	        it = this.mAboveGridLines.listIterator();
 	        while (it.hasNext()
-	                && this.mLines.get(it.nextIndex()).getStrokeWidth() >= line
+	                && this.mAboveGridLines.get(it.nextIndex()).getStrokeWidth() >= line
 	                .getStrokeWidth()) {
 	            it.next();
 	        }
