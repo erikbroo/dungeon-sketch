@@ -52,7 +52,7 @@ public final class DeveloperMode {
     }
 
 	public static boolean shouldDisplayFramerate() {
-		return true;
+		return DEVELOPER_MODE;
 	}
 
     /**
