@@ -612,6 +612,14 @@ public final class CombatView extends SurfaceView {
         this.mDrawLatch = FullscreenDrawLatch.BATCHING;
         this.mGestureDetector.onTouchEvent(ev);
         this.mScaleDetector.onTouchEvent(ev);
+
+        // If a finger was removed, optimize the lines by removing unused
+        // points.
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            this.mInteractionMode.removeFinger();
+            this.mInteractionMode.onUp(ev);
+        }
+        
         // If one or more fullscreen draws was requested, do so now, and either
         // way leave us open to non-touch-event-driven draw requests.
         if (this.mDrawLatch == FullscreenDrawLatch.BATCHED) {
@@ -619,13 +627,6 @@ public final class CombatView extends SurfaceView {
         	this.refreshMap();
         } else {
         	this.mDrawLatch = FullscreenDrawLatch.NOT_BATCHING;
-        }
-
-        // If a finger was removed, optimize the lines by removing unused
-        // points.
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            this.mInteractionMode.removeFinger();
-            this.mInteractionMode.onUp(ev);
         }
         return true;
     }
