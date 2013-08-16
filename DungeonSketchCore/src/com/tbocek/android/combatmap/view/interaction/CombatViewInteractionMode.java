@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.view.interaction;
 
 import android.graphics.Canvas;
 import android.os.Handler;
+import android.util.Log;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -168,6 +169,7 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
 
     @Override
     public boolean onScale(final ScaleGestureDetector detector) {
+    	Log.d("Interaction", "Scale");
         this.getView()
                 .getWorldSpaceTransformer()
                 .zoom(detector.getScaleFactor(),
@@ -210,6 +212,7 @@ public class CombatViewInteractionMode extends SimpleOnScaleGestureListener
      *            Event info.
      */
     public void onUp(final MotionEvent event) {
+    	Log.d("Interaction", "Up");
     }
 
     /**
