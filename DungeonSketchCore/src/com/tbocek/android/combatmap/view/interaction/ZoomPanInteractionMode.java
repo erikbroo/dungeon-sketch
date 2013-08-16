@@ -21,17 +21,6 @@ public class ZoomPanInteractionMode extends BaseDrawInteractionMode {
     public ZoomPanInteractionMode(final CombatView view) {
         super(view);
     }
-    
-    @Override
-    public boolean onDown(final MotionEvent e) {
-    	// Use a scrollbuffer if there is only one finger down.  Otherwise, the repeated
-    	// zoom/scroll operations make it not as worth it, and we should probably just 
-    	// leave redraws up to the scale operations.
-    	if (this.getNumberOfFingers() == 1) {
-    		this.getView().startScrolling();
-    	}
-    	return true;
-    }
 
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2,
@@ -46,17 +35,5 @@ public class ZoomPanInteractionMode extends BaseDrawInteractionMode {
     		this.getView().scroll(-distanceX, -distanceY);
     	}
         return true;
-    }
-    
-    public void onUp(final MotionEvent e) {
-    	// Use a scrollbuffer if there is only one finger down.  Otherwise, the repeated
-    	// zoom/scroll operations make it not as worth it, and we should probably just 
-    	// leave redraws up to the scale operations.
-    	
-    	// Note that a pointer count of 2 here means that there were two fingers and one was
-    	// *just* removed, so on the next event there will only be 1.
-    	if (this.getNumberOfFingers() == 1) {
-    		this.getView().startScrolling();
-    	}
     }
 }

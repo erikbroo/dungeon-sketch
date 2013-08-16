@@ -686,6 +686,10 @@ public final class CombatView extends SurfaceView {
         if (this.mOnRefreshListener != null) {
             this.mOnRefreshListener.onRefresh();
         }
+        
+        // If we called this, then a non-scroll operation triggered a map refresh.
+        // This means the scroll buffer will contain out-of-date info.
+        this.mScrollBuffer.invalidateBuffers();
     }
     
     /**

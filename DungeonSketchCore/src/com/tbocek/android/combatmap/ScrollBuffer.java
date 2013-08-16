@@ -23,14 +23,17 @@ public class ScrollBuffer {
 	private float deltaXAccumulator = 0;
 	private float deltaYAccumulator = 0;
 	
-	public int mLastXScroll;
-	public int mLastYScroll;
+	private boolean invalidated = false;
+	
+	public void invalidateBuffers() {
+		invalidated = true;
+	}
 	
 	public void allocateBitmaps(int width, int height) {
 		// TODO: Do we need to use ARGB_8888 instead?
 		primary = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		secondary = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-		
+		invalidated = true;
 	}
 	
 	public DrawRequest scroll(float deltaX, float deltaY) {
@@ -38,8 +41,8 @@ public class ScrollBuffer {
 		deltaXAccumulator += deltaX;
 		deltaYAccumulator += deltaY;
 		
-		mLastXScroll = (int) deltaX;
-		mLastYScroll = (int) deltaY;
+		int mLastXScroll = (int) deltaX;
+		int mLastYScroll = (int) deltaY;
 		
 		if (mLastXScroll == 0 && mLastYScroll == 0) {
 			return null;
@@ -47,6 +50,16 @@ public class ScrollBuffer {
 		
 		deltaXAccumulator -= mLastXScroll;
 		deltaYAccumulator -= mLastYScroll;
+		
+		req.deltaX = mLastXScroll;
+		req.deltaY = mLastYScroll;
+		
+		if (invalidated) {
+			invalidated = false;
+			req.canvas = new Canvas(primary);
+			req.invalidRegions.add(new Rect(0,0, req.canvas.getWidth(), req.canvas.getHeight()));
+			return req;
+		}
 		
 		req.canvas = new Canvas(secondary);
 		Rect dst = new Rect(mLastXScroll, mLastYScroll, req.canvas.getWidth() + mLastXScroll, req.canvas.getHeight() + mLastYScroll);
@@ -66,13 +79,11 @@ public class ScrollBuffer {
 			req.invalidRegions.add(new Rect(0, req.canvas.getHeight() + mLastYScroll - 1, req.canvas.getWidth(), req.canvas.getHeight()));
 		}
 		
-		req.deltaX = mLastXScroll;
-		req.deltaY = mLastYScroll;
-		
 		return req;
 	}
 	
 	public Canvas startScrolling() {
+		invalidated = false;
 		return new Canvas(primary);
 	}
 	
@@ -84,13 +95,5 @@ public class ScrollBuffer {
 
 	public Bitmap getActiveBuffer() {
 		return primary;
-	}
-	
-	public int lastXScroll() {
-		return mLastXScroll;
-	}
-	
-	public int lastYScroll() {
-		return mLastYScroll;
 	}
 }
