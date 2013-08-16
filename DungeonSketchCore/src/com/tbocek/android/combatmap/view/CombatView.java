@@ -605,7 +605,7 @@ public final class CombatView extends SurfaceView {
 
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             this.mInteractionMode.addFinger();
         }
 
