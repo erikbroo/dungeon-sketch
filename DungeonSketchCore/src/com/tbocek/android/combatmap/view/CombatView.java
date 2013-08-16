@@ -62,6 +62,18 @@ import com.tbocek.android.combatmap.view.interaction.ZoomPanInteractionMode;
 public final class CombatView extends SurfaceView {
 	
 	/**
+	 * A simple 3-state machine to make sure that full-screen draws performed during
+	 * input processing are batched, and performed once at the very end of the draw.
+	 * @author Tim
+	 *
+	 */
+	private enum FullscreenDrawLatch {
+		NOT_BATCHING, // Not attempting to batch full-screen draw operations.
+		BATCHING, // Attempting to batch full-screen draws, none have been requested.
+		BATCHED // A full-screen draw has been requested.
+	}
+	
+	/**
 	 * For framerate tracking.  Number of seconds to use when finding the
 	 * framerate
 	 */
@@ -113,6 +125,8 @@ public final class CombatView extends SurfaceView {
      * input.
      */
     private CombatViewInteractionMode mInteractionMode;
+    
+    private FullscreenDrawLatch mDrawLatch = FullscreenDrawLatch.NOT_BATCHING;
 
     /**
      * The color to use when creating a new line.
@@ -595,8 +609,17 @@ public final class CombatView extends SurfaceView {
             this.mInteractionMode.addFinger();
         }
 
+        this.mDrawLatch = FullscreenDrawLatch.BATCHING;
         this.mGestureDetector.onTouchEvent(ev);
         this.mScaleDetector.onTouchEvent(ev);
+        // If one or more fullscreen draws was requested, do so now, and either
+        // way leave us open to non-touch-event-driven draw requests.
+        if (this.mDrawLatch == FullscreenDrawLatch.BATCHED) {
+        	this.mDrawLatch = FullscreenDrawLatch.NOT_BATCHING;
+        	this.refreshMap();
+        } else {
+        	this.mDrawLatch = FullscreenDrawLatch.NOT_BATCHING;
+        }
 
         // If a finger was removed, optimize the lines by removing unused
         // points.
@@ -641,6 +664,12 @@ public final class CombatView extends SurfaceView {
      * @param invalidBounds Screen space portion to redraw.s
      */
     public void refreshMap(Rect invalidBounds) {
+    	// If we already need a full screen refresh as part of this draw,
+    	// be smart and don't redraw just part of the screen!
+    	if (this.mDrawLatch == FullscreenDrawLatch.BATCHED) {
+    		return;
+    	}
+    	
         if (!this.mSurfaceReady) {
             return;
         }
@@ -662,14 +691,19 @@ public final class CombatView extends SurfaceView {
      * Refreshes the entire map.
      */
     public void refreshMap() {
-    	refreshMap(new Rect(0,0,this.getWidth(),this.getHeight()));
+    	// If we are batching full screen draw operations, defer this operation
+    	// until we are ready for the batch.
+    	if (this.mDrawLatch != FullscreenDrawLatch.NOT_BATCHING) {
+    		this.mDrawLatch = FullscreenDrawLatch.BATCHED;
+    	} else {
+    		refreshMap(new Rect(0,0,this.getWidth(),this.getHeight()));
+    	}
     }
     
     /**
      * Refreshes the portion of the map, using the given transformer to transform to screen space.
      */
     public void refreshMap(RectF invalidBounds, CoordinateTransformer transformer) {
-    	
     	refreshMap(transformer.worldSpaceToScreenSpace(invalidBounds));
     }
 
