@@ -415,7 +415,27 @@ public final class CombatView extends SurfaceView {
                         .draw(canvas, this.getData(), dirty);
 
         this.mInteractionMode.draw(canvas);
-
+        
+	    if (DeveloperMode.shouldDisplayFramerate()) {
+	    	long time = System.currentTimeMillis();
+	    	if (time - mLastFramerateComputeTime >= this.FRAMERATE_INTVL) {
+	    		mFramerate = ((float)mFrameCount) / (((float)(time - mLastFramerateComputeTime))/1000);
+	    		mFrameCount = 0;
+	    		mLastFramerateComputeTime = time;
+	    	}
+	        mFrameCount++;
+	    }
+	    
+	    if (DeveloperMode.DEVELOPER_MODE) {
+	    	//canvas.drawRect(dirty, this.mDrawRectDebugPaint);
+	    }
+    }
+    
+    /**
+     * Draws any overlay/UI elements that are not part of the map.
+     * @param canvas
+     */
+    private void drawOverlays(Canvas canvas) {
         if (this.mEditingMask) {
             String explanatoryText = this.getMaskExplanatoryText();
 
@@ -428,22 +448,10 @@ public final class CombatView extends SurfaceView {
                 i += EXPLANATORY_TEXT_LINE_HEIGHT_DP;
             }
         }
-        int renderTime = (int)(System.currentTimeMillis() - startTime);
-        
-	    if (DeveloperMode.shouldDisplayFramerate()) {
-	    	long time = System.currentTimeMillis();
-	    	if (time - mLastFramerateComputeTime >= this.FRAMERATE_INTVL) {
-	    		mFramerate = ((float)mFrameCount) / (((float)(time - mLastFramerateComputeTime))/1000);
-	    		mFrameCount = 0;
-	    		mLastFramerateComputeTime = time;
-	    	}
-	        canvas.drawText("Framerate: " + Float.toString(mFramerate) + " fps", 4, 16, this.mFrameratePaint);
-	        mFrameCount++;
-	    }
-	    
-	    if (DeveloperMode.DEVELOPER_MODE) {
-	    	//canvas.drawRect(dirty, this.mDrawRectDebugPaint);
-	    }
+
+    	if (DeveloperMode.shouldDisplayFramerate()) {
+    		canvas.drawText("Framerate: " + Float.toString(mFramerate) + " fps", 4, 16, this.mFrameratePaint);
+    	}
     }
 
     /**
@@ -680,6 +688,7 @@ public final class CombatView extends SurfaceView {
         if (canvas != null) {
         	canvas.clipRect(invalidBounds);
             this.drawOnCanvas(canvas, invalidBounds);
+            this.drawOverlays(canvas);
             holder.unlockCanvasAndPost(canvas);
         }
 
@@ -1158,22 +1167,6 @@ public final class CombatView extends SurfaceView {
 		mScrollBuffer.allocateBitmaps(w, h);
 	}
 	
-	public void startScrolling() {
-		Canvas c = mScrollBuffer.startScrolling();
-		this.drawOnCanvas(c, new Rect(0, 0, c.getWidth(), c.getHeight()));
-		
-        if (!this.mSurfaceReady) {
-            return;
-        }
-
-        SurfaceHolder holder = this.getHolder();
-        Canvas canvas = holder.lockCanvas();
-        if (canvas != null) {
-            canvas.drawBitmap(mScrollBuffer.getActiveBuffer(), 0, 0, null);
-            holder.unlockCanvasAndPost(canvas);
-        }
-	}
-	
 	public void scroll(float deltaXF, float deltaYF) {
 		DrawRequest req = mScrollBuffer.scroll(deltaXF, deltaYF);
 		if (req == null) return;
@@ -1190,7 +1183,7 @@ public final class CombatView extends SurfaceView {
         Canvas canvas = holder.lockCanvas();
         if (canvas != null) {
             canvas.drawBitmap(mScrollBuffer.getActiveBuffer(), 0, 0, null);
-
+            this.drawOverlays(canvas);
             holder.unlockCanvasAndPost(canvas);
         }
 	}
