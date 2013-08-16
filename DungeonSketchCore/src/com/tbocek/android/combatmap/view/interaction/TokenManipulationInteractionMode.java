@@ -414,7 +414,7 @@ public final class TokenManipulationInteractionMode extends
         this.fadeTrashCanOut();
         this.mAboutToTrash = false;
         this.customLongPressDetector.onUp(ev);
-        
+        super.onUp(ev);
         DeveloperMode.stopProfiler();
     }
 
