@@ -566,6 +566,10 @@ public final class DrawOptionsView extends LinearLayout {
             final OnChangeDrawToolListener listener) {
         this.mOnChangeDrawToolListener = listener;
     }
+    
+    public boolean isMaskToolSelected() {
+    	return mMaskButton != null && mMaskButton.isToggled();
+    }
 
     /**
      * OnClickListener for when a button representing a color is clicked.

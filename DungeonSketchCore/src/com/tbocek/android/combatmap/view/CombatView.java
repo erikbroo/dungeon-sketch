@@ -688,7 +688,7 @@ public final class CombatView extends SurfaceView {
         }
         
         // If we called this, then a non-scroll operation triggered a map refresh.
-        // This means the scroll buffer will contain out-of-date info.
+        // This means the scroll buffer will contain out-of-date info.s
         this.mScrollBuffer.invalidateBuffers();
     }
     

@@ -970,6 +970,7 @@ public final class CombatMap extends SherlockActivity {
 			this.setTagSelectorVisibility(false);
 			this.loadModeSpecificSnapPreference();
 			this.mMeasuringToggle.setVisibility(View.GONE);
+			this.mCombatView.setEditingLayerMask(this.mDrawOptionsView.isMaskToolSelected());
 			return;
 		case MODE_DRAW_ANNOTATIONS:
 			this.mCombatView.getMultiSelect().selectNone();
@@ -987,6 +988,7 @@ public final class CombatMap extends SherlockActivity {
 			this.setTagSelectorVisibility(false);
 			this.loadModeSpecificSnapPreference();
 			this.mMeasuringToggle.setVisibility(View.GONE);
+			this.mCombatView.setEditingLayerMask(false);
 			return;
 		case MODE_DRAW_GM_NOTES:
 			this.mCombatView.getMultiSelect().selectNone();
@@ -1002,6 +1004,7 @@ public final class CombatMap extends SherlockActivity {
 			this.setTagSelectorVisibility(false);
 			this.loadModeSpecificSnapPreference();
 			this.mMeasuringToggle.setVisibility(View.GONE);
+			this.mCombatView.setEditingLayerMask(this.mDrawOptionsView.isMaskToolSelected());
 			return;
 		case MODE_TOKENS:
 			this.mCombatView.useBackgroundLayer();
@@ -1017,6 +1020,7 @@ public final class CombatMap extends SherlockActivity {
 			this.setModePreference(manipulationMode);
 			this.loadModeSpecificSnapPreference();
 			this.mMeasuringToggle.setVisibility(View.VISIBLE);
+			this.mCombatView.setEditingLayerMask(false);
 			return;
 		default:
 			throw new IllegalArgumentException("Invalid manipulation mode: "
