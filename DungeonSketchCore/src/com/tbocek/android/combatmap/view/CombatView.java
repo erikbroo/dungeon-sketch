@@ -673,6 +673,13 @@ public final class CombatView extends SurfaceView {
      * @param invalidBounds Screen space portion to redraw.s
      */
     public void refreshMap(Rect invalidBounds) {
+    	// Make sure the refresh being requested is sane.
+    	// (This could be violated when starting to draw for a shape that was
+    	// just now created).
+    	if (invalidBounds.left > invalidBounds.right || invalidBounds.top > invalidBounds.bottom){
+    		return;
+    	}
+
     	// If we already need a full screen refresh as part of this draw,
     	// be smart and don't redraw just part of the screen!
     	if (this.mDrawLatch == FullscreenDrawLatch.BATCHED) {
