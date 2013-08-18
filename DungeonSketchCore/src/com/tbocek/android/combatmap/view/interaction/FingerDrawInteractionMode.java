@@ -1,5 +1,7 @@
 package com.tbocek.android.combatmap.view.interaction;
 
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -80,6 +82,10 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
                 .screenSpaceToWorldSpace(p));
 
         redrawRect.updateBounds(mCurrentLine.getBoundingRectangle());
+        redrawRect.expand(Util.convertDpToPixel(
+        		this.getView().getWorldSpaceTransformer().worldSpaceToScreenSpace(
+        				mCurrentLine.getStrokeWidth()),
+        		this.getView().getContext()));
         this.getView().refreshMap(
         		redrawRect.toRectF(),
         		this.getView().getWorldSpaceTransformer()); 

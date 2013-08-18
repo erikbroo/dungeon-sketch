@@ -253,4 +253,11 @@ public final class BoundingRectangle {
     		     (this.mYMin > clipRegion.bottom && this.mYMax > clipRegion.bottom));
     }
 
+	public void expand(float margin) {
+		this.mXMin -= margin;
+		this.mXMax += margin;
+		this.mYMin -= margin;
+		this.mYMax += margin;
+	}
+
 }
