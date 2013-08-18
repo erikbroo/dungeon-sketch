@@ -16,10 +16,12 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -147,6 +149,10 @@ public final class TokenManager extends SherlockActivity {
 	private FrameLayout drawerList;
 
 	private ActionBarDrawerToggle actionBarDrawerToggle;
+	
+	private Button enableTagButton;
+	
+	private TextView disabledTagExplanation;
 
     /**
      * Deletes the given list of tokens.
@@ -321,6 +327,40 @@ public final class TokenManager extends SherlockActivity {
         this.mScrollView =
                 (ScrollView) this.findViewById(R.id.token_manager_scroll_view);
 
+        // Set up a drag handler so that the user can drop tokens onto the token
+        // view when it switches over after long-holding on a tag.
+        this.mScrollView.setOnDragListener(new View.OnDragListener() {
+			
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+				if (event.getAction() == DragEvent.ACTION_DROP) {
+					TagTreeNode tag = mTagNavigator.getCurrentTagNode();
+					Collection<BaseToken> tokens =
+	                        (Collection<BaseToken>) event.getLocalState();
+					
+					// TODO: De-dupe this with the drag handler above.
+		            for (BaseToken t : tokens) {
+		            	if (!tag.isSystemTag()) {
+			                TokenManager.this.mTokenDatabase.tagToken(
+			                        t.getTokenId(), tag.getPath());
+			                TokenManager.this.setScrollViewTag(tag.getPath());
+		            	} else {
+		            		Toast toast = Toast.makeText(
+		            				TokenManager.this, 
+		            				"Cannot add token to tag " + tag.getName(), 
+		            				Toast.LENGTH_LONG);
+		            		toast.show();
+		            	}
+		            }
+				} else if (event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+					mTagNavigator.setDragStyleOnCurrentTag();
+				} else if (event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
+					mTagNavigator.resetTextViewColors();
+				}
+				return true;
+			}
+		});
+
         this.mTokenViewFactory.getMultiSelectManager()
         .setSelectionChangedListener(
                 new MultiSelectManager.SelectionChangedListener() {
@@ -366,6 +406,17 @@ public final class TokenManager extends SherlockActivity {
                                 .startActionMode(new TokenSelectionActionModeCallback());
                     }
                 });
+        
+        disabledTagExplanation = (TextView) this.findViewById(R.id.token_manager_disabled_explanation);
+        enableTagButton = (Button) this.findViewById(R.id.token_manager_enable_button);
+        
+        enableTagButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				mTagActiveMenuItem.setChecked(true);
+	        	TokenManager.this.mTagNavigator.setCurrentTagIsActive(true);
+			}
+        });
 
     }
 
@@ -537,11 +588,20 @@ public final class TokenManager extends SherlockActivity {
                 this.mScrollView.addView(this
                         .getTokenButtonLayout(this.mTokenDatabase
                                 .getTokensForTag(tag)));
-                this.mDeleteTagMenuItem.setVisible(!this.mTokenDatabase.isTagSystem(tag));
+                this.mDeleteTagMenuItem.setVisible(!TokenDatabase.isSystemTag(tag));
                 this.mTagActiveMenuItem.setChecked(mTokenDatabase.isTagActive(tag));
                 this.mTagActiveMenuItem.setVisible(true);
                 
             }
+            
+			
+			if (tag.equals(TokenDatabase.ALL) || mTokenDatabase.getRootNode().getNamedChild(tag, false).isActive()) {
+				enableTagButton.setVisibility(View.GONE);
+				disabledTagExplanation.setVisibility(View.GONE);
+			} else {
+				enableTagButton.setVisibility(View.VISIBLE);
+				disabledTagExplanation.setVisibility(View.VISIBLE);
+			}
             
         }
     }
@@ -622,7 +682,7 @@ public final class TokenManager extends SherlockActivity {
                     menu.findItem(R.id.token_manager_action_mode_remove_tag);
             removeTag.setVisible(!TokenManager.this.getActiveTag().equals(
                     TokenDatabase.ALL) && 
-                    !TokenManager.this.mTokenDatabase.isTagSystem(getActiveTag()));
+                    !TokenDatabase.isSystemTag(getActiveTag()));
             removeTag.setTitle("Remove tag '"
                     + TokenManager.this.getActiveTag() + "'");
             return true;

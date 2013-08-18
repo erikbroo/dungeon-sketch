@@ -252,6 +252,8 @@
 	    <token res="gauntes17" tags="humanoid:male"/>
 	    <token res="gauntes18" tags="undead"/>
 	    <token res="gauntes19" tags="humanoid:male"/>
+	    <token res="gauntes20" tags="humanoid:male"/>
+	    <token res="gauntes21" tags="demon"/>
 	</artist>
 	<artist name="~bchart" copyright="Noncommercial use only.  Used with permission."
 	    url="http://www.bchart.deviantart.com/">
@@ -259,6 +261,14 @@
 	    <token res="daemon_blooded_dark_elf_sorcerer" tags="humanoid:female,demon"/>
 	    <token res="steampunk_gal" tags="humanoid:female"/>
 	    <token res="swordmage" tags="humanoid:female"/>
+	    <token res="bchart_paladin" tags="humanoid:female"/>
+	    <token res="sirida3" tags="humanoid:female"/>
+	</artist>
+	<artist name="KingAgrian" copyright="Noncommercial use only.  Used with permission."
+	    url="http://kingagrian.deviantart.com/">
+	    <token res="barbados" tags="humanoid:male"/>
+	    <token res="martial_artist" tags="humanoid:male"/>
+	    <token res="kensai_bladebount" tags="humanoid:male"/>
 	</artist>
 	<artist name="Sir Edwin Henry Landseer" copyright="Available in the public domain">
 		<token res="cheetah" tags="animal"/>
