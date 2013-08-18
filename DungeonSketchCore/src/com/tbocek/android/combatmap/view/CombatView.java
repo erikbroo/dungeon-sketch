@@ -1171,7 +1171,7 @@ public final class CombatView extends SurfaceView {
 	
 	@Override
 	protected void onSizeChanged (int w, int h, int oldw, int oldh) {
-		mScrollBuffer.allocateBitmaps(w, h);
+		mScrollBuffer.allocateBitmaps(w, h, this.getContext());
 	}
 	
 	public void scroll(float deltaXF, float deltaYF) {
