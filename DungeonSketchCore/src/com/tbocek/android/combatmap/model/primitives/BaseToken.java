@@ -34,7 +34,7 @@ public abstract class BaseToken {
     /**
      * Stroke width to use for the selection border.
      */
-    private static final float SELECTION_STROKE_WIDTH = 4;
+    public static final float SELECTION_STROKE_WIDTH = 4;
 
     /**
      * Tweak to the token's size so that it doesn't totally inscribe a grid

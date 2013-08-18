@@ -292,7 +292,11 @@ public final class TokenManipulationInteractionMode extends
     public void onLongPress(final MotionEvent e) {
         if (this.mCurrentToken != null) {
             this.getView().getMultiSelect().addToken(this.mCurrentToken);
-            this.getView().refreshMap(this.mCurrentToken.getBoundingRectangle().toRectF(),
+            BoundingRectangle redrawRect = this.mCurrentToken.getBoundingRectangle();
+            redrawRect.expand(Util.convertDpToPixel(
+            		BaseToken.SELECTION_STROKE_WIDTH,
+            		getView().getContext()));
+            this.getView().refreshMap(redrawRect.toRectF(),
 	                  this.getView().getGridSpaceTransformer());
         }
     }
@@ -309,7 +313,11 @@ public final class TokenManipulationInteractionMode extends
 	                                this.getView().getGridSpaceTransformer());
 	        if (t != null) {
 	            this.getView().getMultiSelect().toggleToken(t);
-	            this.getView().refreshMap(t.getBoundingRectangle().toRectF(),
+	            BoundingRectangle redrawRect = t.getBoundingRectangle();
+	            redrawRect.expand(Util.convertDpToPixel(
+	            		BaseToken.SELECTION_STROKE_WIDTH,
+	            		getView().getContext()));
+	            this.getView().refreshMap(redrawRect.toRectF(),
 		                  this.getView().getGridSpaceTransformer());
 	        }
     	}
@@ -376,6 +384,14 @@ public final class TokenManipulationInteractionMode extends
             this.mAboutToTrash =
                     TRASH_CAN_RECT.contains((int) e2.getX(), (int) e2.getY());
             
+            // If tokens have been highlighted with a selection, we need a few more
+            // pixels around the refresh area because the select indicator draws around the
+            // edge of the tokens.
+            if (this.getView().getMultiSelect().isActive()) {
+	            redrawRect.expand(Util.convertDpToPixel(
+	            		BaseToken.SELECTION_STROKE_WIDTH,
+	            		getView().getContext()));
+            }
             this.getView().refreshMap(redrawRect.toRectF(), this.getView().getGridSpaceTransformer());
         } else {
             return super.onScroll(e1, e2, distanceX, distanceY);
