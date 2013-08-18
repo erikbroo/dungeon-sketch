@@ -3,6 +3,7 @@ package com.tbocek.android.combatmap;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.tbocek.android.combatmap.model.primitives.Util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,7 +41,7 @@ public class ScrollBuffer {
 		secondary = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		invalidated = true;
 		mContext = context;
-		mMinDraw = (int) ((context.getResources().getDisplayMetrics().densityDpi / 160f) * MIN_DRAW_DIP);
+		mMinDraw = (int) (Util.convertDpToPixel(MIN_DRAW_DIP, context));
 	}
 	
 	public DrawRequest scroll(float deltaX, float deltaY) {
