@@ -18,17 +18,29 @@
         android:layout_alignBottom="@+id/mainContentFrame" >
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/popupControlAreaFrame"
-        android:layout_width="0dp"
-        android:layout_height="350dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/bottomControlAreaExpandButton"
-        android:layout_alignRight="@+id/bottomControlAreaFrame" >
+        android:layout_alignRight="@+id/bottomControlAreaFrame"
+        android:orientation="vertical" 
+        android:visibility="gone">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+	    <FrameLayout
+	        android:id="@+id/popupControlAreaInnerFrame"
+	        android:layout_width="200dp"
+	        android:layout_height="350dp">
+	        <Button
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent" />
+	    </FrameLayout>
+	    <Button
+	        android:id="@+id/deployTokensButton"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/deploy_tokens"/>
+	</LinearLayout>
 
     <ImageButton
         android:id="@+id/bottomControlAreaExpandButton"

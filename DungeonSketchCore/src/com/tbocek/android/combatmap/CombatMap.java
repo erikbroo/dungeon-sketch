@@ -106,16 +106,6 @@ public final class CombatMap extends SherlockActivity {
 	private static final int MODE_TOKENS = 2;
 
 	/**
-	 * Maximum height of the popup tag selector. Must be scaled.
-	 */
-	private static final int POPUP_AREA_HEIGHT = 200;
-
-	/**
-	 * Text size to use in the list of tags.
-	 */
-	private static final int TAG_LIST_TEXT_SIZE = 20;
-
-	/**
 	 * ID of the Intent request to pick a new background image.
 	 */
 	private static final int REQUEST_PICK_BACKGROUND_IMAGE = 0;
@@ -341,7 +331,7 @@ public final class CombatMap extends SherlockActivity {
 	 * the main canvas and can be displayed or hidden as needed. Currently used
 	 * to draw the token category selector.
 	 */
-	private FrameLayout mPopupFrame;
+	private View mPopupFrame;
 
 	/**
 	 * The saved menu item that performs the redo operation.
@@ -398,6 +388,8 @@ public final class CombatMap extends SherlockActivity {
 	 * The saved menu item that performs the undo operation.
 	 */
 	private MenuItem mUndoMenuItem;
+
+	private FrameLayout mInnerPopupFrame;
 
 	/**
 	 * Given a combat mode, returns the snap to grid preference name associated
@@ -581,8 +573,10 @@ public final class CombatMap extends SherlockActivity {
 				.findViewById(R.id.mainContentFrame);
 		this.mBottomControlFrame = (FrameLayout) this
 				.findViewById(R.id.bottomControlAreaFrame);
-		this.mPopupFrame = (FrameLayout) this
+		this.mPopupFrame = this
 				.findViewById(R.id.popupControlAreaFrame);
+		this.mInnerPopupFrame = (FrameLayout) this
+				.findViewById(R.id.popupControlAreaInnerFrame);
 		
 		this.mTagNavigator = new TagNavigator(this);
 		this.mTagNavigator.setLayoutParams(new FrameLayout.LayoutParams(
@@ -591,7 +585,7 @@ public final class CombatMap extends SherlockActivity {
 		this.mTagNavigator.setTagSelectedListener(this.mTagSelectedListener);
 
 		//this.mPopupFrame.addView(this.mTokenCategorySelector);
-		this.mPopupFrame.addView(this.mTagNavigator);
+		this.mInnerPopupFrame.addView(this.mTagNavigator);
 		
 		mainContentFrame.addView(this.mCombatView);
 		this.mBottomControlFrame.addView(this.mTokenSelector);
@@ -1068,9 +1062,7 @@ public final class CombatMap extends SherlockActivity {
 	 *            The new visibility.
 	 */
 	private void setTagSelectorVisibility(boolean visible) {
-		this.mPopupFrame.getLayoutParams().width = visible ? (int) (this
-				.getResources().getDisplayMetrics().density * POPUP_AREA_HEIGHT)
-				: 0;
+		this.mPopupFrame.setVisibility(visible ? View.VISIBLE : View.GONE);
 		this.findViewById(R.id.combatMapMainLayout).requestLayout();
 		this.mTagSelectorVisible = visible;
 	}

@@ -95,5 +95,6 @@
     • It will not appear in the tag list in the combat view.\n
     • If this is the only non-system tag it is added to, the token will not load at all (System tags include "built-in", "custom", "image", etc.)
     </string>
+    <string name="deploy_tokens">Deploy Tokens</string>
 
 </resources>
