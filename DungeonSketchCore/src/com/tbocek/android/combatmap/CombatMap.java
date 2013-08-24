@@ -630,8 +630,7 @@ public final class CombatMap extends SherlockActivity {
 			
 			@Override
 			public void onClick(View v) {
-				TokenDeploymentDialog dlg = new TokenDeploymentDialog(CombatMap.this);
-				dlg.show();
+				openDeployTokensDialog();
 			}
 		});
 		
@@ -1535,6 +1534,12 @@ public final class CombatMap extends SherlockActivity {
 		public void onDestroyActionMode(ActionMode mode) {
 		}
 
+	}
+	
+	private void openDeployTokensDialog() {
+
+		TokenDeploymentDialog dlg = new TokenDeploymentDialog(CombatMap.this);
+		dlg.show();
 	}
 
 }
