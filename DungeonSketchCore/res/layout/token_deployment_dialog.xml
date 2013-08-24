@@ -18,7 +18,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/token_deployment_dialog_display"
+        android:layout_above="@+id/token_deployment_dialog_deploy"
         android:layout_centerHorizontal="true" >
 
         <LinearLayout
