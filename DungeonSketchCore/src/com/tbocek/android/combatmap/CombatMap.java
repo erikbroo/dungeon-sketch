@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -391,6 +392,8 @@ public final class CombatMap extends SherlockActivity {
 
 	private FrameLayout mInnerPopupFrame;
 
+	private Button mDeployTokensButton;
+
 	/**
 	 * Given a combat mode, returns the snap to grid preference name associated
 	 * with that combat mode.
@@ -621,7 +624,17 @@ public final class CombatMap extends SherlockActivity {
 				}
 			}
 		});
-
+		
+		this.mDeployTokensButton = (Button) this.findViewById(R.id.deployTokensButton);
+		mDeployTokensButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				TokenDeploymentDialog dlg = new TokenDeploymentDialog(CombatMap.this);
+				dlg.show();
+			}
+		});
+		
 		this.loadOrCreateMap();
 
 		if (this.mTabManager != null) {
@@ -654,6 +667,7 @@ public final class CombatMap extends SherlockActivity {
 
 		this.mCombatView.refreshMap();
 		this.mCombatView.requestFocus();
+
 	}
 
 	@Override
