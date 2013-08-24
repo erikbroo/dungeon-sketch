@@ -5,7 +5,7 @@
     android:orientation="horizontal" >
 
     <Button
-        android:id="@+id/token_deployment_button_increase"
+        android:id="@+id/token_deployment_button_decrease"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:text="-" />
