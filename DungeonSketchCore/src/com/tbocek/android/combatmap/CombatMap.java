@@ -856,6 +856,13 @@ public final class CombatMap extends SherlockActivity {
 		this.mCombatView.getMultiSelect().selectNone();
 
 		new MapSaver(filename, this.getApplicationContext()).run();
+		
+		// TODO: Only save the token database if it needs saving.
+        try {
+            this.mTokenDatabase.save(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 	@Override
