@@ -74,7 +74,20 @@ public final class TokenDatabase {
 	}
 	
 	public class TagTreeNode {
-		private Set<String> tokenNames = Sets.newHashSet();
+		/**
+		 * Map of token names to the amount to deploy.  This is also just used
+		 * as the set of tokens that are directly underneath this tag.
+		 */
+		private Map<String, Integer> tokenCounts = Maps.newHashMap();
+		
+		/**
+		 * Counts for tokens that should be provided a count in this tag,
+		 * but are not necessarily direct children of this tag.  They are
+		 * probably present in child tags; if they are not this is a
+		 * problem and they should be cleaned up.
+		 */
+		private Map<String, Integer> guestTokenCounts = Maps.newHashMap();
+		
 		protected Map<String, TagTreeNode> childTags = Maps.newHashMap();
 		private TagTreeNode parent;
 		private String name;
@@ -105,7 +118,7 @@ public final class TokenDatabase {
 		}
 		
 		public Collection<String> getImmediateTokens() {
-			return this.isActive ? tokenNames : new ArrayList<String>();
+			return this.isActive ? tokenCounts.keySet() : new ArrayList<String>();
 		}
 		
 		/**
@@ -134,7 +147,7 @@ public final class TokenDatabase {
 				
 				rootNode.getAllTokensHelper(parentResult, parentExcludedTokens, true, false);
 				parentExcludedTokens.removeAll(parentResult);
-				return Sets.difference(this.tokenNames, parentExcludedTokens);
+				return Sets.difference(this.tokenCounts.keySet(), parentExcludedTokens);
 			} else {
 				Set<String> result = Sets.newHashSet();
 				Set<String> excludedTokens = Sets.newHashSet();
@@ -160,7 +173,7 @@ public final class TokenDatabase {
 			}
 			
 			if (this.isSystemTag() == systemTags && (this.isActive || !respectExclusion)) {
-				result.addAll(this.tokenNames);
+				result.addAll(this.tokenCounts.keySet());
 			}
 			
 			for (TagTreeNode n: this.childTags.values()) {
@@ -190,12 +203,20 @@ public final class TokenDatabase {
 		}
 
 		public void deleteToken(String tokenId) {
-			this.tokenNames.remove(tokenId);
+			this.tokenCounts.remove(tokenId);
 			for (TagTreeNode childTag : this.childTags.values()) {
 				childTag.deleteToken(tokenId);
 				// TODO: Do we need to remove the childTag if it is now empty?
 			}
 			
+			// Clean up guest token counts in parent tags.
+			// NOTE: This could cause some unexpecte behavior if two child tags
+			// have the same token in them.
+			TagTreeNode parent = this.parent;
+			while (parent != null) {
+				parent.guestTokenCounts.remove(tokenId);
+				parent = parent.parent;
+			}
 		}
 
 		public void deleteSelf() {
@@ -206,10 +227,17 @@ public final class TokenDatabase {
 			Element el = document.createElement("tag");
 			el.setAttribute("name", this.name);
 			el.setAttribute("active", Boolean.toString(this.isActive));
-			for (String tokenId: this.tokenNames) {
+			for (Entry<String, Integer> tokenCount: this.tokenCounts.entrySet()) {
 				Element tokenEl = document.createElement("token");
-				tokenEl.setAttribute("name", tokenId);
+				tokenEl.setAttribute("name", tokenCount.getKey());
+				tokenEl.setAttribute("count", Integer.toString(tokenCount.getValue()));
 				el.appendChild(tokenEl);
+			}
+			for (Entry<String, Integer> guestCount: this.guestTokenCounts.entrySet()) {
+				Element guestCountEl = document.createElement("guest_count");
+				guestCountEl.setAttribute("name", guestCount.getKey());
+				guestCountEl.setAttribute("count", Integer.toString(guestCount.getValue()));
+				el.appendChild(guestCountEl);
 			}
 			
 			for (TagTreeNode treeNode: this.childTags.values()) {
@@ -220,8 +248,33 @@ public final class TokenDatabase {
 		}
 
 		public void addToken(String tokenId) {
-			this.tokenNames.add(tokenId);
+			this.tokenCounts.put(tokenId, 1);
 			Log.d(TAG, "Adding token: " + tokenId + " to " + name);
+		}
+		
+		public void setTokenCount(String tokenId, int count) {
+			if (this.tokenCounts.containsKey(tokenId)) {
+				this.tokenCounts.put(tokenId, count);
+			} else {
+				this.guestTokenCounts.put(tokenId, count);
+			}
+		}
+		
+		public int getTokenCount(String tokenId) {
+			if (this.tokenCounts.containsKey(tokenId)) {
+				return this.tokenCounts.get(tokenId);
+			} else if (this.guestTokenCounts.containsKey(tokenId)) {
+				return this.guestTokenCounts.get(tokenId);
+			} else {
+				// Try to get a count from the child tags
+				for (TagTreeNode treeNode: this.childTags.values()) {
+					int cnt = treeNode.getTokenCount(tokenId);
+					if (cnt != 0) {
+						return cnt;
+					}
+				}
+			}
+			return 0;
 		}
 
 		public TagTreeNode getParent() {
@@ -961,12 +1014,30 @@ public final class TokenDatabase {
     		} else if (localName.equalsIgnoreCase("token")) {
     			String tokenName = atts.getValue("name");
     			String age = atts.getValue("age");
+    			String countStr = atts.getValue("count");
+    			int count;
+    			if (countStr != null) {
+    				count = Integer.parseInt(countStr);
+    			} else {
+    				count = 1;
+    			}
     			Log.d(TAG, "ADD TOKEN " + tokenName + " TO TAG " + currentTagTreeNode.name);
     			if (age != null) {
     				((LimitedTagTreeNode)currentTagTreeNode).addToken(tokenName, Integer.parseInt(age));
     			} else {
     				currentTagTreeNode.addToken(tokenName);
     			}
+    			currentTagTreeNode.setTokenCount(tokenName, count);
+    		} else if (localName.equalsIgnoreCase("guest_count")) {
+    			String tokenName = atts.getValue("name");
+    			String countStr = atts.getValue("count");
+    			int count;
+    			if (countStr != null) {
+    				count = Integer.parseInt(countStr);
+    			} else {
+    				count = 1;
+    			}
+    			currentTagTreeNode.setTokenCount(tokenName, count);
     		}
     	}
     	
