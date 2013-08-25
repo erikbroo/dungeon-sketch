@@ -56,7 +56,13 @@ public class TokenDeploymentDialog extends Dialog {
 	}
 	
 	public void setTag(TokenDatabase database, String tag) {
-		TokenDatabase.TagTreeNode node = database.getRootNode().getNamedChild(tag, false);
+		TokenDatabase.TagTreeNode node;
+		if (tag == TokenDatabase.ALL){
+			node = database.getRootNode();
+		} else {
+			node = database.getRootNode().getNamedChild(tag, false);
+		}
+		
 		for (BaseToken t: database.getTokensForTag(tag)) {
 			TokenDeploymentLineItem li = new TokenDeploymentLineItem(this.getContext());
 			mLineItemLayout.addView(li);
