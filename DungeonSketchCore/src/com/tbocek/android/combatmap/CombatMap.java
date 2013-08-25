@@ -1541,14 +1541,15 @@ public final class CombatMap extends SherlockActivity {
 		mPopupFrame.setVisibility(View.GONE);
 		dlg.setTag(mTokenDatabase, this.mTagNavigator.getCurrentTagPath());
 		dlg.show();
-		
 		dlg.setOnDismissListener(new Dialog.OnDismissListener() {
 
 			@Override
 			public void onDismiss(DialogInterface d) {
 				for (TokenDeploymentDialog.TokenNumberPair pair: dlg.getDeploymentList()) {
 					for (int i = 0; i < pair.getCount(); ++i) {
-						mCombatView.placeToken(pair.getToken().clone());
+						BaseToken t = pair.getToken().clone();
+						mCombatView.placeToken(t);
+						mCombatView.getMultiSelect().addToken(t);
 					}
 				}
 			}
