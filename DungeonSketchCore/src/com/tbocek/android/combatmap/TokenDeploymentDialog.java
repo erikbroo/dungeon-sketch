@@ -56,11 +56,13 @@ public class TokenDeploymentDialog extends Dialog {
 	}
 	
 	public void setTag(TokenDatabase database, String tag) {
+		TokenDatabase.TagTreeNode node = database.getRootNode().getNamedChild(tag, false);
 		for (BaseToken t: database.getTokensForTag(tag)) {
 			TokenDeploymentLineItem li = new TokenDeploymentLineItem(this.getContext());
 			mLineItemLayout.addView(li);
 			li.setToken(t);
-			li.setNumberToDeploy(1);
+			int deploymentCount = node.getTokenCount(t.getTokenId());
+			li.setNumberToDeploy(deploymentCount >= 0 ? deploymentCount : 1);
 			mLineItems.add(li);
 		}
 	}

@@ -210,7 +210,7 @@ public final class TokenDatabase {
 			}
 			
 			// Clean up guest token counts in parent tags.
-			// NOTE: This could cause some unexpecte behavior if two child tags
+			// NOTE: This could cause some unexpected behavior if two child tags
 			// have the same token in them.
 			TagTreeNode parent = this.parent;
 			while (parent != null) {
@@ -1127,5 +1127,9 @@ public final class TokenDatabase {
 	public boolean isTagActive(String tagPath) {
 		if (tagPath.equals(ALL)) { return true; }
 		return this.mTagTreeRoot.getNamedChild(tagPath, false).isActive();
+	}
+
+	public void setTokenTagCount(String tokenId, String tag, int count) {
+		this.getRootNode().getNamedChild(tag, false).setTokenCount(tokenId, count);
 	}
 }
