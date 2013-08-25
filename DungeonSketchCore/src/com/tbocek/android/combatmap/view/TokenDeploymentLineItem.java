@@ -2,6 +2,7 @@ package com.tbocek.android.combatmap.view;
 
 import com.tbocek.android.combatmap.R;
 import com.tbocek.android.combatmap.model.primitives.BaseToken;
+import com.tbocek.android.combatmap.model.primitives.Util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -49,7 +50,6 @@ public class TokenDeploymentLineItem extends LinearLayout {
 				onIncrementButtonClick();
 			}
 		});
-	
 	}
 	
 	private void onIncrementButtonClick() {
@@ -84,17 +84,28 @@ public class TokenDeploymentLineItem extends LinearLayout {
 
 	public void setToken(BaseToken token) {
 		this.mToken = token;
+		createTokenImage();
+	}
+	
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		createTokenImage();
+	}
+
+	private void createTokenImage() {
+		int width = (int) Util.convertDpToPixel(48, this.getContext());
+		int height = (int) Util.convertDpToPixel(48, this.getContext());
 		
-		int width = mTokenImageView.getWidth();
-		int height = mTokenImageView.getHeight();
-		
-		Bitmap tokenImage = Bitmap.createBitmap(
-				width, height,
-				Bitmap.Config.ARGB_8888);
-		
-		Canvas c = new Canvas(tokenImage);
-		mToken.draw(c, width / 2, height / 2, Math.min(width, height) / 2, true, true);
-		
-		mTokenImageView.setImageBitmap(tokenImage);
+		if (width > 0 && height > 0) {
+			Bitmap tokenImage = Bitmap.createBitmap(
+					width, height,
+					Bitmap.Config.ARGB_8888);
+			
+			Canvas c = new Canvas(tokenImage);
+			mToken.draw(c, width / 2, height / 2, Math.min(width, height) / 2, true, true);
+			
+			mTokenImageView.setImageBitmap(tokenImage);
+		}
 	}
 }

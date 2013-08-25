@@ -1537,8 +1537,8 @@ public final class CombatMap extends SherlockActivity {
 	}
 	
 	private void openDeployTokensDialog() {
-
 		TokenDeploymentDialog dlg = new TokenDeploymentDialog(CombatMap.this);
+		dlg.setTag(mTokenDatabase, this.mTagNavigator.getCurrentTagPath());
 		dlg.show();
 	}
 
