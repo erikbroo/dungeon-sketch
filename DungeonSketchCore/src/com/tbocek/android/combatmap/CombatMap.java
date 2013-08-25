@@ -1537,9 +1537,21 @@ public final class CombatMap extends SherlockActivity {
 	}
 	
 	private void openDeployTokensDialog() {
-		TokenDeploymentDialog dlg = new TokenDeploymentDialog(CombatMap.this);
+		final TokenDeploymentDialog dlg = new TokenDeploymentDialog(CombatMap.this);
 		dlg.setTag(mTokenDatabase, this.mTagNavigator.getCurrentTagPath());
 		dlg.show();
+		
+		dlg.setOnDismissListener(new Dialog.OnDismissListener() {
+
+			@Override
+			public void onDismiss(DialogInterface d) {
+				for (TokenDeploymentDialog.TokenNumberPair pair: dlg.getDeploymentList()) {
+					for (int i = 0; i < pair.getCount(); ++i) {
+						mCombatView.placeToken(pair.getToken().clone());
+					}
+				}
+			}
+		});
 	}
 
 }
