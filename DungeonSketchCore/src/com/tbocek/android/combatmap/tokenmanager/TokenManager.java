@@ -472,7 +472,11 @@ public final class TokenManager extends SherlockActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.token_manager_new_token) {
-            this.startActivity(new Intent(this, TokenCreator.class));
+        	Intent i = new Intent(this, TokenCreator.class);
+        	if (!this.getActiveTag().equals(TokenDatabase.ALL)){ 
+        		i.putExtra(TokenCreator.TAG_TO_ADD, this.getActiveTagPath());
+        	}
+            this.startActivity(i);
             return true;
         } else if (itemId == R.id.token_manager_new_tag) {
             Intent i = new Intent(this, NewTagDialog.class);

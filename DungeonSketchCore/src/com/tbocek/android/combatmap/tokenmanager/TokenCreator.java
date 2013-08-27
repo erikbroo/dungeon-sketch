@@ -46,6 +46,8 @@ public final class TokenCreator extends SherlockActivity {
      */
     static final int PICK_IMAGE_REQUEST = 0;
 
+	public static final String TAG_TO_ADD = "tag_to_add";
+
     /**
      * Whether the image selector activity was started automatically. If true,
      * and the activity was cancelled, this activity should end as well.
@@ -57,6 +59,8 @@ public final class TokenCreator extends SherlockActivity {
      * to sepcify a circle on it.
      */
     private TokenCreatorView mTokenCreatorView;
+
+	private String mTagPathToAdd;
 
     @Override
     protected void onActivityResult(final int requestCode,
@@ -99,6 +103,8 @@ public final class TokenCreator extends SherlockActivity {
         super.onCreate(savedInstanceState);
         this.mTokenCreatorView = new TokenCreatorView(this);
         this.setContentView(this.mTokenCreatorView);
+        
+        this.mTagPathToAdd = this.getIntent().getStringExtra(TAG_TO_ADD);
 
         // Automatically select a new image when the view starts.
         this.mImageSelectorStartedAutomatically = true;
@@ -134,6 +140,9 @@ public final class TokenCreator extends SherlockActivity {
                 tokenDatabase.addTokenPrototype(t);
                 tokenDatabase.tagToken(t.getTokenId(), t.getDefaultTags());
                 tokenDatabase.tagToken(t.getTokenId(), TokenDatabase.RECENTLY_ADDED);
+                if (this.mTagPathToAdd != null) {
+                	tokenDatabase.tagToken(t.getTokenId(), this.mTagPathToAdd);
+                }
 
                 this.setResult(Activity.RESULT_OK);
                 this.finish();
