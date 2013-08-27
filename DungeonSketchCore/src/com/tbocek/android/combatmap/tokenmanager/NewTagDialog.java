@@ -38,6 +38,8 @@ public class NewTagDialog extends RoboActivity {
     		underTopLevel.setVisibility(View.VISIBLE);
     		underSelected.setVisibility(View.VISIBLE);
     		underSelected.setText("Underneath " + mSelectedTag.getName());
+    		underTopLevel.setChecked(false);
+    		underSelected.setChecked(true);
     	}
     	
     	create.setOnClickListener(new View.OnClickListener() {
