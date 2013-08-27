@@ -130,7 +130,14 @@ public class TagNavigator extends ScrollView {
 	}
 
 	public void setTokenDatabase(TokenDatabase database) {
-		selectTag(database.getRootNode(), true);
+		TagTreeNode node = null;
+		if (mCurrentTagTreeNode != null) {
+			node = database.getRootNode().getNamedChild(mCurrentTagTreeNode.getPath(), false);
+		}
+		if (node == null) {
+			node = database.getRootNode();
+		}
+		selectTag(node, true);
 	}
 	
 	public TagTreeNode getCurrentTagNode() {
