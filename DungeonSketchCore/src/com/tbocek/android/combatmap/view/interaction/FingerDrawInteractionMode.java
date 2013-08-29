@@ -82,10 +82,12 @@ public class FingerDrawInteractionMode extends BaseDrawInteractionMode {
                 .screenSpaceToWorldSpace(p));
 
         redrawRect.updateBounds(mCurrentLine.getBoundingRectangle());
-        redrawRect.expand(Util.convertDpToPixel(
-        		this.getView().getWorldSpaceTransformer().worldSpaceToScreenSpace(
-        				mCurrentLine.getStrokeWidth()),
-        		this.getView().getContext()));
+        if (mCurrentLine.getStrokeWidth() != Float.POSITIVE_INFINITY) {
+	        redrawRect.expand(Util.convertDpToPixel(
+	        		this.getView().getWorldSpaceTransformer().worldSpaceToScreenSpace(
+	        				mCurrentLine.getStrokeWidth()),
+	        		this.getView().getContext()));
+        }
         this.getView().refreshMap(
         		redrawRect.toRectF(),
         		this.getView().getWorldSpaceTransformer()); 
