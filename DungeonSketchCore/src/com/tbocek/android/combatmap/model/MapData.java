@@ -43,8 +43,9 @@ public final class MapData {
      * Version History:
      * 0: Initial Version
      * 1: Added background image collection.
+     * 2: Added last tag accessed on the map.
      */
-    private static final int MAP_DATA_VERSION = 1;
+    private static final int MAP_DATA_VERSION = 2;
 
     /**
      * Command history to use for the annotations.
@@ -109,6 +110,8 @@ public final class MapData {
      * newly loaded.
      */
     private boolean mMapAttributesLocked;
+    
+    private String mLastTag = TokenDatabase.ALL;
 
     /**
      * Command history to use for combat tokens.
@@ -162,6 +165,9 @@ public final class MapData {
         data.mAnnotationLines.deserialize(s);
         if (mapDataVersion >= 1) {
             data.mBackgroundImages.deserialize(s);
+        }
+        if (mapDataVersion >= 2) {
+        	data.mLastTag = s.readString();
         }
         return data;
     }
@@ -381,6 +387,7 @@ public final class MapData {
         this.mGmNotesFogOfWar.serialize(s);
         this.mAnnotationLines.serialize(s);
         this.mBackgroundImages.serialize(s);
+        s.serializeString(mLastTag != null ? mLastTag : TokenDatabase.ALL);
     }
 
     /**
@@ -399,5 +406,13 @@ public final class MapData {
      */
     public void setMapAttributesLocked(boolean locked) {
         this.mMapAttributesLocked = locked;
+    }
+    
+    public void setLastTag(String lastTag) {
+    	mLastTag = lastTag;
+    }
+    
+    public String getLastTag() {
+    	return mLastTag;
     }
 }

@@ -138,6 +138,7 @@ public class TagNavigator extends ScrollView {
 			node = database.getRootNode();
 		}
 		selectTag(node, true);
+		mTokenDatabase = database;
 	}
 	
 	public TagTreeNode getCurrentTagNode() {
@@ -424,6 +425,21 @@ public class TagNavigator extends ScrollView {
 				view.setTextColor(TagTreeLineItem.COLOR_DRAG_TARGET);
 			}
 		}
+	}
+	
+	public boolean setTagPath(String path) {
+		TokenDatabase.TagTreeNode node = null;
+		try {
+			if (path == TokenDatabase.ALL) {
+				node = this.mTokenDatabase.getRootNode();
+			} else {
+				node = this.mTokenDatabase.getRootNode().getNamedChild(path, false);
+			}
+			selectTag(node, true);
+		} catch (Exception e) { 
+			return false;
+		}
+		return true;
 	}
 
 }

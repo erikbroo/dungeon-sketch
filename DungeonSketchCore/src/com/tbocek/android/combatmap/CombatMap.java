@@ -283,6 +283,9 @@ public final class CombatMap extends SherlockActivity {
 		public void onTagSelected(TagTreeNode selectedTag) {
 			CombatMap.this.mTokenSelector.setSelectedTag(selectedTag.getPath(),
 					CombatMap.this.mCombatView);
+			if (mData != null && selectedTag.getParent() != null) {
+				mData.setLastTag(selectedTag.getPath());
+			}
 		}
 
 		@Override
@@ -428,6 +431,7 @@ public final class CombatMap extends SherlockActivity {
 		}
 		mData = MapData.getInstance();
 		this.mCombatView.setData(mData);
+		this.mTagNavigator.setTagPath(mData.getLastTag());
 	}
 
 	@Override
@@ -1124,7 +1128,7 @@ public final class CombatMap extends SherlockActivity {
 		 */
 		private String mFilename;
 
-		/**
+		/**a
 		 * Constructor.
 		 * 
 		 * @param filename
@@ -1319,6 +1323,7 @@ public final class CombatMap extends SherlockActivity {
 			
 			CombatMap.this.mTagNavigator.setShowInactiveTags(false);
 			CombatMap.this.mTagNavigator.setTokenDatabase(CombatMap.this.mTokenDatabase);
+			CombatMap.this.mTagNavigator.setTagPath(mData.getLastTag());
 
 			// Load all the tokens that are currently placed on the map.
 			TokenLoadManager.getInstance().startJob(d.getTokens().asList(),
