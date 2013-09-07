@@ -97,11 +97,8 @@ public final class LineCollection implements UndoRedoTarget {
         canvas.clipRect(r, Op.DIFFERENCE);
 
         // Union together the regions that are supposed to draw.
-        for (int i = 0; i < this.mLines.size(); ++i) {
-        	Shape maskRegion = this.mLines.get(i);
-        	if (maskRegion.getBoundingRectangle().testClip(worldSpaceBounds)) {
-        		maskRegion.clipFogOfWar(canvas);
-        	}
+        for (Shape maskRegion: this.mLines) {
+        	maskRegion.clipFogOfWar(canvas);
         }
 
         canvas.clipRect(r, Op.INTERSECT);
@@ -253,11 +250,9 @@ public final class LineCollection implements UndoRedoTarget {
      */
     public void drawAllLines(final Canvas canvas, RectF worldSpaceBounds) {
         for (Shape shape: mLines) {
-        	if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
-	            shape.applyDrawOffsetToCanvas(canvas);
-	            shape.draw(canvas);
-	            shape.revertDrawOffsetFromCanvas(canvas);
-        	}
+            shape.applyDrawOffsetToCanvas(canvas);
+            shape.draw(canvas);
+            shape.revertDrawOffsetFromCanvas(canvas);
         }
     }
 
@@ -270,11 +265,9 @@ public final class LineCollection implements UndoRedoTarget {
      */
     public void drawAllLinesAboveGrid(final Canvas canvas, RectF worldSpaceBounds) {
         for (Shape shape: mAboveGridLines) {
-            if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
-                shape.applyDrawOffsetToCanvas(canvas);
-                shape.draw(canvas);
-                shape.revertDrawOffsetFromCanvas(canvas);
-            }
+            shape.applyDrawOffsetToCanvas(canvas);
+            shape.draw(canvas);
+            shape.revertDrawOffsetFromCanvas(canvas);
         }
     }
 
@@ -287,11 +280,9 @@ public final class LineCollection implements UndoRedoTarget {
      */
     public void drawAllLinesBelowGrid(final Canvas canvas, RectF worldSpaceBounds) {
         for (Shape shape: mBelowGridLines) {
-            if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
-                shape.applyDrawOffsetToCanvas(canvas);
-                shape.draw(canvas);
-                shape.revertDrawOffsetFromCanvas(canvas);
-            }
+            shape.applyDrawOffsetToCanvas(canvas);
+            shape.draw(canvas);
+            shape.revertDrawOffsetFromCanvas(canvas);
         }
     }
 
@@ -304,9 +295,7 @@ public final class LineCollection implements UndoRedoTarget {
      */
     public void drawFogOfWar(final Canvas canvas, RectF worldSpaceBounds) {
         for (Shape shape: mLines) {
-        	if (shape.getBoundingRectangle().testClip(worldSpaceBounds)) {
-        		shape.drawFogOfWar(canvas);
-        	}
+        	shape.drawFogOfWar(canvas);
         }
     }
 
@@ -341,7 +330,7 @@ public final class LineCollection implements UndoRedoTarget {
      *            The point in world space to center the erase on.
      * @param radius
      *            Radius around the point to erase, in world space.
-     */
+     */						
     public void erase(final PointF location, final float radius) {
         for (int i = 0; i < this.mLines.size(); ++i) {
             this.mLines.get(i).erase(location, radius);
